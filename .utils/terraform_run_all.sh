@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 #
 # bash .utils/terraform_run_all.sh init local
 # bash .utils/terraform_run_all.sh init docker
