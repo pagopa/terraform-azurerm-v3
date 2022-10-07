@@ -314,7 +314,7 @@ module "app_gw" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.22.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.24.0 |
 
 ## Modules
 

@@ -72,7 +72,7 @@ module "apim_hub_spid_login_api_v1" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.22.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.24.0 |
 
 ## Modules
 
