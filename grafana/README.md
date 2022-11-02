@@ -11,7 +11,7 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.20.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.29.1 |
 
 ## Modules
 
@@ -42,7 +42,8 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | n/a |
+| <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | https endpoint |
+| <a name="output_hostname"></a> [hostname](#output\_hostname) | n/a |
 | <a name="output_id"></a> [id](#output\_id) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 | <a name="output_outbound_ip"></a> [outbound\_ip](#output\_outbound\_ip) | n/a |

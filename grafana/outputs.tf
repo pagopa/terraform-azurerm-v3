@@ -7,7 +7,12 @@ output "id" {
 }
 
 output "endpoint" {
+  description = "https endpoint"
   value = azurerm_dashboard_grafana.this.endpoint
+}
+
+output "hostname" {
+  value = trimprefix(azurerm_dashboard_grafana.this.endpoint, "https://")
 }
 
 output "version" {
