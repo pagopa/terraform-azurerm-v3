@@ -1,5 +1,34 @@
 # Grafana Managed
 
+This module allow the creation of Grafana Managed
+
+## Configurations
+
+## How to use it
+
+```hcl
+resource "azurerm_resource_group" "load_test" {
+
+  name     = "${local.product}-load-test-rg"
+  location = var.location
+
+}
+
+module "grafana_managed" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//grafana?ref=feature/new_output_grafana"
+
+  name = "${local.product}-grafana"
+
+  resource_group_name = azurerm_resource_group.load_test.name
+
+  api_key_enabled = true
+
+  tags = var.tags
+
+}
+
+```
+
 ## Requirements
 
 | Name | Version |
