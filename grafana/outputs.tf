@@ -8,7 +8,7 @@ output "id" {
 
 output "endpoint" {
   description = "https endpoint"
-  value = azurerm_dashboard_grafana.this.endpoint
+  value       = azurerm_dashboard_grafana.this.endpoint
 }
 
 output "hostname" {
