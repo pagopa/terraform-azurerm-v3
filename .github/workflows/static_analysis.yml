@@ -5,10 +5,11 @@ on:
 
 jobs:
   static_analysis:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v2
+        # from https://github.com/actions/checkout/commits/main
+      - uses: actions/checkout@1f9a0c22da41e6ebfa534300ef656657ea2c6707
 
       - name: run_init
         run: |
@@ -16,5 +17,5 @@ jobs:
 
       - name: run_test
         run: |
-          TAG=v1.75.0
+          TAG=v1.77.0
           docker run -v $(pwd):/lint -w /lint ghcr.io/antonbabenko/pre-commit-terraform:$TAG run -a
