@@ -16,7 +16,7 @@ variable "location" {
 variable "sku_name" {
   type        = string
   description = "Sku type, at the moment only allowed value is Consumption"
-  default = "Consumption"
+  default     = "Consumption"
 }
 
 variable "vnet_internal" {
@@ -32,7 +32,7 @@ variable "subnet_id" {
 variable "outbound_type" {
   type        = string
   description = "Outbound connectivity type, at the moment only allowed value is LoadBalancer"
-  default = "LoadBalancer"
+  default     = "LoadBalancer"
 }
 
 variable "log_destination" {
