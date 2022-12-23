@@ -6,6 +6,12 @@ variable "name" {
   type = string
 }
 
+variable "domain" {
+  type        = string
+  description = "(Optional) Specifies the domain of the Storage Account."
+  default     = null
+}
+
 variable "resource_group_name" {
   type = string
 }
@@ -32,10 +38,16 @@ variable "account_replication_type" {
   description = "Defines the type of replication to use for this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS. Changing this forces a new resource to be created when types LRS, GRS and RAGRS are changed to ZRS, GZRS or RAGZRS and vice versa"
 }
 
-variable "blob_properties_delete_retention_policy_days" {
+variable "blob_delete_retention_days" {
+  description = "Retention days for deleted blob. Valid value is between 1 and 365 (set to 0 to disable)."
   type        = number
-  default     = null
-  description = "Enable soft delete policy and specify the number of days that the blob should be retained. Between 1 and 365 days"
+  default     = 0
+}
+
+variable "container_delete_retention_days" {
+  description = "Retention days for deleted container. Valid value is between 1 and 365 (set to 0 to disable)."
+  type        = number
+  default     = 0
 }
 
 variable "min_tls_version" {
@@ -44,22 +56,22 @@ variable "min_tls_version" {
   description = "The minimum supported TLS version for the storage account. Possible values are TLS1_0, TLS1_1, and TLS1_2"
 }
 
-variable "enable_https_traffic_only" {
-  type        = bool
-  default     = true
-  description = "Boolean flag which forces HTTPS if enabled, see here for more information. Defaults to true"
-}
-
 variable "is_hns_enabled" {
   type        = bool
   default     = false
   description = "Enable Hierarchical Namespace enabled (Azure Data Lake Storage Gen 2). Changing this forces a new resource to be created."
 }
 
-variable "allow_blob_public_access" {
+variable "allow_nested_items_to_be_public" {
+  description = "Allow or disallow public access to all blobs or containers in the storage account."
   type        = bool
   default     = false
-  description = "Allow or disallow public access to all blobs or containers in the storage account."
+}
+
+variable "blob_versioning_enabled" {
+  description = "Controls whether blob object versioning is enabled."
+  type        = bool
+  default     = false
 }
 
 # Note: If specifying network_rules,
@@ -89,32 +101,6 @@ variable "versioning_name" {
   default = null
 }
 
-# lock
-
-variable "lock_enabled" {
-  type        = bool
-  default     = false
-  description = "Is lock enabled?"
-}
-
-variable "lock_name" {
-  type        = string
-  default     = null
-  description = "Specifies the name of the Management Lock. Changing this forces a new resource to be created."
-}
-
-variable "lock_level" {
-  type        = string
-  default     = null
-  description = " Specifies the Level to be used for this Lock. Possible values are CanNotDelete and ReadOnly."
-}
-
-variable "lock_notes" {
-  type        = string
-  default     = null
-  description = "Specifies some notes about the lock. Maximum of 512 characters."
-}
-
 variable "advanced_threat_protection" {
   type        = string
   default     = false
@@ -135,4 +121,32 @@ variable "error_404_document" {
   type        = string
   default     = null
   description = "The absolute path to a custom webpage that should be used when a request is made which does not correspond to an existing file."
+}
+
+
+# -------------------
+# Alerts variables
+# -------------------
+
+variable "enable_low_availability_alert" {
+  type        = bool
+  description = "Enable the Low Availability alert. Default is true"
+  default     = true
+}
+
+variable "low_availability_threshold" {
+  type        = number
+  description = "The Low Availability threshold. If metric average is under this value, the alert will be triggered. Default is 99.8"
+  default     = 99.8
+}
+
+variable "action" {
+  description = "The ID of the Action Group and optional map of custom string properties to include with the post webhook operation."
+  type = set(object(
+    {
+      action_group_id    = string
+      webhook_properties = map(string)
+    }
+  ))
+  default = []
 }
