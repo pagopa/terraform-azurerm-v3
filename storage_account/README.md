@@ -9,27 +9,45 @@ Module that allows the creation of an Storage account.
 ## How to use it
 
 ```ts
-module "selc-contracts-storage" {
-  source = "git::https://github.com/pagopa/azurerm.git//storage_account?ref=v2.5.2"
+module "diego_storage_account" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v3.4.0"
 
-  name                       = replace(format("%s-contracts-storage", local.project), "-", "")
-  account_kind               = "StorageV2"
-  account_tier               = "Standard"
-  account_replication_type   = var.contracts_account_replication_type
-  access_tier                = "Hot"
-  versioning_name            = "versioning"
-  enable_versioning          = var.contracts_enable_versioning
-  resource_group_name        = azurerm_resource_group.rg_contracts_storage.name
-  location                   = var.location
-  advanced_threat_protection = var.contracts_advanced_threat_protection
-  allow_blob_public_access   = false
+  name                            = replace("${local.product}-${var.domain}-st", "-", "")
+  account_kind                    = "StorageV2"
+  account_tier                    = "Standard"
+  account_replication_type        = "LRS"
+  access_tier                     = "Hot"
+  blob_versioning_enabled         = true
+  resource_group_name             = azurerm_resource_group.diego_storage_rg.name
+  location                        = var.location
+  advanced_threat_protection      = false
+  allow_nested_items_to_be_public = false
 
-  blob_properties_delete_retention_policy_days = var.contracts_delete_retention_days
+  blob_delete_retention_days      = 9
+  container_delete_retention_days = 8
 
   tags = var.tags
 }
 
 ```
+
+## Migration from v2
+
+🆕 To use this module you need to use change this variables:
+
+* `blob_properties_delete_retention_policy_days` -> `blob_delete_retention_days`
+* `allow_blob_public_access` -> `allow_nested_items_to_be_public`
+* `enable_versioning` -> `blob_versioning_enabled`
+
+❌ Don't use this variables:
+
+* `enable_https_traffic_only` -> don't use any more, now default is true and mandatory
+* `enable_versioning`
+* `versioning_name`
+
+🔥 Broken compatibility and destroied resources
+
+* `module.xyz.azurerm_template_deployment.versioning[0]` is destroied becuase we use an internal variable and not more an arm.
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -74,7 +92,6 @@ No modules.
 | <a name="input_container_delete_retention_days"></a> [container\_delete\_retention\_days](#input\_container\_delete\_retention\_days) | Retention days for deleted container. Valid value is between 1 and 365 (set to 0 to disable). | `number` | `0` | no |
 | <a name="input_domain"></a> [domain](#input\_domain) | (Optional) Specifies the domain of the Storage Account. | `string` | `null` | no |
 | <a name="input_enable_low_availability_alert"></a> [enable\_low\_availability\_alert](#input\_enable\_low\_availability\_alert) | Enable the Low Availability alert. Default is true | `bool` | `true` | no |
-| <a name="input_enable_versioning"></a> [enable\_versioning](#input\_enable\_versioning) | Enable versioning in the blob storage account. | `bool` | `false` | no |
 | <a name="input_error_404_document"></a> [error\_404\_document](#input\_error\_404\_document) | The absolute path to a custom webpage that should be used when a request is made which does not correspond to an existing file. | `string` | `null` | no |
 | <a name="input_index_document"></a> [index\_document](#input\_index\_document) | The webpage that Azure Storage serves for requests to the root of a website or any subfolder. For example, index.html. The value is case-sensitive. | `string` | `null` | no |
 | <a name="input_is_hns_enabled"></a> [is\_hns\_enabled](#input\_is\_hns\_enabled) | Enable Hierarchical Namespace enabled (Azure Data Lake Storage Gen 2). Changing this forces a new resource to be created. | `bool` | `false` | no |
@@ -85,7 +102,6 @@ No modules.
 | <a name="input_network_rules"></a> [network\_rules](#input\_network\_rules) | n/a | <pre>object({<br>    default_action             = string       # Specifies the default action of allow or deny when no other rules match. Valid options are Deny or Allow<br>    bypass                     = set(string)  # Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Valid options are any combination of Logging, Metrics, AzureServices, or None<br>    ip_rules                   = list(string) # List of public IP or IP ranges in CIDR Format. Only IPV4 addresses are allowed<br>    virtual_network_subnet_ids = list(string) # A list of resource ids for subnets.<br>  })</pre> | `null` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | n/a | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
-| <a name="input_versioning_name"></a> [versioning\_name](#input\_versioning\_name) | n/a | `string` | `null` | no |
 
 ## Outputs
 
