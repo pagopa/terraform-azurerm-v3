@@ -1,3 +1,26 @@
+# jwt_keys
+
+Module that allows the creation of an jwt keys.
+
+## How to use it
+
+```ts
+module "my_jwt" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//jwt_keys?ref=v3.4.1"
+
+  jwt_name         = "my-jwt"
+  key_vault_id     = azurerm_key_vault.kv.id
+  cert_common_name = "My Common Name"
+  cert_password    = ""
+  tags             = var.tags
+}
+```
+
+## Migration from v2
+
+Nothing to change
+
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
