@@ -35,3 +35,8 @@ Check your code before commit.
 bash .utils/terraform_run_all.sh init local
 pre-commit run -a
 ```
+
+## Migration from azurerm v2
+
+If you use this modules as replace for the olds modules v2.
+Please follow this list [Migration List](docs/MIGRATION_FROM_V2.md), and read for each module the README to understand wich procedure you need to follow to execute the migration
