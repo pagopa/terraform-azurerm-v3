@@ -405,6 +405,12 @@ module "aks_ephemeral" {
 }
 ```
 
+## Migration from v2
+
+🆕 Attributes changed:
+
+* `availability_zones` -> `zones`
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
