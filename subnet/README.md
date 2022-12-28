@@ -41,6 +41,12 @@ module "api_config_snet" {
 }
 ```
 
+## Migration from v2
+
+Output attributes changed (compatibility broken):
+
+* `addres_prefix` -> `address_prefixes`
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -82,7 +88,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_address_prefix"></a> [address\_prefix](#output\_address\_prefix) | n/a |
+| <a name="output_address_prefixes"></a> [address\_prefixes](#output\_address\_prefixes) | n/a |
 | <a name="output_id"></a> [id](#output\_id) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
