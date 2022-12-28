@@ -26,3 +26,8 @@ variable "cert_validity_hours" {
   type    = number
   default = 8640
 }
+
+variable "early_renewal_hours" {
+  type    = number
+  default = 720
+}

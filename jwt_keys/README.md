@@ -6,14 +6,14 @@
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | <= 3.36.0 |
-| <a name="requirement_tls"></a> [tls](#requirement\_tls) | <= 3.4.0 |
+| <a name="requirement_tls"></a> [tls](#requirement\_tls) | <= 4.0.4 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.36.0 |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | 3.4.0 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | 4.0.4 |
 
 ## Modules
 
@@ -37,6 +37,7 @@ No modules.
 | <a name="input_cert_common_name"></a> [cert\_common\_name](#input\_cert\_common\_name) | cert info | `string` | n/a | yes |
 | <a name="input_cert_password"></a> [cert\_password](#input\_cert\_password) | n/a | `string` | n/a | yes |
 | <a name="input_cert_validity_hours"></a> [cert\_validity\_hours](#input\_cert\_validity\_hours) | n/a | `number` | `8640` | no |
+| <a name="input_early_renewal_hours"></a> [early\_renewal\_hours](#input\_early\_renewal\_hours) | n/a | `number` | `720` | no |
 | <a name="input_jwt_name"></a> [jwt\_name](#input\_jwt\_name) | n/a | `string` | n/a | yes |
 | <a name="input_key_vault_id"></a> [key\_vault\_id](#input\_key\_vault\_id) | n/a | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
