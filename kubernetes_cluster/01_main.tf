@@ -33,7 +33,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     os_disk_size_gb              = var.system_node_pool_os_disk_size_gb
     type                         = "VirtualMachineScaleSets"
     only_critical_addons_enabled = var.system_node_pool_only_critical_addons_enabled
-    availability_zones           = ["1", "2", "3"]
+    zones                        = ["1", "2", "3"]
     ultra_ssd_enabled            = var.system_node_pool_ultra_ssd_enabled
     enable_host_encryption       = var.system_node_pool_enable_host_encryption
 
@@ -76,7 +76,7 @@ resource "azurerm_kubernetes_cluster" "this" {
       network_plugin     = p.value.network_plugin
       outbound_type      = p.value.outbound_type
       service_cidr       = p.value.service_cidr
-      load_balancer_sku  = "Standard"
+      load_balancer_sku  = "standard"
       load_balancer_profile {
         outbound_ip_address_ids = var.outbound_ip_address_ids
       }
@@ -153,7 +153,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
   # https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general
   os_disk_type           = var.user_node_pool_os_disk_type # Managed or Ephemeral
   os_disk_size_gb        = var.user_node_pool_os_disk_size_gb
-  availability_zones     = ["1", "2", "3"]
+  zones                  = ["1", "2", "3"]
   ultra_ssd_enabled      = var.user_node_pool_ultra_ssd_enabled
   enable_host_encryption = var.user_node_pool_enable_host_encryption
   os_type                = "Linux"
@@ -192,7 +192,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
 resource "azurerm_role_assignment" "aks" {
   scope                = azurerm_kubernetes_cluster.this.id
   role_definition_name = "Monitoring Metrics Publisher"
-  principal_id         = azurerm_kubernetes_cluster.this.addon_profile[0].oms_agent[0].oms_agent_identity[0].object_id
+  principal_id         = azurerm_kubernetes_cluster.this.oms_agent[0].oms_agent_identity[0].object_id
 }
 
 resource "azurerm_role_assignment" "vnet_role" {

@@ -34,7 +34,7 @@ variable "service_endpoints" {
   description = "(Optional) The list of Service endpoints to associate with the subnet. Possible values include: Microsoft.AzureActiveDirectory, Microsoft.AzureCosmosDB, Microsoft.ContainerRegistry, Microsoft.EventHub, Microsoft.KeyVault, Microsoft.ServiceBus, Microsoft.Sql, Microsoft.Storage and Microsoft.Web."
 }
 
-variable "enforce_private_link_endpoint_network_policies" {
+variable "private_endpoint_network_policies_enabled" {
   type        = bool
   description = "(Optional) Enable or Disable network policies for the private link endpoint on the subnet. Setting this to true will Disable the policy and setting this to false will Enable the policy. Default value is false."
   default     = false

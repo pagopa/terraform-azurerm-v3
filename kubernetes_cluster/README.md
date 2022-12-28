@@ -405,6 +405,20 @@ module "aks_ephemeral" {
 }
 ```
 
+## Migration from v2
+
+1️⃣ Arguments changed:
+
+* `availability_zones` -> `zones`
+
+2️⃣ Delete/re-import state `module.aks[0].azurerm_kubernetes_cluster_node_pool.this[0]`
+
+Unfortunatelly is impossible to use `zones` if `availability_zones` is already use, so you need to delete the state record and re-import
+
+```bash
+sh terraform.sh import dev01 'module.aks[0].azurerm_kubernetes_cluster_node_pool.this[0]' /subscriptions/22222222-79bf-48fa-831e-111111111/resourceGroups/dvopla-d-neu-dev01-aks-rg/providers/Microsoft.ContainerService/managedClusters/dvopla-d-neu-dev01-aks/agentPools/dvldev01usr
+```
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
