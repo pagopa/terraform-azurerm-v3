@@ -42,6 +42,12 @@ module "diego_storage_account" {
 ❌ Don't use this variables:
 
 * `enable_https_traffic_only` -> don't use any more, now default is true and mandatory
+* `enable_versioning`
+* `versioning_name`
+
+🔥 Broken compatibility and destroied resources
+
+* `module.xyz.azurerm_template_deployment.versioning[0]` is destroied becuase we use an internal variable and not more an arm.
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
