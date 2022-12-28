@@ -407,7 +407,7 @@ module "aks_ephemeral" {
 
 ## Migration from v2
 
-🆕 Attributes changed:
+🆕 Arguments changed:
 
 * `availability_zones` -> `zones`
 
