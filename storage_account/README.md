@@ -33,7 +33,7 @@ module "diego_storage_account" {
 
 ## Migration from v2
 
-🆕 To use this module you need to use change this variables:
+🆕 To use this module you need to use change this variables/arguments:
 
 * `blob_properties_delete_retention_policy_days` -> `blob_delete_retention_days`
 * `allow_blob_public_access` -> `allow_nested_items_to_be_public`
