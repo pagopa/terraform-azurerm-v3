@@ -33,7 +33,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     os_disk_size_gb              = var.system_node_pool_os_disk_size_gb
     type                         = "VirtualMachineScaleSets"
     only_critical_addons_enabled = var.system_node_pool_only_critical_addons_enabled
-    zones           = ["1", "2", "3"]
+    zones                        = ["1", "2", "3"]
     ultra_ssd_enabled            = var.system_node_pool_ultra_ssd_enabled
     enable_host_encryption       = var.system_node_pool_enable_host_encryption
 
@@ -153,7 +153,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
   # https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general
   os_disk_type           = var.user_node_pool_os_disk_type # Managed or Ephemeral
   os_disk_size_gb        = var.user_node_pool_os_disk_size_gb
-  zones     = ["1", "2", "3"]
+  zones                  = ["1", "2", "3"]
   ultra_ssd_enabled      = var.user_node_pool_ultra_ssd_enabled
   enable_host_encryption = var.user_node_pool_enable_host_encryption
   os_type                = "Linux"
