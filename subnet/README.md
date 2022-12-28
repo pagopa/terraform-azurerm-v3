@@ -46,6 +46,7 @@ module "api_config_snet" {
 Output attributes changed (compatibility broken):
 
 * `addres_prefix` -> `address_prefixes`
+* `enforce_private_link_endpoint_network_policies` -> `private_endpoint_network_policies_enabled`
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
