@@ -88,19 +88,6 @@ variable "network_rules" {
   default = null
 }
 
-variable "enable_versioning" {
-  type        = bool
-  default     = false
-  description = "Enable versioning in the blob storage account."
-}
-
-# versioning
-
-variable "versioning_name" {
-  type    = string
-  default = null
-}
-
 variable "advanced_threat_protection" {
   type        = string
   default     = false
