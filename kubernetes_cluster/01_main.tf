@@ -76,7 +76,7 @@ resource "azurerm_kubernetes_cluster" "this" {
       network_plugin     = p.value.network_plugin
       outbound_type      = p.value.outbound_type
       service_cidr       = p.value.service_cidr
-      load_balancer_sku  = "Standard"
+      load_balancer_sku  = "standard"
       load_balancer_profile {
         outbound_ip_address_ids = var.outbound_ip_address_ids
       }
