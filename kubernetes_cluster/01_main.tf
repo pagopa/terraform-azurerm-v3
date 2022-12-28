@@ -192,7 +192,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
 resource "azurerm_role_assignment" "aks" {
   scope                = azurerm_kubernetes_cluster.this.id
   role_definition_name = "Monitoring Metrics Publisher"
-  principal_id         = azurerm_kubernetes_cluster.this.addon_profile[0].oms_agent[0].oms_agent_identity[0].object_id
+  principal_id         = azurerm_kubernetes_cluster.this.oms_agent[0].oms_agent_identity[0].object_id
 }
 
 resource "azurerm_role_assignment" "vnet_role" {
