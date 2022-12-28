@@ -9,27 +9,39 @@ Module that allows the creation of an Storage account.
 ## How to use it
 
 ```ts
-module "selc-contracts-storage" {
-  source = "git::https://github.com/pagopa/azurerm.git//storage_account?ref=v2.5.2"
+module "diego_storage_account" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v3.4.0"
 
-  name                       = replace(format("%s-contracts-storage", local.project), "-", "")
-  account_kind               = "StorageV2"
-  account_tier               = "Standard"
-  account_replication_type   = var.contracts_account_replication_type
-  access_tier                = "Hot"
-  versioning_name            = "versioning"
-  enable_versioning          = var.contracts_enable_versioning
-  resource_group_name        = azurerm_resource_group.rg_contracts_storage.name
-  location                   = var.location
-  advanced_threat_protection = var.contracts_advanced_threat_protection
-  allow_blob_public_access   = false
+  name                            = replace("${local.product}-${var.domain}-st", "-", "")
+  account_kind                    = "StorageV2"
+  account_tier                    = "Standard"
+  account_replication_type        = "LRS"
+  access_tier                     = "Hot"
+  blob_versioning_enabled         = true
+  resource_group_name             = azurerm_resource_group.diego_storage_rg.name
+  location                        = var.location
+  advanced_threat_protection      = false
+  allow_nested_items_to_be_public = false
 
-  blob_properties_delete_retention_policy_days = var.contracts_delete_retention_days
+  blob_delete_retention_days      = 9
+  container_delete_retention_days = 8
 
   tags = var.tags
 }
 
 ```
+
+## Migration from v2
+
+🆕 To use this module you need to use change this variables:
+
+* `blob_properties_delete_retention_policy_days` -> `blob_delete_retention_days`
+* `allow_blob_public_access` -> `allow_nested_items_to_be_public`
+* `enable_versioning` -> `blob_versioning_enabled`
+
+❌ Don't use this variables:
+
+* `enable_https_traffic_only` -> don't use any more, now default is true and mandatory
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
