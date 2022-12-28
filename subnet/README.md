@@ -41,6 +41,12 @@ module "api_config_snet" {
 }
 ```
 
+## Migration from v2
+
+Output attributes changed (compatibility broken):
+
+* `addres_prefix` -> `address_prefixes`
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
