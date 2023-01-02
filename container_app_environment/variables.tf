@@ -56,6 +56,12 @@ variable "zone_redundant" {
   description = "Deploy multi zone container environment"
 }
 
+variable "debug_level" {
+  type        = string
+  description = "(Optional) The Debug Level which should be used for this Resource Group Template Deployment. Possible values are none, requestContent, responseContent and requestContent, responseContent."
+  default     = null
+}
+
 variable "tags" {
   type = map(any)
 }

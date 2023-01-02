@@ -17,7 +17,9 @@ resource "azurerm_resource_group_template_deployment" "this" {
   name                = var.name
   resource_group_name = var.resource_group_name
 
-  template_content = local.template_content
+  template_content         = local.template_content
+  template_spec_version_id = null
+  debug_level              = var.debug_level
 
   deployment_mode = "Incremental"
 

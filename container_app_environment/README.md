@@ -27,6 +27,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_debug_level"></a> [debug\_level](#input\_debug\_level) | (Optional) The Debug Level which should be used for this Resource Group Template Deployment. Possible values are none, requestContent, responseContent and requestContent, responseContent. | `string` | `null` | no |
 | <a name="input_location"></a> [location](#input\_location) | Resource location. | `string` | n/a | yes |
 | <a name="input_log_analytics_customer_id"></a> [log\_analytics\_customer\_id](#input\_log\_analytics\_customer\_id) | Workspace ID if log\_destination is log-analytics type | `string` | n/a | yes |
 | <a name="input_log_analytics_shared_key"></a> [log\_analytics\_shared\_key](#input\_log\_analytics\_shared\_key) | Workspace ID if log\_destination is log-analytics type | `string` | n/a | yes |
