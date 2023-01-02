@@ -37,7 +37,7 @@
   ],
   "outputs": {
     "id": {
-      "type": "string",
+      "type": "String",
       "value": "[resourceid('Microsoft.App/managedEnvironments','${name}')]"
     }
   }
