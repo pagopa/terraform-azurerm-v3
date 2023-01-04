@@ -7,6 +7,8 @@ resource "azurerm_api_management" "this" {
   notification_sender_email = var.notification_sender_email
   sku_name                  = var.sku_name
 
+  zones = var.zones
+
   # deprecated var.policy_path use xml_content
   dynamic "policy" {
     for_each = var.policy_path != null ? ["dummy"] : []

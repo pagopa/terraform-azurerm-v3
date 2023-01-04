@@ -338,6 +338,12 @@ variable "sec_storage_id" {
   description = "Storage Account security (it should be in a different subscription)."
 }
 
+variable "zones" {
+  type        = list(string)
+  default     = []
+  description = "A list of availability zones. Default is empty"
+}
+
 variable "tags" {
   type = map(any)
 }

@@ -81,7 +81,7 @@ module "apim" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.36.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 2.99.0 |
 
 ## Modules
 
@@ -142,6 +142,7 @@ No modules.
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
 | <a name="input_virtual_network_type"></a> [virtual\_network\_type](#input\_virtual\_network\_type) | The type of virtual network you want to use, valid values include: None, External, Internal | `string` | `null` | no |
 | <a name="input_xml_content"></a> [xml\_content](#input\_xml\_content) | Xml content for all api policy | `string` | `null` | no |
+| <a name="input_zones"></a> [zones](#input\_zones) | A list of availability zones. Default is empty | `list(string)` | `[]` | no |
 
 ## Outputs
 
