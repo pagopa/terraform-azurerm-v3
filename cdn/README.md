@@ -285,6 +285,14 @@ resource "azurerm_key_vault_secret" "selc_web_storage_blob_connection_string" {
 
 ```
 
+## Migration from v2
+
+🆕 To use this module you need to use change this variables/arguments:
+
+❌ Don't use this variables:
+
+* `lock_enabled` -> don't use any more, the locks are managed outside
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 Storage account
