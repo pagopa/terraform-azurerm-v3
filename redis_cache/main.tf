@@ -42,18 +42,18 @@ resource "azurerm_redis_cache" "this" {
 resource "azurerm_private_endpoint" "this" {
   count = var.private_endpoint.enabled ? 1 : 0
 
-  name                = format("%s-private-endpoint", azurerm_redis_cache.this.name)
+  name                = "${azurerm_redis_cache.this.name}-private-endpoint"
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.private_endpoint.subnet_id
 
   private_dns_zone_group {
-    name                 = format("%s-private-dns-zone-group", azurerm_redis_cache.this.name)
+    name                 = "${azurerm_redis_cache.this.name}-private-dns-zone-group"
     private_dns_zone_ids = var.private_endpoint.private_dns_zone_ids
   }
 
   private_service_connection {
-    name                           = format("%s-private-service-connection", azurerm_redis_cache.this.name)
+    name                           = "${azurerm_redis_cache.this.name}-private-service-connection"
     private_connection_resource_id = azurerm_redis_cache.this.id
     is_manual_connection           = false
     subresource_names              = ["redisCache"]
