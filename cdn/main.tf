@@ -6,8 +6,6 @@ module "cdn_storage_account" {
   source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v3.5.1"
 
   name            = replace("${var.prefix}-${var.name}-sa", "-", "")
-  versioning_name = "${var.prefix}-${var.name}-sa-versioning"
-
   account_kind             = var.storage_account_kind
   account_tier             = var.storage_account_tier
   account_replication_type = var.storage_account_replication_type
