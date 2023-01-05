@@ -3,25 +3,25 @@
  **/
 module "cdn_storage_account" {
 
-  source = "git::https://github.com/pagopa/azurerm.git//storage_account?ref=v2.7.0"
+  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v3.5.1"
 
-  name            = replace(format("%s-%s-sa", var.prefix, var.name), "-", "")
-  versioning_name = format("%s-%s-sa-versioning", var.prefix, var.name)
+  name            = replace("${var.prefix}-${var.name}-sa", "-", "")
+  versioning_name = "${var.prefix}-${var.name}-sa-versioning"
 
   account_kind             = var.storage_account_kind
   account_tier             = var.storage_account_tier
   account_replication_type = var.storage_account_replication_type
   access_tier              = var.storage_access_tier
-  enable_versioning        = true
+  blob_versioning_enabled        = true
   resource_group_name      = var.resource_group_name
   location                 = var.location
-  allow_blob_public_access = true
+  allow_nested_items_to_be_public = true
 
   index_document     = var.index_document
   error_404_document = var.error_404_document
 
   lock_enabled = var.lock_enabled
-  lock_name    = format("%s-%s-sa-lock", var.prefix, var.name)
+  lock_name    = "${var.prefix}-${var.name}-sa-lock"
   lock_level   = "CanNotDelete"
   lock_notes   = null
 
@@ -32,7 +32,7 @@ module "cdn_storage_account" {
  * cdn profile
  **/
 resource "azurerm_cdn_profile" "this" {
-  name                = format("%s-%s-cdn-profile", var.prefix, var.name)
+  name                = "${var.prefix}-${var.name}-cdn-profile"
   resource_group_name = var.resource_group_name
   location            = var.location
   sku                 = "Standard_Microsoft"
@@ -41,7 +41,7 @@ resource "azurerm_cdn_profile" "this" {
 }
 
 resource "azurerm_cdn_endpoint" "this" {
-  name                          = format("%s-%s-cdn-endpoint", var.prefix, var.name)
+  name                          = "${var.prefix}-${var.name}-cdn-endpoint"
   resource_group_name           = var.resource_group_name
   location                      = var.location
   profile_name                  = azurerm_cdn_profile.this.name
