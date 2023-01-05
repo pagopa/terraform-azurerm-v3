@@ -541,7 +541,7 @@ resource "null_resource" "custom_domain" {
 
 # record APEX https://docs.microsoft.com/it-it/azure/dns/dns-zones-records#record-names
 resource "azurerm_dns_a_record" "hostname" {
-  # create this iff DNS zone name equal to HOST NAME azurerm_cdn_endpoint.this.host_name
+  # create this iff DNS zone name equal to HOST NAME azurerm_cdn_endpoint.this.fqdn
   count = var.dns_zone_name == var.hostname ? 1 : 0
 
   name                = "@"
@@ -555,7 +555,7 @@ resource "azurerm_dns_a_record" "hostname" {
 
 # record A
 resource "azurerm_dns_a_record" "hostname_a" {
-  # create this iff DNS zone name equal to HOST NAME azurerm_cdn_endpoint.this.host_name
+  # create this iff DNS zone name equal to HOST NAME azurerm_cdn_endpoint.this.fqdn
   # true if ex: dns_zone_name = dev.pagopa.it, hostname = west.dev.pagopa.it
   count = length(split(var.dns_zone_name, var.hostname)) > 1 ? 1 : 0
 
@@ -576,7 +576,7 @@ resource "azurerm_dns_cname_record" "cdnverify" {
   zone_name           = var.dns_zone_name
   resource_group_name = var.dns_zone_resource_group_name
   ttl                 = 3600
-  record              = "cdnverify.${azurerm_cdn_endpoint.this.host_name}"
+  record              = "cdnverify.${azurerm_cdn_endpoint.this.fqdn}"
 
   tags = var.tags
 
@@ -593,7 +593,7 @@ resource "azurerm_dns_cname_record" "custom_subdomain" {
   zone_name           = var.dns_zone_name
   resource_group_name = var.dns_zone_resource_group_name
   ttl                 = 3600
-  record              = azurerm_cdn_endpoint.this.host_name
+  record              = azurerm_cdn_endpoint.this.fqdn
 
   tags = var.tags
 
