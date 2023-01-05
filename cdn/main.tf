@@ -596,5 +596,9 @@ resource "azurerm_dns_cname_record" "custom_subdomain" {
   record              = azurerm_cdn_endpoint.this.host_name
 
   tags = var.tags
+
+  depends_on = [
+    azurerm_cdn_endpoint.this
+  ]
 }
 
