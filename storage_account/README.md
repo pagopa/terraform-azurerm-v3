@@ -42,8 +42,14 @@ module "diego_storage_account" {
 ❌ Don't use this variables:
 
 * `enable_https_traffic_only` -> don't use any more, now default is true and mandatory
-* `enable_versioning`
 * `versioning_name`
+
+❌ Don't use locks because are managed outside of the module:
+
+* `lock_enabled`
+* `lock_name`
+* `lock_level`  
+* `lock_notes`
 
 🔥 Broken compatibility and destroied resources
 

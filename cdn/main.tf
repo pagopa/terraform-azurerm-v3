@@ -18,11 +18,6 @@ module "cdn_storage_account" {
   index_document     = var.index_document
   error_404_document = var.error_404_document
 
-  lock_enabled = var.lock_enabled
-  lock_name    = "${var.prefix}-${var.name}-sa-lock"
-  lock_level   = "CanNotDelete"
-  lock_notes   = null
-
   tags = var.tags
 }
 
