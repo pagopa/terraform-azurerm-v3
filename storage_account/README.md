@@ -45,9 +45,172 @@ module "diego_storage_account" {
 * `enable_versioning`
 * `versioning_name`
 
+🔥 State manual changes
+
+Is possible that you need to removed manually this resources:
+
+* `allow_blob_public_access`
+
+```json
+
+    {
+      "module": "module.devopslab_cdn.module.cdn_storage_account",
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "this",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 2,
+          "attributes": {
+            "access_tier": "Hot",
+            "account_kind": "StorageV2",
+            "account_replication_type": "GRS",
+            "account_tier": "Standard",
+            "allow_blob_public_access": true, <-- REMOVE THIS ONE <<
+            "azure_files_authentication": [],
+            "blob_properties": [
+              {
+                "change_feed_enabled": false,
+                "container_delete_retention_policy": [],
+                "cors_rule": [],
+                "default_service_version": "",
+                "delete_retention_policy": [],
+                "last_access_time_enabled": false,
+                "versioning_enabled": true
+              }
+            ],
+            "custom_domain": [],
+            "customer_managed_key": [],
+            "enable_https_traffic_only": true,
+            "id": "xxx",
+            "identity": [],
+            "infrastructure_encryption_enabled": false,
+            "is_hns_enabled": false,
+            "large_file_share_enabled": null,
+            "location": "northeurope",
+            "min_tls_version": "TLS1_2",
+            "name": "dvopladdevopslabsa",
+            "network_rules": [
+              {
+                "bypass": [
+                  "AzureServices"
+                ],
+                "default_action": "Allow",
+                "ip_rules": [],
+                "private_link_access": [],
+                "virtual_network_subnet_ids": []
+              }
+            ],
+            "nfsv3_enabled": false,
+            "primary_access_key": "xxx",
+            "primary_blob_connection_string": "xxx",
+            "primary_blob_endpoint": "https://dvopladdevopslabsa.blob.core.windows.net/",
+            "primary_blob_host": "dvopladdevopslabsa.blob.core.windows.net",
+            "primary_connection_string": "xxx",
+            "primary_dfs_endpoint": "https://dvopladdevopslabsa.dfs.core.windows.net/",
+            "primary_dfs_host": "dvopladdevopslabsa.dfs.core.windows.net",
+            "primary_file_endpoint": "https://dvopladdevopslabsa.file.core.windows.net/",
+            "primary_file_host": "dvopladdevopslabsa.file.core.windows.net",
+            "primary_location": "northeurope",
+            "primary_queue_endpoint": "https://dvopladdevopslabsa.queue.core.windows.net/",
+            "primary_queue_host": "dvopladdevopslabsa.queue.core.windows.net",
+            "primary_table_endpoint": "https://dvopladdevopslabsa.table.core.windows.net/",
+            "primary_table_host": "dvopladdevopslabsa.table.core.windows.net",
+            "primary_web_endpoint": "https://dvopladdevopslabsa.z16.web.core.windows.net/",
+            "primary_web_host": "dvopladdevopslabsa.z16.web.core.windows.net",
+            "queue_encryption_key_type": "Service",
+            "queue_properties": [
+              {
+                "cors_rule": [],
+                "hour_metrics": [
+                  {
+                    "enabled": true,
+                    "include_apis": true,
+                    "retention_policy_days": 7,
+                    "version": "1.0"
+                  }
+                ],
+                "logging": [
+                  {
+                    "delete": false,
+                    "read": false,
+                    "retention_policy_days": 0,
+                    "version": "1.0",
+                    "write": false
+                  }
+                ],
+                "minute_metrics": [
+                  {
+                    "enabled": false,
+                    "include_apis": false,
+                    "retention_policy_days": 0,
+                    "version": "1.0"
+                  }
+                ]
+              }
+            ],
+            "resource_group_name": "dvopla-d-selfcare-fe-rg",
+            "routing": [],
+            "secondary_access_key": "xxx",
+            "secondary_blob_connection_string": "",
+            "secondary_blob_endpoint": null,
+            "secondary_blob_host": null,
+            "secondary_connection_string": "xxx",
+            "secondary_dfs_endpoint": null,
+            "secondary_dfs_host": null,
+            "secondary_file_endpoint": null,
+            "secondary_file_host": null,
+            "secondary_location": "westeurope",
+            "secondary_queue_endpoint": null,
+            "secondary_queue_host": null,
+            "secondary_table_endpoint": null,
+            "secondary_table_host": null,
+            "secondary_web_endpoint": null,
+            "secondary_web_host": null,
+            "share_properties": [
+              {
+                "cors_rule": [],
+                "retention_policy": [
+                  {
+                    "days": 7
+                  }
+                ],
+                "smb": []
+              }
+            ],
+            "shared_access_key_enabled": true,
+            "static_website": [
+              {
+                "error_404_document": "404.html",
+                "index_document": "index.html"
+              }
+            ],
+            "table_encryption_key_type": "Service",
+            "tags": {
+              "CostCenter": "TS310 - PAGAMENTI \u0026 SERVIZI",
+              "CreatedBy": "Terraform",
+              "Environment": "Lab",
+              "Owner": "DevOps",
+              "Source": "https://github.com/pagopa/devopslab-infra"
+            },
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "xxx",
+          "dependencies": [
+            "azurerm_resource_group.devopslab_cdn_rg"
+          ]
+        }
+      ]
+    },
+```
+
 🔥 Broken compatibility and destroied resources
 
 * `module.xyz.azurerm_template_deployment.versioning[0]` is destroied becuase we use an internal variable and not more an arm.
+
+
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
