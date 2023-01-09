@@ -50,9 +50,11 @@ module "vpn" {
 
 ## Migration from v2
 
-### 🔥 Manual state changes
+Due to drift problems with some fields in the state is possible that you need to delete the state associated to this resource a re-import
 
-* `azurerm_public_ip`: follow the guide saved into [migrate generic resources](../docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
+```sh
+terraform state rm module.vpn.azurerm_virtual_network_gateway.gw
+```
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
