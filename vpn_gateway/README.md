@@ -1,3 +1,61 @@
+# VPN Gateway
+
+This module allow the creation of vpn gateway
+
+## How to use
+
+```ts
+## VPN subnet
+module "vpn_snet" {
+  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v3.5.2"
+  name                                           = "GatewaySubnet"
+  address_prefixes                               = var.cidr_subnet_vpn
+  virtual_network_name                           = module.vnet.name
+  resource_group_name                            = azurerm_resource_group.rg_vnet.name
+  service_endpoints                              = []
+  private_endpoint_network_policies_enabled = true
+}
+
+data "azuread_application" "vpn_app" {
+  display_name = "${local.project}-app-vpn"
+}
+
+module "vpn" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//vpn_gateway?ref=vpn_gateway_migration_from_v2"
+
+  name                = "${local.project}-vpn"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg_vnet.name
+  sku                 = var.vpn_sku
+  pip_sku             = var.vpn_pip_sku
+  subnet_id           = module.vpn_snet.id
+
+  vpn_client_configuration = [
+    {
+      address_space         = ["172.16.1.0/24"],
+      vpn_client_protocols  = ["OpenVPN"],
+      aad_audience          = data.azuread_application.vpn_app.application_id
+      aad_issuer            = "https://sts.windows.net/${data.azurerm_subscription.current.tenant_id}/"
+      aad_tenant            = "https://login.microsoftonline.com/${data.azurerm_subscription.current.tenant_id}"
+      radius_server_address = null
+      radius_server_secret  = null
+      revoked_certificate   = []
+      root_certificate      = []
+    }
+  ]
+
+  tags = var.tags
+}
+```
+
+## Migration from v2
+
+Due to drift problems with some fields in the state is possible that you need to delete the state associated to this resource a re-import
+
+```sh
+terraform state rm module.vpn.azurerm_virtual_network_gateway.gw
+```
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
