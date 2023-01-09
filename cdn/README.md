@@ -285,6 +285,20 @@ resource "azurerm_key_vault_secret" "selc_web_storage_blob_connection_string" {
 
 ```
 
+## Migration from v2
+
+Due to drift into the state, is possible that you need to delete the state linked to this resource and re-import the resource
+
+```sh
+terraform state rm module.devopslab_cdn.azurerm_cdn_endpoint.this
+```
+
+🆕 To use this module you need to use change this variables/arguments:
+
+❌ Don't use this variables:
+
+* `lock_enabled` -> don't use any more, the locks are managed outside
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 Storage account
@@ -302,14 +316,14 @@ Storage account
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.38.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.36.0 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cdn_storage_account"></a> [cdn\_storage\_account](#module\_cdn\_storage\_account) | git::https://github.com/pagopa/azurerm.git//storage_account | v2.7.0 |
+| <a name="module_cdn_storage_account"></a> [cdn\_storage\_account](#module\_cdn\_storage\_account) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account | v3.5.1 |
 
 ## Resources
 
@@ -343,7 +357,6 @@ Storage account
 | <a name="input_keyvault_subscription_id"></a> [keyvault\_subscription\_id](#input\_keyvault\_subscription\_id) | Key vault subscription id | `string` | n/a | yes |
 | <a name="input_keyvault_vault_name"></a> [keyvault\_vault\_name](#input\_keyvault\_vault\_name) | Key vault name | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | n/a | `string` | n/a | yes |
-| <a name="input_lock_enabled"></a> [lock\_enabled](#input\_lock\_enabled) | n/a | `bool` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | n/a | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | n/a | `string` | n/a | yes |
 | <a name="input_querystring_caching_behaviour"></a> [querystring\_caching\_behaviour](#input\_querystring\_caching\_behaviour) | n/a | `string` | `"IgnoreQueryString"` | no |
