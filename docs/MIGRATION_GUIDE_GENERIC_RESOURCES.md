@@ -2,7 +2,7 @@
 
 ## azurerm_log_analytics_workspace
 
-Is possible that you need to delete the state and import
+Is possible that you need to delete the state and re-import
 
 ```sh
 terraform state rm azurerm_log_analytics_workspace.log_analytics_workspace
@@ -14,4 +14,10 @@ This resource will be recreated, because the azurerm_log_analytics_workspace is 
 
 ### 🔥 azurerm_public_ip
 
-Is better that you delete the state for this resource and re-import. The behavior is random if you try to use as is.
+1. Is possible that the new resource want to recreate the ips because you need to put the `zones` parameter as list [1,2,3]
+
+1. Is possible that you need to delete the state and re-import
+
+### 🔥 azurerm_dns_a_record
+
+1. Is better that you delete the state for this resource and re-import.
