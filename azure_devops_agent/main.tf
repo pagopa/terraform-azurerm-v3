@@ -6,6 +6,7 @@ resource "null_resource" "this" {
     name                = var.name
     resource_group_name = var.resource_group_name
     subscription        = var.subscription
+    config_json         = "${sha1(file("${path.module}/script-config.json"))}"
   }
 
   provisioner "local-exec" {

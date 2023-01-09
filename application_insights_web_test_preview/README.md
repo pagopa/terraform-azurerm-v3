@@ -1,6 +1,6 @@
 # Application insights we test preview
 
-This module allow to create an alert for the fqdn host
+This module create an alert for a host and verify that is up and running
 
 ## How to use
 
