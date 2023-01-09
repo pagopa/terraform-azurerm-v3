@@ -1,33 +1,14 @@
-# app gateway
-
-<!-- vscode-markdown-toc -->
-* 1. [Architecture](#Architecture)
-* 2. [How to use it](#Howtouseit)
-	* 2.1. [External resources](#Externalresources)
-	* 2.2. [App gateway definition](#Appgatewaydefinition)
-* 3. [Requirements](#Requirements)
-* 4. [Providers](#Providers)
-* 5. [Modules](#Modules)
-* 6. [Resources](#Resources)
-* 7. [Inputs](#Inputs)
-* 8. [Outputs](#Outputs)
-
-<!-- vscode-markdown-toc-config
-	numbering=true
-	autoSave=true
-	/vscode-markdown-toc-config -->
-<!-- /vscode-markdown-toc -->
-
+# App gateway
 
 Module that allows the creation of an App Gateway.
 
-##  1. <a name='Architecture'></a>Architecture
+## Architecture
 
 ![architecture](./docs/module-arch.drawio.png)
 
-##  2. <a name='Howtouseit'></a>How to use it
+## How to use it
 
-###  2.1. <a name='Externalresources'></a>External resources
+### External resources
 
 ```ts
 data "azurerm_public_ip" "appgateway_public_ip" {
@@ -71,7 +52,7 @@ module "appgateway_snet" {
 }
 ```
 
-###  2.2. <a name='Appgatewaydefinition'></a>App gateway definition
+### App gateway definition
 
 ```ts
 ## Application gateway ##
