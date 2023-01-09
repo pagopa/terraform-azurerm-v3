@@ -1,3 +1,30 @@
+# Virtual Network
+
+This module create a virtual network
+
+## How to use
+
+```ts
+# vnet
+module "vnet" {
+  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//virtual_network?ref=virtual-network-migration-v2"
+  name                = local.vnet_name
+  location            = azurerm_resource_group.rg_vnet.location
+  resource_group_name = azurerm_resource_group.rg_vnet.name
+  address_space       = var.cidr_vnet
+
+  tags = var.tags
+}
+```
+
+## How to migrate from v2
+
+Due to possible drift in state is possible that you need to delete the state for this resource and re-import
+
+```sh
+terraform state rm module.vnet.azurerm_virtual_network.this
+```
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
