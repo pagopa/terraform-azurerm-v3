@@ -3,16 +3,16 @@
  **/
 module "cdn_storage_account" {
 
-  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v3.5.1"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v3.5.1"
 
-  name            = replace("${var.prefix}-${var.name}-sa", "-", "")
-  account_kind             = var.storage_account_kind
-  account_tier             = var.storage_account_tier
-  account_replication_type = var.storage_account_replication_type
-  access_tier              = var.storage_access_tier
-  blob_versioning_enabled        = true
-  resource_group_name      = var.resource_group_name
-  location                 = var.location
+  name                            = replace("${var.prefix}-${var.name}-sa", "-", "")
+  account_kind                    = var.storage_account_kind
+  account_tier                    = var.storage_account_tier
+  account_replication_type        = var.storage_account_replication_type
+  access_tier                     = var.storage_access_tier
+  blob_versioning_enabled         = true
+  resource_group_name             = var.resource_group_name
+  location                        = var.location
   allow_nested_items_to_be_public = true
 
   index_document     = var.index_document
