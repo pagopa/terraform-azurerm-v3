@@ -23,6 +23,11 @@ variable "application_insight_name" {
   description = "Application insight instance name."
 }
 
+variable "application_insight_id" {
+  type        = string
+  description = "Application insight id."
+}
+
 variable "frequency" {
   type        = number
   description = "Interval in seconds between test runs for this WebTest."
