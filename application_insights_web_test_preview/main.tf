@@ -15,11 +15,6 @@ locals {
   })
 }
 
-data "azurerm_application_insights" "this" {
-  name                = var.application_insight_name
-  resource_group_name = var.resource_group
-}
-
 resource "azurerm_template_deployment" "this" {
   name                = var.name
   resource_group_name = var.resource_group
@@ -34,7 +29,7 @@ resource "azurerm_monitor_metric_alert" "this" {
   resource_group_name = var.resource_group
   severity            = var.severity
   scopes = [
-    data.azurerm_application_insights.this.id,
+    var.application_insight_id,
     format("/subscriptions/%s/resourcegroups/%s/providers/microsoft.insights/webTests/%s-%s",
       var.subscription_id,
       var.resource_group,
@@ -52,7 +47,7 @@ resource "azurerm_monitor_metric_alert" "this" {
       var.name,
       var.application_insight_name
     )
-    component_id          = data.azurerm_application_insights.this.id
+    component_id          = var.application_insight_id
     failed_location_count = var.failed_location_count
   }
 
