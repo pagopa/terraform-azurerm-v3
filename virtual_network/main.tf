@@ -15,4 +15,3 @@ resource "azurerm_virtual_network" "this" {
 
   tags = var.tags
 }
-
