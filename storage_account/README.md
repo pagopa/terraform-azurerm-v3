@@ -47,7 +47,7 @@ module "diego_storage_account" {
 
 🔥 Broken compatibility and destroied resources
 
-* `module.xyz.azurerm_template_deployment.versioning[0]` is destroied becuase we use an internal variable and not more an arm.
+* `module.<name>.azurerm_template_deployment.versioning[0]` is destroied becuase we use an internal variable and not more an arm.
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -56,13 +56,13 @@ module "diego_storage_account" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | <= 3.36.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.38.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.36.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.38.0 |
 
 ## Modules
 
