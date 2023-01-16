@@ -1,33 +1,14 @@
 # app gateway
 
-<!-- vscode-markdown-toc -->
-* 1. [Architecture](#Architecture)
-* 2. [How to use it](#Howtouseit)
-	* 2.1. [External resources](#Externalresources)
-	* 2.2. [App gateway definition](#Appgatewaydefinition)
-* 3. [Requirements](#Requirements)
-* 4. [Providers](#Providers)
-* 5. [Modules](#Modules)
-* 6. [Resources](#Resources)
-* 7. [Inputs](#Inputs)
-* 8. [Outputs](#Outputs)
-
-<!-- vscode-markdown-toc-config
-	numbering=true
-	autoSave=true
-	/vscode-markdown-toc-config -->
-<!-- /vscode-markdown-toc -->
-
-
 Module that allows the creation of an App Gateway.
 
-##  1. <a name='Architecture'></a>Architecture
+## Architecture
 
 ![architecture](./docs/module-arch.drawio.png)
 
-##  2. <a name='Howtouseit'></a>How to use it
+## How to use it
 
-###  2.1. <a name='Externalresources'></a>External resources
+### External resources
 
 ```ts
 data "azurerm_public_ip" "appgateway_public_ip" {
@@ -71,7 +52,7 @@ module "appgateway_snet" {
 }
 ```
 
-###  2.2. <a name='Appgatewaydefinition'></a>App gateway definition
+### App gateway definition
 
 ```ts
 ## Application gateway ##
@@ -300,6 +281,37 @@ module "app_gw" {
 }
 
 ```
+
+## Migration from v2
+
+🆕 Output attributes changed (compatibility broken):
+
+```ts
+  rewrite_rule_sets = [
+    {
+      name = "rewrite-rule-set-api"
+      rewrite_rules = [{
+        name          = "http-headers-api"
+        rule_sequence = 100
+        conditions     = [] <--- this one
+        request_header_configurations = [
+          {
+            header_name  = "X-Forwarded-For"
+            header_value = "{var_client_ip}"
+          },
+          {
+            header_name  = "X-Client-Ip"
+            header_value = "{var_client_ip}"
+          },
+        ]
+        response_header_configurations = []
+        url                            = null
+      }]
+    },
+  ]
+```
+
+* `rewrite_rule_sets.rewrite_rule.condition` -> `rewrite_rule_sets.rewrite_rule.conditions`
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
