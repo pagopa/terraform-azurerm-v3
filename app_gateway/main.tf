@@ -202,12 +202,13 @@ resource "azurerm_application_gateway" "this" {
           rule_sequence = rewrite_rule.value.rule_sequence
 
           dynamic "condition" {
-            for_each = rewrite_rule.value.condition == null ? [] : ["dummy"]
+            for_each = rewrite_rule.value.conditions
+            iterator = condition
             content {
-              variable    = rewrite_rule.value.condition.variable
-              pattern     = rewrite_rule.value.condition.pattern
-              ignore_case = rewrite_rule.value.condition.ignore_case
-              negate      = rewrite_rule.value.condition.negate
+              variable    = condition.value.variable
+              pattern     = condition.value.pattern
+              ignore_case = condition.value.ignore_case
+              negate      = condition.value.negate
             }
           }
 
