@@ -43,7 +43,7 @@ module "api_config_snet" {
 
 ## Migration from v2
 
-Output attributes changed (compatibility broken):
+🆕 Output attributes changed (compatibility broken):
 
 * `addres_prefix` -> `address_prefixes`
 * `enforce_private_link_endpoint_network_policies` -> `private_endpoint_network_policies_enabled`
