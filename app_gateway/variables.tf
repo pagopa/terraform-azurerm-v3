@@ -131,14 +131,14 @@ variable "rewrite_rule_sets" {
   type = list(object({
     name = string # Unique name of the rewrite rule set block
     rewrite_rules = list(object({
-      name          = string # Unique name of the rewrite rule block
-      rule_sequence = number # Rule sequence of the rewrite rule that determines the order of execution in a set.
-      condition = object({   # One or more condition blocks as defined above.
-        variable    = string # The variable of the condition.
-        pattern     = string # The pattern, either fixed string or regular expression, that evaluates the truthfulness of the condition.
-        ignore_case = bool   # Perform a case in-sensitive comparison. Defaults to false
-        negate      = bool   # Negate the result of the condition evaluation. Defaults to false
-      })
+      name          = string     # Unique name of the rewrite rule block
+      rule_sequence = number     # Rule sequence of the rewrite rule that determines the order of execution in a set.
+      conditions = list(object({ # One or more condition blocks as defined above.
+        variable    = string     # The variable of the condition.
+        pattern     = string     # The pattern, either fixed string or regular expression, that evaluates the truthfulness of the condition.
+        ignore_case = bool       # Perform a case in-sensitive comparison. Defaults to false
+        negate      = bool       # Negate the result of the condition evaluation. Defaults to false
+      }))
 
       request_header_configurations = list(object({
         header_name  = string # Header name of the header configuration.
