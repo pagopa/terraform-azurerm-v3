@@ -7,7 +7,7 @@ variable "location" {
   type = string
 }
 
-// Resource Group 
+// Resource Group
 variable "resource_group_name" {
   type = string
 }
