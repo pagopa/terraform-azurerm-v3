@@ -16,12 +16,12 @@ resource "azurerm_application_gateway" "this" {
   }
 
   gateway_ip_configuration {
-    name      = format("%s-snet-conf", var.name)
+    name      = "${var.name}-snet-conf"
     subnet_id = var.subnet_id
   }
 
   frontend_ip_configuration {
-    name                 = format("%s-ip-conf", var.name)
+    name                 = "${var.name}-ip-conf"
     public_ip_address_id = var.public_ip_id
   }
 
@@ -29,7 +29,7 @@ resource "azurerm_application_gateway" "this" {
     for_each = var.backends
     iterator = backend
     content {
-      name         = format("%s-address-pool", backend.key)
+      name         = "${backend.key}-address-pool"
       fqdns        = backend.value.ip_addresses == null ? backend.value.fqdns : null
       ip_addresses = backend.value.ip_addresses
     }
@@ -40,7 +40,7 @@ resource "azurerm_application_gateway" "this" {
     iterator = backend
 
     content {
-      name                                = format("%s-http-settings", backend.key)
+      name                                = "${backend.key}-http-settings"
       host_name                           = backend.value.host
       cookie_based_affinity               = "Disabled"
       affinity_cookie_name                = "ApplicationGatewayAffinity" # to avoid unwanted changes in terraform plan
@@ -60,7 +60,7 @@ resource "azurerm_application_gateway" "this" {
     content {
       host                                      = backend.value.host
       minimum_servers                           = 0
-      name                                      = format("probe-%s", backend.key)
+      name                                      = "probe-${backend.key}"
       path                                      = backend.value.probe
       pick_host_name_from_backend_http_settings = backend.value.pick_host_name_from_backend
       protocol                                  = backend.value.protocol
@@ -78,7 +78,7 @@ resource "azurerm_application_gateway" "this" {
     for_each = distinct([for listener in values(var.listeners) : listener.port])
 
     content {
-      name = format("%s-%d-port", var.name, frontend_port.value)
+      name = "${var.name}-${frontend_port.value}-port"
       port = frontend_port.value
     }
   }
@@ -124,9 +124,9 @@ resource "azurerm_application_gateway" "this" {
     iterator = listener
 
     content {
-      name                           = format("%s-listener", listener.key)
-      frontend_ip_configuration_name = format("%s-ip-conf", var.name)
-      frontend_port_name             = format("%s-%d-port", var.name, listener.value.port)
+      name                           = "${listener.key}-listener"
+      frontend_ip_configuration_name = "${var.name}-ip-conf"
+      frontend_port_name             = "${var.name}-${listener.value.port}-port"
       protocol                       = "Https"
       ssl_certificate_name           = listener.value.certificate.name
       require_sni                    = true
@@ -141,10 +141,10 @@ resource "azurerm_application_gateway" "this" {
     iterator = route
 
     content {
-      name               = format("%s-reqs-routing-rule-by-path", route.key)
+      name               = "${route.key}-reqs-routing-rule-by-path"
       rule_type          = "PathBasedRouting"
-      http_listener_name = format("%s-listener", route.value.listener)
-      url_path_map_name  = format("%s-url-map", route.value.url_map_name)
+      http_listener_name = "${route.value.listener}-listener"
+      url_path_map_name  = "${route.value.url_map_name}-url-map"
       priority           = route.value.priority
     }
   }
@@ -154,9 +154,9 @@ resource "azurerm_application_gateway" "this" {
     iterator = path
 
     content {
-      name                               = format("%s-url-map", path.key)
-      default_backend_address_pool_name  = format("%s-address-pool", path.value.default_backend)
-      default_backend_http_settings_name = format("%s-http-settings", path.value.default_backend)
+      name                               = "${path.key}-url-map"
+      default_backend_address_pool_name  = "${path.value.default_backend}-address-pool"
+      default_backend_http_settings_name = "${path.value.default_backend}-http-settings"
       default_rewrite_rule_set_name      = path.value.default_rewrite_rule_set_name
 
       dynamic "path_rule" {
@@ -166,8 +166,8 @@ resource "azurerm_application_gateway" "this" {
         content {
           name                       = path_rule.key
           paths                      = path_rule.value.paths
-          backend_address_pool_name  = format("%s-address-pool", path_rule.value.backend)
-          backend_http_settings_name = format("%s-http-settings", path_rule.value.backend)
+          backend_address_pool_name  = "${path_rule.value.backend}-address-pool"
+          backend_http_settings_name = "${path_rule.value.backend}-http-settings"
           rewrite_rule_set_name      = path_rule.value.rewrite_rule_set_name
         }
       }
@@ -180,11 +180,11 @@ resource "azurerm_application_gateway" "this" {
 
     content {
       #⚠️ backend_address_pool_name, backend_http_settings_name, redirect_configuration_name, and rewrite_rule_set_name are applicable only when rule_type is Basic.
-      name                       = format("%s-reqs-routing-rule", route.key)
+      name                       = "${route.key}-reqs-routing-rule"
       rule_type                  = "Basic" #(Required) The Type of Routing that should be used for this Rule. Possible values are Basic and PathBasedRouting.
-      http_listener_name         = format("%s-listener", route.value.listener)
-      backend_address_pool_name  = format("%s-address-pool", route.value.backend)
-      backend_http_settings_name = format("%s-http-settings", route.value.backend)
+      http_listener_name         = "${route.value.listener}-listener"
+      backend_address_pool_name  = "${route.value.backend}-address-pool"
+      backend_http_settings_name = "${route.value.backend}-http-settings"
       rewrite_rule_set_name      = route.value.rewrite_rule_set_name
     }
   }
@@ -202,12 +202,13 @@ resource "azurerm_application_gateway" "this" {
           rule_sequence = rewrite_rule.value.rule_sequence
 
           dynamic "condition" {
-            for_each = rewrite_rule.value.condition == null ? [] : ["dummy"]
+            for_each = rewrite_rule.value.conditions
+            iterator = condition
             content {
-              variable    = rewrite_rule.value.condition.variable
-              pattern     = rewrite_rule.value.condition.pattern
-              ignore_case = rewrite_rule.value.condition.ignore_case
-              negate      = rewrite_rule.value.condition.negate
+              variable    = condition.value.variable
+              pattern     = condition.value.pattern
+              ignore_case = condition.value.ignore_case
+              negate      = condition.value.negate
             }
           }
 
@@ -346,7 +347,7 @@ locals {
 resource "azurerm_monitor_metric_alert" "this" {
   for_each = local.monitor_metric_alert_criteria
 
-  name                = format("%s-%s", azurerm_application_gateway.this.name, upper(each.key))
+  name                = "${azurerm_application_gateway.this.name}-${upper(each.key)}"
   description         = each.value.description
   resource_group_name = var.resource_group_name
   scopes              = [azurerm_application_gateway.this.id]
