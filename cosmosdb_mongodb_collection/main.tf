@@ -20,6 +20,13 @@ resource "azurerm_cosmosdb_mongo_collection" "this" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [
+      # ignore changes to autoscale_settings due to this operation is done manually
+      autoscale_settings,
+    ]
+  }
+
   dynamic "autoscale_settings" {
     for_each = var.max_throughput == null ? [] : ["dummy"]
     content {
@@ -33,6 +40,7 @@ resource "azurerm_cosmosdb_mongo_collection" "this" {
     read   = var.timeout_read
     delete = var.timeout_delete
   }
+
 }
 
 resource "azurerm_management_lock" "this" {

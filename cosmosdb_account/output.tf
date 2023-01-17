@@ -23,23 +23,30 @@ output "read_endpoints" {
   value       = azurerm_cosmosdb_account.this.read_endpoints
 }
 
+# @deprecated
 output "primary_master_key" {
-  value     = azurerm_cosmosdb_account.this.primary_master_key
+  value     = azurerm_cosmosdb_account.this.primary_key
   sensitive = true
 }
 
 output "primary_key" {
-  value     = azurerm_cosmosdb_account.this.primary_master_key
+  value     = azurerm_cosmosdb_account.this.primary_key
   sensitive = true
 }
 
 output "secondary_key" {
-  value     = azurerm_cosmosdb_account.this.secondary_master_key
+  value     = azurerm_cosmosdb_account.this.secondary_key
   sensitive = true
 }
 
+# @deprecated
 output "primary_readonly_master_key" {
-  value     = azurerm_cosmosdb_account.this.primary_readonly_master_key
+  value     = azurerm_cosmosdb_account.this.primary_readonly_key
+  sensitive = true
+}
+
+output "primary_readonly_key" {
+  value     = azurerm_cosmosdb_account.this.primary_readonly_key
   sensitive = true
 }
 
