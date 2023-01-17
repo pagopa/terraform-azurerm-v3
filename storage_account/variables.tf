@@ -110,6 +110,18 @@ variable "error_404_document" {
   description = "The absolute path to a custom webpage that should be used when a request is made which does not correspond to an existing file."
 }
 
+variable "custom_domain" {
+  type = object({
+    name          = string
+    use_subdomain = bool
+  })
+  description = "Custom domain for accessing blob data"
+  default = {
+    name          = null
+    use_subdomain = false
+  }
+}
+
 
 # -------------------
 # Alerts variables
