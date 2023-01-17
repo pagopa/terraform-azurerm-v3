@@ -7,6 +7,12 @@ variable "name" {
   description = "(Required) Specifies the name of the Function App. Changing this forces a new resource to be created."
 }
 
+variable "domain" {
+  type        = string
+  description = "Specifies the domain of the Function App."
+  default     = null
+}
+
 variable "storage_account_name" {
   type        = string
   description = "Storage account name. If null it will be 'computed'"
@@ -37,6 +43,7 @@ variable "runtime_version" {
 
 variable "storage_account_info" {
   type = object({
+    account_kind                      = string # Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Changing this forces a new resource to be created. Defaults to Storage.
     account_tier                      = string # Defines the Tier to use for this storage account. Valid options are Standard and Premium. For BlockBlobStorage and FileStorage accounts only Premium is valid.
     account_replication_type          = string # Defines the type of replication to use for this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS.
     access_tier                       = string # Defines the access tier for BlobStorage, FileStorage and StorageV2 accounts. Valid options are Hot and Cool, defaults to Hot.
@@ -44,8 +51,9 @@ variable "storage_account_info" {
   })
 
   default = {
+    account_kind                      = "StorageV2"
     account_tier                      = "Standard"
-    account_replication_type          = "LRS"
+    account_replication_type          = "ZRS"
     access_tier                       = "Hot"
     advanced_threat_protection_enable = true
   }
@@ -95,8 +103,7 @@ variable "use_32_bit_worker_process" {
 
 variable "linux_fx_version" {
   type        = string
-  description = "(Optional) Linux App Framework and version for the AppService, e.g. DOCKER|(golang:latest)."
-  default     = null
+  description = "(Required) Linux App Framework and version for the AppService, e.g. DOCKER|(golang:latest). Use null if function app is on windows"
 }
 
 variable "application_insights_instrumentation_key" {
@@ -141,10 +148,15 @@ variable "cors" {
   default = null
 }
 
-
 variable "subnet_id" {
   type        = string
   description = "The ID of the subnet the app service will be associated to (the subnet must have a service_delegation configured for Microsoft.Web/serverFarms)"
+}
+
+variable "vnet_integration" {
+  type        = bool
+  description = "(optional) Enable vnet integration. Wheter it's true the subnet_id should not be null."
+  default     = true
 }
 
 variable "internal_storage" {
@@ -191,4 +203,37 @@ variable "export_keys" {
 
 variable "tags" {
   type = map(any)
+}
+
+variable "system_identity_enabled" {
+  type        = bool
+  description = "Enable the System Identity and create relative Service Principal."
+  default     = false
+}
+
+# -------------------
+# Alerts variables
+# -------------------
+
+variable "enable_healthcheck" {
+  type        = bool
+  description = "Enable the healthcheck alert. Default is true"
+  default     = true
+}
+
+variable "healthcheck_threshold" {
+  type        = number
+  description = "The healthcheck threshold. If metric average is under this value, the alert will be triggered. Default is 50"
+  default     = 50
+}
+
+variable "action" {
+  description = "The ID of the Action Group and optional map of custom string properties to include with the post webhook operation."
+  type = set(object(
+    {
+      action_group_id    = string
+      webhook_properties = map(string)
+    }
+  ))
+  default = []
 }

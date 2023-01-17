@@ -33,6 +33,7 @@ resource "azurerm_function_app_slot" "this" {
       content {
         ip_address                = ip.value.ip_address
         virtual_network_subnet_id = ip.value.virtual_network_subnet_id
+        name                      = "rule"
       }
     }
 
@@ -85,6 +86,8 @@ data "azurerm_function_app_host_keys" "this" {
 }
 
 resource "azurerm_app_service_slot_virtual_network_swift_connection" "this" {
+  count = var.vnet_integration ? 1 : 0
+
   slot_name      = azurerm_function_app_slot.this.name
   app_service_id = var.function_app_id
   subnet_id      = var.subnet_id

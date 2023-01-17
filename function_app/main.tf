@@ -1,12 +1,12 @@
 #tfsec:ignore:azure-storage-default-action-deny
 module "storage_account" {
-  source = "git::https://github.com/pagopa/azurerm.git//storage_account?ref=v2.7.0"
+  source = "git::https://github.com/pagopa/azurerm.git//storage_account?ref=version-unlocked"
 
   name                       = coalesce(var.storage_account_name, format("%sst", replace(var.name, "-", "")))
-  account_kind               = "StorageV2"
+  account_kind               = var.storage_account_info.account_kind
   account_tier               = var.storage_account_info.account_tier
   account_replication_type   = var.storage_account_info.account_replication_type
-  access_tier                = var.storage_account_info.access_tier
+  access_tier                = var.storage_account_info.account_kind != "Storage" ? var.storage_account_info.access_tier : null
   resource_group_name        = var.resource_group_name
   location                   = var.location
   advanced_threat_protection = var.storage_account_info.advanced_threat_protection_enable
@@ -18,13 +18,13 @@ module "storage_account" {
 module "storage_account_durable_function" {
   count = var.internal_storage.enable ? 1 : 0
 
-  source = "git::https://github.com/pagopa/azurerm.git//storage_account?ref=v2.7.0"
+  source = "git::https://github.com/pagopa/azurerm.git//storage_account?ref=version-unlocked"
 
   name                       = coalesce(var.storage_account_durable_name, format("%ssdt", replace(var.name, "-", "")))
-  account_kind               = "StorageV2"
+  account_kind               = var.storage_account_info.account_kind
   account_tier               = var.storage_account_info.account_tier
   account_replication_type   = var.storage_account_info.account_replication_type
-  access_tier                = var.storage_account_info.access_tier
+  access_tier                = var.storage_account_info.account_kind != "Storage" ? var.storage_account_info.access_tier : null
   resource_group_name        = var.resource_group_name
   location                   = var.location
   advanced_threat_protection = false
@@ -60,7 +60,7 @@ resource "azurerm_storage_container" "internal_container" {
 
 module "storage_account_durable_function_management_policy" {
   count  = length(local.internal_containers) == 0 ? 0 : 1
-  source = "git::https://github.com/pagopa/azurerm.git//storage_management_policy?ref=v2.7.0"
+  source = "git::https://github.com/pagopa/azurerm.git//storage_management_policy?ref=version-unlocked"
 
   storage_account_id = module.storage_account_durable_function[0].id
 
@@ -222,6 +222,7 @@ resource "azurerm_function_app" "this" {
       content {
         ip_address                = ip.value.ip_address
         virtual_network_subnet_id = ip.value.virtual_network_subnet_id
+        name                      = "rule"
       }
     }
 
@@ -263,6 +264,13 @@ resource "azurerm_function_app" "this" {
 
   enable_builtin_logging = false
 
+  dynamic "identity" {
+    for_each = var.system_identity_enabled ? [1] : []
+    content {
+      type = "SystemAssigned"
+    }
+  }
+
   tags = var.tags
 }
 
@@ -277,6 +285,39 @@ data "azurerm_function_app_host_keys" "this" {
 
 # Manages an App Service Virtual Network Association
 resource "azurerm_app_service_virtual_network_swift_connection" "this" {
+  count = var.vnet_integration ? 1 : 0
+
   app_service_id = azurerm_function_app.this.id
   subnet_id      = var.subnet_id
+}
+
+
+
+resource "azurerm_monitor_metric_alert" "function_app_health_check" {
+  count = var.enable_healthcheck ? 1 : 0
+
+  name                = "[${var.domain != null ? "${var.domain} | " : ""}${azurerm_function_app.this.name}] Health Check Failed"
+  resource_group_name = var.resource_group_name
+  scopes              = [azurerm_function_app.this.id]
+  description         = "Function availability is under threshold level. Runbook: -"
+  severity            = 1
+  frequency           = "PT5M"
+  auto_mitigate       = false
+  enabled             = true
+
+  criteria {
+    metric_namespace = "Microsoft.Web/sites"
+    metric_name      = "HealthCheckStatus"
+    aggregation      = "Average"
+    operator         = "LessThan"
+    threshold        = var.healthcheck_threshold
+  }
+
+  dynamic "action" {
+    for_each = var.action
+    content {
+      action_group_id    = action.value["action_group_id"]
+      webhook_properties = action.value["webhook_properties"]
+    }
+  }
 }
