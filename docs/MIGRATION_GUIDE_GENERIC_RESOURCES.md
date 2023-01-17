@@ -1,5 +1,7 @@
 # Migration guide for generic resources
 
+<https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/3.0-upgrade-guide#new-resources-and-data-sources-for-app-service>
+
 ## azurerm_log_analytics_workspace
 
 Is possible that you need to delete the state and re-import
@@ -21,3 +23,7 @@ This resource will be recreated, because the azurerm_log_analytics_workspace is 
 ### 🔥 azurerm_dns_a_record
 
 1. Is better that you delete the state for this resource and re-import.
+
+### azurerm_api_management_custom_domain
+
+* `proxy` -> `gateway`
