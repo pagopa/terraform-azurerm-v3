@@ -50,12 +50,6 @@ variable "soft_delete_retention_days" {
   description = "(Optional) The number of days that items should be retained for once soft-deleted. This value can be between 7 and 90 (the default) days."
 }
 
-variable "enable_rbac_authorization" {
-  type        = bool
-  default     = false
-  description = "Boolean flag to specify whether Azure Key Vault uses Role Based Access Control (RBAC) for authorization of data actions."
-}
-
 variable "tags" {
   type = map(any)
 }

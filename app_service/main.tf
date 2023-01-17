@@ -24,9 +24,10 @@ resource "azurerm_app_service" "this" {
   resource_group_name = var.resource_group_name
 
   app_service_plan_id = var.plan_type == "internal" ? azurerm_app_service_plan.this[0].id : var.plan_id
-  https_only          = true
+  https_only          = var.https_only
   #tfsec:ignore:azure-appservice-require-client-cert
-  client_cert_enabled = var.client_cert_enabled
+  client_cert_enabled     = var.client_cert_enabled
+  client_affinity_enabled = var.client_affinity_enabled
 
   app_settings = var.app_settings
 
@@ -36,7 +37,7 @@ resource "azurerm_app_service" "this" {
     app_command_line       = var.app_command_line
     min_tls_version        = "1.2"
     ftps_state             = var.ftps_state
-    vnet_route_all_enabled = var.subnet_id == null ? false : var.vnet_route_all_enabled
+    vnet_route_all_enabled = var.subnet_id == null ? false : true
 
     health_check_path = var.health_check_path != null ? var.health_check_path : null
 
@@ -51,6 +52,7 @@ resource "azurerm_app_service" "this" {
       content {
         ip_address                = null
         virtual_network_subnet_id = subnet.value
+        name                      = "rule"
       }
     }
 
@@ -61,6 +63,7 @@ resource "azurerm_app_service" "this" {
       content {
         ip_address                = ip.value
         virtual_network_subnet_id = null
+        name                      = "rule"
       }
     }
 
