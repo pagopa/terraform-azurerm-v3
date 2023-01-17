@@ -53,6 +53,15 @@ resource "azurerm_storage_account" "this" {
     }
   }
 
+  dynamic "custom_domain" {
+    for_each = var.custom_domain.name != null ? ["dummy"] : []
+
+    content {
+      name          = var.custom_domain.name
+      use_subdomain = var.custom_domain.use_subdomain
+    }
+  }
+
   tags = var.tags
 }
 
