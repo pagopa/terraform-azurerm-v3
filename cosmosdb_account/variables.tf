@@ -9,6 +9,11 @@ variable "name" {
   description = "(Required) Specifies the name of the CosmosDB Account. Changing this forces a new resource to be created."
 }
 
+variable "domain" {
+  type        = string
+  description = "(Optional) Specifies the domain of the CosmosDB Account."
+}
+
 // Resource Group
 variable "resource_group_name" {
   type        = string
@@ -171,4 +176,32 @@ variable "lock_enable" {
 
 variable "tags" {
   type = map(any)
+}
+
+
+# -------------------
+# Alerts variables
+# -------------------
+
+variable "enable_provisioned_throughput_exceeded_alert" {
+  type        = bool
+  description = "Enable the Provisioned Throughput Exceeded alert. Default is true"
+  default     = true
+}
+
+variable "provisioned_throughput_exceeded_threshold" {
+  type        = number
+  description = "The Provisioned Throughput Exceeded threshold. If metric average is over this value, the alert will be triggered. Default is 0, we want to act as soon as possible."
+  default     = 0
+}
+
+variable "action" {
+  description = "The ID of the Action Group and optional map of custom string properties to include with the post webhook operation."
+  type = set(object(
+    {
+      action_group_id    = string
+      webhook_properties = map(string)
+    }
+  ))
+  default = []
 }

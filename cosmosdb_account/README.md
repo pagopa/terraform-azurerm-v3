@@ -106,6 +106,16 @@ module "cgn_cosmosdb_containers" {
 }
 ```
 
+## Migration from v2
+
+1️⃣ Arguments changed:
+
+* The field `capabilities` will no longer accept the value `EnableAnalyticalStorage`.
+* `primary_master_key` -> `primary_key`.
+* `secondary_master_key` -> `secondary_key`.
+* `primary_readonly_master_key` -> `primary_readonly_key`.
+* `secondary_readonly_master_key` -> `secondary_readonly_key`.
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
