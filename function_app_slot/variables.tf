@@ -50,8 +50,7 @@ variable "use_32_bit_worker_process" {
 
 variable "linux_fx_version" {
   type        = string
-  description = "(Optional) Linux App Framework and version for the AppService, e.g. DOCKER|(golang:latest)."
-  default     = null
+  description = "(Required) Linux App Framework and version for the AppService, e.g. DOCKER|(golang:latest). Use null if function app is on windows"
 }
 
 variable "application_insights_instrumentation_key" {
@@ -85,6 +84,12 @@ variable "allowed_subnets" {
 variable "subnet_id" {
   type        = string
   description = "The ID of the subnet the app service will be associated to (the subnet must have a service_delegation configured for Microsoft.Web/serverFarms)"
+}
+
+variable "vnet_integration" {
+  type        = bool
+  description = "(optional) Enable vnet integration. Wheter it's true the subnet_id should not be null."
+  default     = true
 }
 
 variable "os_type" {

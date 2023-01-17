@@ -29,7 +29,7 @@ variable "cosmosdb_mongo_database_name" {
 
 variable "default_ttl_seconds" {
   type        = number
-  default     = 0
+  default     = null #https://github.com/hashicorp/terraform-provider-azurerm/pull/16405
   description = "The default Time To Live in seconds. If the value is -1 or 0, items are not automatically expired."
 }
 

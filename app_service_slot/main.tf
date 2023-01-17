@@ -3,9 +3,10 @@ resource "azurerm_app_service_slot" "this" {
   location            = var.location
   resource_group_name = var.resource_group_name
 
-  app_service_plan_id = var.app_service_plan_id
-  app_service_name    = var.app_service_name
-  https_only          = true
+  app_service_plan_id     = var.app_service_plan_id
+  app_service_name        = var.app_service_name
+  https_only              = var.https_only
+  client_affinity_enabled = var.client_affinity_enabled
 
   app_settings = var.app_settings
 
@@ -15,7 +16,7 @@ resource "azurerm_app_service_slot" "this" {
     app_command_line       = var.app_command_line
     min_tls_version        = "1.2"
     ftps_state             = var.ftps_state
-    vnet_route_all_enabled = var.subnet_id == null ? false : var.vnet_route_all_enabled
+    vnet_route_all_enabled = var.subnet_id == null ? false : true
 
     health_check_path = var.health_check_path != null ? var.health_check_path : null
 
@@ -30,6 +31,7 @@ resource "azurerm_app_service_slot" "this" {
       content {
         ip_address                = null
         virtual_network_subnet_id = subnet.value
+        name                      = "rule"
       }
     }
 
@@ -40,6 +42,7 @@ resource "azurerm_app_service_slot" "this" {
       content {
         ip_address                = ip.value
         virtual_network_subnet_id = null
+        name                      = "rule"
       }
     }
   }

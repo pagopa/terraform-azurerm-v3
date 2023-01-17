@@ -26,6 +26,18 @@ variable "app_service_name" {
   description = "(Required) The name of the App Service within which to create the App Service Slot. Changing this forces a new resource to be created."
 }
 
+variable "https_only" {
+  type        = bool
+  description = "(Optional) Can the App Service only be accessed via HTTPS? Defaults to true."
+  default     = true
+}
+
+variable "client_affinity_enabled" {
+  type        = bool
+  description = "(Optional) Should the App Service send session affinity cookies, which route client requests in the same session to the same instance? Defaults to false."
+  default     = false
+}
+
 ## App service slot
 
 variable "name" {
@@ -91,12 +103,6 @@ variable "subnet_id" {
   type        = string
   description = "(Optional) Subnet id wether you want to integrate the app service to a subnet."
   default     = null
-}
-
-variable "vnet_route_all_enabled" {
-  type        = bool
-  description = "Should all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied?"
-  default     = true
 }
 
 variable "tags" {

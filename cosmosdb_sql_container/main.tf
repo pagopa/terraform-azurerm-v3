@@ -15,17 +15,17 @@ resource "azurerm_cosmosdb_sql_container" "this" {
     }
   }
 
+  # this is a temp workaournd until azurerm 3.0 because azurerm 2.99 minimum value is 4000
+  lifecycle {
+    ignore_changes = [
+      autoscale_settings,
+    ]
+  }
+
   dynamic "autoscale_settings" {
     for_each = var.autoscale_settings != null ? [var.autoscale_settings] : []
     content {
       max_throughput = autoscale_settings.value.max_throughput
     }
-  }
-
-  # this is a temp workaournd until azurerm 3.0 because azurerm 2.99 minimum value is 4000
-  lifecycle {
-    ignore_changes = [
-      autoscale_settings[0].max_throughput,
-    ]
   }
 }
