@@ -17,7 +17,7 @@ module "vnet" {
 }
 ```
 
-## How to migrate from v2
+## Migration from v2
 
 Due to possible drift in state is possible that you need to delete the state for this resource and re-import
 

@@ -46,9 +46,28 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
     enabled  = true
 
     retention_policy {
-      enabled = true
-      days    = 365
-    }
+        days    = 365
+        enabled = true
+      }
+  }
+
+  log {
+    category = "FSPGPGBouncer"
+    enabled  = false
+
+    retention_policy {
+        days    = 0
+        enabled = false
+      }
+  }
+  log {
+    category = "PiiOBpgbouncerlog"
+    enabled  = false
+
+    retention_policy {
+        days    = 0
+        enabled = false
+      }
   }
 
   metric {
