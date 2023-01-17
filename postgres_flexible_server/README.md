@@ -16,7 +16,7 @@ Module that allows the creation of a postgres flexible.
 
 ## Limits and constraints
 
-* **HA** and **pg bouncer** is not avaible for B series machines
+* **HA** and **pg bouncer** is not avaible for `B series` machines
 
 ## Metrics
 
@@ -186,7 +186,7 @@ pgflex_public_ha_config = {
   high_availability_enabled = false
   standby_availability_zone = 3
 }
-````
+```
 
 ### Module definition (Public Mode)
 
@@ -375,7 +375,6 @@ data "azurerm_key_vault_secret" "pgres_flex_admin_pwd" {
   key_vault_id = data.azurerm_key_vault.kv.id
 }
 
-#-------------------------------------------------
 resource "azurerm_resource_group" "postgres_dbs" {
   name     = "${local.project}-postgres-dbs-rg"
   location = var.location
@@ -479,6 +478,18 @@ module "postgres_flexible_server_private" {
   diagnostic_setting_destination_storage_id = data.azurerm_storage_account.security_monitoring_storage.id
 }
 ```
+
+## Migration from v2
+
+### 🔥 re-import the resource azurerm_monitor_diagnostic_setting
+
+Is possible that you need to re-import this resource
+
+```ts
+module.postgres_flexible_server_public[0].azurerm_monitor_diagnostic_setting.this[0]
+```
+
+See [Generic resorce migration](../docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
