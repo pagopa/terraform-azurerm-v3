@@ -21,7 +21,7 @@ output "default_key" {
 }
 
 output "master_key" {
-  value     = var.export_keys ? data.azurerm_function_app_host_keys.this[0].master_key : null
+  value     = var.export_keys ? data.azurerm_function_app_host_keys.this[0].primary_key : null
   sensitive = true
 }
 
