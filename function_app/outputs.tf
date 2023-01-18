@@ -25,6 +25,11 @@ output "master_key" {
   sensitive = true
 }
 
+output "primary_key" {
+  value     = var.export_keys ? data.azurerm_function_app_host_keys.this[0].primary_key : null
+  sensitive = true
+}
+
 output "app_service_plan_id" {
   value = var.app_service_plan_id != null ? var.app_service_plan_id : azurerm_app_service_plan.this[0].id
 }
