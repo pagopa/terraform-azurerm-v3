@@ -46,9 +46,9 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
     enabled  = true
 
     retention_policy {
-        days    = 365
-        enabled = true
-      }
+      days    = 365
+      enabled = true
+    }
   }
 
   log {
@@ -56,18 +56,18 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
     enabled  = false
 
     retention_policy {
-        days    = 0
-        enabled = false
-      }
+      days    = 0
+      enabled = false
+    }
   }
   log {
     category = "PiiOBpgbouncerlog"
     enabled  = false
 
     retention_policy {
-        days    = 0
-        enabled = false
-      }
+      days    = 0
+      enabled = false
+    }
   }
 
   metric {
