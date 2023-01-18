@@ -593,7 +593,7 @@ resource "null_resource" "custom_hostname" {
 
 # record APEX https://docs.microsoft.com/it-it/azure/dns/dns-zones-records#record-names
 resource "azurerm_dns_a_record" "apex_hostname" {
-  # create this iff DNS zone name equal to HOST NAME azurerm_cdn_endpoint.this.host_name
+  # create this iff DNS zone name equal to HOST NAME azurerm_cdn_endpoint.this.fqdn
   count = var.dns_zone_name == var.hostname ? 1 : 0
 
   name                = "@"
@@ -613,7 +613,7 @@ resource "azurerm_dns_cname_record" "apex_cdnverify" {
   zone_name           = var.dns_zone_name
   resource_group_name = var.dns_zone_resource_group_name
   ttl                 = 3600
-  record              = "cdnverify.${azurerm_cdn_endpoint.this.host_name}"
+  record              = "cdnverify.${azurerm_cdn_endpoint.this.fqdn}"
 
   tags = var.tags
 }
@@ -625,7 +625,7 @@ resource "azurerm_dns_cname_record" "hostname" {
   zone_name           = var.dns_zone_name
   resource_group_name = var.dns_zone_resource_group_name
   ttl                 = 3600
-  record              = azurerm_cdn_endpoint.this.host_name
+  record              = azurerm_cdn_endpoint.this.fqdn
 
   tags = var.tags
 }
