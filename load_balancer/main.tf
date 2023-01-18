@@ -59,7 +59,6 @@ resource "azurerm_lb_probe" "this" {
   for_each = var.lb_probe
 
   name                = format("%s-probe", each.key)
-  resource_group_name = var.resource_group_name
   loadbalancer_id     = azurerm_lb.this.id
   protocol            = each.value.protocol
   port                = each.value.port
