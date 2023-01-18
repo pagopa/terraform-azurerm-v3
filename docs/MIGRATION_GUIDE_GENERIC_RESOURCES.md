@@ -53,3 +53,7 @@ The correct id is like this `{resourceId}|{name}` for example `/subscriptions/ac
 ```sh
 sh terraform.sh import dev 'module.postgres_flexible_server_public[0].azurerm_monitor_diagnostic_setting.this[0]' '/subscriptions/ac17914c-79bf-48fa-831e-1359ef74c1d5/resourceGroups/dvopla-d-postgres-dbs-rg/providers/Microsoft.DBforPostgreSQL/flexibleServers/dvopla-d-public-pgflex|LogSecurity'
 ```
+
+### azurerm_function_app_host_keys
+
+The deprecated field `master_key` will be removed in favour of the `primary_key` property.
