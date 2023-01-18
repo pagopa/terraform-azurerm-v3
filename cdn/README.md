@@ -323,7 +323,7 @@ Storage account
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cdn_storage_account"></a> [cdn\_storage\_account](#module\_cdn\_storage\_account) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account | v3.7.0 |
+| <a name="module_cdn_storage_account"></a> [cdn\_storage\_account](#module\_cdn\_storage\_account) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account | v3.13.0 |
 
 ## Resources
 
