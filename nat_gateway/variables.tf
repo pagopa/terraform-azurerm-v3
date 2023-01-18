@@ -11,7 +11,7 @@ variable "location" {
 }
 
 variable "zones" {
-  type        = list(string)
+  type        = list(number)
   default     = [1, 2, 3]
   description = "Availability zone where the NAT Gateway should be provisioned."
 }

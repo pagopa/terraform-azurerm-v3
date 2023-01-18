@@ -38,7 +38,7 @@ No modules.
 | <a name="input_sku_name"></a> [sku\_name](#input\_sku\_name) | The SKU which should be used. At this time the only supported value is Standard. | `string` | `"Standard"` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | List of subnets id to which associate the nat gateway | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
-| <a name="input_zones"></a> [zones](#input\_zones) | Availability zone where the NAT Gateway should be provisioned. | `list(string)` | <pre>[<br>  1,<br>  2,<br>  3<br>]</pre> | no |
+| <a name="input_zones"></a> [zones](#input\_zones) | Availability zone where the NAT Gateway should be provisioned. | `list(number)` | <pre>[<br>  1,<br>  2,<br>  3<br>]</pre> | no |
 
 ## Outputs
 
