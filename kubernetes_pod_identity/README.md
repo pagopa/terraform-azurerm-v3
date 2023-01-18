@@ -20,11 +20,18 @@ module "ingress_pod_identity" {
   cluster_name        = "dvopla-d-aks"
   namespace           = "helm-template"
 
-  certificate_permissions = ["get"]
-  key_permissions         = ["get"]
-  secret_permissions      = ["get"]
+  certificate_permissions = ["Get"]
+  key_permissions         = ["Get"]
+  secret_permissions      = ["Get"]
 }
 ```
+
+## Migration from v2
+
+1️⃣ Arguments changed:
+
+* `certificate_permissions`, `key_permissions` and `secret_permissions` related to keyvault access policy, must start with a capitol letter. E.g [Backup Delete Get List Purge Recover Restore Set]
+
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -50,4 +50,3 @@ resource "null_resource" "create_pod_identity" {
     EOT
   }
 }
-
