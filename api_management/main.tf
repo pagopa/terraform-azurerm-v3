@@ -100,7 +100,7 @@ resource "azurerm_api_management" "this" {
 # only Premium sku support autoscaling
 resource "azurerm_monitor_autoscale_setting" "this" {
   count               = var.sku_name == "Premium_1" && var.autoscale != null && var.autoscale.enabled ? 1 : 0
-  name                = format("%s-autoscale", azurerm_api_management.this.name)
+  name                = "${azurerm_api_management.this.name}-autoscale"
   resource_group_name = var.resource_group_name
   location            = var.location
   target_resource_id  = azurerm_api_management.this.id
@@ -166,7 +166,7 @@ resource "azurerm_monitor_autoscale_setting" "this" {
 resource "azurerm_api_management_logger" "this" {
   count = var.application_insights_instrumentation_key != null ? 1 : 0
 
-  name                = format("%s-logger", var.name)
+  name                = "${var.name}-logger"
   api_management_name = azurerm_api_management.this.name
   resource_group_name = var.resource_group_name
 
@@ -234,7 +234,7 @@ resource "azurerm_api_management_diagnostic" "this" {
 resource "azurerm_monitor_metric_alert" "this" {
   for_each = var.metric_alerts
 
-  name                = format("%s-%s", azurerm_api_management.this.name, upper(each.key))
+  name                = "${azurerm_api_management.this.name}-${upper(each.key)}"
   description         = each.value.description
   resource_group_name = var.resource_group_name
   scopes              = [azurerm_api_management.this.id]
@@ -377,7 +377,7 @@ resource "azurerm_monitor_diagnostic_setting" "apim" {
 #
 resource "azurerm_management_lock" "this" {
   count      = var.lock_enable ? 1 : 0
-  name       = format("%s-lock", azurerm_api_management.this.name)
+  name       = "${azurerm_api_management.this.name}-lock"
   scope      = azurerm_api_management.this.id
   lock_level = "CanNotDelete"
   notes      = "This items can't be deleted in this subscription!"
