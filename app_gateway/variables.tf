@@ -100,6 +100,7 @@ variable "routes" {
     listener              = string # Prefix for http_listener_name
     backend               = string # Prefix for backend_address_pool_name, backend_http_settings_name
     rewrite_rule_set_name = string # The Name of the Rewrite Rule Set which should be used for this Routing Rule.
+    priority              = number # Rule evaluation order can be dictated by specifying an integer value from 1 to 20000 with 1 being the highest priority and 20000 being the lowest priority.
   }))
 }
 

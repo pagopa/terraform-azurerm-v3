@@ -186,6 +186,7 @@ resource "azurerm_application_gateway" "this" {
       backend_address_pool_name  = "${route.value.backend}-address-pool"
       backend_http_settings_name = "${route.value.backend}-http-settings"
       rewrite_rule_set_name      = route.value.rewrite_rule_set_name
+      priority                   = route.value.priority
     }
   }
 
