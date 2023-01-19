@@ -3,7 +3,7 @@
  **/
 module "cdn_storage_account" {
 
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v3.15.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v4.0.0"
 
   name = replace("${var.prefix}-${var.name}-sa", "-", "")
 
