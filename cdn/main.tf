@@ -5,7 +5,7 @@ module "cdn_storage_account" {
 
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v3.7.0"
 
-  name            = replace(format("%s-%s-sa", var.prefix, var.name), "-", "")
+  name            = replace("${var.prefix}-${var.name}-sa", "-", "")
 
   account_kind             = var.storage_account_kind
   account_tier             = var.storage_account_tier
@@ -26,7 +26,7 @@ module "cdn_storage_account" {
  * cdn profile
  **/
 resource "azurerm_cdn_profile" "this" {
-  name                = format("%s-%s-cdn-profile", var.prefix, var.name)
+  name                = "${var.prefix}-${var.name}-cdn-profile"
   resource_group_name = var.resource_group_name
   location            = var.location
   sku                 = "Standard_Microsoft"
@@ -35,7 +35,7 @@ resource "azurerm_cdn_profile" "this" {
 }
 
 resource "azurerm_cdn_endpoint" "this" {
-  name                          = format("%s-%s-cdn-endpoint", var.prefix, var.name)
+  name                          = "${var.prefix}-${var.name}-cdn-endpoint"
   resource_group_name           = var.resource_group_name
   location                      = var.location
   profile_name                  = azurerm_cdn_profile.this.name
