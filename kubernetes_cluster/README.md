@@ -21,89 +21,84 @@ By default the modules have a default set of metric alerts.
 #
 # ⛴ AKS PROD
 #
-variable "aks_ephemeral_enabled" {
+variable "aks_enabled" {
   type        = bool
   description = "Must be the aks cluster created?"
   default     = true
 }
 
-variable "cidr_subnet_aks_ephemeral" {
-  type        = list(string)
-  description = "Subnet cluster kubernetes."
-}
-
-variable "aks_ephemeral_private_cluster_enabled" {
+variable "aks_private_cluster_enabled" {
   type        = bool
   description = "Enable or not public visibility of AKS"
   default     = false
 }
 
-variable "aks_ephemeral_num_outbound_ips" {
+variable "aks_num_outbound_ips" {
   type        = number
   default     = 1
   description = "How many outbound ips allocate for AKS cluster"
 }
 
-variable "aks_ephemeral_availability_zones" {
+variable "aks_availability_zones" {
   type        = list(number)
   description = "A list of Availability Zones across which the Node Pool should be spread."
   default     = []
 }
 
-variable "aks_ephemeral_vm_size" {
+variable "aks_vm_size" {
   type        = string
   default     = "Standard_DS3_v2"
   description = "The size of the AKS Virtual Machine in the Node Pool."
 }
 
-variable "aks_ephemeral_max_pods" {
+variable "aks_max_pods" {
   type        = number
   description = "The maximum number of pods"
   default     = 100
 }
 
-variable "aks_ephemeral_enable_auto_scaling" {
+variable "aks_enable_auto_scaling" {
   type        = bool
   description = "Should the Kubernetes Auto Scaler be enabled for this Node Pool? "
   default     = false
 }
 
-variable "aks_ephemeral_node_count" {
+variable "aks_node_count" {
   type        = number
   description = "The initial number of the AKS nodes which should exist in this Node Pool."
   default     = 1
 }
 
-variable "aks_ephemeral_node_min_count" {
+variable "aks_node_min_count" {
   type        = number
   description = "The minimum number of nodes which should exist in this Node Pool. If specified this must be between 1 and 1000"
   default     = null
 }
 
-variable "aks_ephemeral_node_max_count" {
+variable "aks_node_max_count" {
   type        = number
   description = "The maximum number of nodes which should exist in this Node Pool. If specified this must be between 1 and 1000"
   default     = null
 }
 
-variable "aks_ephemeral_kubernetes_version" {
+variable "aks_kubernetes_version" {
   type        = string
   description = "Kubernetes version of cluster aks"
 }
 
-variable "aks_ephemeral_sku_tier" {
+variable "aks_sku_tier" {
   type        = string
   description = "The SKU Tier that should be used for this Kubernetes Cluster."
   default     = "Free"
 }
 
-variable "aks_ephemeral_reverse_proxy_ip" {
+variable "aks_reverse_proxy_ip" {
   type        = string
   default     = "127.0.0.1"
   description = "AKS external ip. Also the ingress-nginx-controller external ip. Value known after installing the ingress controller."
 }
 
-variable "aks_ephemeral_metric_alerts_default" {
+variable "aks_metric_alerts_default" {
   description = <<EOD
   Map of name = criteria objects
   EOD
@@ -130,9 +125,81 @@ variable "aks_ephemeral_metric_alerts_default" {
       }
     ))
   }))
+
+  default = {
+    node_cpu = {
+      aggregation      = "Average"
+      metric_namespace = "Insights.Container/nodes"
+      metric_name      = "cpuUsagePercentage"
+      operator         = "GreaterThan"
+      threshold        = 80
+      frequency        = "PT1M"
+      window_size      = "PT5M"
+      dimension = [
+        {
+          name     = "host"
+          operator = "Include"
+          values   = ["*"]
+        }
+      ],
+    }
+    node_memory = {
+      aggregation      = "Average"
+      metric_namespace = "Insights.Container/nodes"
+      metric_name      = "memoryWorkingSetPercentage"
+      operator         = "GreaterThan"
+      threshold        = 80
+      frequency        = "PT1M"
+      window_size      = "PT5M"
+      dimension = [
+        {
+          name     = "host"
+          operator = "Include"
+          values   = ["*"]
+        }
+      ],
+    }
+    node_disk = {
+      aggregation      = "Average"
+      metric_namespace = "Insights.Container/nodes"
+      metric_name      = "DiskUsedPercentage"
+      operator         = "GreaterThan"
+      threshold        = 80
+      frequency        = "PT1M"
+      window_size      = "PT5M"
+      dimension = [
+        {
+          name     = "host"
+          operator = "Include"
+          values   = ["*"]
+        },
+        {
+          name     = "device"
+          operator = "Include"
+          values   = ["*"]
+        }
+      ],
+    }
+    node_not_ready = {
+      aggregation      = "Average"
+      metric_namespace = "Insights.Container/nodes"
+      metric_name      = "nodesCount"
+      operator         = "GreaterThan"
+      threshold        = 0
+      frequency        = "PT1M"
+      window_size      = "PT5M"
+      dimension = [
+        {
+          name     = "status"
+          operator = "Include"
+          values   = ["NotReady"]
+        }
+      ],
+    }
+  }
 }
 
-variable "aks_ephemeral_metric_alerts_custom" {
+variable "aks_metric_alerts_custom" {
   description = <<EOD
   Map of name = criteria objects
   EOD
@@ -159,15 +226,139 @@ variable "aks_ephemeral_metric_alerts_custom" {
       }
     ))
   }))
+
+  default = {
+    pods_failed = {
+      aggregation      = "Average"
+      metric_namespace = "Insights.Container/pods"
+      metric_name      = "podCount"
+      operator         = "GreaterThan"
+      threshold        = 0
+      frequency        = "PT1M"
+      window_size      = "PT5M"
+      dimension = [
+        {
+          name     = "phase"
+          operator = "Include"
+          values   = ["Failed"]
+        }
+      ]
+    }
+    pods_ready = {
+      aggregation      = "Average"
+      metric_namespace = "Insights.Container/pods"
+      metric_name      = "PodReadyPercentage"
+      operator         = "LessThan"
+      threshold        = 80
+      frequency        = "PT1M"
+      window_size      = "PT5M"
+      dimension = [
+        {
+          name     = "kubernetes namespace"
+          operator = "Include"
+          values   = ["*"]
+        },
+        {
+          name     = "controllerName"
+          operator = "Include"
+          values   = ["*"]
+        }
+      ]
+    }
+    container_cpu = {
+      aggregation      = "Average"
+      metric_namespace = "Insights.Container/containers"
+      metric_name      = "cpuExceededPercentage"
+      operator         = "GreaterThan"
+      threshold        = 95
+      frequency        = "PT1M"
+      window_size      = "PT5M"
+      dimension = [
+        {
+          name     = "kubernetes namespace"
+          operator = "Include"
+          values   = ["*"]
+        },
+        {
+          name     = "controllerName"
+          operator = "Include"
+          values   = ["*"]
+        }
+      ]
+    }
+    container_memory = {
+      aggregation      = "Average"
+      metric_namespace = "Insights.Container/containers"
+      metric_name      = "memoryWorkingSetExceededPercentage"
+      operator         = "GreaterThan"
+      threshold        = 95
+      frequency        = "PT1M"
+      window_size      = "PT5M"
+      dimension = [
+        {
+          name     = "kubernetes namespace"
+          operator = "Include"
+          values   = ["*"]
+        },
+        {
+          name     = "controllerName"
+          operator = "Include"
+          values   = ["*"]
+        }
+      ]
+    }
+    container_oom = {
+      aggregation      = "Average"
+      metric_namespace = "Insights.Container/pods"
+      metric_name      = "oomKilledContainerCount"
+      operator         = "GreaterThan"
+      threshold        = 0
+      frequency        = "PT1M"
+      window_size      = "PT1M"
+      dimension = [
+        {
+          name     = "kubernetes namespace"
+          operator = "Include"
+          values   = ["*"]
+        },
+        {
+          name     = "controllerName"
+          operator = "Include"
+          values   = ["*"]
+        }
+      ]
+    }
+    container_restart = {
+      aggregation      = "Average"
+      metric_namespace = "Insights.Container/pods"
+      metric_name      = "restartingContainerCount"
+      operator         = "GreaterThan"
+      threshold        = 0
+      frequency        = "PT1M"
+      window_size      = "PT1M"
+      dimension = [
+        {
+          name     = "kubernetes namespace"
+          operator = "Include"
+          values   = ["*"]
+        },
+        {
+          name     = "controllerName"
+          operator = "Include"
+          values   = ["*"]
+        }
+      ]
+    }
+  }
 }
 
-variable "aks_ephemeral_alerts_enabled" {
+variable "aks_alerts_enabled" {
   type        = bool
   default     = true
   description = "Aks alert enabled?"
 }
 
-variable "aks_ephemeral_system_node_pool" {
+variable "aks_system_node_pool" {
   type = object({
     name            = string,
     vm_size         = string,
@@ -181,7 +372,7 @@ variable "aks_ephemeral_system_node_pool" {
   description = "AKS node pool system configuration"
 }
 
-variable "aks_ephemeral_user_node_pool" {
+variable "aks_user_node_pool" {
   type = object({
     enabled         = bool,
     name            = string,
@@ -197,212 +388,257 @@ variable "aks_ephemeral_user_node_pool" {
   description = "AKS node pool user configuration"
 }
 
-variable "aks_ephemeral_addons" {
+variable "aks_addons" {
   type = object({
-    azure_policy                    = bool,
-    azure_keyvault_secrets_provider = bool,
-    pod_identity_enabled            = bool,
+    azure_policy                     = bool,
+    azure_key_vault_secrets_provider = bool,
+    pod_identity_enabled             = bool,
   })
 
   default = {
-    azure_keyvault_secrets_provider = true
-    azure_policy                    = true
-    pod_identity_enabled            = true
+    azure_key_vault_secrets_provider = true
+    azure_policy                     = true
+    pod_identity_enabled             = true
   }
 
   description = "Aks addons configuration"
 }
 
-locals {
-  # AKS
-  aks_ephemeral_rg_name              = "${local.project}-aks-ephemeral-rg"
-  aks_ephemeral_cluster_name         = "${local.project}-aks-ephemeral"
-  aks_ephemeral_public_ip_name       = "${local.project}-aks-ephemeral-outbound-pip"
-  aks_ephemeral_public_ip_index_name = "${local.aks_public_ip_name}-${var.aks_num_outbound_ips}"
+#
+# Kubernetes Cluster Configurations
+#
+variable "k8s_kube_config_path_prefix" {
+  type    = string
+  default = "~/.kube"
+}
+
+variable "ingress_replica_count" {
+  type = string
+}
+
+variable "ingress_load_balancer_ip" {
+  type = string
+}
+
+variable "default_service_port" {
+  type    = number
+  default = 8080
+}
+
+variable "nginx_helm_version" {
+  type        = string
+  description = "NGINX helm verison"
+}
+
+variable "keda_helm_version" {
+  type = string
 }
 ```
 
 ### Variables values
 
 ```ts
-#
-# ⛴ AKS
-#
-aks_ephemeral_enabled                 = true
-aks_ephemeral_private_cluster_enabled = false
-aks_ephemeral_alerts_enabled          = false
-# This is the k8s ingress controller ip. It must be in the aks subnet range.
-aks_ephemeral_reverse_proxy_ip   = "10.1.0.250"
-aks_ephemeral_kubernetes_version = "1.23.3"
-# aks_ephemeral_system_node_pool = {
-#     name = "dvladsysephm"
-#     vm_size         = "Standard_B2ms",
-#     os_disk_type    = "Managed"
-#     os_disk_size_gb = null,
-#     node_count_min  = 1,
-#     node_count_max  = 3,
-#     node_labels     = { node_name: "aks-ephemeral", node_type: "system"},
-#     node_tags       = { node_tag_1: "1"}
-# }
-# aks_ephemeral_user_node_pool = {
-#     enabled         = true,
-#     name            = "dvladephmusr",
-#     vm_size         = "Standard_B2ms",
-#     os_disk_type    = "Managed",
-#     os_disk_size_gb = null,
-#     node_count_min  = 1,
-#     node_count_max  = 3,
-#     node_labels     = { node_name: "aks-ephemeral-user", node_type: "user"},
-#     node_taints     = ["key=value:NoSchedule", "key2=value2:NoSchedule"],
-#     node_tags       = { node_tag_1: "1"},
-# }
-aks_ephemeral_system_node_pool = {
-  name            = "dvladephmsys",
-  vm_size         = "Standard_D2ds_v5",
-  os_disk_type    = "Ephemeral",
+rg_vnet_aks_name           = "dvopla-d-neu-dev01-aks-vnet-rg"
+vnet_aks_name              = "dvopla-d-neu-dev01-aks-vnet"
+public_ip_aksoutbound_name = "dvopla-d-dev01-aksoutbound-pip-1"
+
+aks_enabled                 = true
+aks_private_cluster_enabled = false
+aks_alerts_enabled          = false
+aks_kubernetes_version      = "1.23.8"
+aks_system_node_pool = {
+  name            = "dvldev01sys",
+  vm_size         = "Standard_B2ms",
+  os_disk_type    = "Managed",
   os_disk_size_gb = 75,
   node_count_min  = 1,
   node_count_max  = 3,
-  node_labels     = { node_name : "aks-ephemeral-sys", node_type : "system" },
+  node_labels     = { node_name : "aks-dev01-sys", node_type : "system" },
   node_tags       = { node_tag_1 : "1" },
 }
-aks_ephemeral_user_node_pool = {
+aks_user_node_pool = {
   enabled         = true,
-  name            = "dvladephmusr",
-  vm_size         = "Standard_D2ds_v5",
-  os_disk_type    = "Ephemeral",
+  name            = "dvldev01usr",
+  vm_size         = "Standard_B4ms",
+  os_disk_type    = "Managed",
   os_disk_size_gb = 75,
   node_count_min  = 1,
-  node_count_max  = 3,
-  node_labels     = { node_name : "aks-ephemeral-user", node_type : "user" },
-  node_taints     = ["key=value:NoSchedule", "key2=value2:NoSchedule"],
-  node_tags       = { node_tag_1 : "1" },
+  node_count_max  = 5,
+  node_labels     = { node_name : "aks-dev01-user", node_type : "user" },
+  node_taints     = [],
+  node_tags       = { node_tag_2 : "2" },
 }
-aks_ephemeral_addons = {
-  azure_policy                    = true,
-  azure_keyvault_secrets_provider = true,
-  pod_identity_enabled            = true,
+aks_addons = {
+  azure_policy                     = true,
+  azure_key_vault_secrets_provider = true,
+  pod_identity_enabled             = true,
 }
+
+ingress_replica_count = "2"
+# This is the k8s ingress controller ip. It must be in the aks subnet range.
+ingress_load_balancer_ip = "10.11.100.250"
+nginx_helm_version       = "4.1.0"
+keda_helm_version        = "2.6.2"
+
 ```
 
-### module call
+### AKS Cluster
 
 ```ts
-data "azurerm_public_ip" "aks_ephemeral_outbound_ip" {
-  count = var.aks_ephemeral_num_outbound_ips
-
-  resource_group_name = data.azurerm_resource_group.rg_vnet.name
-  name                = "${local.aks_ephemeral_public_ip_name}-${count.index + 1}"
-}
-
-#--------------------------------------------------------------------------------------------------
-resource "azurerm_resource_group" "aks_ephemeral_rg" {
-  name     = local.aks_ephemeral_rg_name
-  location = var.location
-  tags     = var.tags
-}
-
-# k8s cluster subnet
-module "aks_ephemeral_snet" {
-  source                                         = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v2.8.1"
-  name                                           = "${local.project}-aks-ephemeral-snet"
-  address_prefixes                               = var.cidr_subnet_aks_ephemeral
-  resource_group_name                            = data.azurerm_resource_group.rg_vnet.name
-  virtual_network_name                           = data.azurerm_virtual_network.vnet.name
-  enforce_private_link_endpoint_network_policies = var.aks_ephemeral_private_cluster_enabled
-
-  service_endpoints = [
-    "Microsoft.Web",
-    "Microsoft.Storage"
-  ]
-}
-
-module "aks_ephemeral" {
-  source = "git::https://github.com/pagopa/azurerm.git//kubernetes_cluster?ref=DEVOPS-246-aks-improvements"
-
-  count = var.aks_ephemeral_enabled ? 1 : 0
-
-  name                       = local.aks_ephemeral_cluster_name
-  location                   = azurerm_resource_group.aks_ephemeral_rg.location
-  dns_prefix                 = "${local.project}-aks-ephemeral"
-  resource_group_name        = azurerm_resource_group.aks_ephemeral_rg.name
-  kubernetes_version         = var.aks_ephemeral_kubernetes_version
-  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
-  sku_tier                   = var.aks_ephemeral_sku_tier
-
-  #
-  # 🤖 System node pool
-  #
-  system_node_pool_name = var.aks_ephemeral_system_node_pool.name
-  ### vm configuration
-  system_node_pool_vm_size         = var.aks_ephemeral_system_node_pool.vm_size
-  system_node_pool_os_disk_type    = var.aks_ephemeral_system_node_pool.os_disk_type
-  system_node_pool_os_disk_size_gb = var.aks_ephemeral_system_node_pool.os_disk_size_gb
-  system_node_pool_node_count_min  = var.aks_ephemeral_system_node_pool.node_count_min
-  system_node_pool_node_count_max  = var.aks_ephemeral_system_node_pool.node_count_max
-  ### K8s node configuration
-  system_node_pool_node_labels = var.aks_ephemeral_system_node_pool.node_labels
-  system_node_pool_tags        = var.aks_ephemeral_system_node_pool.node_tags
-
-  #
-  # 👤 User node pool
-  #
-  user_node_pool_enabled = var.aks_ephemeral_user_node_pool.enabled
-  user_node_pool_name    = var.aks_ephemeral_user_node_pool.name
-  ### vm configuration
-  user_node_pool_vm_size         = var.aks_ephemeral_user_node_pool.vm_size
-  user_node_pool_os_disk_type    = var.aks_ephemeral_user_node_pool.os_disk_type
-  user_node_pool_os_disk_size_gb = var.aks_ephemeral_user_node_pool.os_disk_size_gb
-  user_node_pool_node_count_min  = var.aks_ephemeral_user_node_pool.node_count_min
-  user_node_pool_node_count_max  = var.aks_ephemeral_user_node_pool.node_count_max
-  ### K8s node configuration
-  user_node_pool_node_labels = var.aks_ephemeral_user_node_pool.node_labels
-  user_node_pool_node_taints = var.aks_ephemeral_user_node_pool.node_taints
-  user_node_pool_tags        = var.aks_ephemeral_user_node_pool.node_tags
-  # end user node pool
-
-  #
-  # ☁️ Network
-  #
-  vnet_id        = data.azurerm_virtual_network.vnet.id
-  vnet_subnet_id = module.aks_ephemeral_snet.id
-
-  outbound_ip_address_ids = data.azurerm_public_ip.aks_ephemeral_outbound_ip.*.id
-  private_cluster_enabled = var.aks_ephemeral_private_cluster_enabled
-  network_profile = {
-    docker_bridge_cidr = "172.17.0.1/16"
-    dns_service_ip     = "10.2.0.10"
-    network_plugin     = "azure"
-    network_policy     = "azure"
-    outbound_type      = "loadBalancer"
-    service_cidr       = "10.2.0.0/16"
+  resource "azurerm_resource_group" "rg_aks" {
+    name     = local.aks_rg_name
+    location = var.location
+    tags     = var.tags
   }
-  # end network
 
-  rbac_enabled        = true
-  aad_admin_group_ids = var.env_short == "d" ? [data.azuread_group.adgroup_admin.object_id, data.azuread_group.adgroup_developers.object_id, data.azuread_group.adgroup_externals.object_id] : [data.azuread_group.adgroup_admin.object_id]
+  module "aks" {
+    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_cluster?ref=v3.15.0"
 
-  addon_azure_policy_enabled                    = var.aks_ephemeral_addons.azure_policy
-  addon_azure_keyvault_secrets_provider_enabled = var.aks_ephemeral_addons.azure_keyvault_secrets_provider
-  addon_azure_pod_identity_enabled              = var.aks_ephemeral_addons.pod_identity_enabled
+    count = var.aks_enabled ? 1 : 0
 
-  # Metrics Alerts
-  default_metric_alerts = var.aks_ephemeral_metric_alerts_default
-  custom_metric_alerts  = var.aks_ephemeral_metric_alerts_custom
+    name                       = local.aks_cluster_name
+    location                   = azurerm_resource_group.rg_aks.location
+    dns_prefix                 = "${local.project}-aks"
+    resource_group_name        = azurerm_resource_group.rg_aks.name
+    kubernetes_version         = var.aks_kubernetes_version
+    log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
+    sku_tier                   = var.aks_sku_tier
 
-  alerts_enabled = var.aks_ephemeral_alerts_enabled
-  action = [
-    {
-      action_group_id    = data.azurerm_monitor_action_group.slack.id
-      webhook_properties = null
-    },
-    {
-      action_group_id    = data.azurerm_monitor_action_group.email.id
-      webhook_properties = null
+    #
+    # 🤖 System node pool
+    #
+    system_node_pool_name = var.aks_system_node_pool.name
+    ### vm configuration
+    system_node_pool_vm_size         = var.aks_system_node_pool.vm_size
+    system_node_pool_os_disk_type    = var.aks_system_node_pool.os_disk_type
+    system_node_pool_os_disk_size_gb = var.aks_system_node_pool.os_disk_size_gb
+    system_node_pool_node_count_min  = var.aks_system_node_pool.node_count_min
+    system_node_pool_node_count_max  = var.aks_system_node_pool.node_count_max
+    ### K8s node configuration
+    system_node_pool_node_labels = var.aks_system_node_pool.node_labels
+    system_node_pool_tags        = var.aks_system_node_pool.node_tags
+
+    #
+    # 👤 User node pool
+    #
+    user_node_pool_enabled = var.aks_user_node_pool.enabled
+    user_node_pool_name    = var.aks_user_node_pool.name
+    ### vm configuration
+    user_node_pool_vm_size         = var.aks_user_node_pool.vm_size
+    user_node_pool_os_disk_type    = var.aks_user_node_pool.os_disk_type
+    user_node_pool_os_disk_size_gb = var.aks_user_node_pool.os_disk_size_gb
+    user_node_pool_node_count_min  = var.aks_user_node_pool.node_count_min
+    user_node_pool_node_count_max  = var.aks_user_node_pool.node_count_max
+    ### K8s node configuration
+    user_node_pool_node_labels = var.aks_user_node_pool.node_labels
+    user_node_pool_node_taints = var.aks_user_node_pool.node_taints
+    user_node_pool_tags        = var.aks_user_node_pool.node_tags
+    # end user node pool
+
+    #
+    # ☁️ Network
+    #
+    vnet_id        = data.azurerm_virtual_network.vnet_aks.id
+    vnet_subnet_id = module.snet_aks.id
+
+    outbound_ip_address_ids = [data.azurerm_public_ip.pip_aks_outboud.id]
+    private_cluster_enabled = var.aks_private_cluster_enabled
+    network_profile = {
+      docker_bridge_cidr = "172.17.0.1/16"
+      dns_service_ip     = "10.250.0.10"
+      network_plugin     = "azure"
+      network_policy     = "azure"
+      outbound_type      = "loadBalancer"
+      service_cidr       = "10.250.0.0/16"
     }
-  ]
-  tags = var.tags
-}
+    # end network
+
+    rbac_enabled        = true
+    aad_admin_group_ids = var.env_short == "d" ? [data.azuread_group.adgroup_admin.object_id, data.azuread_group.adgroup_developers.object_id, data.azuread_group.adgroup_externals.object_id] : [data.azuread_group.adgroup_admin.object_id]
+
+    addon_azure_policy_enabled                     = var.aks_addons.azure_policy
+    addon_azure_key_vault_secrets_provider_enabled = var.aks_addons.azure_key_vault_secrets_provider
+    addon_azure_pod_identity_enabled               = var.aks_addons.pod_identity_enabled
+
+    default_metric_alerts = var.aks_metric_alerts_default
+    custom_metric_alerts  = var.aks_metric_alerts_custom
+
+    alerts_enabled = var.aks_alerts_enabled
+    action = [
+      {
+        action_group_id    = data.azurerm_monitor_action_group.slack.id
+        webhook_properties = null
+      },
+      {
+        action_group_id    = data.azurerm_monitor_action_group.email.id
+        webhook_properties = null
+      }
+    ]
+    tags = var.tags
+
+    depends_on = [
+      module.snet_aks,
+      data.azurerm_public_ip.pip_aks_outboud,
+      data.azurerm_virtual_network.vnet_aks
+    ]
+  }
+
+  #
+  # ACR connection
+  #
+  # add the role to the identity the kubernetes cluster was assigned
+  resource "azurerm_role_assignment" "aks_to_acr" {
+    scope                = data.azurerm_container_registry.acr.id
+    role_definition_name = "AcrPull"
+    principal_id         = module.aks[0].kubelet_identity_id
+  }
+
+  #
+  # Vnet Link
+  #
+
+  # vnet needs a vnet link with aks private dns zone
+  # aks terrform module doesn't export private dns zone
+  resource "null_resource" "create_vnet_core_aks_link" {
+
+    count = var.aks_enabled && var.aks_private_cluster_enabled ? 1 : 0
+    triggers = {
+      cluster_name = module.aks[0].name
+      vnet_id      = data.azurerm_virtual_network.vnet_core.id
+      vnet_name    = data.azurerm_virtual_network.vnet_core.name
+    }
+
+    provisioner "local-exec" {
+      command = <<EOT
+        dns_zone_name=$(az network private-dns zone list --output tsv --query "[?contains(id,'${self.triggers.cluster_name}')].{name:name}")
+        dns_zone_resource_group_name=$(az network private-dns zone list --output tsv --query "[?contains(id,'${self.triggers.cluster_name}')].{resourceGroup:resourceGroup}")
+        az network private-dns link vnet create \
+          --name ${self.triggers.vnet_name} \
+          --registration-enabled false \
+          --resource-group $dns_zone_resource_group_name \
+          --virtual-network ${self.triggers.vnet_id} \
+          --zone-name $dns_zone_name
+      EOT
+    }
+
+    provisioner "local-exec" {
+      when    = destroy
+      command = <<EOT
+        dns_zone_name=$(az network private-dns zone list --output tsv --query "[?contains(id,'${self.triggers.cluster_name}')].{name:name}")
+        dns_zone_resource_group_name=$(az network private-dns zone list --output tsv --query "[?contains(id,'${self.triggers.cluster_name}')].{resourceGroup:resourceGroup}")
+        az network private-dns link vnet delete \
+          --name ${self.triggers.vnet_name} \
+          --resource-group $dns_zone_resource_group_name \
+          --zone-name $dns_zone_name \
+          --yes
+      EOT
+    }
+
+    depends_on = [
+      module.aks
+    ]
+  }
+
 ```
 
 ## Migration from v2

@@ -7,12 +7,12 @@ This module allow the creation of vpn gateway
 ```ts
 ## VPN subnet
 module "vpn_snet" {
-  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v3.5.2"
-  name                                           = "GatewaySubnet"
-  address_prefixes                               = var.cidr_subnet_vpn
-  virtual_network_name                           = module.vnet.name
-  resource_group_name                            = azurerm_resource_group.rg_vnet.name
-  service_endpoints                              = []
+  source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v3.15.0"
+  name                                      = "GatewaySubnet"
+  address_prefixes                          = var.cidr_subnet_vpn
+  virtual_network_name                      = module.vnet.name
+  resource_group_name                       = azurerm_resource_group.rg_vnet.name
+  service_endpoints                         = []
   private_endpoint_network_policies_enabled = true
 }
 
@@ -21,7 +21,7 @@ data "azuread_application" "vpn_app" {
 }
 
 module "vpn" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//vpn_gateway?ref=vpn_gateway_migration_from_v2"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//vpn_gateway?ref=v3.15.0"
 
   name                = "${local.project}-vpn"
   location            = var.location

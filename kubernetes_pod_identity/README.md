@@ -1,4 +1,4 @@
-# kubernetes\_ingress
+# kubernetes pod identity
 
 Module that allows the creation of a pod identity. Check <https://docs.microsoft.com/en-us/azure/aks/use-azure-ad-pod-identity#create-an-aks-cluster-with-kubenet-network-plugin> or <https://docs.microsoft.com/en-us/azure/aks/use-azure-ad-pod-identity#run-a-sample-application> for more information.
 
@@ -8,21 +8,20 @@ Module that allows the creation of a pod identity. Check <https://docs.microsoft
 
 ## How to use it
 
-```tf
-module "ingress_pod_identity" {
-  source = "../kubernetes_pod_identity"
+```ts
+module "domain_pod_identity" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_pod_identity?ref=v3.15.0"
 
-  resource_group_name = "dvopla-d-aks-rg"
-  location            = "northeurope"
-  identity_name       = "helm-template-pod-identity"
-  key_vault_id        = data.azurerm_key_vault.kv.id
-  tenant_id           = "c767fb1d-a665-4714-9a1a-323a7818b016"
-  cluster_name        = "dvopla-d-aks"
-  namespace           = "helm-template"
+  resource_group_name = local.aks_resource_group_name
+  location            = var.location
+  tenant_id           = data.azurerm_subscription.current.tenant_id
+  cluster_name        = local.aks_name
 
-  certificate_permissions = ["Get"]
-  key_permissions         = ["Get"]
-  secret_permissions      = ["Get"]
+  identity_name = "${var.domain}-pod-identity"
+  namespace     = kubernetes_namespace.domain_namespace.metadata[0].name
+  key_vault_id  = data.azurerm_key_vault.kv.id
+
+  secret_permissions = ["Get"]
 }
 ```
 
@@ -31,7 +30,6 @@ module "ingress_pod_identity" {
 1️⃣ Arguments changed:
 
 * `certificate_permissions`, `key_permissions` and `secret_permissions` related to keyvault access policy, must start with a capitol letter. E.g [Backup Delete Get List Purge Recover Restore Set]
-
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -9,6 +9,10 @@ Module that allows the creation of an Azure function app.
 ## How to use it
 
 ```ts
+#
+# APP CONFIGURATION
+#
+
 locals {
   function_app = {
     app_settings_common = {
@@ -35,7 +39,7 @@ locals {
 
 # #tfsec:ignore:azure-storage-queue-services-logging-enabled:exp:2022-05-01 # already ignored, maybe a bug in tfsec
 module "func_python" {
-  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app?ref=function_migration_from_v2"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app?ref=v3.15.0"
 
   count = var.function_python_diego_enabled ? 1 : 0
 
@@ -67,7 +71,7 @@ module "func_python" {
 }
 
 module "func_python_staging_slot" {
-  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app_slot?ref=function_migration_from_v2"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app_slot?ref=v3.15.0"
 
   count = var.function_python_diego_enabled ? 1 : 0
 
@@ -100,7 +104,6 @@ module "func_python_staging_slot" {
 
   tags = var.tags
 }
-
 ```
 
 ## Migration from v2

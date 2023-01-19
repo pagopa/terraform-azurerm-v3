@@ -7,29 +7,39 @@ This module allow the creation of subnet
 ### Simple subnet
 
 ```ts
-module "apim_snet" {
-  source               = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v2.1.21"
-  name                 = "${local.project}-apim-snet"
-  resource_group_name  = data.azurerm_resource_group.rg_vnet.name
+module "private_endpoints_snet" {
+  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v3.15.0"
+  name                 = "${local.program}-private-endpoints-snet"
+  address_prefixes     = var.cidr_subnet_private_endpoints
   virtual_network_name = data.azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.1.137.0/24"]
 
-  enforce_private_link_endpoint_network_policies = true
-  service_endpoints                              = ["Microsoft.Web"]
+  resource_group_name = data.azurerm_resource_group.rg_vnet.name
+
+  private_endpoint_network_policies_enabled = true
+  service_endpoints = [
+    "Microsoft.Web",
+    "Microsoft.AzureCosmosDB",
+    "Microsoft.Storage",
+  ]
 }
 ```
 
 ### Subnet with delegation
 
 ```ts
-module "api_config_snet" {
-  count                                          = var.api_config_enabled && var.cidr_subnet_api_config != null ? 1 : 0
-  source                                         = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v1.0.51"
-  name                                           = format("%s-api-config-snet", local.project)
-  address_prefixes                               = var.cidr_subnet_api_config
-  resource_group_name                            = azurerm_resource_group.rg_vnet.name
-  virtual_network_name                           = module.vnet_integration.name
-  enforce_private_link_endpoint_network_policies = true
+module "funcs_diego_snet" {
+  source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v3.15.0"
+  name                                      = "${local.project}-funcs-snet"
+  address_prefixes                          = var.cidr_subnet_funcs_diego_domain
+  resource_group_name                       = data.azurerm_resource_group.rg_vnet_core.name
+  virtual_network_name                      = data.azurerm_virtual_network.vnet_core.name
+  private_endpoint_network_policies_enabled = true
+
+  service_endpoints = [
+    "Microsoft.Web",
+    "Microsoft.AzureCosmosDB",
+    "Microsoft.Storage",
+  ]
 
   delegation = {
     name = "default"

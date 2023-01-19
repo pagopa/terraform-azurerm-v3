@@ -12,122 +12,43 @@ TBD
 
 ## How to use it
 
-### Private mode
-
-```ts
-resource "azurerm_resource_group" "acr_rg" {
-  name     = "${local.project}-acr-rg"
-  location = var.location
-
-  tags = var.tags
-}
-
-# Private endpoint subnet
-module "private_endpoints_snet" {
-  source               = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v2.9.0"
-  name                 = "private-endpoints-snet"
-  resource_group_name  = data.azurerm_virtual_network.vnet.nameresource_group_name
-  virtual_network_name = data.azurerm_virtual_network.vnet.name
-  address_prefixes     = var.cidr_subnet_private_endpoints
-
-  enforce_private_link_endpoint_network_policies = true
-}
-
-# DNS private container registry
-
-resource "azurerm_private_dns_zone" "privatelink_azurecr_io" {
-  name                = "privatelink.azurecr.io"
-  resource_group_name = data.azurerm_resource_group.rg_vnet.name
-
-  tags = var.tags
-}
-
-resource "azurerm_private_dns_zone_virtual_network_link" "privatelink_azurecr_io_vnet_weu" {
-  name                  = data.azurerm_virtual_network.vnet.name
-  resource_group_name   = azurerm_private_dns_zone.privatelink_azurecr_io.resource_group_name
-  private_dns_zone_name = azurerm_private_dns_zone.privatelink_azurecr_io.name
-  virtual_network_id    = data.azurerm_virtual_network.vnet.id
-  registration_enabled  = false
-
-  tags = var.tags
-}
-
-module "container_registry_private" {
-  source = "git::https://github.com/pagopa/azurerm.git//container_registry?ref=ref=v2.10.0"
-
-  name                          = replace(format("%s-privare-acr", local.project), "-", "")
-  location                      = var.location
-  resource_group_name           = azurerm_resource_group.acr_rg.name
-  sku                           = "Premium"
-  admin_enabled                 = false
-  anonymous_pull_enabled        = false
-  zone_redundancy_enabled       = true
-  public_network_access_enabled = false
-
-  private_endpoint = {
-    enabled              = true
-    private_dns_zone_ids = [azurerm_private_dns_zone.privatelink_azurecr_io.id]
-    subnet_id            = module.private_endpoints_snet.id
-    virtual_network_id   = data.azurerm_virtual_network.vnet.id
-  }
-
-  georeplications = [{
-    location                  = var.location_seconsary
-    regional_endpoint_enabled = false
-    zone_redundancy_enabled   = true
-  }]
-
-  # Logs
-  sec_log_analytics_workspace_id = var.env_short == "p" ? data.azurerm_key_vault_secret.sec_workspace_id[0].value : null
-  sec_storage_id                 = var.env_short == "p" ? data.azurerm_key_vault_secret.sec_storage_id[0].value : null
-
-  tags = var.tags
-}
-```
-
 ### Public mode
 
 ```ts
-resource "azurerm_resource_group" "acr_rg" {
-  name     = "${local.project}-acr-rg"
+resource "azurerm_resource_group" "rg_docker" {
+  name     = local.docker_rg_name
   location = var.location
-
-  tags = var.tags
+  tags     = var.tags
 }
 
 module "container_registry_public" {
-  source = "git::https://github.com/pagopa/azurerm.git//container_registry?ref=ref=v2.10.0"
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//container_registry?ref=v3.15.0"
+  name                = local.docker_registry_name
+  resource_group_name = azurerm_resource_group.rg_docker.name
+  location            = azurerm_resource_group.rg_docker.location
 
-  name                          = replace(format("%s-public-acr", local.project), "-", "")
-  location                      = var.location
-  resource_group_name           = azurerm_resource_group.acr_rg.name
-  sku                           = "Basic"
+  sku                           = "Standard"
   admin_enabled                 = false
   anonymous_pull_enabled        = false
-  zone_redundancy_enabled       = true
+  zone_redundancy_enabled       = false
   public_network_access_enabled = true
 
   private_endpoint = {
     enabled              = false
-    private_dns_zone_ids = ""
-    subnet_id            = ""
-    virtual_network_id   = ""
+    private_dns_zone_ids = null
+    subnet_id            = null
+    virtual_network_id   = null
   }
 
-  georeplications = [{
-    location                  = var.location_seconsary
-    regional_endpoint_enabled = false
-    zone_redundancy_enabled   = true
-  }]
-
-  default = [{
-    default_action  = "Allow"
-    ip_rule         = []
-    virtual_network = []
-  }]
+  # georeplications = [{
+  #   # location                  = var.location_seconsary
+  #   regional_endpoint_enabled = false
+  #   zone_redundancy_enabled   = false
+  # }]
 
   tags = var.tags
 }
+
 ```
 
 <!-- markdownlint-disable -->

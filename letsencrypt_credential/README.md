@@ -13,14 +13,13 @@ TBD
 ## How to use it
 
 ```ts
-module "letsencrypt" {
-  source =
-    "git::https://github.com/pagopa/azuredevops-tf-modules.git//letsencrypt_credential?ref=v2.14.0";
+module "letsencrypt_diego" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//letsencrypt_credential?ref=v3.15.0"
 
-  prefix = "project";
-  env = "p";
-  key_vault_name = "project-p-kv";
-  subscription_name = "DEV-PROJECT";
+  prefix            = "dvopla"
+  env               = "d"
+  key_vault_name    = "dvopla-d-diego-kv"
+  subscription_name = "devopslab"
 }
 ```
 

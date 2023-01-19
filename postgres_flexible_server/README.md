@@ -60,423 +60,168 @@ variable "pgflex_public_metric_alerts" {
 }
 ```
 
-## How to use it (Public Mode)
-
-### Variables definition
+## How to use it (Public mode & Private mode)
 
 ```ts
-variable "pgflex_public_config" {
-  type = object({
-    enabled                      = bool
-    sku_name                     = string
-    db_version                   = string
-    storage_mb                   = string
-    zone                         = number
-    backup_retention_days        = number
-    geo_redundant_backup_enabled = bool
-    private_endpoint_enabled     = bool
-    pgbouncer_enabled            = bool
-  })
-  description = "Configuration parameter for postgres flexible public"
-}
+  # KV secrets flex server
+  data "azurerm_key_vault_secret" "pgres_flex_admin_login" {
+    name         = "pgres-flex-admin-login"
+    key_vault_id = data.azurerm_key_vault.kv.id
+  }
 
-variable "pgflex_public_ha_config" {
-  type = object({
-    high_availability_enabled = bool
-    standby_availability_zone = number
-  })
-  description = "Pg flex configuration for HA public"
-}
+  data "azurerm_key_vault_secret" "pgres_flex_admin_pwd" {
+    name         = "pgres-flex-admin-pwd"
+    key_vault_id = data.azurerm_key_vault.kv.id
+  }
 
-variable "pgflex_public_metric_alerts" {
-  description = <<EOD
-  Map of name = criteria objects
-  EOD
+  #------------------------------------------------
+  resource "azurerm_resource_group" "postgres_dbs" {
+    name     = "${local.program}-postgres-dbs-rg"
+    location = var.location
 
-  type = map(object({
-    # criteria.*.aggregation to be one of [Average Count Minimum Maximum Total]
-    aggregation = string
-    # "Insights.Container/pods" "Insights.Container/nodes"
-    metric_namespace = string
-    metric_name      = string
-    # criteria.0.operator to be one of [Equals NotEquals GreaterThan GreaterThanOrEqual LessThan LessThanOrEqual]
-    operator  = string
-    threshold = number
-    # Possible values are PT1M, PT5M, PT15M, PT30M and PT1H
-    frequency = string
-    # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.
-    window_size = string
-    # severity: The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4. Defaults to 3. Lower is worst
-    severity = number
-  }))
+    tags = var.tags
+  }
 
-  default = {
-    cpu_percent = {
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "cpu_percent"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity = 2
-    },
-    memory_percent = {
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "memory_percent"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity = 2
-    },
-    storage_percent = {
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "storage_percent"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity = 2
-    },
-    active_connections = {
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "active_connections"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity = 2
-    },
-    connections_failed = {
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Total"
-      metric_name      = "connections_failed"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity = 2
+  # Postgres Flexible Server subnet
+  module "postgres_flexible_snet" {
+    source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v3.15.0"
+    name                                      = "${local.program}-pgres-flexible-snet"
+    address_prefixes                          = var.cidr_subnet_flex_dbms
+    resource_group_name                       = data.azurerm_resource_group.rg_vnet.name
+    virtual_network_name                      = data.azurerm_virtual_network.vnet.name
+    service_endpoints                         = ["Microsoft.Storage"]
+    private_endpoint_network_policies_enabled = true
+
+    delegation = {
+      name = "delegation"
+      service_delegation = {
+        name = "Microsoft.DBforPostgreSQL/flexibleServers"
+        actions = [
+          "Microsoft.Network/virtualNetworks/subnets/join/action",
+        ]
+      }
     }
   }
-}
-```
 
-### Variables values (Public Mode)
+  # DNS private single server
+  resource "azurerm_private_dns_zone" "privatelink_postgres_database_azure_com" {
 
-```ts
-pgflex_public_config = {
-  enabled    = true
-  sku_name   = "B_Standard_B1ms"
-  db_version = "13"
-  # Possible values are 32768, 65536, 131072, 262144, 524288, 1048576,
-  # 2097152, 4194304, 8388608, 16777216, and 33554432.
-  storage_mb                   = 32768
-  zone                         = 1
-  backup_retention_days        = 7
-  geo_redundant_backup_enabled = false
-  private_endpoint_enabled     = false
-  pgbouncer_enabled            = false
-}
+    name                = "privatelink.postgres.database.azure.com"
+    resource_group_name = data.azurerm_resource_group.rg_vnet.name
 
-pgflex_public_ha_config = {
-  high_availability_enabled = false
-  standby_availability_zone = 3
-}
-```
+    tags = var.tags
+  }
 
-### Module definition (Public Mode)
+  resource "azurerm_private_dns_zone_virtual_network_link" "privatelink_postgres_database_azure_com_vnet" {
 
-```ts
-# https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-compare-single-server-flexible-server
-module "postgres_flexible_server_public" {
+    name                  = "${local.program}-pg-flex-link"
+    private_dns_zone_name = azurerm_private_dns_zone.privatelink_postgres_database_azure_com.name
 
-  count = var.pgflex_public_config.enabled ? 1 : 0
+    resource_group_name = data.azurerm_resource_group.rg_vnet.name
+    virtual_network_id  = data.azurerm_virtual_network.vnet.id
 
-  source = "git::https://github.com/pagopa/azurerm.git//postgres_flexible_server?ref=DEVOPS-268-postgres-flexible-aggiungere-alerts-e-monitoring"
+    registration_enabled = false
 
-  name                = "${local.project}-public-pgflex"
-  location            = azurerm_resource_group.postgres_dbs.location
-  resource_group_name = azurerm_resource_group.postgres_dbs.name
+    tags = var.tags
+  }
 
-  administrator_login    = data.azurerm_key_vault_secret.pgres_flex_admin_login.value
-  administrator_password = data.azurerm_key_vault_secret.pgres_flex_admin_pwd.value
+  # https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-compare-single-server-flexible-server
+  module "postgres_flexible_server_private" {
 
-  sku_name                     = var.pgflex_public_config.sku_name
-  db_version                   = var.pgflex_public_config.db_version
-  storage_mb                   = var.pgflex_public_config.storage_mb
-  zone                         = var.pgflex_public_config.zone
-  backup_retention_days        = var.pgflex_public_config.backup_retention_days
-  geo_redundant_backup_enabled = var.pgflex_public_config.geo_redundant_backup_enabled
+    count = var.pgflex_private_config.enabled ? 1 : 0
 
-  high_availability_enabled = var.pgflex_public_ha_config.high_availability_enabled
-  private_endpoint_enabled  = var.pgflex_public_config.private_endpoint_enabled
-  pgbouncer_enabled         = var.pgflex_public_config.pgbouncer_enabled
+    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//postgres_flexible_server?ref=v3.15.0"
 
-  tags = var.tags
+    name                = "${local.program}-private-pgflex"
+    location            = azurerm_resource_group.postgres_dbs.location
+    resource_group_name = azurerm_resource_group.postgres_dbs.name
 
-  metric_alerts  = var.pgflex_public_metric_alerts
-  alerts_enabled = true
+    ### Network
+    private_endpoint_enabled = false
+    private_dns_zone_id      = azurerm_private_dns_zone.privatelink_postgres_database_azure_com.id
+    delegated_subnet_id      = module.postgres_flexible_snet.id
 
-  diagnostic_settings_enabled = true
-  log_analytics_workspace_id  = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
-  diagnostic_setting_destination_storage_id = data.azurerm_storage_account.security_monitoring_storage.id
+    ### Admin
+    administrator_login    = data.azurerm_key_vault_secret.pgres_flex_admin_login.value
+    administrator_password = data.azurerm_key_vault_secret.pgres_flex_admin_pwd.value
 
-}
-```
+    sku_name   = "B_Standard_B1ms"
+    db_version = "13"
+    # Possible values are 32768, 65536, 131072, 262144, 524288, 1048576,
+    # 2097152, 4194304, 8388608, 16777216, and 33554432.
+    storage_mb = 32768
 
-## How to use it (Private mode)
+    ### zones & HA
+    zone                      = 1
+    high_availability_enabled = false
+    standby_availability_zone = 3
 
-### Variables definition (Private Mode)
-
-```ts
-variable "postgres_private_endpoint_enabled" {
-  type        = bool
-  description = "Enabled private comunication for postgres flexible"
-}
-
-variable "pgflex_private_config" {
-  type = object({
-    enabled                      = bool
-    sku_name                     = string
-    db_version                   = string
-    storage_mb                   = string
-    zone                         = number
-    backup_retention_days        = number
-    geo_redundant_backup_enabled = bool
-    private_endpoint_enabled     = bool
-    pgbouncer_enabled            = bool
-  })
-  description = "Configuration parameter for postgres flexible private"
-}
-
-variable "pgflex_private_ha_config" {
-  type = object({
-    high_availability_enabled = bool
-    standby_availability_zone = number
-  })
-  description = "Pg flex configuration for HA private"
-}
-
-variable "pgflex_private_metric_alerts" {
-  description = <<EOD
-  Map of name = criteria objects
-  EOD
-
-  type = map(object({
-    # criteria.*.aggregation to be one of [Average Count Minimum Maximum Total]
-    aggregation = string
-    # "Insights.Container/pods" "Insights.Container/nodes"
-    metric_namespace = string
-    metric_name      = string
-    # criteria.0.operator to be one of [Equals NotEquals GreaterThan GreaterThanOrEqual LessThan LessThanOrEqual]
-    operator  = string
-    threshold = number
-    # Possible values are PT1M, PT5M, PT15M, PT30M and PT1H
-    frequency = string
-    # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.
-    window_size = string
-    # severity: The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4. Defaults to 3. Lower is worst
-    severity = number
-  }))
-
-  default = {
-    cpu_percent = {
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "cpu_percent"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity = 2
-    },
-    memory_percent = {
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "memory_percent"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity = 2
-    },
-    storage_percent = {
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "storage_percent"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity = 2
-    },
-    active_connections = {
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "active_connections"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity = 2
-    },
-    connections_failed = {
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Total"
-      metric_name      = "connections_failed"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity = 2
+    maintenance_window_config = {
+      day_of_week  = 0
+      start_hour   = 2
+      start_minute = 0
     }
-  }
-}
-```
 
-### Variables values (Private Mode)
+    ### backup
+    backup_retention_days        = 7
+    geo_redundant_backup_enabled = false
 
-```ts
-pgflex_private_config = {
-  enabled    = false
-  sku_name   = "GP_Standard_D2ds_v4"
-  db_version = "13"
-  # Possible values are 32768, 65536, 131072, 262144, 524288, 1048576,
-  # 2097152, 4194304, 8388608, 16777216, and 33554432.
-  storage_mb                   = 32768
-  zone                         = 1
-  backup_retention_days        = 7
-  geo_redundant_backup_enabled = true
-  private_endpoint_enabled     = true
-  pgbouncer_enabled            = true
-}
+    pgbouncer_enabled = false
 
-pgflex_private_ha_config = {
-  high_availability_enabled = true
-  standby_availability_zone = 3
-}
-```
+    tags = var.tags
 
-### Module definition (Private Mode)
+    custom_metric_alerts = var.pgflex_public_metric_alerts
+    alerts_enabled       = true
 
-```ts
-# KV secrets flex server
-data "azurerm_key_vault_secret" "pgres_flex_admin_login" {
-  name         = "pgres-flex-admin-login"
-  key_vault_id = data.azurerm_key_vault.kv.id
-}
+    diagnostic_settings_enabled               = true
+    log_analytics_workspace_id                = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
+    diagnostic_setting_destination_storage_id = data.azurerm_storage_account.security_monitoring_storage.id
 
-data "azurerm_key_vault_secret" "pgres_flex_admin_pwd" {
-  name         = "pgres-flex-admin-pwd"
-  key_vault_id = data.azurerm_key_vault.kv.id
-}
+    depends_on = [azurerm_private_dns_zone_virtual_network_link.privatelink_postgres_database_azure_com_vnet]
 
-resource "azurerm_resource_group" "postgres_dbs" {
-  name     = "${local.project}-postgres-dbs-rg"
-  location = var.location
-
-  tags = var.tags
-}
-
-# Postgres Flexible Server subnet
-module "postgres_flexible_snet" {
-  source                                         = "git::https://github.com/pagopa/azurerm.git//subnet?ref=v2.8.1"
-  name                                           = "${local.project}-pgres-flexible-snet"
-  address_prefixes                               = var.cidr_subnet_flex_dbms
-  resource_group_name                            = data.azurerm_resource_group.rg_vnet.name
-  virtual_network_name                           = data.azurerm_virtual_network.vnet.name
-  service_endpoints                              = ["Microsoft.Storage"]
-  enforce_private_link_endpoint_network_policies = true
-
-  delegation = {
-    name = "delegation"
-    service_delegation = {
-      name = "Microsoft.DBforPostgreSQL/flexibleServers"
-      actions = [
-        "Microsoft.Network/virtualNetworks/subnets/join/action",
-      ]
-    }
-  }
-}
-
-# DNS private single server
-resource "azurerm_private_dns_zone" "privatelink_postgres_database_azure_com" {
-
-  name                = "privatelink.postgres.database.azure.com"
-  resource_group_name = data.azurerm_resource_group.rg_vnet.name
-
-  tags = var.tags
-}
-
-resource "azurerm_private_dns_zone_virtual_network_link" "privatelink_postgres_database_azure_com_vnet" {
-
-  name                  = "${local.project}-pg-flex-link"
-  private_dns_zone_name = azurerm_private_dns_zone.privatelink_postgres_database_azure_com.name
-
-  resource_group_name = data.azurerm_resource_group.rg_vnet.name
-  virtual_network_id  = data.azurerm_virtual_network.vnet.id
-
-  registration_enabled = false
-
-  tags = var.tags
-}
-
-# https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-compare-single-server-flexible-server
-module "postgres_flexible_server_private" {
-
-  count = var.pgflex_private_config.enabled ? 1 : 0
-
-  source = "git::https://github.com/pagopa/azurerm.git//postgres_flexible_server?ref=v2.8.1"
-
-  name                = "${local.project}-private-pgflex"
-  location            = azurerm_resource_group.postgres_dbs.location
-  resource_group_name = azurerm_resource_group.postgres_dbs.name
-
-  ### Network
-  private_endpoint_enabled = var.pgflex_private_config.private_endpoint_enabled
-  private_dns_zone_id      = azurerm_private_dns_zone.privatelink_postgres_database_azure_com.id
-  delegated_subnet_id      = module.postgres_flexible_snet.id
-
-  ### Admin
-  administrator_login    = data.azurerm_key_vault_secret.pgres_flex_admin_login.value
-  administrator_password = data.azurerm_key_vault_secret.pgres_flex_admin_pwd.value
-
-  sku_name   = var.pgflex_private_config.sku_name
-  db_version = var.pgflex_private_config.db_version
-  storage_mb = var.pgflex_private_config.storage_mb
-
-  ### zones & HA
-  zone                      = var.pgflex_private_config.zone
-  high_availability_enabled = var.pgflex_private_ha_config.high_availability_enabled
-  standby_availability_zone = var.pgflex_private_ha_config.standby_availability_zone
-
-  maintenance_window_config = {
-    day_of_week  = 0
-    start_hour   = 2
-    start_minute = 0
   }
 
-  ### backup
-  backup_retention_days        = var.pgflex_private_config.backup_retention_days
-  geo_redundant_backup_enabled = var.pgflex_private_config.geo_redundant_backup_enabled
+  #
+  # Public Flexible
+  #
 
-  pgbouncer_enabled = var.pgflex_private_config.pgbouncer_enabled
+  # https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-compare-single-server-flexible-server
+  module "postgres_flexible_server_public" {
 
-  tags = var.tags
+    count = var.pgflex_public_config.enabled ? 1 : 0
 
-  depends_on = [azurerm_private_dns_zone_virtual_network_link.privatelink_postgres_database_azure_com_vnet]
+    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//postgres_flexible_server?ref=v3.15.0"
 
-  metric_alerts  = var.pgflex_private_metric_alerts
-  alerts_enabled = true
+    name                = "${local.program}-public-pgflex"
+    location            = azurerm_resource_group.postgres_dbs.location
+    resource_group_name = azurerm_resource_group.postgres_dbs.name
 
-  diagnostic_settings_enabled = true
-  log_analytics_workspace_id  = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
-  diagnostic_setting_destination_storage_id = data.azurerm_storage_account.security_monitoring_storage.id
-}
+    administrator_login    = data.azurerm_key_vault_secret.pgres_flex_admin_login.value
+    administrator_password = data.azurerm_key_vault_secret.pgres_flex_admin_pwd.value
+
+    sku_name   = "B_Standard_B1ms"
+    db_version = "13"
+    # Possible values are 32768, 65536, 131072, 262144, 524288, 1048576,
+    # 2097152, 4194304, 8388608, 16777216, and 33554432.
+    storage_mb                   = 32768
+    zone                         = 1
+    backup_retention_days        = 7
+    geo_redundant_backup_enabled = false
+
+    high_availability_enabled = false
+    private_endpoint_enabled  = false
+    pgbouncer_enabled         = false
+
+    tags = var.tags
+
+    custom_metric_alerts = var.pgflex_public_metric_alerts
+    alerts_enabled       = true
+
+    diagnostic_settings_enabled               = true
+    log_analytics_workspace_id                = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
+    diagnostic_setting_destination_storage_id = data.azurerm_storage_account.security_monitoring_storage.id
+
+  }
 ```
 
 ## Migration from v2

@@ -9,52 +9,49 @@ This module allow the creation of api management product, and associate to a gro
 ## How to use it
 
 ```ts
-
-resource "azurerm_api_management_api_version_set" "apim_hub_spid_login_api" {
-  name                = format("%s-spid-login-api", var.env_short)
-  resource_group_name = azurerm_resource_group.rg_api.name
-  api_management_name = module.apim.name
-  display_name        = "SPID"
-  versioning_scheme   = "Segment"
+locals {
+  apim_devopslab_webapp_python_alpha_api = {
+    # params for all api versions
+    display_name          = "Webapp Python Alpha api"
+    description           = "Webapp Python Alpha api"
+    path                  = "webapp-python-alpha"
+    subscription_required = false
+    service_url           = "http://mock-aks/webapp-python-alpha"
+    api_name              = "${var.env}-webapp-python-alpha-api"
+  }
 }
 
-module "apim_hub_spid_login_api_v1" {
-  source              = "git::https://github.com/pagopa/azurerm.git//api_management_api?ref=v1.0.58"
-  name                = format("%s-spid-login-api-v1", local.project)
-  api_management_name = module.apim.name
-  resource_group_name = azurerm_resource_group.rg_api.name
-  version_set_id      = azurerm_api_management_api_version_set.apim_hub_spid_login_api.id
+# resource "azurerm_api_management_api_version_set" "apim_devopslab_webapp_python_alpha_api" {
+#   name                = local.apim_devopslab_webapp_python_alpha_api.api_name
+#   resource_group_name = module.apim.resource_group_name
+#   api_management_name = module.apim.name
+#   display_name        = local.apim_devopslab_webapp_python_alpha_api.display_name
+#   versioning_scheme   = "Segment"
+# }
 
+module "apim_devopslab_webapp_python_alpha_api_v1" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//api_management_api?ref=v3.11.0"
 
-  description  = "Login SPID Service Provider"
-  display_name = "SPID V1"
-  path         = "spid"
-  api_version  = "v1"
+  name                  = local.apim_devopslab_webapp_python_alpha_api.api_name
+  api_management_name   = module.apim.name
+  product_ids           = [module.apim_product_devopslab.product_id]
+  subscription_required = local.apim_devopslab_webapp_python_alpha_api.subscription_required
+  # version_set_id        = azurerm_api_management_api_version_set.apim_devopslab_webapp_python_alpha_api.id
+  # api_version           = "v1"
+  service_url         = "${local.apim_devopslab_webapp_python_alpha_api.service_url}/"
+  resource_group_name = module.apim.resource_group_name
+
+  description  = local.apim_devopslab_webapp_python_alpha_api.description
+  display_name = local.apim_devopslab_webapp_python_alpha_api.display_name
+  path         = local.apim_devopslab_webapp_python_alpha_api.path
   protocols    = ["https"]
 
-  service_url = format("http://%s/spid/v1", var.reverse_proxy_ip)
-
-  content_format = "swagger-json"
-  content_value = templatefile("./api/hubspidlogin_api/v1/swagger.json.tpl", {
-    host = "selc-d-apim.azure-api.net" //azurerm_api_management_custom_domain.api_custom_domain.proxy[0].host_name
+  content_format = "openapi"
+  content_value = templatefile("./api/devopslab/webapp-python/openapi_webapp_python.json.tftpl", {
+    projectName = local.apim_devopslab_webapp_python_alpha_api.display_name
   })
 
-  xml_content = file("./api/base_policy.xml")
-
-  subscription_required = false
-
-  api_operation_policies = [
-    {
-      operation_id = "postACS"
-      xml_content = templatefile("./api/hubspidlogin_api/v1/postacs_policy.xml.tpl", {
-        origins = local.origins.spidAcsOrigins
-      })
-    },
-    {
-      operation_id = "getMetadata"
-      xml_content  = file("./api/hubspidlogin_api/v1/metadata_policy.xml.tpl")
-    }
-  ]
+  xml_content = file("./api/devopslab/webapp-python/_base_policy.xml")
 }
 
 ```

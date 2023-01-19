@@ -1,3 +1,29 @@
+# Virtual network peering
+
+This module allow the creation of a virtual network peering
+
+## How to use it
+
+```ts
+module "vnet_peering_core_2_aks" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//virtual_network_peering?ref=v3.15.0"
+
+  for_each = { for n in var.aks_networks : n.domain_name => n }
+
+  location = var.location
+
+  source_resource_group_name       = data.azurerm_resource_group.rg_vnet.name
+  source_virtual_network_name      = data.azurerm_virtual_network.vnet.name
+  source_remote_virtual_network_id = data.azurerm_virtual_network.vnet.id
+  source_allow_gateway_transit     = false # needed by vpn gateway for enabling routing from vnet to vnet_integration
+
+  target_resource_group_name       = azurerm_resource_group.rg_vnet_aks[each.key].name
+  target_virtual_network_name      = module.vnet_aks[each.key].name
+  target_remote_virtual_network_id = module.vnet_aks[each.key].id
+  target_use_remote_gateways       = false # needed by vpn gateway for enabling routing from vnet to vnet_integration
+}
+```
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements

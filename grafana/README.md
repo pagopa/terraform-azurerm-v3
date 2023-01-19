@@ -6,7 +6,7 @@ This module allow the creation of Grafana Managed
 
 ## How to use it
 
-```hcl
+```ts
 resource "azurerm_resource_group" "load_test" {
 
   name     = "${local.product}-load-test-rg"
@@ -28,6 +28,9 @@ module "grafana_managed" {
 }
 
 ```
+
+<!-- markdownlint-disable -->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Requirements
 
@@ -78,3 +81,4 @@ No modules.
 | <a name="output_outbound_ip"></a> [outbound\_ip](#output\_outbound\_ip) | n/a |
 | <a name="output_principal_id"></a> [principal\_id](#output\_principal\_id) | n/a |
 | <a name="output_version"></a> [version](#output\_version) | n/a |
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

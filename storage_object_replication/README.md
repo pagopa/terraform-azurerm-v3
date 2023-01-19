@@ -1,3 +1,7 @@
+# Storage object replication
+
+This module allows the creation of resource: `azurerm_storage_object_replication`
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
