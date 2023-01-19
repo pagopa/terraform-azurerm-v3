@@ -7,7 +7,7 @@ resource "azurerm_key_vault" "this" {
   sku_name            = var.sku_name
 
   enabled_for_disk_encryption = true
-  enable_rbac_authorization   = false
+  enable_rbac_authorization   = var.enable_rbac_authorization
   soft_delete_retention_days  = var.soft_delete_retention_days
   purge_protection_enabled    = true
 
@@ -18,7 +18,6 @@ resource "azurerm_key_vault" "this" {
 
   tags = var.tags
 }
-
 
 # terraform cloud policy
 resource "azurerm_key_vault_access_policy" "terraform_cloud_policy" {
