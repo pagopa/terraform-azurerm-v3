@@ -1,3 +1,54 @@
+# DNS Forwarder
+
+This module allow the creation of a DNS forwarder, usefull for VPN
+
+## How to use
+
+```ts
+#
+# DNS Forwarder
+#
+resource "azurerm_resource_group" "dns_forwarder" {
+
+  count = var.dns_forwarder_enabled ? 1 : 0
+
+  name     = "${local.project}-dns-forwarder-rg"
+  location = var.location
+
+  tags = var.tags
+}
+
+module "dns_forwarder_snet" {
+  count = var.dns_forwarder_enabled ? 1 : 0
+
+  source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v3.15.0"
+  name                                      = "${local.project}-dnsforwarder-snet"
+  address_prefixes                          = var.cidr_subnet_dnsforwarder
+  resource_group_name                       = azurerm_resource_group.rg_vnet.name
+  virtual_network_name                      = module.vnet.name
+  private_endpoint_network_policies_enabled = true
+
+  delegation = {
+    name = "delegation"
+    service_delegation = {
+      name    = "Microsoft.ContainerInstance/containerGroups"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
+}
+
+module "dns_forwarder" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder?ref=v3.15.0"
+
+  name                = "${local.project}-dns-forwarder"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg_vnet.name
+  subnet_id           = module.dns_forwarder_snet[0].id
+
+  tags = var.tags
+}
+```
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements

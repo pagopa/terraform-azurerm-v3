@@ -20,7 +20,6 @@ module "my_jwt" {
 
 Nothing to change
 
-
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements

@@ -9,16 +9,12 @@ This module allow the creation of api management product, and associate to a gro
 ## How to use it
 
 ```ts
-##############
-## Products ##
-##############
-
 module "apim_product_devopslab" {
-  source = "git::https://github.com/pagopa/azurerm.git//api_management_product?ref=v1.0.90"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//api_management_product?ref=v3.11.0"
 
-  product_id   = "userregistry"
-  display_name = "UserRegistry"
-  description  = "Product for UserRegistry backend"
+  product_id   = "devopslab"
+  display_name = "DevOpsLab Program"
+  description  = "Product for DevOpsLab backend"
 
   api_management_name = module.apim.name
   resource_group_name = module.apim.resource_group_name
@@ -27,7 +23,7 @@ module "apim_product_devopslab" {
   subscription_required = true
   approval_required     = false
 
-  policy_xml = file("./api_product/uservice_user_registry_management/_base_policy.xml")
+  policy_xml = file("./api_product/devopslab/_base_policy.xml")
 }
 
 ```

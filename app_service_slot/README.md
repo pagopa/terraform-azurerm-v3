@@ -1,3 +1,7 @@
+# App service slot
+
+This module allow the creation of app service slots
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements

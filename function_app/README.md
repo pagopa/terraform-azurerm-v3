@@ -9,6 +9,10 @@ Module that allows the creation of an Azure function app.
 ## How to use it
 
 ```ts
+#
+# APP CONFIGURATION
+#
+
 locals {
   function_app = {
     app_settings_common = {
@@ -35,7 +39,7 @@ locals {
 
 # #tfsec:ignore:azure-storage-queue-services-logging-enabled:exp:2022-05-01 # already ignored, maybe a bug in tfsec
 module "func_python" {
-  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app?ref=function_migration_from_v2"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app?ref=v3.15.0"
 
   count = var.function_python_diego_enabled ? 1 : 0
 
@@ -67,7 +71,7 @@ module "func_python" {
 }
 
 module "func_python_staging_slot" {
-  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app_slot?ref=function_migration_from_v2"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app_slot?ref=v3.15.0"
 
   count = var.function_python_diego_enabled ? 1 : 0
 
@@ -100,7 +104,6 @@ module "func_python_staging_slot" {
 
   tags = var.tags
 }
-
 ```
 
 ## Migration from v2
@@ -128,9 +131,9 @@ See [Generic resorce migration](../docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_storage_account"></a> [storage\_account](#module\_storage\_account) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account | v3.13.0 |
-| <a name="module_storage_account_durable_function"></a> [storage\_account\_durable\_function](#module\_storage\_account\_durable\_function) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account | v3.13.0 |
-| <a name="module_storage_account_durable_function_management_policy"></a> [storage\_account\_durable\_function\_management\_policy](#module\_storage\_account\_durable\_function\_management\_policy) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_management_policy | v3.13.0 |
+| <a name="module_storage_account"></a> [storage\_account](#module\_storage\_account) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account | v3.15.0 |
+| <a name="module_storage_account_durable_function"></a> [storage\_account\_durable\_function](#module\_storage\_account\_durable\_function) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account | v3.15.0 |
+| <a name="module_storage_account_durable_function_management_policy"></a> [storage\_account\_durable\_function\_management\_policy](#module\_storage\_account\_durable\_function\_management\_policy) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_management_policy | v3.15.0 |
 
 ## Resources
 

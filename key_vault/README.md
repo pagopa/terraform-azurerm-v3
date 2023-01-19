@@ -1,3 +1,26 @@
+# Key vault
+
+This module allow the creation of a key vault
+
+## How to use
+
+```ts
+module "key_vault_domain" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//key_vault?ref=v3.15.0"
+
+  name                       = "${local.product}-${var.domain}-kv"
+  location                   = azurerm_resource_group.sec_rg_domain.location
+  resource_group_name        = azurerm_resource_group.sec_rg_domain.name
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  soft_delete_retention_days = 90
+  sku_name                   = "premium"
+
+  lock_enable = true
+
+  tags = var.tags
+}
+```
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements

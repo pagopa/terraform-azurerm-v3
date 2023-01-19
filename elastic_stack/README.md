@@ -2,6 +2,8 @@
 
 This module allow the creation of Elastic Stack
 
+## Architecture
+
 ## Configurations
 
 ## How to use it

@@ -1,3 +1,37 @@
+# Storage management policy
+
+This module allow the creation of a management policy for storage account
+
+## How to use
+
+```ts
+module "storage_account_durable_function_management_policy" {
+  count  = length(local.internal_containers) == 0 ? 0 : 1
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_management_policy?ref=v3.13.0"
+
+  storage_account_id = module.storage_account_durable_function[0].id
+
+  rules = [
+    {
+      name    = "deleteafterdays"
+      enabled = true
+      filters = {
+        prefix_match = local.internal_containers
+        blob_types   = ["blockBlob"]
+      }
+      actions = {
+        base_blob = {
+          tier_to_cool_after_days_since_modification_greater_than    = 0
+          tier_to_archive_after_days_since_modification_greater_than = 0
+          delete_after_days_since_modification_greater_than          = var.internal_storage.blobs_retention_days
+        }
+        snapshot = null
+      }
+    },
+  ]
+}
+```
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements

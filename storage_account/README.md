@@ -51,7 +51,7 @@ module "diego_storage_account" {
 * `lock_level`  
 * `lock_notes`
 
-🔥 Broken compatibility and destroied resources
+🔥 destroied resources
 
 * `module.<name>.azurerm_template_deployment.versioning[0]` is destroied becuase we use an internal variable and not more an arm.
 

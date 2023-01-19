@@ -10,7 +10,7 @@ resource "azurerm_data_factory" "this" {
     # (Required) Specifies the collaboration branch of the repository to get code from.
     # The poublish branch is automatically set to adf_publish
     branch_name = var.github_conf.branch_name
-    # (Required) Specifies the GitHub Enterprise host name. 
+    # (Required) Specifies the GitHub Enterprise host name.
     # For example: https://github.mydomain.com. Use https://github.com for open source repositories
     git_url = var.github_conf.git_url
     # (Required) Specifies the name of the git repository
@@ -75,4 +75,3 @@ resource "azurerm_data_factory_managed_private_endpoint" "this" {
   target_resource_id = each.key
   subresource_name   = each.value
 }
-
