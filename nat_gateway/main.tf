@@ -5,7 +5,7 @@ resource "azurerm_public_ip" "this" {
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
   sku                 = "Standard"
-  availability_zone   = var.zone
+  zones               = var.zones
 }
 
 resource "azurerm_nat_gateway" "this" {
@@ -14,7 +14,7 @@ resource "azurerm_nat_gateway" "this" {
   resource_group_name     = var.resource_group_name
   sku_name                = var.sku_name
   idle_timeout_in_minutes = var.idle_timeout_in_minutes
-  zones                   = [var.zone]
+  zones                   = var.zones
 
   tags = var.tags
 }
