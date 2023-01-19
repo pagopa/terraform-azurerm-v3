@@ -5,14 +5,15 @@ module "cdn_storage_account" {
 
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v3.13.0"
 
-  name                            = replace("${var.prefix}-${var.name}-sa", "-", "")
-  account_kind                    = var.storage_account_kind
-  account_tier                    = var.storage_account_tier
-  account_replication_type        = var.storage_account_replication_type
-  access_tier                     = var.storage_access_tier
-  blob_versioning_enabled         = true
-  resource_group_name             = var.resource_group_name
-  location                        = var.location
+  name            = replace("${var.prefix}-${var.name}-sa", "-", "")
+
+  account_kind             = var.storage_account_kind
+  account_tier             = var.storage_account_tier
+  account_replication_type = var.storage_account_replication_type
+  access_tier              = var.storage_access_tier
+  blob_versioning_enabled        = true
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
   allow_nested_items_to_be_public = true
 
   index_document     = var.index_document
@@ -478,15 +479,15 @@ resource "azurerm_cdn_endpoint" "this" {
 /*
 * Custom Domain
 */
-resource "null_resource" "custom_domain" {
+resource "null_resource" "apex_custom_hostname" {
+  count = var.dns_zone_name == var.hostname ? 1 : 0
+
   depends_on = [
-    azurerm_dns_a_record.hostname[0],
-    azurerm_dns_cname_record.cdnverify[0],
-    azurerm_dns_cname_record.custom_subdomain[0],
+    azurerm_dns_a_record.apex_hostname[0],
+    azurerm_dns_cname_record.apex_cdnverify[0],
     azurerm_cdn_endpoint.this,
   ]
-  # needs az cli > 2.0.81
-  # see https://github.com/Azure/azure-cli/issues/12152
+
   triggers = {
     resource_group_name = var.resource_group_name
     endpoint_name       = azurerm_cdn_endpoint.this.name
@@ -539,8 +540,59 @@ resource "null_resource" "custom_domain" {
   }
 }
 
+resource "null_resource" "custom_hostname" {
+  count = var.dns_zone_name != var.hostname ? 1 : 0
+
+  depends_on = [
+    azurerm_dns_cname_record.hostname[0],
+    azurerm_cdn_endpoint.this,
+  ]
+
+  triggers = {
+    resource_group_name = var.resource_group_name
+    endpoint_name       = azurerm_cdn_endpoint.this.name
+    profile_name        = azurerm_cdn_profile.this.name
+    name                = var.hostname
+    hostname            = var.hostname
+  }
+
+  # https://docs.microsoft.com/it-it/cli/azure/cdn/custom-domain?view=azure-cli-latest
+  provisioner "local-exec" {
+    command = <<EOT
+      az cdn custom-domain create \
+        --resource-group ${self.triggers.resource_group_name} \
+        --endpoint-name ${self.triggers.endpoint_name} \
+        --profile-name ${self.triggers.profile_name} \
+        --name ${replace(self.triggers.name, ".", "-")} \
+        --hostname ${self.triggers.hostname} && \
+      az cdn custom-domain enable-https \
+        --resource-group ${self.triggers.resource_group_name} \
+        --endpoint-name ${self.triggers.endpoint_name} \
+        --profile-name ${self.triggers.profile_name} \
+        --name ${replace(self.triggers.name, ".", "-")} \
+        --min-tls-version "1.2"
+    EOT
+  }
+  # https://docs.microsoft.com/it-it/cli/azure/cdn/custom-domain?view=azure-cli-latest
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOT
+      az cdn custom-domain disable-https \
+        --resource-group ${self.triggers.resource_group_name} \
+        --endpoint-name ${self.triggers.endpoint_name} \
+        --profile-name ${self.triggers.profile_name} \
+        --name ${replace(self.triggers.name, ".", "-")} && \
+      az cdn custom-domain delete \
+        --resource-group ${self.triggers.resource_group_name} \
+        --endpoint-name ${self.triggers.endpoint_name} \
+        --profile-name ${self.triggers.profile_name} \
+        --name ${replace(self.triggers.name, ".", "-")}
+    EOT
+  }
+}
+
 # record APEX https://docs.microsoft.com/it-it/azure/dns/dns-zones-records#record-names
-resource "azurerm_dns_a_record" "hostname" {
+resource "azurerm_dns_a_record" "apex_hostname" {
   # create this iff DNS zone name equal to HOST NAME azurerm_cdn_endpoint.this.fqdn
   count = var.dns_zone_name == var.hostname ? 1 : 0
 
@@ -553,23 +605,8 @@ resource "azurerm_dns_a_record" "hostname" {
   tags = var.tags
 }
 
-# record A
-resource "azurerm_dns_a_record" "hostname_a" {
-  # create this iff DNS zone name equal to HOST NAME azurerm_cdn_endpoint.this.fqdn
-  # true if ex: dns_zone_name = dev.pagopa.it, hostname = west.dev.pagopa.it
-  count = length(split(var.dns_zone_name, var.hostname)) > 1 ? 1 : 0
-
-  name                = trimsuffix(trimsuffix(var.hostname, var.dns_zone_name), ".")
-  zone_name           = var.dns_zone_name
-  resource_group_name = var.dns_zone_resource_group_name
-  ttl                 = 3600
-  target_resource_id  = azurerm_cdn_endpoint.this.id
-
-  tags = var.tags
-}
-
 # https://docs.microsoft.com/en-us/azure/dns/dns-custom-domain#azure-cdn
-resource "azurerm_dns_cname_record" "cdnverify" {
+resource "azurerm_dns_cname_record" "apex_cdnverify" {
   count = var.dns_zone_name == var.hostname ? 1 : 0
 
   name                = "cdnverify"
@@ -579,16 +616,11 @@ resource "azurerm_dns_cname_record" "cdnverify" {
   record              = "cdnverify.${azurerm_cdn_endpoint.this.fqdn}"
 
   tags = var.tags
-
-  depends_on = [
-    azurerm_cdn_endpoint.this
-  ]
 }
 
-resource "azurerm_dns_cname_record" "custom_subdomain" {
+resource "azurerm_dns_cname_record" "hostname" {
   count = var.dns_zone_name != var.hostname ? 1 : 0
 
-  # name                = var.cname_record_name
   name                = trimsuffix(replace(var.hostname, var.dns_zone_name, ""), ".")
   zone_name           = var.dns_zone_name
   resource_group_name = var.dns_zone_resource_group_name
@@ -596,9 +628,4 @@ resource "azurerm_dns_cname_record" "custom_subdomain" {
   record              = azurerm_cdn_endpoint.this.fqdn
 
   tags = var.tags
-
-  depends_on = [
-    azurerm_cdn_endpoint.this
-  ]
 }
-

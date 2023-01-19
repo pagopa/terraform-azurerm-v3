@@ -298,6 +298,10 @@ variable "hostname" {
   type = string
 }
 
+variable "lock_enabled" {
+  type = bool
+}
+
 variable "index_document" {
   type = string
 }

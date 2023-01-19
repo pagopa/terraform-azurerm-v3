@@ -55,7 +55,72 @@ module "diego_storage_account" {
 
 * `module.<name>.azurerm_template_deployment.versioning[0]` is destroied becuase we use an internal variable and not more an arm.
 
+### Migration results
 
+During the apply there will be this result:
+
+* 1 changed (related to storage, that need to update one property `cross_tenant_replication_enabled`)
+* 1 destroy (related to storage, that need to destroy the old arm command for versioning `azurerm_template_deployment.versioning`)
+
+like this:
+
+```ts
+  # module.devopslab_cdn.module.cdn_storage_account.azurerm_storage_account.this will be updated in-place
+  ~ resource "azurerm_storage_account" "this" {
+      + cross_tenant_replication_enabled  = true
+        id                                = "/subscriptions/ac17914c-79bf-48fa-831e-1359ef74c1d5/resourceGroups/dvopla-d-neu-diego-cdn-rg/providers/Microsoft.Storage/storageAccounts/dvopladdiegosa"
+        name                              = "dvopladdiegosa"
+        tags                              = {
+            "Application" = "diego.common"
+            "CostCenter"  = "TS310 - PAGAMENTI & SERVIZI"
+            "CreatedBy"   = "Terraform"
+            "Environment" = "Dev"
+            "Owner"       = "devops"
+            "Source"      = "https://github.com/pagopa/dvopla-infrastructure"
+        }
+        # (37 unchanged attributes hidden)
+
+        # (5 unchanged blocks hidden)
+    }
+
+  # module.devopslab_cdn.module.cdn_storage_account.azurerm_template_deployment.versioning[0] will be destroyed
+  # (because azurerm_template_deployment.versioning is not in configuration)
+  - resource "azurerm_template_deployment" "versioning" {
+      - deployment_mode     = "Incremental" -> null
+      - id                  = "/subscriptions/ac17914c-79bf-48fa-831e-1359ef74c1d5/resourceGroups/dvopla-d-neu-diego-cdn-rg/providers/Microsoft.Resources/deployments/dvopla-d-diego-sa-versioning" -> null
+      - name                = "dvopla-d-diego-sa-versioning" -> null
+      - outputs             = {} -> null
+      - parameters          = {
+          - "storageAccount" = "dvopladdiegosa"
+        } -> null
+      - resource_group_name = "dvopla-d-neu-diego-cdn-rg" -> null
+      - template_body       = jsonencode(
+            {
+              - "$schema"      = "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#"
+              - contentVersion = "1.0.0.0"
+              - parameters     = {
+                  - storageAccount = {
+                      - metadata = {
+                          - description = "Storage Account Name"
+                        }
+                      - type     = "string"
+                    }
+                }
+              - resources      = [
+                  - {
+                      - apiVersion = "2019-06-01"
+                      - name       = "[concat(parameters('storageAccount'), '/default')]"
+                      - properties = {
+                          - IsVersioningEnabled = true
+                        }
+                      - type       = "Microsoft.Storage/storageAccounts/blobServices"
+                    },
+                ]
+              - variables      = {}
+            }
+        ) -> null
+    }
+```
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

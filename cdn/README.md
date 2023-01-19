@@ -287,17 +287,15 @@ resource "azurerm_key_vault_secret" "selc_web_storage_blob_connection_string" {
 
 ## Migration from v2
 
-Due to drift into the state, is possible that you need to delete the state linked to this resource and re-import the resource
-
-```sh
-terraform state rm module.devopslab_cdn.azurerm_cdn_endpoint.this
-```
-
 🆕 To use this module you need to use change this variables/arguments:
 
 ❌ Don't use this variables:
 
-* `lock_enabled` -> don't use any more, the locks are managed outside
+* `lock_enabled` -> don't use any more, the locks are managed outside into the policies
+
+### Migration results
+
+During the apply there will be 1 changed and 1 destroy related to storage see [storage account](../storage_account/README.md)
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
