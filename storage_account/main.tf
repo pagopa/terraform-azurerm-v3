@@ -1,16 +1,16 @@
 #tfsec:ignore:azure-storage-queue-services-logging-enabled
 resource "azurerm_storage_account" "this" {
-  name                            = var.name
-  resource_group_name             = var.resource_group_name
-  location                        = var.location
-  account_kind                    = var.account_kind
-  account_tier                    = var.account_tier
-  account_replication_type        = var.account_replication_type
-  access_tier                     = var.access_tier
-  enable_https_traffic_only       = true
-  min_tls_version                 = var.min_tls_version
-  allow_nested_items_to_be_public = var.allow_nested_items_to_be_public
-  is_hns_enabled                  = var.is_hns_enabled
+  name                             = var.name
+  resource_group_name              = var.resource_group_name
+  location                         = var.location
+  account_kind                     = var.account_kind
+  account_tier                     = var.account_tier
+  account_replication_type         = var.account_replication_type
+  access_tier                      = var.access_tier
+  enable_https_traffic_only        = true
+  min_tls_version                  = var.min_tls_version
+  allow_nested_items_to_be_public  = var.allow_nested_items_to_be_public
+  is_hns_enabled                   = var.is_hns_enabled
   cross_tenant_replication_enabled = var.cross_tenant_replication_enabled
 
   dynamic "blob_properties" {
