@@ -74,6 +74,12 @@ variable "blob_versioning_enabled" {
   default     = false
 }
 
+variable "cross_tenant_replication_enabled" {
+  description = "(Optional) Should cross Tenant replication be enabled? Defaults to false."
+  type        = bool
+  default     = false
+}
+
 # Note: If specifying network_rules,
 # one of either ip_rules or virtual_network_subnet_ids must be specified
 # and default_action must be set to Deny.
