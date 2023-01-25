@@ -93,6 +93,12 @@ variable "system_node_pool_ultra_ssd_enabled" {
   default     = false
 }
 
+variable "system_node_pool_availability_zones" {
+  type        = list(string)
+  description = "(Optional) List of availability zones for system node pool"
+  default     = ["1", "2", "3"]
+}
+
 variable "system_node_pool_tags" {
   type        = map(any)
   description = "(Optional) A mapping of tags to assign to the Node Pool."
@@ -180,6 +186,12 @@ variable "user_node_pool_ultra_ssd_enabled" {
   type        = bool
   description = "(Optional) Used to specify whether the UltraSSD is enabled in the Default Node Pool. Defaults to false."
   default     = false
+}
+
+variable "user_node_pool_availability_zones" {
+  type        = list(string)
+  description = "(Optional) List of availability zones for user node pool"
+  default     = ["1", "2", "3"]
 }
 
 variable "user_node_pool_tags" {
