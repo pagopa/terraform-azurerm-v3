@@ -80,10 +80,21 @@ variable "network_rulesets" {
 
 variable "zone_redundant" {
   type        = bool
-  default     = false
+  default     = true
   description = "Specifies if the EventHub Namespace should be Zone Redundant (created across Availability Zones)."
 }
 
+variable "minimum_tls_version" {
+  type        = string
+  default     = "1.2"
+  description = "(Optional) The minimum supported TLS version for this EventHub Namespace. Valid values are: 1.0, 1.1 and 1.2. The current default minimum TLS version is 1.2."
+}
+
+variable "public_network_access_enabled" {
+  type        = bool
+  default     = false
+  description = "(Optional) Is public network access enabled for the EventHub Namespace? Defaults to true."
+}
 
 variable "metric_alerts" {
   default = {}
