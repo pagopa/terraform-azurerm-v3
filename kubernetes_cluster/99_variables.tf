@@ -319,6 +319,12 @@ variable "log_analytics_workspace_id" {
   default     = null
 }
 
+variable "microsoft_defender_log_analytics_workspace_id" {
+  type        = string
+  description = "Specifies the ID of the Log Analytics Workspace where the audit logs collected by Microsoft Defender should be sent to"
+  default     = null
+}
+
 variable "sec_log_analytics_workspace_id" {
   type        = string
   default     = null
