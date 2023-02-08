@@ -8,7 +8,7 @@ resource "azurerm_storage_management_policy" "this" {
       enabled = rule.value.enabled
 
       dynamic "filters" {
-        for_each = rule.value.filters == null ? [] : list(rule.value.filters)
+        for_each = rule.value.filters == null ? [] : tolist([rule.value.filters])
         content {
           prefix_match = filters.value.prefix_match
           blob_types   = filters.value.blob_types
@@ -22,7 +22,7 @@ resource "azurerm_storage_management_policy" "this" {
           delete_after_days_since_modification_greater_than          = rule.value.actions.base_blob.delete_after_days_since_modification_greater_than
         }
         dynamic "snapshot" {
-          for_each = rule.value.actions.snapshot == null ? [] : list(rule.value.actions.snapshot)
+          for_each = rule.value.actions.snapshot == null ? [] : tolist([rule.value.filters])
           content {
             delete_after_days_since_creation_greater_than = snapshot.value.delete_after_days_since_creation_greater_than
           }
