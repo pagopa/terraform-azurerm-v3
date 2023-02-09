@@ -20,7 +20,8 @@ resource "tls_self_signed_cert" "jwt_self" {
   validity_period_hours = var.cert_validity_hours
   early_renewal_hours   = var.early_renewal_hours
   subject {
-    common_name = var.cert_common_name
+    common_name    = var.cert_common_name
+    street_address = var.cert_street_address
   }
 }
 

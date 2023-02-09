@@ -18,6 +18,11 @@ variable "cert_common_name" {
   type = string
 }
 
+variable "cert_street_address" {
+  type = list(string)
+  default = []
+}
+
 variable "cert_password" {
   type = string
 }
