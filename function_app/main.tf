@@ -58,30 +58,24 @@ resource "azurerm_storage_container" "internal_container" {
   container_access_type = "private"
 }
 
-module "storage_account_durable_function_management_policy" {
+resource "azurerm_storage_management_policy" "internal_deleteafterdays" {
   count  = length(local.internal_containers) == 0 ? 0 : 1
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_management_policy?ref=v4.1.10"
 
   storage_account_id = module.storage_account_durable_function[0].id
 
-  rules = [
-    {
-      name    = "deleteafterdays"
-      enabled = true
-      filters = {
-        prefix_match = local.internal_containers
-        blob_types   = ["blockBlob"]
+  rule {
+    name    = "deleteafterdays"
+    enabled = true
+    filters {
+      prefix_match = [local.internal_containers]
+      blob_types   = ["blockBlob"]
+    }
+    actions {
+      base_blob {
+        delete_after_days_since_modification_greater_than = var.internal_storage.blobs_retention_days
       }
-      actions = {
-        base_blob = {
-          tier_to_cool_after_days_since_modification_greater_than    = 1
-          tier_to_archive_after_days_since_modification_greater_than = 1
-          delete_after_days_since_modification_greater_than          = var.internal_storage.blobs_retention_days
-        }
-        snapshot = null
-      }
-    },
-  ]
+    }
+  }
 }
 
 resource "azurerm_private_endpoint" "blob" {
