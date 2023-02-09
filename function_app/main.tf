@@ -59,7 +59,7 @@ resource "azurerm_storage_container" "internal_container" {
 }
 
 resource "azurerm_storage_management_policy" "internal_deleteafterdays" {
-  count  = length(local.internal_containers) == 0 ? 0 : 1
+  count = length(local.internal_containers) == 0 ? 0 : 1
 
   storage_account_id = module.storage_account_durable_function[0].id
 
