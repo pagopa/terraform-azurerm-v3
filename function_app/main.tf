@@ -67,7 +67,7 @@ resource "azurerm_storage_management_policy" "internal_deleteafterdays" {
     name    = "deleteafterdays"
     enabled = true
     filters {
-      prefix_match = [local.internal_containers]
+      prefix_match = local.internal_containers
       blob_types   = ["blockBlob"]
     }
     actions {
