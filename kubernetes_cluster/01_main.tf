@@ -83,6 +83,14 @@ resource "azurerm_kubernetes_cluster" "this" {
     }
   }
 
+  dynamic "microsoft_defender" {
+    for_each = var.microsoft_defender_log_analytics_workspace_id != null ? [var.microsoft_defender_log_analytics_workspace_id] : []
+    iterator = law
+    content {
+      log_analytics_workspace_id = law.value
+    }
+  }
+
   maintenance_window {
     allowed {
       day   = "Sunday"
