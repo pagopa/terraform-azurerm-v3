@@ -74,8 +74,8 @@ module "storage_account_durable_function_management_policy" {
       }
       actions = {
         base_blob = {
-          tier_to_cool_after_days_since_modification_greater_than    = 0
-          tier_to_archive_after_days_since_modification_greater_than = 0
+          tier_to_cool_after_days_since_modification_greater_than    = -1
+          tier_to_archive_after_days_since_modification_greater_than = -1
           delete_after_days_since_modification_greater_than          = var.internal_storage.blobs_retention_days
         }
         snapshot = null
