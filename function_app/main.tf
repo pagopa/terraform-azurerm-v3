@@ -156,6 +156,10 @@ resource "azurerm_private_endpoint" "table" {
   tags = var.tags
 }
 
+
+###
+### Da modificare
+###
 resource "azurerm_app_service_plan" "this" {
   count = var.app_service_plan_id == null ? 1 : 0
 
@@ -186,7 +190,9 @@ locals {
   internal_queues     = var.internal_storage.enable ? var.internal_storage.queues : []
   internal_containers = var.internal_storage.enable ? var.internal_storage.containers : []
 }
-
+###
+### Da modificare
+###
 resource "azurerm_function_app" "this" {
   name                = var.name
   resource_group_name = var.resource_group_name
@@ -241,6 +247,28 @@ resource "azurerm_function_app" "this" {
   name                = var.app_service_plan_name != null ? var.app_service_plan_name : format("%s-plan", var.name)
   location            = var.location
   resource_group_name = var.resource_group_name
+  reserved            = var.app_service_plan_info.kind == "Linux" ? true : null
+
+  sku {
+    tier = var.app_service_plan_info.sku_tier
+    size = var.app_service_plan_info.sku_size
+    # capacity is only for isolated envs
+  }
+
+  per_site_scaling_enabled = false
+
+  tags = var.tags
+}
+
+###
+### NUOVO
+###
+resource "azurerm_service_plan" "this" {
+  count = var.app_service_plan_id == null ? 1 : 0
+
+  name                = var.app_service_plan_name != null ? var.app_service_plan_name : format("%s-plan", var.name)
+  location            = var.location
+  resource_group_name = var.resource_group_name
   reserved            = var.app_service_plan_info.kind == "Linux" ? true : false
 
   sku {
@@ -254,7 +282,9 @@ resource "azurerm_function_app" "this" {
   tags = var.tags
 }
 
-
+###
+### NUOVO
+###
 resource "azurerm_linux_function_app" "this" {
   name                = var.name
   resource_group_name = var.resource_group_name
