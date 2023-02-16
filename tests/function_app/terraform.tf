@@ -2,6 +2,41 @@
 # APP CONFIGURATION
 #
 
+resource "azurerm_application_insights" "example" {
+  name                = "tf-test-appinsights"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  application_type    = "web"
+}
+
+resource "azurerm_resource_group" "example" {
+  name     = "example-resources"
+  location = "West Europe"
+}
+
+resource "azurerm_virtual_network" "example" {
+  name                = "example-virtual-network"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+}
+
+resource "azurerm_subnet" "example" {
+  name                 = "example-subnet"
+  resource_group_name  = azurerm_resource_group.example.name
+  virtual_network_name = azurerm_virtual_network.example.name
+  address_prefixes     = ["10.0.1.0/24"]
+
+  delegation {
+    name = "example-delegation"
+
+    service_delegation {
+      name    = "Microsoft.Web/serverFarms"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
+}
+
 locals {
   function_app = {
     app_settings_common = {
@@ -30,10 +65,10 @@ locals {
 module "func_python" {
   source = "../../function_app"
 
-  count = var.function_python_diego_enabled ? 1 : 0
+  # count = var.function_python_diego_enabled ? 1 : 0
 
-  resource_group_name = azurerm_resource_group.funcs_diego_rg.name
-  name                = "${local.project}-fn-py"
+  resource_group_name = var.resource_group_name
+  name                = "${var.project}-fn-py"
   location            = var.location
   health_check_path   = "/api/v1/info"
 
@@ -42,53 +77,18 @@ module "func_python" {
   runtime_version  = "~4"
 
   always_on                                = true
-  application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
+  application_insights_instrumentation_key = azurerm_application_insights.example.instrumentation_key
 
-  app_service_plan_id = azurerm_app_service_plan.funcs_diego[0].id
-
-  app_settings = merge(
-    local.func_python.app_settings_common, {}
-  )
-
-  subnet_id = module.funcs_diego_snet.id
-
-  allowed_subnets = [
-    module.funcs_diego_snet.id,
-  ]
-
-  tags = var.tags
-}
-
-module "func_python_staging_slot" {
-  source = "../../function_app"
-
-  count = var.function_python_diego_enabled ? 1 : 0
-
-  name                = "staging"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.funcs_diego_rg.name
-  function_app_name   = module.func_python[0].name
-  function_app_id     = module.func_python[0].id
-  app_service_plan_id = module.func_python[0].app_service_plan_id
-  health_check_path   = "/api/v1/info"
-
-  storage_account_name       = module.func_python[0].storage_account.name
-  storage_account_access_key = module.func_python[0].storage_account.primary_access_key
-
-  os_type                                  = "linux"
-  linux_fx_version                         = "python|3.9"
-  always_on                                = "true"
-  runtime_version                          = "~4"
-  application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
+  app_service_plan_id = true
 
   app_settings = merge(
     local.func_python.app_settings_common, {}
   )
 
-  subnet_id = module.funcs_diego_snet.id
+  subnet_id = azurerm_subnet.example.id
 
   allowed_subnets = [
-    module.funcs_diego_snet.id,
+    azurerm_subnet.example.id,
   ]
 
   tags = var.tags
