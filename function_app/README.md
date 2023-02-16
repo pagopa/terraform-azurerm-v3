@@ -110,7 +110,7 @@ module "func_python_staging_slot" {
 
 Output for resource `azurerm_function_app_host_keys` changed
 
-See [Generic resorce migration](../docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
+See [Generic resource migration](../.docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
