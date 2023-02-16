@@ -40,7 +40,7 @@ resource "azurerm_subnet" "example" {
 locals {
   function_app = {
     app_settings_common = {
-      FUNCTIONS_WORKER_RUNTIME       = "python"
+      # FUNCTIONS_WORKER_RUNTIME       = "python"
       WEBSITE_RUN_FROM_PACKAGE       = "1"
       WEBSITE_VNET_ROUTE_ALL         = "1"
       WEBSITE_DNS_SERVER             = "168.63.129.16"
@@ -67,19 +67,19 @@ module "func_python" {
 
   # count = var.function_python_diego_enabled ? 1 : 0
 
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.example.name
   name                = "${var.project}-fn-py"
   location            = var.location
   health_check_path   = "/api/v1/info"
 
   os_type          = "linux"
-  linux_fx_version = "python|3.9"
+  linux_fx_version = "Node|14"
   runtime_version  = "~4"
 
   always_on                                = true
   application_insights_instrumentation_key = azurerm_application_insights.example.instrumentation_key
 
-  app_service_plan_id = true
+  # app_service_plan_id = true
 
   app_settings = merge(
     local.func_python.app_settings_common, {}
