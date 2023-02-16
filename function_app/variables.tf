@@ -76,10 +76,10 @@ variable "app_service_plan_info" {
   description = "Allows to configurate the internal service plan"
 
   default = {
-    kind                         = "elastic"
-    sku_tier                     = "ElasticPremium"
-    sku_size                     = "EP1"
-    maximum_elastic_worker_count = 1
+    kind                         = "Linux"
+    sku_tier                     = "PremiumV3"
+    sku_size                     = "P1v3"
+    maximum_elastic_worker_count = 0
   }
 }
 

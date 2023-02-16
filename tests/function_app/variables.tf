@@ -1,6 +1,6 @@
 variable "address_prefixes" {
   type    = list(any)
-  default = ["10.0.1.0/24"]
+  default = ["10.0.1.0/26"]
 }
 
 variable "address_space" {
@@ -10,17 +10,12 @@ variable "address_space" {
 
 variable "location" {
   type    = string
-  default = "West Europe"
+  default = "westeurope"
 }
 
 variable "project" {
   type    = string
-  default = "test"
-}
-
-variable "resource_group_name" {
-  type    = string
-  default = "test_rg"
+  default = "tests654321"
 }
 
 variable "tags" {
