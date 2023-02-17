@@ -34,8 +34,14 @@ variable "storage_principal_id" {
 #### OPTIONAL ####
 
 variable "key_size" {
-  description = "The RSA key size (2048, 3072, 4096)"
+  description = "The RSA, EC key size"
   type        = number
   default     = 4096
+}
+
+variable "key_type" {
+  description = "Key type"
+  type        = string
+  default     = "RSA"
 }
 
