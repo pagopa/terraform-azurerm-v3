@@ -183,8 +183,6 @@ resource "azurerm_app_service_virtual_network_swift_connection" "this" {
   subnet_id      = var.subnet_id
 }
 
-
-
 resource "azurerm_monitor_metric_alert" "function_app_health_check" {
   count = var.enable_healthcheck ? 1 : 0
 
@@ -214,9 +212,6 @@ resource "azurerm_monitor_metric_alert" "function_app_health_check" {
   }
 }
 
-###
-### NUOVO
-###
 resource "azurerm_service_plan" "this" {
   count = var.app_service_plan_id == null ? 1 : 0
 
@@ -224,16 +219,13 @@ resource "azurerm_service_plan" "this" {
   location            = var.location
   resource_group_name = var.resource_group_name
   os_type             = "Linux"
-  sku_name = var.app_service_plan_info.sku_size
+  sku_name            = var.app_service_plan_info.sku_size
 
   per_site_scaling_enabled = false
 
   tags = var.tags
 }
 
-###
-### NUOVO
-###
 resource "azurerm_linux_function_app" "this" {
   name                        = var.name
   resource_group_name         = var.resource_group_name

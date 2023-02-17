@@ -68,7 +68,6 @@ variable "app_service_plan_id" {
 variable "app_service_plan_info" {
   type = object({
     kind                         = string # The kind of the App Service Plan to create. Possible values are Windows (also available as App), Linux, elastic (for Premium Consumption) and FunctionApp (for a Consumption Plan).
-    sku_tier                     = string # Specifies the plan's pricing tier.
     sku_size                     = string # Specifies the plan's instance size.
     maximum_elastic_worker_count = number # The maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.
   })
@@ -77,7 +76,6 @@ variable "app_service_plan_info" {
 
   default = {
     kind                         = "Linux"
-    sku_tier                     = "PremiumV3"
     sku_size                     = "P1v3"
     maximum_elastic_worker_count = 0
   }
