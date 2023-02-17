@@ -72,7 +72,7 @@ module "func_python" {
   location            = var.location
   health_check_path   = "/api/v1/info"
 
-  runtime_version  = "~4"
+  runtime_version = "~4"
 
   always_on                                = true
   application_insights_instrumentation_key = azurerm_application_insights.example.instrumentation_key
