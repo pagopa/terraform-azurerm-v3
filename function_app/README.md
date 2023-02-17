@@ -83,7 +83,6 @@ module "func_python" {
   location            = var.location
   health_check_path   = "/api/v1/info"
 
-  linux_fx_version = "Node|14"
   runtime_version  = "~4"
 
   always_on                                = true
@@ -109,6 +108,7 @@ module "func_python" {
 Since the resource `azurerm_function_app` has been deprecated in version 3.0 of the AzureRM provider, the newer `azurerm_linux_function_app` resource is used in this module, thus the following variables have been removed since they are not used anymore:
 - os_type
 - app_service_plan_info/sku_tier
+- linux_fx_version
 
 ## Migration from v2
 
