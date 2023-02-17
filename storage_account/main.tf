@@ -12,7 +12,6 @@ resource "azurerm_storage_account" "this" {
   allow_nested_items_to_be_public  = var.allow_nested_items_to_be_public
   is_hns_enabled                   = var.is_hns_enabled
   cross_tenant_replication_enabled = var.cross_tenant_replication_enabled
-  identity                         = var.identity
 
   dynamic "blob_properties" {
     for_each = ((var.account_kind == "BlockBlobStorage" || var.account_kind == "StorageV2") ? [1] : [])
@@ -61,6 +60,13 @@ resource "azurerm_storage_account" "this" {
     content {
       name          = var.custom_domain.name
       use_subdomain = var.custom_domain.use_subdomain
+    }
+  }
+
+  dynamic "identity" {
+    for_each = (var.identity_type != null ? [1] : [])
+    content {
+      type = var.identity_type
     }
   }
 

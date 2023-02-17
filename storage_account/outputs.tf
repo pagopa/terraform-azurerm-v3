@@ -28,3 +28,7 @@ output "primary_web_host" {
 output "name" {
   value = azurerm_storage_account.this.name
 }
+
+output "identity" {
+  value = azurerm_storage_account.this.identity
+}
