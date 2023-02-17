@@ -13,10 +13,45 @@ Module that allows the creation of an Azure function app.
 # APP CONFIGURATION
 #
 
+resource "azurerm_application_insights" "example" {
+  name                = "tf-test-appinsights"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  application_type    = "web"
+}
+
+resource "azurerm_resource_group" "example" {
+  name     = "example-resources"
+  location = var.location
+}
+
+resource "azurerm_virtual_network" "example" {
+  name                = "example-virtual-network"
+  address_space       = var.address_space
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+}
+
+resource "azurerm_subnet" "example" {
+  name                 = "example-subnet"
+  resource_group_name  = azurerm_resource_group.example.name
+  virtual_network_name = azurerm_virtual_network.example.name
+  address_prefixes     = var.address_prefixes
+
+  delegation {
+    name = "example-delegation"
+
+    service_delegation {
+      name    = "Microsoft.Web/serverFarms"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
+}
+
 locals {
   function_app = {
     app_settings_common = {
-      FUNCTIONS_WORKER_RUNTIME       = "python"
+      # FUNCTIONS_WORKER_RUNTIME       = "python"
       WEBSITE_RUN_FROM_PACKAGE       = "1"
       WEBSITE_VNET_ROUTE_ALL         = "1"
       WEBSITE_DNS_SERVER             = "168.63.129.16"
@@ -39,72 +74,41 @@ locals {
 
 # #tfsec:ignore:azure-storage-queue-services-logging-enabled:exp:2022-05-01 # already ignored, maybe a bug in tfsec
 module "func_python" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app?ref=v3.15.0"
+  source = "../../function_app"
 
-  count = var.function_python_diego_enabled ? 1 : 0
+  # count = var.function_python_diego_enabled ? 1 : 0
 
-  resource_group_name = azurerm_resource_group.funcs_diego_rg.name
-  name                = "${local.project}-fn-py"
+  resource_group_name = azurerm_resource_group.example.name
+  name                = "${var.project}-fn-py"
   location            = var.location
   health_check_path   = "/api/v1/info"
 
-  os_type          = "linux"
-  linux_fx_version = "python|3.9"
+  linux_fx_version = "Node|14"
   runtime_version  = "~4"
 
   always_on                                = true
-  application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
+  application_insights_instrumentation_key = azurerm_application_insights.example.instrumentation_key
 
-  app_service_plan_id = azurerm_app_service_plan.funcs_diego[0].id
-
-  app_settings = merge(
-    local.func_python.app_settings_common, {}
-  )
-
-  subnet_id = module.funcs_diego_snet.id
-
-  allowed_subnets = [
-    module.funcs_diego_snet.id,
-  ]
-
-  tags = var.tags
-}
-
-module "func_python_staging_slot" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app_slot?ref=v3.15.0"
-
-  count = var.function_python_diego_enabled ? 1 : 0
-
-  name                = "staging"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.funcs_diego_rg.name
-  function_app_name   = module.func_python[0].name
-  function_app_id     = module.func_python[0].id
-  app_service_plan_id = module.func_python[0].app_service_plan_id
-  health_check_path   = "/api/v1/info"
-
-  storage_account_name       = module.func_python[0].storage_account.name
-  storage_account_access_key = module.func_python[0].storage_account.primary_access_key
-
-  os_type                                  = "linux"
-  linux_fx_version                         = "python|3.9"
-  always_on                                = "true"
-  runtime_version                          = "~4"
-  application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
+  # app_service_plan_id = true
 
   app_settings = merge(
     local.func_python.app_settings_common, {}
   )
 
-  subnet_id = module.funcs_diego_snet.id
+  subnet_id = azurerm_subnet.example.id
 
   allowed_subnets = [
-    module.funcs_diego_snet.id,
+    azurerm_subnet.example.id,
   ]
 
   tags = var.tags
 }
 ```
+## Migration from azurerm_function_app to azurerm_linux_function_app
+
+Since the resource `azurerm_function_app` has been deprecated in version 3.0 of the AzureRM provider, the newer `azurerm_linux_function_app` resource is used in this module, thus the following variables have been removed since they are not used anymore:
+- os_type
+- app_service_plan_info/sku_tier
 
 ## Migration from v2
 
@@ -125,7 +129,7 @@ See [Generic resource migration](../.docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.40.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.30.0, <= 3.40.0 |
 
 ## Modules
 
@@ -138,13 +142,13 @@ See [Generic resource migration](../.docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 
 | Name | Type |
 |------|------|
-| [azurerm_app_service_plan.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_plan) | resource |
 | [azurerm_app_service_virtual_network_swift_connection.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_virtual_network_swift_connection) | resource |
-| [azurerm_function_app.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app) | resource |
+| [azurerm_linux_function_app.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app) | resource |
 | [azurerm_monitor_metric_alert.function_app_health_check](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_private_endpoint.blob](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_private_endpoint.queue](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_private_endpoint.table](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
+| [azurerm_service_plan.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/service_plan) | resource |
 | [azurerm_storage_container.internal_container](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
 | [azurerm_storage_management_policy.internal_deleteafterdays](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_management_policy) | resource |
 | [azurerm_storage_queue.internal_queue](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_queue) | resource |
@@ -159,7 +163,7 @@ See [Generic resource migration](../.docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 | <a name="input_allowed_subnets"></a> [allowed\_subnets](#input\_allowed\_subnets) | List of subnet ids, The Virtual Network Subnet ID used for this IP Restriction. | `list(string)` | `[]` | no |
 | <a name="input_always_on"></a> [always\_on](#input\_always\_on) | (Optional) Should the app be loaded at all times? Defaults to null. | `bool` | `true` | no |
 | <a name="input_app_service_plan_id"></a> [app\_service\_plan\_id](#input\_app\_service\_plan\_id) | The external app service plan id to associate to the function. If null a new plan is created, use app\_service\_plan\_info to configure it. | `string` | `null` | no |
-| <a name="input_app_service_plan_info"></a> [app\_service\_plan\_info](#input\_app\_service\_plan\_info) | Allows to configurate the internal service plan | <pre>object({<br>    kind                         = string # The kind of the App Service Plan to create. Possible values are Windows (also available as App), Linux, elastic (for Premium Consumption) and FunctionApp (for a Consumption Plan).<br>    sku_tier                     = string # Specifies the plan's pricing tier.<br>    sku_size                     = string # Specifies the plan's instance size.<br>    maximum_elastic_worker_count = number # The maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.<br>  })</pre> | <pre>{<br>  "kind": "elastic",<br>  "maximum_elastic_worker_count": 1,<br>  "sku_size": "EP1",<br>  "sku_tier": "ElasticPremium"<br>}</pre> | no |
+| <a name="input_app_service_plan_info"></a> [app\_service\_plan\_info](#input\_app\_service\_plan\_info) | Allows to configurate the internal service plan | <pre>object({<br>    kind                         = string # The kind of the App Service Plan to create. Possible values are Windows (also available as App), Linux, elastic (for Premium Consumption) and FunctionApp (for a Consumption Plan).<br>    sku_size                     = string # Specifies the plan's instance size.<br>    maximum_elastic_worker_count = number # The maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.<br>  })</pre> | <pre>{<br>  "kind": "Linux",<br>  "maximum_elastic_worker_count": 0,<br>  "sku_size": "P1v3"<br>}</pre> | no |
 | <a name="input_app_service_plan_name"></a> [app\_service\_plan\_name](#input\_app\_service\_plan\_name) | Name of the app service plan. If null it will be 'computed' | `string` | `null` | no |
 | <a name="input_app_settings"></a> [app\_settings](#input\_app\_settings) | n/a | `map(any)` | `{}` | no |
 | <a name="input_application_insights_instrumentation_key"></a> [application\_insights\_instrumentation\_key](#input\_application\_insights\_instrumentation\_key) | Application insights instrumentation key | `string` | n/a | yes |
@@ -172,10 +176,9 @@ See [Generic resource migration](../.docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 | <a name="input_healthcheck_threshold"></a> [healthcheck\_threshold](#input\_healthcheck\_threshold) | The healthcheck threshold. If metric average is under this value, the alert will be triggered. Default is 50 | `number` | `50` | no |
 | <a name="input_https_only"></a> [https\_only](#input\_https\_only) | (Required) Can the Function App only be accessed via HTTPS?. Defaults true | `bool` | `true` | no |
 | <a name="input_internal_storage"></a> [internal\_storage](#input\_internal\_storage) | n/a | <pre>object({<br>    enable                     = bool<br>    private_endpoint_subnet_id = string<br>    private_dns_zone_blob_ids  = list(string)<br>    private_dns_zone_queue_ids = list(string)<br>    private_dns_zone_table_ids = list(string)<br>    queues                     = list(string) # Queues names<br>    containers                 = list(string) # Containers names<br>    blobs_retention_days       = number<br>  })</pre> | <pre>{<br>  "blobs_retention_days": 1,<br>  "containers": [],<br>  "enable": false,<br>  "private_dns_zone_blob_ids": [],<br>  "private_dns_zone_queue_ids": [],<br>  "private_dns_zone_table_ids": [],<br>  "private_endpoint_subnet_id": "dummy",<br>  "queues": []<br>}</pre> | no |
-| <a name="input_linux_fx_version"></a> [linux\_fx\_version](#input\_linux\_fx\_version) | (Required) Linux App Framework and version for the AppService, e.g. DOCKER\|(golang:latest). Use null if function app is on windows | `string` | n/a | yes |
+| <a name="input_linux_fx_version"></a> [linux\_fx\_version](#input\_linux\_fx\_version) | (Optional) Linux App Framework and version for the App Service. | `string` | `null` | no |
 | <a name="input_location"></a> [location](#input\_location) | n/a | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | (Required) Specifies the name of the Function App. Changing this forces a new resource to be created. | `string` | n/a | yes |
-| <a name="input_os_type"></a> [os\_type](#input\_os\_type) | (Optional) A string indicating the Operating System type for this function app. This value will be linux for Linux derivatives, or an empty string for Windows (default). When set to linux you must also set azurerm\_app\_service\_plan arguments as kind = Linux and reserved = true | `string` | `null` | no |
 | <a name="input_pre_warmed_instance_count"></a> [pre\_warmed\_instance\_count](#input\_pre\_warmed\_instance\_count) | The number of pre-warmed instances for this function app. Only affects apps on the Premium plan. | `number` | `1` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | n/a | `string` | n/a | yes |
 | <a name="input_runtime_version"></a> [runtime\_version](#input\_runtime\_version) | The runtime version associated with the Function App. Version ~3 is required for Linux Function Apps. | `string` | `"~3"` | no |
@@ -206,4 +209,3 @@ See [Generic resource migration](../.docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 | <a name="output_storage_account_internal_function_name"></a> [storage\_account\_internal\_function\_name](#output\_storage\_account\_internal\_function\_name) | Storage account used by the function for internal operations. |
 | <a name="output_storage_account_name"></a> [storage\_account\_name](#output\_storage\_account\_name) | n/a |
 | <a name="output_system_identity_principal"></a> [system\_identity\_principal](#output\_system\_identity\_principal) | Service Principal of the System Identity generated by Azure. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
