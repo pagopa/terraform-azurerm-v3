@@ -7,7 +7,7 @@ Module that allows the creation of an Azure function app.
 ![architecture](./docs/module-arch.drawio.png)
 
 ## How to use it
-The following Terraform template `terraform-azurerm-v3/tree/azurerm_linux_function_app_migration/tests/function_app` has been created to test this module
+The following Terraform template `terraform-azurerm-v3/tree/azurerm_linux_function_app_migration/tests/function_app` has been created to test this module and reported below.
 ```ts
 #
 # APP CONFIGURATION
