@@ -101,9 +101,11 @@ variable "use_32_bit_worker_process" {
   default     = false
 }
 
+# Ex. for linux "NODE|10-lts"
 variable "linux_fx_version" {
   type        = string
-  description = "(Required) Linux App Framework and version for the AppService, e.g. DOCKER|(golang:latest). Use null if function app is on windows"
+  description = "(Optional) Linux App Framework and version for the App Service."
+  default     = null
 }
 
 variable "application_insights_instrumentation_key" {
@@ -114,12 +116,6 @@ variable "application_insights_instrumentation_key" {
 variable "app_settings" {
   type    = map(any)
   default = {}
-}
-
-variable "os_type" {
-  type        = string
-  description = "(Optional) A string indicating the Operating System type for this function app. This value will be linux for Linux derivatives, or an empty string for Windows (default). When set to linux you must also set azurerm_app_service_plan arguments as kind = Linux and reserved = true"
-  default     = null
 }
 
 variable "https_only" {

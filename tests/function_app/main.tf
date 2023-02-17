@@ -72,7 +72,6 @@ module "func_python" {
   location            = var.location
   health_check_path   = "/api/v1/info"
 
-  os_type          = "linux"
   linux_fx_version = "Node|14"
   runtime_version  = "~4"
 

@@ -156,27 +156,6 @@ resource "azurerm_private_endpoint" "table" {
   tags = var.tags
 }
 
-# resource "azurerm_app_service_plan" "this" {
-#   count = var.app_service_plan_id == null ? 1 : 0
-
-#   name                = var.app_service_plan_name != null ? var.app_service_plan_name : format("%s-plan", var.name)
-#   location            = var.location
-#   resource_group_name = var.resource_group_name
-#   kind                = var.app_service_plan_info.kind
-
-#   sku {
-#     tier = var.app_service_plan_info.sku_tier
-#     size = var.app_service_plan_info.sku_size
-#     # capacity is only for isolated envs
-#   }
-
-#   maximum_elastic_worker_count = var.app_service_plan_info.kind == "elastic" ? var.app_service_plan_info.maximum_elastic_worker_count : null
-#   reserved                     = var.app_service_plan_info.kind == "Linux" ? true : null
-#   per_site_scaling             = false
-
-#   tags = var.tags
-# }
-
 locals {
   allowed_ips                                = [for ip in var.allowed_ips : { ip_address = ip, virtual_network_subnet_id = null }]
   allowed_subnets                            = [for s in var.allowed_subnets : { ip_address = null, virtual_network_subnet_id = s }]
@@ -186,87 +165,6 @@ locals {
   internal_queues     = var.internal_storage.enable ? var.internal_storage.queues : []
   internal_containers = var.internal_storage.enable ? var.internal_storage.containers : []
 }
-
-# resource "azurerm_function_app" "this" {
-#   name                = var.name
-#   resource_group_name = var.resource_group_name
-#   location            = var.location
-#   version             = var.runtime_version
-#   app_service_plan_id = var.app_service_plan_id != null ? var.app_service_plan_id : azurerm_app_service_plan.this[0].id
-#   #  The backend storage account name which will be used by this Function App (such as the dashboard, logs)
-#   storage_account_name       = module.storage_account.name
-#   storage_account_access_key = module.storage_account.primary_access_key
-#   https_only                 = var.https_only
-#   os_type                    = var.os_type
-
-#   site_config {
-#     min_tls_version           = "1.2"
-#     ftps_state                = "Disabled"
-#     http2_enabled             = true
-#     always_on                 = var.always_on
-#     pre_warmed_instance_count = var.pre_warmed_instance_count
-#     vnet_route_all_enabled    = var.subnet_id == null ? false : true
-#     use_32_bit_worker_process = var.use_32_bit_worker_process
-#     linux_fx_version          = var.linux_fx_version
-
-#     dynamic "ip_restriction" {
-#       for_each = local.ip_restrictions
-#       iterator = ip
-
-#       content {
-#         ip_address                = ip.value.ip_address
-#         virtual_network_subnet_id = ip.value.virtual_network_subnet_id
-#         name                      = "rule"
-#       }
-#     }
-
-#     dynamic "cors" {
-#       for_each = var.cors != null ? [var.cors] : []
-#       content {
-#         allowed_origins = cors.value.allowed_origins
-#       }
-#     }
-
-#     health_check_path = var.health_check_path
-
-#   }
-
-#   auth_settings {
-#     enabled = false
-#   }
-
-#   # https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
-#   app_settings = merge(
-#     {
-#       APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
-#       # No downtime on slots swap
-#       WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG = 1
-#       # default value for health_check_path, override it in var.app_settings if needed
-#       WEBSITE_HEALTHCHECK_MAXPINGFAILURES = var.health_check_path != null ? var.health_check_maxpingfailures : null
-#       # https://docs.microsoft.com/en-us/samples/azure-samples/azure-functions-private-endpoints/connect-to-private-endpoints-with-azure-functions/
-#       SLOT_TASK_HUBNAME        = "ProductionTaskHub"
-#       WEBSITE_RUN_FROM_PACKAGE = 1
-#       # https://docs.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16
-#       WEBSITE_DNS_SERVER = "168.63.129.16"
-#       # https://docs.microsoft.com/en-us/azure/azure-monitor/app/sampling
-#       APPINSIGHTS_SAMPLING_PERCENTAGE = 5
-#     },
-#     var.internal_storage.enable ? { DURABLE_FUNCTION_STORAGE_CONNECTION_STRING = local.durable_function_storage_connection_string } : {},
-#     var.internal_storage.enable ? { INTERNAL_STORAGE_CONNECTION_STRING = local.durable_function_storage_connection_string } : {},
-#     var.app_settings,
-#   )
-
-#   enable_builtin_logging = false
-
-#   dynamic "identity" {
-#     for_each = var.system_identity_enabled ? [1] : []
-#     content {
-#       type = "SystemAssigned"
-#     }
-#   }
-
-#   tags = var.tags
-# }
 
 # this datasource has been introduced within version 2.27.0
 data "azurerm_function_app_host_keys" "this" {
@@ -355,7 +253,6 @@ resource "azurerm_linux_function_app" "this" {
     pre_warmed_instance_count = var.pre_warmed_instance_count
     vnet_route_all_enabled    = var.subnet_id == null ? false : true
     use_32_bit_worker         = var.use_32_bit_worker_process
-    linux_fx_version          = var.linux_fx_version
 
     dynamic "ip_restriction" {
       for_each = local.ip_restrictions
