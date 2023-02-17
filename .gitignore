@@ -36,4 +36,3 @@ ignore_features.tf
 .metals
 .history
 *.DS_Store
-function_app/main.tf.orig
