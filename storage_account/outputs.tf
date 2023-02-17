@@ -30,5 +30,5 @@ output "name" {
 }
 
 output "identity" {
-  value = azurerm_storage_account.this.identity
+  value = var.enable_identity != null ? azurerm_storage_account.this.identity : null
 }
