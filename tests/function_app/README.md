@@ -1,6 +1,6 @@
-# Test for Azure function app
+# Test for Azure the function_app module
 
-Terraform template to test the Azure function app module
+Terraform template to test the Azure function_app module
 
 
 ## How to use it
