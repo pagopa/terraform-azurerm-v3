@@ -11,7 +11,7 @@ resource "azurerm_key_vault_access_policy" "storage" {
 resource "azurerm_key_vault_key" "key" {
   name         = var.key_name
   key_vault_id = var.key_vault_id
-  key_type     = "RSA"
+  key_type     = var.key_type
   key_size     = var.key_size
   key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
 
