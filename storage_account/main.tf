@@ -12,6 +12,7 @@ resource "azurerm_storage_account" "this" {
   allow_nested_items_to_be_public  = var.allow_nested_items_to_be_public
   is_hns_enabled                   = var.is_hns_enabled
   cross_tenant_replication_enabled = var.cross_tenant_replication_enabled
+  identity                         = var.identity
 
   dynamic "blob_properties" {
     for_each = ((var.account_kind == "BlockBlobStorage" || var.account_kind == "StorageV2") ? [1] : [])
