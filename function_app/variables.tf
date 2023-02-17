@@ -90,7 +90,7 @@ variable "pre_warmed_instance_count" {
 variable "always_on" {
   type        = bool
   description = "(Optional) Should the app be loaded at all times? Defaults to null."
-  default     = true
+  default     = null
 }
 
 variable "use_32_bit_worker_process" {
