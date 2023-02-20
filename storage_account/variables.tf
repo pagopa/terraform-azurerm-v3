@@ -81,9 +81,9 @@ variable "cross_tenant_replication_enabled" {
 }
 
 variable "enable_identity" {
-  description = "(Optional)  Specifies the type of Managed Service Identity that should be configured on this Storage Account. Possible values are SystemAssigned, UserAssigned, SystemAssigned, UserAssigned  (to enable both)."
-  type        = string
-  default     = null
+  description = "(Optional) If true, set the identity as SystemAssigned"
+  type        = bool
+  default     = false
 }
 
 # Note: If specifying network_rules,
