@@ -24,7 +24,26 @@ resource "azurerm_function_app_slot" "this" {
     pre_warmed_instance_count = var.pre_warmed_instance_count
     vnet_route_all_enabled    = var.subnet_id == null ? false : true
     use_32_bit_worker_process = var.use_32_bit_worker_process
-    linux_fx_version          = var.linux_fx_version
+
+    application_stack {
+      dotnet_version              = var.dotnet_version
+      use_dotnet_isolated_runtime = var.use_dotnet_isolated_runtime
+      java_version                = var.java_version
+      python_version              = var.python_version
+      node_version                = var.node_version
+      powershell_core_version     = var.powershell_core_version
+      use_custom_runtime          = var.use_custom_runtime
+      dynamic "docker" {
+        for_each = length(var.docker) > 0 ? [1] : []
+        content {
+          registry_url      = var.docker.registry_url
+          image_name        = var.docker.image_name
+          image_tag         = var.docker.image_tag
+          registry_username = var.docker.registry_username
+          registry_password = var.docker.registry_password
+        }
+      }
+    }
 
     dynamic "ip_restriction" {
       for_each = local.ip_restrictions
