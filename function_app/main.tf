@@ -247,7 +247,23 @@ resource "azurerm_linux_function_app" "this" {
     use_32_bit_worker         = var.use_32_bit_worker_process
 
     application_stack {
-      python_version = "3.9"
+      dotnet_version              = var.dotnet_version
+      use_dotnet_isolated_runtime = var.use_dotnet_isolated_runtime
+      java_version                = var.java_version
+      python_version              = var.python_version
+      node_version                = var.node_version
+      powershell_core_version     = var.powershell_core_version
+      use_custom_runtime          = var.use_custom_runtime
+      dynamic docker {
+        for_each = length(var.docker) > 0 ? [1] : []
+        content {
+          registry_url              = var.docker.registry_url 
+          image_name                = var.docker.image_name
+          image_tag                 = var.docker.image_tag
+          registry_username         = var.docker.registry_username
+          registry_password         = var.docker.registry_password
+        }
+      }
     }
 
     dynamic "ip_restriction" {

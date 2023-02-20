@@ -224,3 +224,38 @@ variable "action" {
   ))
   default = []
 }
+######################
+# Framework choice
+######################
+variable "docker" {
+  type = any
+  default = {}
+}
+variable "dotnet_version" {
+  type = string
+  default = null
+}
+variable "use_dotnet_isolated_runtime" {
+  type = string
+  default = null
+}
+variable "java_version" {
+  type = string
+  default = null
+}
+variable "node_version" {
+  type = string
+  default = null
+}
+variable "python_version" {
+  type = string
+  default = null
+}
+variable "powershell_core_version" {
+  type = string
+  default = null
+}
+variable "use_custom_runtime" {
+  type = string
+  default = null
+}
