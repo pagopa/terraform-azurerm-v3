@@ -13,6 +13,10 @@ The following Terraform template saved in `terraform-azurerm-v3/tree/azurerm_lin
 # APP CONFIGURATION
 #
 
+resource "random_id" "function_id" {
+  byte_length = 4
+}
+
 resource "azurerm_application_insights" "example" {
   name                = "tf-test-appinsights"
   location            = azurerm_resource_group.example.location
@@ -51,7 +55,6 @@ resource "azurerm_subnet" "example" {
 locals {
   function_app = {
     app_settings_common = {
-      # FUNCTIONS_WORKER_RUNTIME       = "python"
       WEBSITE_RUN_FROM_PACKAGE       = "1"
       WEBSITE_VNET_ROUTE_ALL         = "1"
       WEBSITE_DNS_SERVER             = "168.63.129.16"
@@ -76,14 +79,12 @@ locals {
 module "func_python" {
   source = "../../function_app"
 
-  # count = var.function_python_diego_enabled ? 1 : 0
-
   resource_group_name = azurerm_resource_group.example.name
-  name                = "${var.project}-fn-py"
+  name                = "${var.project}${random_id.function_id.hex}-fn-py"
   location            = var.location
   health_check_path   = "/api/v1/info"
-
-  runtime_version  = "~4"
+  python_version      = "3.10"
+  runtime_version     = "~4"
 
   always_on                                = true
   application_insights_instrumentation_key = azurerm_application_insights.example.instrumentation_key
