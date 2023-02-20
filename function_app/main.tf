@@ -254,14 +254,14 @@ resource "azurerm_linux_function_app" "this" {
       node_version                = var.node_version
       powershell_core_version     = var.powershell_core_version
       use_custom_runtime          = var.use_custom_runtime
-      dynamic docker {
+      dynamic "docker" {
         for_each = length(var.docker) > 0 ? [1] : []
         content {
-          registry_url              = var.docker.registry_url 
-          image_name                = var.docker.image_name
-          image_tag                 = var.docker.image_tag
-          registry_username         = var.docker.registry_username
-          registry_password         = var.docker.registry_password
+          registry_url      = var.docker.registry_url
+          image_name        = var.docker.image_name
+          image_tag         = var.docker.image_tag
+          registry_username = var.docker.registry_username
+          registry_password = var.docker.registry_password
         }
       }
     }
