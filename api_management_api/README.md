@@ -69,7 +69,7 @@ module "apim_devopslab_webapp_python_alpha_api_v1" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.43.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.30.0, <= 3.43.0 |
 
 ## Modules
 
