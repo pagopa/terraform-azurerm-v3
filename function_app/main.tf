@@ -246,6 +246,10 @@ resource "azurerm_linux_function_app" "this" {
     vnet_route_all_enabled    = var.subnet_id == null ? false : true
     use_32_bit_worker         = var.use_32_bit_worker_process
 
+    application_stack {
+      python_version = "3.9"
+    }
+
     dynamic "ip_restriction" {
       for_each = local.ip_restrictions
       iterator = ip
