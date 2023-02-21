@@ -330,7 +330,7 @@ resource "azurerm_linux_function_app" "this" {
   }
 
   sticky_settings {
-    app_setting_names = concat(      
+    app_setting_names = concat(
       ["SLOT_TASK_HUBNAME"],
       var.sticky_settings,
     )
