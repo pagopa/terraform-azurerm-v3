@@ -44,8 +44,6 @@ resource "azurerm_subnet" "example" {
 locals {
   function_app = {
     app_settings_common = {
-      WEBSITE_RUN_FROM_PACKAGE       = "1"
-      WEBSITE_DNS_SERVER             = "168.63.129.16"
       FUNCTIONS_WORKER_PROCESS_COUNT = 4
     }
     app_settings_1 = {
@@ -87,6 +85,6 @@ module "func_python" {
     azurerm_subnet.example.id,
   ]
 
-  tags = merge(var.tags, 
-              {Name = "${var.project}-${random_id.function_id.hex}_function_app"})
+  tags = merge(var.tags,
+  { Name = "${var.project}-${random_id.function_id.hex}_function_app" })
 }

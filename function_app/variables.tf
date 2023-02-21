@@ -198,6 +198,18 @@ variable "system_identity_enabled" {
   default     = false
 }
 
+variable "client_certificate_enabled" {
+  type        = bool
+  description = "Should the function app use Client Certificates"
+  default     = false
+}
+
+variable "sticky_settings" {
+  type        = list(string)
+  description = "(Optional) A list of app_setting names that the Linux Function App will not swap between Slots when a swap operation is triggered"
+  default     = []
+}
+
 # -------------------
 # Alerts variables
 # -------------------

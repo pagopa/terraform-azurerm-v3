@@ -19,11 +19,11 @@ variable "project" {
 }
 
 variable "tags" {
-  type = map
+  type        = map(any)
   description = "Tags for infrastructure resources."
   default = {
-    CreatedBy   = "Terraform"
-    Source      = "https://github.com/pagopa/terraform-azurerm-v3"
+    CreatedBy = "Terraform"
+    Source    = "https://github.com/pagopa/terraform-azurerm-v3"
   }
 }
 

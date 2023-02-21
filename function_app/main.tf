@@ -236,6 +236,7 @@ resource "azurerm_linux_function_app" "this" {
   storage_account_name       = module.storage_account.name
   storage_account_access_key = module.storage_account.primary_access_key
   https_only                 = var.https_only
+  client_certificate_enabled = var.client_certificate_enabled
 
   site_config {
     minimum_tls_version       = "1.2"
@@ -245,6 +246,7 @@ resource "azurerm_linux_function_app" "this" {
     pre_warmed_instance_count = var.pre_warmed_instance_count
     vnet_route_all_enabled    = var.subnet_id == null ? false : true
     use_32_bit_worker         = var.use_32_bit_worker_process
+    application_insights_key  = var.application_insights_instrumentation_key
 
     application_stack {
       dotnet_version              = var.dotnet_version
@@ -295,7 +297,6 @@ resource "azurerm_linux_function_app" "this" {
   # https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
   app_settings = merge(
     {
-      APPINSIGHTS_INSTRUMENTATIONKEY = var.application_insights_instrumentation_key
       # No downtime on slots swap
       WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG = 1
       # default value for health_check_path, override it in var.app_settings if needed
@@ -320,6 +321,19 @@ resource "azurerm_linux_function_app" "this" {
     content {
       type = "SystemAssigned"
     }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      virtual_network_subnet_id
+    ]
+  }
+
+  sticky_settings {
+    app_setting_names = concat(      
+      ["SLOT_TASK_HUBNAME"],
+      var.sticky_settings,
+    )
   }
 
   tags = var.tags
