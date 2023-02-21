@@ -15,16 +15,15 @@ variable "location" {
 
 variable "project" {
   type    = string
-  default = "test"
+  default = "example"
 }
 
 variable "tags" {
-  type = object({
-    Name = string
-  })
-
+  type = map
+  description = "Tags for infrastructure resources."
   default = {
-    Name = "test_function_app"
+    CreatedBy   = "Terraform"
+    Source      = "https://github.com/pagopa/terraform-azurerm-v3"
   }
 }
 
