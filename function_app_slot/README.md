@@ -4,42 +4,9 @@ Module that allows the creation of an Azure function app slot.
 
 ## How to use it
 
-```ts
-module "func_python_staging_slot" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app_slot?ref=v3.15.0"
+Use the example Terraform template, saved in `terraform-azurerm-v3/function_app_slot/tests`, to test this module.
 
-  count = var.function_python_diego_enabled ? 1 : 0
-
-  name                = "staging"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.funcs_diego_rg.name
-  function_app_name   = module.func_python[0].name
-  function_app_id     = module.func_python[0].id
-  app_service_plan_id = module.func_python[0].app_service_plan_id
-  health_check_path   = "/api/v1/info"
-
-  storage_account_name       = module.func_python[0].storage_account.name
-  storage_account_access_key = module.func_python[0].storage_account.primary_access_key
-
-  os_type                                  = "linux"
-  linux_fx_version                         = "python|3.9"
-  always_on                                = "true"
-  runtime_version                          = "~4"
-  application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
-
-  app_settings = merge(
-    local.func_python.app_settings_common, {}
-  )
-
-  subnet_id = module.funcs_diego_snet.id
-
-  allowed_subnets = [
-    module.funcs_diego_snet.id,
-  ]
-
-  tags = var.tags
-}
-```
+## How to migrate from ```azurerm_function_app_slot``` to ```azurerm_linux_function_app_slot```
 
 ## Migration from v2
 
@@ -60,7 +27,7 @@ See [Generic resorce migration](../docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.44.1 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.30.0, <= 3.44.1 |
 
 ## Modules
 
@@ -71,7 +38,7 @@ No modules.
 | Name | Type |
 |------|------|
 | [azurerm_app_service_slot_virtual_network_swift_connection.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_slot_virtual_network_swift_connection) | resource |
-| [azurerm_function_app_slot.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app_slot) | resource |
+| [azurerm_linux_function_app_slot.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app_slot) | resource |
 | [azurerm_function_app_host_keys.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/function_app_host_keys) | data source |
 
 ## Inputs
