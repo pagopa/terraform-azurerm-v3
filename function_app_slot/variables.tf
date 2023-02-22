@@ -146,3 +146,44 @@ variable "export_keys" {
 variable "tags" {
   type = map(any)
 }
+
+######################
+# Framework choice
+######################
+variable "docker" {
+  type    = any
+  default = {}
+}
+variable "dotnet_version" {
+  type    = string
+  default = null
+}
+variable "use_dotnet_isolated_runtime" {
+  type    = string
+  default = null
+}
+variable "java_version" {
+  type    = string
+  default = null
+}
+variable "node_version" {
+  type    = string
+  default = null
+}
+variable "python_version" {
+  type    = string
+  default = null
+}
+variable "powershell_core_version" {
+  type    = string
+  default = null
+}
+variable "use_custom_runtime" {
+  type    = string
+  default = null
+}
+variable "system_identity_enabled" {
+  type        = bool
+  description = "Enable the System Identity and create relative Service Principal."
+  default     = false
+}

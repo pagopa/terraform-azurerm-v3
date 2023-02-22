@@ -6,26 +6,20 @@ locals {
 
 resource "azurerm_linux_function_app_slot" "this" {
   name                       = var.name
-  resource_group_name        = var.resource_group_name
-  location                   = var.location
-  version                    = var.runtime_version
-  function_app_name          = var.function_app_name
-  app_service_plan_id        = var.app_service_plan_id
+  function_app_id            = var.function_app_id
   storage_account_name       = var.storage_account_name
   storage_account_access_key = var.storage_account_access_key
   https_only                 = var.https_only
-  ### os_type                    = var.os_type
 
   site_config {
-    min_tls_version           = "1.2"
+    minimum_tls_version       = "1.2"
     ftps_state                = "Disabled"
     http2_enabled             = true
     always_on                 = var.always_on
     pre_warmed_instance_count = var.pre_warmed_instance_count
     vnet_route_all_enabled    = var.subnet_id == null ? false : true
-    use_32_bit_worker_process = var.use_32_bit_worker_process
-    ### linux_fx_version          = var.linux_fx_version
-    application_insights_key = var.application_insights_instrumentation_key
+    use_32_bit_worker         = var.use_32_bit_worker_process
+    application_insights_key  = var.application_insights_instrumentation_key
 
     application_stack {
       dotnet_version              = var.dotnet_version
@@ -93,7 +87,7 @@ resource "azurerm_linux_function_app_slot" "this" {
     var.app_settings,
   )
 
-  enable_builtin_logging = false
+  builtin_logging_enabled = false
 
   dynamic "identity" {
     for_each = var.system_identity_enabled ? [1] : []
@@ -107,12 +101,6 @@ resource "azurerm_linux_function_app_slot" "this" {
       virtual_network_subnet_id
     ]
   }
-  sticky_settings {
-    app_setting_names = concat(
-      ["SLOT_TASK_HUBNAME"],
-      var.sticky_settings,
-    )
-  }
 
   tags = var.tags
 
@@ -122,7 +110,7 @@ data "azurerm_function_app_host_keys" "this" {
   count               = var.export_keys ? 1 : 0
   name                = var.name
   resource_group_name = var.resource_group_name
-  depends_on          = [azurerm_function_app_slot.this]
+  depends_on          = [azurerm_linux_function_app_slot.this]
 }
 
 resource "azurerm_app_service_slot_virtual_network_swift_connection" "this" {
