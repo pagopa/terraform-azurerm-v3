@@ -69,7 +69,7 @@ module "func_python_slot" {
   name                = "${var.project}${random_id.function_id.hex}-fn-py"
   location            = var.location
   health_check_path   = "/api/v1/info"
-  python_version      = "3.10"
+  python_version      = "3.9"
   runtime_version     = "~4"
 
   always_on                                = true
@@ -88,5 +88,5 @@ module "func_python_slot" {
   ]
 
   tags = merge(var.tags,
-  { Name = "${var.project}${random_id.function_id.hex}_function_app" })
+  { Name = "${var.project}${random_id.function_id.hex}_function_app_slot" })
 }
