@@ -35,5 +35,5 @@ output "diagnostic_id" {
 }
 
 output "logger_id" {
-  value = var.application_insights_instrumentation_key != null ? azurerm_api_management_logger.this[0].id : null
+  value = var.application_insights.enabled ? azurerm_api_management_logger.this[0].id : null
 }
