@@ -8,6 +8,8 @@ Use the example Terraform template, saved in `terraform-azurerm-v3/function_app_
 
 ## How to migrate from ```azurerm_function_app_slot``` to ```azurerm_linux_function_app_slot```
 
+No migration is necessary.
+
 ## Migration from v2
 
 Output for resource `azurerm_function_app_host_keys` changed
