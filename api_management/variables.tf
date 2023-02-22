@@ -71,10 +71,12 @@ variable "subnet_id" {
   description = "The id of the subnet that will be used for the API Management."
 }
 
-variable "application_insights_instrumentation_key" {
-  type        = string
-  default     = null
-  description = "The instrumentation key used to push data to Application Insights."
+variable "application_insights" {
+  type = object({
+    enabled             = bool
+    instrumentation_key = string
+  })
+  description = "Application Insights integration The instrumentation key used to push data"
 }
 
 variable "virtual_network_type" {
