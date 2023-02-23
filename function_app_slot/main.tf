@@ -10,6 +10,7 @@ resource "azurerm_linux_function_app_slot" "this" {
   storage_account_name       = var.storage_account_name
   storage_account_access_key = var.storage_account_access_key
   https_only                 = var.https_only
+  client_certificate_enabled = var.client_certificate_enabled
 
   site_config {
     minimum_tls_version       = "1.2"
@@ -98,7 +99,8 @@ resource "azurerm_linux_function_app_slot" "this" {
 
   lifecycle {
     ignore_changes = [
-      virtual_network_subnet_id
+      virtual_network_subnet_id,
+      app_settings["WEBSITE_HEALTHCHECK_MAXPINGFAILURES"],
     ]
   }
 
