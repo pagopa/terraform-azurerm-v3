@@ -15,12 +15,12 @@ variable "location" {
 
 variable "project" {
   type    = string
-  default = "fnapp"
+  default = "fnappslot"
 }
 
 variable "tags" {
   type        = map(string)
-  description = "Function-app example"
+  description = "Function-app-slot example"
   default = {
     CreatedBy = "Terraform"
     Source    = "https://github.com/pagopa/terraform-azurerm-v3"

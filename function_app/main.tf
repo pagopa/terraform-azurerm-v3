@@ -247,6 +247,7 @@ resource "azurerm_linux_function_app" "this" {
     vnet_route_all_enabled    = var.subnet_id == null ? false : true
     use_32_bit_worker         = var.use_32_bit_worker_process
     application_insights_key  = var.application_insights_instrumentation_key
+    health_check_path         = var.health_check_path
 
     application_stack {
       dotnet_version              = var.dotnet_version
@@ -286,8 +287,6 @@ resource "azurerm_linux_function_app" "this" {
       }
     }
 
-    health_check_path = var.health_check_path
-
   }
 
   auth_settings {
@@ -325,7 +324,8 @@ resource "azurerm_linux_function_app" "this" {
 
   lifecycle {
     ignore_changes = [
-      virtual_network_subnet_id
+      virtual_network_subnet_id,
+      app_settings["WEBSITE_HEALTHCHECK_MAXPINGFAILURES"],
     ]
   }
 
