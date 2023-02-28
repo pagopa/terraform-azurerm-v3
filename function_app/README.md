@@ -1,6 +1,7 @@
 # Azure function app
 
 Module that allows the creation of an Azure function app.
+It creates a resource group named `test-fnapp<6 hexnumbers>-rg` and every resource into it is named `fnapp<6 hexnumbers>-*`
 
 ## Architecture
 
@@ -11,7 +12,6 @@ Use the example Terraform template, saved in `terraform-azurerm-v3/function_app/
 
 ## How to migrate `from azurerm_function_app` to `azurerm_linux_function_app`
 The following script will remove and import the deprecated resources as new ones.
-It creates a resource group named `test-fnapp<6 hexnumbers>-rg` and every resource into it is named `fnapp<6 hexnumbers>-*`
 
 ```
 #!/bin/bash
