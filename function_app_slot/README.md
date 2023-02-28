@@ -1,6 +1,7 @@
 # Azure function app slot
 
 Module that allows the creation of an Azure function app slot.
+It creates a resource group named `test-fnappslot<6 hexnumbers>-rg` and every resource into it is named `fnappslot<6 hexnumbers>-*`
 
 ## How to use it
 
@@ -10,7 +11,6 @@ It creates a resource group named `test-fnappslot<6 hexnumbers>-rg` and every re
 ## How to migrate from ```azurerm_function_app_slot``` to ```azurerm_linux_function_app_slot```
 
 The following script will remove and import the deprecated resources as new ones.
-It creates a resource group named `test-fnappslot<6 hexnumbers>-rg` and every resource into it is named `fnappslot<6 hexnumbers>-*`
 
 ```
 #!/bin/bash
