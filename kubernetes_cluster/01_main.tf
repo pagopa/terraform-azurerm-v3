@@ -10,7 +10,7 @@ resource "null_resource" "b_series_not_ephemeral_user_check" {
 
 #tfsec:ignore:AZU008
 #tfsec:ignore:azure-container-logging addon_profile is deprecated, false positive
-#tfsec:ignore:azure-container-configured-network-policy:exp:2023-06-01 TODO ignored this module is a work in progress
+#tfsec:ignore:azure-container-configured-network-policy:exp:2023-06-06 TODO ignored this module is a work in progress
 resource "azurerm_kubernetes_cluster" "this" {
   name                = var.name
   location            = var.location
