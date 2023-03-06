@@ -63,6 +63,13 @@ resource "azurerm_storage_account" "this" {
     }
   }
 
+  dynamic "identity" {
+    for_each = (var.enable_identity ? [1] : [])
+    content {
+      type = "SystemAssigned"
+    }
+  }
+
   tags = var.tags
 }
 

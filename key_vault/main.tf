@@ -6,10 +6,11 @@ resource "azurerm_key_vault" "this" {
   tenant_id           = var.tenant_id
   sku_name            = var.sku_name
 
-  enabled_for_disk_encryption = true
-  enable_rbac_authorization   = var.enable_rbac_authorization
-  soft_delete_retention_days  = var.soft_delete_retention_days
-  purge_protection_enabled    = true
+  enabled_for_disk_encryption   = true
+  enable_rbac_authorization     = var.enable_rbac_authorization
+  soft_delete_retention_days    = var.soft_delete_retention_days
+  purge_protection_enabled      = true
+  public_network_access_enabled = var.public_network_access_enabled
 
   network_acls {
     bypass         = "AzureServices"

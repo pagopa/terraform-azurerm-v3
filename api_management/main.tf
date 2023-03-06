@@ -164,19 +164,19 @@ resource "azurerm_monitor_autoscale_setting" "this" {
 # Diagnostic, Logs & Monitor
 #
 resource "azurerm_api_management_logger" "this" {
-  count = var.application_insights_instrumentation_key != null ? 1 : 0
+  count = var.application_insights.enabled ? 1 : 0
 
   name                = "${var.name}-logger"
   api_management_name = azurerm_api_management.this.name
   resource_group_name = var.resource_group_name
 
   application_insights {
-    instrumentation_key = var.application_insights_instrumentation_key
+    instrumentation_key = var.application_insights.instrumentation_key
   }
 }
 
 resource "azurerm_api_management_diagnostic" "this" {
-  count = var.application_insights_instrumentation_key != null ? 1 : 0
+  count = var.application_insights.enabled ? 1 : 0
 
   identifier               = "applicationinsights"
   resource_group_name      = var.resource_group_name
