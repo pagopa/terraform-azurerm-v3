@@ -15,7 +15,7 @@ This module allow the creation of app service slots
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.44.1 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.45.0 |
 
 ## Modules
 
