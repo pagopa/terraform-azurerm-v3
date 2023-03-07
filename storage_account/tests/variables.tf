@@ -18,15 +18,3 @@ variable "tags" {
     Source    = "https://github.com/pagopa/terraform-azurerm-v3"
   }
 }
-
-### Custom variables
-
-variable "vnet_address_space" {
-  type    = list(string)
-  default = ["10.0.0.0/16"]
-}
-
-variable "function_app_subnet_cidr" {
-  type    = list(string)
-  default = ["10.0.1.0/26"]
-}

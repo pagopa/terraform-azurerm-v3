@@ -1,6 +1,8 @@
 # Azure function app slot
 
 Module that allows the creation of an Azure function app slot.
+It creates a resource group named `azrmtest<6 hexnumbers>-rg` and every resource into it is named `azrmtest<6 hexnumbers>-*`.
+In terraform output you can get the resource group name.
 
 ## How to use it
 
@@ -58,7 +60,7 @@ if ! which terraform &> /dev/null && which jq &> /dev/null; then
   exit 1
 fi
 
-removeAndImport "module.func_python_slot.azurerm_function_app_slot.this" "module.func_python_slot.azurerm_linux_function_app_slot.this"
+removeAndImport "module.function_app_slot.azurerm_function_app_slot.this" "module.function_app_slot.azurerm_linux_function_app_slot.this"
 ```
 
 ## Migration from v2
