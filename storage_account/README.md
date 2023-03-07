@@ -1,6 +1,8 @@
 # storage account
 
 Module that allows the creation of an Storage account.
+It creates a resource group named `azrmtest<6 hexnumbers>-rg` and every resource into it is named `azrmtest<6 hexnumbers>-*`.
+In terraform output you can get the resource group name.
 
 ## Architecture
 
