@@ -1,9 +1,12 @@
-# Test for Azure the function_app module
+# Test for Azure module
 
-Terraform template to test the Azure function_app module
+Terraform template to test the module.
 
+You need the access to DevOpsLab Subscription or change backend.ini value.
+
+`resources.tf` file contains all resources to test.
 
 ## How to use it
-- terraform init
-- terraform plan
-- terraform apply
+- ./terraform.sh plan
+- ./terraform.sh apply
+- ./terraform.sh destroy
