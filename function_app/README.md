@@ -1,6 +1,8 @@
 # Azure function app
 
 Module that allows the creation of an Azure function app.
+It creates a resource group named `azrmtest<6 hexnumbers>-rg` and every resource into it is named `azrmtest<6 hexnumbers>-*`.
+In terraform output you can get the resource group name.
 
 ## Architecture
 
@@ -59,9 +61,9 @@ if ! which terraform &> /dev/null && which jq &> /dev/null; then
   exit 1
 fi
 
-removeAndImport "module.func_python.azurerm_function_app.this" "module.func_python.azurerm_linux_function_app.this"
+removeAndImport "module.function_app.azurerm_function_app.this" "module.function_app.azurerm_linux_function_app.this"
 
-removeAndImport "module.func_python.azurerm_app_service_plan.this[0]" "module.func_python.azurerm_service_plan.this[0]"
+removeAndImport "module.function_app.azurerm_app_service_plan.this[0]" "module.function_app.azurerm_service_plan.this[0]"
 ```
 
 ## Note about migrating from ```azurerm_function_app``` to ```azurerm_linux_function_app```
