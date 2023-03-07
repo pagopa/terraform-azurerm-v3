@@ -36,7 +36,7 @@ function terraform_init(){
     rm -rf "$folder/.ignore_features.tf"
     rm -rf "$folder/.terraform"
     rm -rf "$folder/.terraform.lock.hcl"
-    cp ".utils/features.tf" "$folder/ignore_features.tf"
+    # cp ".utils/features.tf" "$folder/ignore_features.tf"
 
     cd "$folder" || exit
 

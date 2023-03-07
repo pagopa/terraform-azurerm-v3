@@ -74,6 +74,18 @@ variable "blob_versioning_enabled" {
   default     = false
 }
 
+variable "blob_change_feed_enabled" {
+  description = "(Optional) Is the blob service properties for change feed events enabled? Default to false."
+  type        = bool
+  default     = false
+}
+
+variable "blob_change_feed_retention_in_days" {
+  description = "(Optional) The duration of change feed events retention in days. The possible values are between 1 and 146000 days (400 years). Setting this to null (or omit this in the configuration file) indicates an infinite retention of the change feed."
+  type        = number
+  default     = null
+}
+
 variable "cross_tenant_replication_enabled" {
   description = "(Optional) Should cross Tenant replication be enabled? Defaults to false."
   type        = bool
