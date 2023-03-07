@@ -1,13 +1,13 @@
 variable "prefix" {
   description = "Resorce prefix"
-  type    = string
-  default = "test"
+  type        = string
+  default     = "test"
 }
 
 variable "location" {
   description = "Resorce location"
-  type    = string
-  default = "westeurope"
+  type        = string
+  default     = "westeurope"
 }
 
 variable "tags" {

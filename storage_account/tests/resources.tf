@@ -1,7 +1,7 @@
 resource "azurerm_resource_group" "rg" {
   name     = "${local.project}-rg"
   location = var.location
-  tags = var.tags
+  tags     = var.tags
 }
 
 module "storage_api" {
@@ -18,7 +18,7 @@ module "storage_api" {
   advanced_threat_protection      = true
   allow_nested_items_to_be_public = false
 
-  blob_delete_retention_days = 7
+  blob_delete_retention_days      = 7
   container_delete_retention_days = 7
 
   tags = var.tags
