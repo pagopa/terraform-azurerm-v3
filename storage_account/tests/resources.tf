@@ -5,7 +5,7 @@ resource "azurerm_resource_group" "rg" {
   tags = var.tags
 }
 
-module "storage_api" {
+module "storage_account" {
   source = "../../storage_account"
 
   name                            = replace("${local.project}st", "-", "")
