@@ -44,7 +44,7 @@ variable "blob_delete_retention_days" {
   default     = 0
 }
 
-variable "container_delete_retention_days" {
+variable "blob_container_delete_retention_days" {
   description = "Retention days for deleted container. Valid value is between 1 and 365 (set to 0 to disable)."
   type        = number
   default     = 0
@@ -84,6 +84,12 @@ variable "blob_change_feed_retention_in_days" {
   description = "(Optional) The duration of change feed events retention in days. The possible values are between 1 and 146000 days (400 years). Setting this to null (or omit this in the configuration file) indicates an infinite retention of the change feed."
   type        = number
   default     = null
+}
+
+variable "blob_restore_policy_days" {
+  description = "(Optional) Specifies the number of days that the blob can be restored, between 1 and 365 days. This must be less than the days specified for delete_retention_policy."
+  type        = number
+  default     = 0
 }
 
 variable "cross_tenant_replication_enabled" {

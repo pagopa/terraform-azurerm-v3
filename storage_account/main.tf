@@ -28,9 +28,16 @@ resource "azurerm_storage_account" "this" {
       }
 
       dynamic "container_delete_retention_policy" {
-        for_each = (var.container_delete_retention_days == 0 ? [] : [1])
+        for_each = (var.blob_container_delete_retention_days == 0 ? [] : [1])
         content {
-          days = var.container_delete_retention_days
+          days = var.blob_container_delete_retention_days
+        }
+      }
+
+      dynamic "restore_policy" {
+        for_each = (var.blob_restore_policy_days == 0 ? [] : [1])
+        content {
+          days = var.blob_restore_policy_days
         }
       }
     }
