@@ -33,7 +33,7 @@ function terraform_init(){
   if [ -d "$folder" ]; then
     echo "🔬 folder: $folder in under terraform: $ACTION action $MODE mode"
 
-    rm -rf "$folder/.ignore_features.tf"
+    rm -rf "$folder/ignore_features.tf"
     rm -rf "$folder/.terraform"
     rm -rf "$folder/.terraform.lock.hcl"
     cp ".utils/features.tf" "$folder/ignore_features.tf"
@@ -51,22 +51,7 @@ function terraform_init(){
       exit 1
     esac
 
-    cd "tests" || exit
-
-    rm -rf ".terraform"
-    rm -rf ".terraform.lock.hcl"
-
-    case "${MODE}" in
-      docker*)
-        docker run -v "$(pwd):/tmp" -w /tmp "hashicorp/terraform:$TAG" "$ACTION"
-      ;;
-      local*)
-        terraform "$ACTION"
-      ;;
-    *)
-      exit 1
-    esac
-
+    cd ..
   fi
 }
 
