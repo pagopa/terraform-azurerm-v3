@@ -31,7 +31,18 @@ resource "azurerm_linux_web_app" "this" {
   client_certificate_enabled = var.client_cert_enabled
   client_affinity_enabled    = var.client_affinity_enabled
 
-  app_settings = var.app_settings
+  # https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
+  app_settings = merge(
+    {
+      # https://docs.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16
+      WEBSITE_DNS_SERVER = "168.63.129.16"
+      # https://docs.microsoft.com/en-us/azure/azure-monitor/app/sampling
+      APPINSIGHTS_SAMPLING_PERCENTAGE = 5
+    },
+    var.app_settings,
+  )
+
+
 
   site_config {
     always_on         = var.always_on
@@ -83,23 +94,27 @@ resource "azurerm_linux_web_app" "this" {
 
   }
 
-  #tfsec:ignore:azure-appservice-authentication-enabled
-  auth_settings {
-    enabled = false
-  }
-
   # Managed identity
   identity {
     type = "SystemAssigned"
   }
 
-  tags = var.tags
-
   lifecycle {
     ignore_changes = [
-      app_settings["DOCKER_CUSTOM_IMAGE_NAME"]
+      app_settings["DOCKER_CUSTOM_IMAGE_NAME"],
+      virtual_network_subnet_id,
+      app_settings["WEBSITE_HEALTHCHECK_MAXPINGFAILURES"],
     ]
   }
+
+  dynamic "sticky_settings" {
+    for_each = length(var.sticky_settings) == 0 ? [] : [1]
+    content {
+      app_setting_names = var.sticky_settings
+    }
+  }
+
+  tags = var.tags
 }
 
 resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {

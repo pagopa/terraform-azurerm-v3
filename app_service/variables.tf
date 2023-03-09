@@ -48,6 +48,12 @@ variable "sku_name" {
   default     = null
 }
 
+variable "sticky_settings" {
+  type        = list(string)
+  description = "(Optional) A list of app_setting names that the Linux Function App will not swap between Slots when a swap operation is triggered"
+  default     = []
+}
+
 variable "plan_maximum_elastic_worker_count" {
   type        = number
   description = "(Optional) The maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan."

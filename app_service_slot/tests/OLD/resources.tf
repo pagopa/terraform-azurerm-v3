@@ -15,8 +15,6 @@ locals {
     XDT_MicrosoftApplicationInsights_PreemptSdk     = "disabled"
     WEBSITE_HEALTHCHECK_MAXPINGFAILURES             = 10
     TIMEOUT_DELAY                                   = 300
-    # Integration with private DNS (see more: https://docs.microsoft.com/en-us/answers/questions/85359/azure-app-service-unable-to-resolve-hostname-of-vi.html)
-    WEBSITE_DNS_SERVER = "168.63.129.16"
     # Spring Environment
 
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
