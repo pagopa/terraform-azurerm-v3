@@ -8,15 +8,27 @@ other=$@
 
 subscription="MOCK_VALUE"
 
-if [ -z "$action" ]; then
-  echo "Missed action: init, apply, plan, destroy"
-  exit 0
-fi
+case $action in
+    "init" | "apply" | "plan" | "destroy" )
+        # shellcheck source=/dev/null
+        if [ -e "./backend.ini" ]; then
+          source ./backend.ini
+        else
+          echo "Error: no backend.ini found!"
+          exit 1
+        fi
 
-# shellcheck source=/dev/null
-source "./backend.ini"
+        az account set -s "${subscription}"
 
-az account set -s "${subscription}"
-
-terraform init
-terraform "$action" $other
+        terraform init
+        terraform "$action" $other
+        ;;
+    "clean" )
+        rm -rf .terraform* terraform.tfstate*
+        echo "cleaned..."
+        ;;
+    * )
+        echo "Missed action: init, apply, plan, destroy clean"
+        exit 1
+        ;;
+esac
