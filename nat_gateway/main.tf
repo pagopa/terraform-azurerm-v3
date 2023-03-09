@@ -6,6 +6,8 @@ resource "azurerm_public_ip" "this" {
   allocation_method   = "Static"
   sku                 = "Standard"
   zones               = var.zones
+
+  tags = var.tags
 }
 
 resource "azurerm_nat_gateway" "this" {
