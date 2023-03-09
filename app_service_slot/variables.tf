@@ -32,6 +32,12 @@ variable "https_only" {
   default     = true
 }
 
+variable "client_certificate_enabled" {
+  type        = bool
+  description = "Should the function app use Client Certificates"
+  default     = false
+}
+
 variable "client_affinity_enabled" {
   type        = bool
   description = "(Optional) Should the App Service send session affinity cookies, which route client requests in the same session to the same instance? Defaults to false."
@@ -39,10 +45,15 @@ variable "client_affinity_enabled" {
 }
 
 ## App service slot
-
 variable "name" {
   type        = string
   description = "(Required) Specifies the name of the App Service. Changing this forces a new resource to be created."
+}
+
+variable "use_32_bit_worker_process" {
+  type        = bool
+  description = "(Optional) Should the App Service Slot run in 32 bit mode, rather than 64 bit mode? Defaults to false."
+  default     = false
 }
 
 variable "app_settings" {
@@ -54,13 +65,6 @@ variable "always_on" {
   type        = bool
   description = "(Optional) Should the app be loaded at all times? Defaults to false."
   default     = false
-}
-
-# Ex. for linux "NODE|10-lts"
-variable "linux_fx_version" {
-  type        = string
-  description = "(Optional) Linux App Framework and version for the App Service."
-  default     = null
 }
 
 variable "app_command_line" {
@@ -107,4 +111,50 @@ variable "subnet_id" {
 
 variable "tags" {
   type = map(any)
+}
+
+# Framework choice
+variable "docker_image" {
+  type    = string
+  default = null
+}
+variable "docker_image_tag" {
+  type    = string
+  default = null
+}
+variable "dotnet_version" {
+  type    = string
+  default = null
+}
+variable "go_version" {
+  type    = string
+  default = null
+}
+variable "java_server" {
+  type    = string
+  default = null
+}
+variable "java_server_version" {
+  type    = string
+  default = null
+}
+variable "java_version" {
+  type    = string
+  default = null
+}
+variable "node_version" {
+  type    = string
+  default = null
+}
+variable "php_version" {
+  type    = string
+  default = null
+}
+variable "python_version" {
+  type    = string
+  default = null
+}
+variable "ruby_version" {
+  type    = string
+  default = null
 }
