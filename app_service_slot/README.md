@@ -85,7 +85,6 @@ No modules.
 | <a name="input_app_command_line"></a> [app\_command\_line](#input\_app\_command\_line) | (Optional) App command line to launch, e.g. /sbin/myserver -b 0.0.0.0. | `string` | `null` | no |
 | <a name="input_app_service_id"></a> [app\_service\_id](#input\_app\_service\_id) | (Required) The id of the App Service within which to create the App Service Slot. | `string` | n/a | yes |
 | <a name="input_app_service_name"></a> [app\_service\_name](#input\_app\_service\_name) | (Required) The name of the App Service within which to create the App Service Slot. Changing this forces a new resource to be created. | `string` | n/a | yes |
-| <a name="input_app_service_plan_id"></a> [app\_service\_plan\_id](#input\_app\_service\_plan\_id) | (Required) The ID of the App Service Plan within which to create this App Service Slot. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_app_settings"></a> [app\_settings](#input\_app\_settings) | n/a | `map(string)` | `{}` | no |
 | <a name="input_client_affinity_enabled"></a> [client\_affinity\_enabled](#input\_client\_affinity\_enabled) | (Optional) Should the App Service send session affinity cookies, which route client requests in the same session to the same instance? Defaults to false. | `bool` | `false` | no |
 | <a name="input_client_certificate_enabled"></a> [client\_certificate\_enabled](#input\_client\_certificate\_enabled) | Should the function app use Client Certificates | `bool` | `false` | no |

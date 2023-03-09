@@ -10,12 +10,6 @@ variable "resource_group_name" {
 }
 
 ## App service
-
-variable "app_service_plan_id" {
-  type        = string
-  description = "(Required) The ID of the App Service Plan within which to create this App Service Slot. Changing this forces a new resource to be created."
-}
-
 variable "app_service_id" {
   type        = string
   description = "(Required) The id of the App Service within which to create the App Service Slot."
