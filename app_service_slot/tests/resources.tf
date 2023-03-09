@@ -128,8 +128,8 @@ module "web_app_service_slot_docker" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
 
-  app_service_name    = module.web_app_service_docker.name
-  app_service_id      = module.web_app_service_docker.id
+  app_service_name = module.web_app_service_docker.name
+  app_service_id   = module.web_app_service_docker.id
 
   # App service plan
   name                       = "${local.project}-app-service-slot-docker"

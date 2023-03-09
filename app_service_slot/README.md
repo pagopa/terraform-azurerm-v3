@@ -1,6 +1,53 @@
 # App service slot
 
-This module allow the creation of app service slots
+This module allow the creation of app service slots.
+In terraform output you can get the the slot's name and id.
+
+## How to use it
+Use the example Terraform template, saved in `./tests`, to test this module  and get some advices.
+
+## How to migrate from `azurerm_app_service_slot` to `azurerm_linux_web_app_slot`
+The script tests/migrate.sh will remove and import the deprecated resources as new ones.
+You need to know the resource old and new names.
+```
+e.g.
+# app_service resources to migrate
+cd tests
+./migrate.sh module.web_app_service_docker.azurerm_app_service.this module.web_app_service_docker.azurerm_linux_web_app.this
+./migrate.sh azurerm_app_service_plan.app_docker azurerm_service_plan.app_docker
+
+# app_service_slot resource to migrate
+./migrate.sh module.web_app_service_slot_docker.azurerm_app_service_slot.this module.web_app_service_slot_docker.azurerm_linux_web_app_slot.this
+```
+
+## Note about migrating from `azurerm_app_service_slot` to `azurerm_linux_web_app_slot`
+
+Since the resource `azurerm_app_service_slot` has been deprecated in version 3.0 of the AzureRM provider, the newer `azurerm_linux_web_app_slot` resource is used in this module, thus the following variables have been:
+
+removed:
+- os_type
+- app_service_plan_info/sku_tier
+- linux_fx_version
+- app_service_plan_id
+
+replaced:
+- min_tls_version -> minimum_tls_version
+- client_cert_enabled -> client_certificate_enabled
+
+## How to configure the Linux framework
+
+Don't use `linux_fx_version` anymore.
+Now you need to specify **only** one variable of the following list:
+- docker - (Optional) One or more docker blocks as defined below.
+- dotnet_version - (Optional) The version of .NET to use. Possible values include 3.1, 6.0 and 7.0.
+- use_dotnet_isolated_runtime - (Optional) Should the DotNet process use an isolated runtime. Defaults to false.
+- java_version - (Optional) The Version of Java to use. Supported versions include 8, 11 & 17 (In-Preview).
+- node_version - (Optional) The version of Node to run. Possible values include 12, 14, 16 and 18.
+- python_version - (Optional) The version of Python to run. Possible values are 3.10, 3.9, 3.8 and 3.7.
+- powershell_core_version - (Optional) The version of PowerShell Core to run. Possible values are 7, and 7.2.
+- use_custom_runtime - (Optional) Should the Linux Function App use a custom runtime?
+
+Of course, the values listed above may change in the future, so please check which ones are still valid.
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -15,7 +62,7 @@ This module allow the creation of app service slots
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.30.0, <= 3.45.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.45.0 |
 
 ## Modules
 
