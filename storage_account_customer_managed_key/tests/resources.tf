@@ -24,9 +24,9 @@ module "storage_account" {
   blob_change_feed_enabled             = true
   blob_change_feed_retention_in_days   = 10
   blob_restore_policy_days             = 6
-  
-  enable_identity            = true
-  
+
+  enable_identity = true
+
   tags = var.tags
 }
 
@@ -65,6 +65,6 @@ module "storage_account_customer_managed_key" {
   key_name             = "${local.project}-key"
   storage_id           = module.storage_account.id
   storage_principal_id = module.storage_account.identity.0.principal_id
-  
+
   depends_on = [azurerm_key_vault_access_policy.current_user]
 }
