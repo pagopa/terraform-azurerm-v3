@@ -66,5 +66,5 @@ module "storage_account_customer_managed_key" {
   storage_id           = module.storage_account.id
   storage_principal_id = module.storage_account.identity.0.principal_id
 
-  depends_on = [azurerm_key_vault_access_policy.current_user]
+  # depends_on = [azurerm_key_vault_access_policy.current_user]
 }
