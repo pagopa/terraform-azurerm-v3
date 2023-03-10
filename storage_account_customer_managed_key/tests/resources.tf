@@ -55,9 +55,9 @@ resource "azurerm_key_vault_access_policy" "current_user" {
   certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Restore", "Recover", ]
 }
 
-
 module "storage_account_customer_managed_key" {
-  source               = "../../storage_account_customer_managed_key"
+  source = "../../storage_account_customer_managed_key"
+
   tenant_id            = data.azurerm_subscription.current.tenant_id
   location             = azurerm_resource_group.rg.location
   resource_group_name  = azurerm_resource_group.rg.name
