@@ -79,6 +79,13 @@ resource "azurerm_storage_account" "this" {
     }
   }
 
+  # the use of storage_account_customer_managed_key resource will cause a bug on the plan: this paramenter will always see as changed.
+  lifecycle {
+    ignore_changes = [
+        customer_managed_key
+    ]
+  }
+
   tags = var.tags
 }
 
