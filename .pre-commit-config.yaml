@@ -8,11 +8,7 @@ repos:
         args:
           - --args=--exclude-downloaded-modules
       - id: terraform_validate
-        exclude: |
-            (?x)^(
-                ^fixme*|
-                ^tests*
-            )$
+        exclude: /(tests|fixme)/i
         args:
           - --args=-json
           - --args=-no-color
