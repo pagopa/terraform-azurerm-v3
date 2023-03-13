@@ -69,9 +69,8 @@ variable "allow_nested_items_to_be_public" {
 }
 
 variable "public_network_access_enabled" {
-  description = "Enable or Disable public access."
+  description = "Enable or Disable public access. It should always set to false unless there are special needs"
   type        = bool
-  default     = true
 }
 
 variable "blob_versioning_enabled" {
