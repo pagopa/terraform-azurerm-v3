@@ -1,33 +1,34 @@
 #tfsec:ignore:azure-storage-default-action-deny
 module "storage_account" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v5.5.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v6.1.0"
 
-  name                       = coalesce(var.storage_account_name, format("%sst", replace(var.name, "-", "")))
-  account_kind               = var.storage_account_info.account_kind
-  account_tier               = var.storage_account_info.account_tier
-  account_replication_type   = var.storage_account_info.account_replication_type
-  access_tier                = var.storage_account_info.account_kind != "Storage" ? var.storage_account_info.access_tier : null
-  resource_group_name        = var.resource_group_name
-  location                   = var.location
-  advanced_threat_protection = var.storage_account_info.advanced_threat_protection_enable
+  name                          = coalesce(var.storage_account_name, format("%sst", replace(var.name, "-", "")))
+  account_kind                  = var.storage_account_info.account_kind
+  account_tier                  = var.storage_account_info.account_tier
+  account_replication_type      = var.storage_account_info.account_replication_type
+  access_tier                   = var.storage_account_info.account_kind != "Storage" ? var.storage_account_info.access_tier : null
+  resource_group_name           = var.resource_group_name
+  location                      = var.location
+  advanced_threat_protection    = var.storage_account_info.advanced_threat_protection_enable
+  public_network_access_enabled = true
 
   tags = var.tags
 }
 
-
 module "storage_account_durable_function" {
   count = var.internal_storage.enable ? 1 : 0
 
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v5.5.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v6.1.0"
 
-  name                       = coalesce(var.storage_account_durable_name, format("%ssdt", replace(var.name, "-", "")))
-  account_kind               = var.storage_account_info.account_kind
-  account_tier               = var.storage_account_info.account_tier
-  account_replication_type   = var.storage_account_info.account_replication_type
-  access_tier                = var.storage_account_info.account_kind != "Storage" ? var.storage_account_info.access_tier : null
-  resource_group_name        = var.resource_group_name
-  location                   = var.location
-  advanced_threat_protection = false
+  name                          = coalesce(var.storage_account_durable_name, format("%ssdt", replace(var.name, "-", "")))
+  account_kind                  = var.storage_account_info.account_kind
+  account_tier                  = var.storage_account_info.account_tier
+  account_replication_type      = var.storage_account_info.account_replication_type
+  access_tier                   = var.storage_account_info.account_kind != "Storage" ? var.storage_account_info.access_tier : null
+  resource_group_name           = var.resource_group_name
+  location                      = var.location
+  advanced_threat_protection    = false
+  public_network_access_enabled = false
 
   network_rules = {
     default_action = "Deny"
