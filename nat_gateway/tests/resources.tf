@@ -14,11 +14,25 @@ resource "azurerm_virtual_network" "vnet" {
   tags = var.tags
 }
 
-resource "azurerm_subnet" "subnet" {
-  name                 = "${local.project}-subnet"
+module "nat_gateway" {
+  source = "../../nat_gateway"
+
+  name                = "${local.project}-ng"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+
+  zones = [1]
+
+  public_ips_count = 2
+
+  tags = var.tags
+}
+
+resource "azurerm_subnet" "subnet1" {
+  name                 = "${local.project}-subnet1"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = var.subnet_cidr
+  address_prefixes     = var.subnet1_cidr
 
   delegation {
     name = "delegation"
@@ -30,18 +44,28 @@ resource "azurerm_subnet" "subnet" {
   }
 }
 
-module "nat_gateway" {
-  source = "../../nat_gateway"
+resource "azurerm_subnet_nat_gateway_association" "subnet1" {
+  nat_gateway_id = module.nat_gateway.id
+  subnet_id      = azurerm_subnet.subnet1.id
+}
 
-  name                = "${local.project}-ng"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
+resource "azurerm_subnet" "subnet2" {
+  name                 = "${local.project}-subnet2"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = var.subnet2_cidr
 
-  zones = [1]
+  delegation {
+    name = "delegation"
 
-  subnet_ids = [
-    azurerm_subnet.subnet.id,
-  ]
+    service_delegation {
+      name    = "Microsoft.Web/serverFarms"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
+}
 
-  tags = var.tags
+resource "azurerm_subnet_nat_gateway_association" "subnet2" {
+  nat_gateway_id = module.nat_gateway.id
+  subnet_id      = azurerm_subnet.subnet2.id
 }
