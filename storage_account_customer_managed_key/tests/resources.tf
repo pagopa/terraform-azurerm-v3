@@ -17,6 +17,7 @@ module "storage_account" {
   location                        = azurerm_resource_group.rg.location
   advanced_threat_protection      = true
   allow_nested_items_to_be_public = false
+  public_network_access_enabled   = true
 
   blob_versioning_enabled              = true
   blob_container_delete_retention_days = 7
