@@ -68,6 +68,11 @@ variable "sku_name" {
   description = "The SKU of Redis to use"
 }
 
+variable "redis_version" {
+  type        = string
+  description = "The version of Redis to use: 4 (deprecated) or 6"
+}
+
 # Redis configuration #
 
 
