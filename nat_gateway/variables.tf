@@ -10,9 +10,10 @@ variable "location" {
   type = string
 }
 
+# NAT Gateway not support multiple availability zones
+# Public IPs must be in the same availability zones of NAT Gateway
 variable "zones" {
   type        = list(number)
-  default     = [1, 2, 3]
   description = "Availability zone where the NAT Gateway should be provisioned."
 }
 

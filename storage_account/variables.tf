@@ -44,7 +44,7 @@ variable "blob_delete_retention_days" {
   default     = 0
 }
 
-variable "container_delete_retention_days" {
+variable "blob_container_delete_retention_days" {
   description = "Retention days for deleted container. Valid value is between 1 and 365 (set to 0 to disable)."
   type        = number
   default     = 0
@@ -68,14 +68,43 @@ variable "allow_nested_items_to_be_public" {
   default     = false
 }
 
+variable "public_network_access_enabled" {
+  description = "Enable or Disable public access. It should always set to false unless there are special needs"
+  type        = bool
+}
+
 variable "blob_versioning_enabled" {
   description = "Controls whether blob object versioning is enabled."
   type        = bool
   default     = false
 }
 
+variable "blob_change_feed_enabled" {
+  description = "(Optional) Is the blob service properties for change feed events enabled? Default to false."
+  type        = bool
+  default     = false
+}
+
+variable "blob_change_feed_retention_in_days" {
+  description = "(Optional) The duration of change feed events retention in days. The possible values are between 1 and 146000 days (400 years). Setting this to null (or omit this in the configuration file) indicates an infinite retention of the change feed."
+  type        = number
+  default     = null
+}
+
+variable "blob_restore_policy_days" {
+  description = "(Optional) Specifies the number of days that the blob can be restored, between 1 and 365 days. This must be less than the days specified for delete_retention_policy."
+  type        = number
+  default     = 0
+}
+
 variable "cross_tenant_replication_enabled" {
   description = "(Optional) Should cross Tenant replication be enabled? Defaults to false."
+  type        = bool
+  default     = false
+}
+
+variable "enable_identity" {
+  description = "(Optional) If true, set the identity as SystemAssigned"
   type        = bool
   default     = false
 }

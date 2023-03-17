@@ -68,7 +68,6 @@ variable "app_service_plan_id" {
 variable "app_service_plan_info" {
   type = object({
     kind                         = string # The kind of the App Service Plan to create. Possible values are Windows (also available as App), Linux, elastic (for Premium Consumption) and FunctionApp (for a Consumption Plan).
-    sku_tier                     = string # Specifies the plan's pricing tier.
     sku_size                     = string # Specifies the plan's instance size.
     maximum_elastic_worker_count = number # The maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.
   })
@@ -76,10 +75,9 @@ variable "app_service_plan_info" {
   description = "Allows to configurate the internal service plan"
 
   default = {
-    kind                         = "elastic"
-    sku_tier                     = "ElasticPremium"
-    sku_size                     = "EP1"
-    maximum_elastic_worker_count = 1
+    kind                         = "Linux"
+    sku_size                     = "P1v3"
+    maximum_elastic_worker_count = 0
   }
 }
 
@@ -101,11 +99,6 @@ variable "use_32_bit_worker_process" {
   default     = false
 }
 
-variable "linux_fx_version" {
-  type        = string
-  description = "(Required) Linux App Framework and version for the AppService, e.g. DOCKER|(golang:latest). Use null if function app is on windows"
-}
-
 variable "application_insights_instrumentation_key" {
   type        = string
   description = "Application insights instrumentation key"
@@ -114,12 +107,6 @@ variable "application_insights_instrumentation_key" {
 variable "app_settings" {
   type    = map(any)
   default = {}
-}
-
-variable "os_type" {
-  type        = string
-  description = "(Optional) A string indicating the Operating System type for this function app. This value will be linux for Linux derivatives, or an empty string for Windows (default). When set to linux you must also set azurerm_app_service_plan arguments as kind = Linux and reserved = true"
-  default     = null
 }
 
 variable "https_only" {
@@ -211,6 +198,18 @@ variable "system_identity_enabled" {
   default     = false
 }
 
+variable "client_certificate_enabled" {
+  type        = bool
+  description = "Should the function app use Client Certificates"
+  default     = false
+}
+
+variable "sticky_settings" {
+  type        = list(string)
+  description = "(Optional) A list of app_setting names that the Linux Function App will not swap between Slots when a swap operation is triggered"
+  default     = []
+}
+
 # -------------------
 # Alerts variables
 # -------------------
@@ -236,4 +235,39 @@ variable "action" {
     }
   ))
   default = []
+}
+######################
+# Framework choice
+######################
+variable "docker" {
+  type    = any
+  default = {}
+}
+variable "dotnet_version" {
+  type    = string
+  default = null
+}
+variable "use_dotnet_isolated_runtime" {
+  type    = string
+  default = null
+}
+variable "java_version" {
+  type    = string
+  default = null
+}
+variable "node_version" {
+  type    = string
+  default = null
+}
+variable "python_version" {
+  type    = string
+  default = null
+}
+variable "powershell_core_version" {
+  type    = string
+  default = null
+}
+variable "use_custom_runtime" {
+  type    = string
+  default = null
 }

@@ -56,6 +56,12 @@ variable "enable_rbac_authorization" {
   description = "Boolean flag to specify whether Azure Key Vault uses Role Based Access Control (RBAC) for authorization of data actions."
 }
 
+variable "public_network_access_enabled" {
+  type        = bool
+  default     = true
+  description = "Boolean flag to specify whether Azure Key Vault use public access."
+}
+
 variable "tags" {
   type = map(any)
 }

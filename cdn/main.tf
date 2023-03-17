@@ -3,7 +3,7 @@
  **/
 module "cdn_storage_account" {
 
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v4.1.5"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v6.1.0"
 
   name = replace("${var.prefix}-${var.name}-sa", "-", "")
 
@@ -15,6 +15,7 @@ module "cdn_storage_account" {
   resource_group_name             = var.resource_group_name
   location                        = var.location
   allow_nested_items_to_be_public = true
+  public_network_access_enabled   = true
 
   index_document     = var.index_document
   error_404_document = var.error_404_document

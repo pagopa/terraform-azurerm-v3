@@ -12,11 +12,14 @@ resource "azurerm_storage_account" "this" {
   allow_nested_items_to_be_public  = var.allow_nested_items_to_be_public
   is_hns_enabled                   = var.is_hns_enabled
   cross_tenant_replication_enabled = var.cross_tenant_replication_enabled
+  public_network_access_enabled    = var.public_network_access_enabled
 
   dynamic "blob_properties" {
     for_each = ((var.account_kind == "BlockBlobStorage" || var.account_kind == "StorageV2") ? [1] : [])
     content {
-      versioning_enabled = var.blob_versioning_enabled
+      versioning_enabled            = var.blob_versioning_enabled
+      change_feed_enabled           = var.blob_change_feed_enabled
+      change_feed_retention_in_days = var.blob_change_feed_retention_in_days
 
       dynamic "delete_retention_policy" {
         for_each = (var.blob_delete_retention_days == 0 ? [] : [1])
@@ -26,9 +29,16 @@ resource "azurerm_storage_account" "this" {
       }
 
       dynamic "container_delete_retention_policy" {
-        for_each = (var.container_delete_retention_days == 0 ? [] : [1])
+        for_each = (var.blob_container_delete_retention_days == 0 ? [] : [1])
         content {
-          days = var.container_delete_retention_days
+          days = var.blob_container_delete_retention_days
+        }
+      }
+
+      dynamic "restore_policy" {
+        for_each = (var.blob_restore_policy_days == 0 ? [] : [1])
+        content {
+          days = var.blob_restore_policy_days
         }
       }
     }
@@ -61,6 +71,20 @@ resource "azurerm_storage_account" "this" {
       name          = var.custom_domain.name
       use_subdomain = var.custom_domain.use_subdomain
     }
+  }
+
+  dynamic "identity" {
+    for_each = (var.enable_identity ? [1] : [])
+    content {
+      type = "SystemAssigned"
+    }
+  }
+
+  # the use of storage_account_customer_managed_key resource will cause a bug on the plan: this paramenter will always see as changed.
+  lifecycle {
+    ignore_changes = [
+      customer_managed_key
+    ]
   }
 
   tags = var.tags

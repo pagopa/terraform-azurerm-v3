@@ -6,11 +6,6 @@ variable "name" {
   type = string
 }
 
-variable "function_app_name" {
-  type        = string
-  description = "Name of the function app. (The production slot)"
-}
-
 variable "function_app_id" {
   type        = string
   description = "Id of the function app. (The production slot)"
@@ -46,11 +41,6 @@ variable "use_32_bit_worker_process" {
   type        = bool
   description = "(Optional) Should the Function App run in 32 bit mode, rather than 64 bit mode? Defaults to false."
   default     = false
-}
-
-variable "linux_fx_version" {
-  type        = string
-  description = "(Required) Linux App Framework and version for the AppService, e.g. DOCKER|(golang:latest). Use null if function app is on windows"
 }
 
 variable "application_insights_instrumentation_key" {
@@ -106,7 +96,8 @@ variable "https_only" {
 
 variable "storage_account_name" {
   type        = string
-  description = "Storage account in use by the functio."
+  description = "Storage account in use by the function."
+  default     = null
 }
 
 variable "storage_account_access_key" {
@@ -145,4 +136,51 @@ variable "export_keys" {
 
 variable "tags" {
   type = map(any)
+}
+
+variable "client_certificate_enabled" {
+  type        = bool
+  description = "Should the function app use Client Certificates"
+  default     = false
+}
+
+######################
+# Framework choice
+######################
+variable "docker" {
+  type    = any
+  default = {}
+}
+variable "dotnet_version" {
+  type    = string
+  default = null
+}
+variable "use_dotnet_isolated_runtime" {
+  type    = string
+  default = null
+}
+variable "java_version" {
+  type    = string
+  default = null
+}
+variable "node_version" {
+  type    = string
+  default = null
+}
+variable "python_version" {
+  type    = string
+  default = null
+}
+variable "powershell_core_version" {
+  type    = string
+  default = null
+}
+variable "use_custom_runtime" {
+  type    = string
+  default = null
+}
+variable "system_identity_enabled" {
+  type        = bool
+  description = "Enable the System Identity and create relative Service Principal."
+  default     = false
 }

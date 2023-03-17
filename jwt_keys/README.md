@@ -27,14 +27,14 @@ Nothing to change
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.40.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.45.0 |
 | <a name="requirement_tls"></a> [tls](#requirement\_tls) | <= 4.0.4 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.40.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.45.0 |
 | <a name="provider_tls"></a> [tls](#provider\_tls) | 4.0.4 |
 
 ## Modules
@@ -57,7 +57,15 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_cert_common_name"></a> [cert\_common\_name](#input\_cert\_common\_name) | cert info | `string` | n/a | yes |
+| <a name="input_cert_country"></a> [cert\_country](#input\_cert\_country) | n/a | `string` | `""` | no |
+| <a name="input_cert_locality"></a> [cert\_locality](#input\_cert\_locality) | n/a | `string` | `""` | no |
+| <a name="input_cert_organization"></a> [cert\_organization](#input\_cert\_organization) | n/a | `string` | `""` | no |
+| <a name="input_cert_organizational_unit"></a> [cert\_organizational\_unit](#input\_cert\_organizational\_unit) | n/a | `string` | `""` | no |
 | <a name="input_cert_password"></a> [cert\_password](#input\_cert\_password) | n/a | `string` | n/a | yes |
+| <a name="input_cert_postal_code"></a> [cert\_postal\_code](#input\_cert\_postal\_code) | n/a | `string` | `""` | no |
+| <a name="input_cert_province"></a> [cert\_province](#input\_cert\_province) | n/a | `string` | `""` | no |
+| <a name="input_cert_serial_number"></a> [cert\_serial\_number](#input\_cert\_serial\_number) | n/a | `string` | `""` | no |
+| <a name="input_cert_street_address"></a> [cert\_street\_address](#input\_cert\_street\_address) | n/a | `list(string)` | `[]` | no |
 | <a name="input_cert_validity_hours"></a> [cert\_validity\_hours](#input\_cert\_validity\_hours) | n/a | `number` | `8640` | no |
 | <a name="input_early_renewal_hours"></a> [early\_renewal\_hours](#input\_early\_renewal\_hours) | n/a | `number` | `720` | no |
 | <a name="input_jwt_name"></a> [jwt\_name](#input\_jwt\_name) | n/a | `string` | n/a | yes |
