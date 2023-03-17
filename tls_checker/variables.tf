@@ -85,3 +85,13 @@ locals {
   # all this work is mandatory to avoid helm name limit of 53 chars
   helm_chart_name = "${lower(substr(replace("chckr-${var.alert_name}", "/\\W/", "-"), 0, 47))}${local.alert_name_sha256_limited}"
 }
+
+variable "keyvault_name" {
+  type        = string
+  description = "(Required) Keyvault name"
+}
+
+variable "keyvault_tenantid" {
+  type        = string
+  description = "(Required) Keyvault tenant id"
+}
