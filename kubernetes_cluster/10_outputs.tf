@@ -22,6 +22,6 @@ output "kubelet_identity_id" {
 }
 
 output "identity_principal_id" {
-  value = azurerm_kubernetes_cluster.this.identity.principal_id
+  value = azurerm_kubernetes_cluster.this.identity.0.principal_id
   description = "The Principal ID associated with this Managed Service Identity."
 }
