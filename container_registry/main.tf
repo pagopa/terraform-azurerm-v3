@@ -88,9 +88,8 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
   log_analytics_workspace_id = var.sec_log_analytics_workspace_id
   storage_account_id         = var.sec_storage_id
 
-  log {
+  enabled_log {
     category = "ContainerRegistryRepositoryEvents"
-    enabled  = true
 
     retention_policy {
       enabled = true
@@ -98,9 +97,8 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
     }
   }
 
-  log {
+  enabled_log {
     category = "ContainerRegistryLoginEvents"
-    enabled  = true
 
     retention_policy {
       enabled = true
