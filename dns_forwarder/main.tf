@@ -7,7 +7,7 @@ resource "azurerm_container_group" "this" {
   os_type             = "Linux"
 
   container {
-    name   = "dns-forwarder"
+    name = "dns-forwarder"
     # from https://hub.docker.com/r/coredns/coredns
     image  = "coredns/coredns:1.10.1@sha256:be7652ce0b43b1339f3d14d9b14af9f588578011092c1f7893bd55432d83a378"
     cpu    = "0.5"
