@@ -59,18 +59,18 @@ resource "azurerm_monitor_diagnostic_setting" "key_vault" {
   log_analytics_workspace_id = var.sec_log_analytics_workspace_id
   storage_account_id         = var.sec_storage_id
 
-  log {
+  enabled_log {
     category = "AuditEvent"
-    enabled  = true
+
     retention_policy {
       enabled = true
       days    = 365
     }
   }
 
-  log {
+  enabled_log {
     category = "AzurePolicyEvaluationDetails"
-    enabled  = true
+
     retention_policy {
       enabled = true
       days    = 365
