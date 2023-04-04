@@ -13,6 +13,7 @@ resource "azurerm_storage_account" "this" {
   is_hns_enabled                   = var.is_hns_enabled
   cross_tenant_replication_enabled = var.cross_tenant_replication_enabled
   public_network_access_enabled    = var.public_network_access_enabled
+  sftp_enabled                     = var.sftp_enabled
 
   dynamic "blob_properties" {
     for_each = ((var.account_kind == "BlockBlobStorage" || var.account_kind == "StorageV2") ? [1] : [])
