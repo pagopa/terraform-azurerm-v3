@@ -109,6 +109,12 @@ variable "enable_identity" {
   default     = false
 }
 
+variable "sftp_enabled" {
+  description = "(Optional) Boolean, enable SFTP for the storage account"
+  type        = bool
+  default     = false
+}
+
 # Note: If specifying network_rules,
 # one of either ip_rules or virtual_network_subnet_ids must be specified
 # and default_action must be set to Deny.
