@@ -29,7 +29,6 @@ resource "null_resource" "this" {
         --platform-fault-domain-count 1 \
         --load-balancer "" \
         --os-disk-secure-vm-disk-encryption-set ${var.encryption_set_id} \
-        --data-disk-encryption-sets ${var.encryption_set_id} \
         --subnet ${var.subnet_id} && \
       az vmss extension set \
         --vmss-name ${var.name} \
