@@ -54,7 +54,7 @@ variable "subnet_id" {
 variable "encryption_set_id" {
   type        = string
   description = "(Optional) An existing encryption set"
-  default     = null
+  default     = ""
 }
 
 variable "tags" {
