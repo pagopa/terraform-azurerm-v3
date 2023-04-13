@@ -45,6 +45,7 @@ resource "azurerm_eventhub_namespace" "this" {
           action  = ip_rule.value["action"]
         }
       }
+      trusted_service_access_enabled = network_rulesets.value["trusted_service_access_enabled"]
     }
   }
 
