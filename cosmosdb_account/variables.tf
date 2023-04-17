@@ -12,6 +12,7 @@ variable "name" {
 variable "domain" {
   type        = string
   description = "(Optional) Specifies the domain of the CosmosDB Account."
+  default     = null
 }
 
 // Resource Group
