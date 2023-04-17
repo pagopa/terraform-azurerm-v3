@@ -45,7 +45,7 @@ module "storage_account_durable_function_management_policy" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.45.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.30.0, <= 3.45.0 |
 
 ## Modules
 
