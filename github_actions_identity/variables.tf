@@ -13,17 +13,16 @@ variable "env" {
   description = "Environment"
 }
 
+variable "github_org" {
+  type        = string
+  description = "GitHub Organization"
+  default     = "pagopa"
+}
 
-variable "github" {
-  type = object({
-    org        = string
-    repository = string
-  })
-  description = "GitHub Organization and repository name"
-  default = {
-    org        = "pagopa"
-    repository = "io-sign"
-  }
+variable "github_repository" {
+  type        = string
+  description = "GitHub repository name"
+  default     = var.project
 }
 
 variable "environment_cd_roles" {

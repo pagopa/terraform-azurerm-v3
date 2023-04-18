@@ -2,8 +2,8 @@
 // Locals
 //
 locals {
-  project  = var.project #alias
-  app_name = "github-${var.github.org}-${var.github.repository}-${var.env}"
+  project  = "${var.project}-${var.env}" #alias
+  app_name = "github-${var.github_org}-${var.github_repository}-${var.env}"
 
   environment_cd_resource_group_roles = distinct(flatten([
     for rg, role_list in var.environment_cd_roles.resource_groups : [
@@ -49,7 +49,7 @@ resource "azuread_application_federated_identity_credential" "environment_cd" {
   description           = "github-federated"
   audiences             = ["api://AzureADTokenExchange"]
   issuer                = "https://token.actions.githubusercontent.com"
-  subject               = "repo:${var.github.org}/${var.github.repository}:environment:${var.env}-cd"
+  subject               = "repo:${var.github_org}/${var.github_repository}:environment:${var.env}-cd"
 }
 
 resource "azurerm_role_assignment" "environment_cd_subscription" {
@@ -83,7 +83,7 @@ resource "azuread_application_federated_identity_credential" "environment_runner
   description           = "github-federated"
   audiences             = ["api://AzureADTokenExchange"]
   issuer                = "https://token.actions.githubusercontent.com"
-  subject               = "repo:${var.github.org}/${var.github.repository}:environment:${var.env}-runner"
+  subject               = "repo:${var.github_org}/${var.github_repository}:environment:${var.env}-runner"
 }
 
 resource "azurerm_role_assignment" "environment_runner_github_runner_rg" {
@@ -97,7 +97,7 @@ resource "azurerm_role_assignment" "environment_runner_github_runner_rg" {
 //
 resource "github_repository_environment" "github_repository_environment_cd" {
   environment = "${var.env}-cd"
-  repository  = var.github.repository
+  repository  = var.github_repository
   # filter teams reviewers from github_organization_teams
   # if reviewers_teams is null no reviewers will be configured for environment
   dynamic "reviewers" {
@@ -118,7 +118,7 @@ resource "github_repository_environment" "github_repository_environment_cd" {
 
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "azure_cd_tenant_id" {
-  repository      = var.github.repository
+  repository      = var.github_repository
   environment     = "${var.env}-cd"
   secret_name     = "AZURE_TENANT_ID"
   plaintext_value = data.azurerm_client_config.current.tenant_id
@@ -126,7 +126,7 @@ resource "github_actions_environment_secret" "azure_cd_tenant_id" {
 
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "azure_cd_subscription_id" {
-  repository      = var.github.repository
+  repository      = var.github_repository
   environment     = "${var.env}-cd"
   secret_name     = "AZURE_SUBSCRIPTION_ID"
   plaintext_value = data.azurerm_subscription.current.subscription_id
@@ -134,7 +134,7 @@ resource "github_actions_environment_secret" "azure_cd_subscription_id" {
 
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "azure_cd_client_id" {
-  repository      = var.github.repository
+  repository      = var.github_repository
   environment     = "${var.env}-cd"
   secret_name     = "AZURE_CLIENT_ID"
   plaintext_value = azuread_service_principal.environment_cd.application_id
@@ -145,7 +145,7 @@ resource "github_actions_environment_secret" "azure_cd_client_id" {
 //
 resource "github_repository_environment" "github_repository_environment_runner" {
   environment = "${var.env}-runner"
-  repository  = var.github.repository
+  repository  = var.github_repository
   deployment_branch_policy {
     protected_branches     = false
     custom_branch_policies = true
@@ -154,7 +154,7 @@ resource "github_repository_environment" "github_repository_environment_runner" 
 
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "azure_runner_tenant_id" {
-  repository      = var.github.repository
+  repository      = var.github_repository
   environment     = "${var.env}-runner"
   secret_name     = "AZURE_TENANT_ID"
   plaintext_value = data.azurerm_client_config.current.tenant_id
@@ -162,7 +162,7 @@ resource "github_actions_environment_secret" "azure_runner_tenant_id" {
 
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "azure_runner_subscription_id" {
-  repository      = var.github.repository
+  repository      = var.github_repository
   environment     = "${var.env}-runner"
   secret_name     = "AZURE_SUBSCRIPTION_ID"
   plaintext_value = data.azurerm_subscription.current.subscription_id
@@ -170,7 +170,7 @@ resource "github_actions_environment_secret" "azure_runner_subscription_id" {
 
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "azure_runner_client_id" {
-  repository      = var.github.repository
+  repository      = var.github_repository
   environment     = "${var.env}-runner"
   secret_name     = "AZURE_CLIENT_ID"
   plaintext_value = azuread_service_principal.environment_runner.application_id
@@ -178,7 +178,7 @@ resource "github_actions_environment_secret" "azure_runner_client_id" {
 
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "azure_runner_container_app_environment_name" {
-  repository      = var.github.repository
+  repository      = var.github_repository
   environment     = "${var.env}-runner"
   secret_name     = "AZURE_CONTAINER_APP_ENVIRONMENT_NAME"
   plaintext_value = "${local.project}-github-runner-cae"
@@ -186,7 +186,7 @@ resource "github_actions_environment_secret" "azure_runner_container_app_environ
 
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "azure_runner_resource_group_name" {
-  repository      = var.github.repository
+  repository      = var.github_repository
   environment     = "${var.env}-runner"
   secret_name     = "AZURE_RESOURCE_GROUP_NAME"
   plaintext_value = "${local.project}-github-runner-rg"
