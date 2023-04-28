@@ -12,6 +12,7 @@ resource "azurerm_storage_account" "this" {
   allow_nested_items_to_be_public  = var.allow_nested_items_to_be_public
   is_hns_enabled                   = var.is_hns_enabled
   cross_tenant_replication_enabled = var.cross_tenant_replication_enabled
+  public_network_access_enabled    = var.public_network_access_enabled
 
   dynamic "blob_properties" {
     for_each = ((var.account_kind == "BlockBlobStorage" || var.account_kind == "StorageV2") ? [1] : [])
@@ -77,6 +78,13 @@ resource "azurerm_storage_account" "this" {
     content {
       type = "SystemAssigned"
     }
+  }
+
+  # the use of storage_account_customer_managed_key resource will cause a bug on the plan: this paramenter will always see as changed.
+  lifecycle {
+    ignore_changes = [
+      customer_managed_key
+    ]
   }
 
   tags = var.tags

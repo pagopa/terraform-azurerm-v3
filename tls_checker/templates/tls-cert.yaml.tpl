@@ -10,6 +10,14 @@ ingress:
 service:
   create: false
 
+readinessProbe:
+  httpGet:
+    port: 8080
+
+livenessProbe:
+  httpGet:
+    port: 8080
+
 resources:
   requests:
     memory: '96Mi'
@@ -27,7 +35,23 @@ envConfig:
   ExpirationDeltaInDays: '${expiration_delta_in_days}'
   Host: 'https://${host}'
   AzureWebJobsStorage: "UseDevelopmentStorage=true"
+
+envSecret:
   APPINSIGHTS_INSTRUMENTATIONKEY: '${appinsights_instrumentationkey}'
+
+keyvault:
+  name: '${keyvault_name}'
+  tenantId: '${keyvault_tenantid}'
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: node_type
+              operator: In
+              values:
+                - user
 
 sidecars:
   - name: azurite

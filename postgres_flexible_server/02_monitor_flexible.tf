@@ -41,32 +41,12 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
   log_analytics_workspace_id = var.log_analytics_workspace_id
   storage_account_id         = var.diagnostic_setting_destination_storage_id
 
-  log {
+  enabled_log {
     category = "PostgreSQLLogs"
-    enabled  = true
 
     retention_policy {
       days    = 365
       enabled = true
-    }
-  }
-
-  log {
-    category = "FSPGPGBouncer"
-    enabled  = false
-
-    retention_policy {
-      days    = 0
-      enabled = false
-    }
-  }
-  log {
-    category = "PiiOBpgbouncerlog"
-    enabled  = false
-
-    retention_policy {
-      days    = 0
-      enabled = false
     }
   }
 

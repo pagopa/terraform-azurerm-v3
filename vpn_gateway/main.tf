@@ -27,25 +27,22 @@ resource "azurerm_monitor_diagnostic_setting" "gw_pip" {
   target_resource_id         = azurerm_public_ip.gw[0].id
   log_analytics_workspace_id = var.log_analytics_workspace_id
 
-  log {
+  enabled_log {
     category = "DDoSProtectionNotifications"
-    enabled  = true
     retention_policy {
       enabled = false
     }
   }
 
-  log {
+  enabled_log {
     category = "DDoSMitigationFlowLogs"
-    enabled  = true
     retention_policy {
       enabled = false
     }
   }
 
-  log {
+  enabled_log {
     category = "DDoSMitigationReports"
-    enabled  = false
     retention_policy {
       enabled = false
     }
@@ -119,45 +116,40 @@ resource "azurerm_monitor_diagnostic_setting" "sec_gw_logs" {
   log_analytics_workspace_id = var.sec_log_analytics_workspace_id
   storage_account_id         = var.sec_storage_id
 
-  log {
+  enabled_log {
     category = "GatewayDiagnosticLog"
-    enabled  = true
     retention_policy {
       enabled = true
       days    = 365
     }
   }
 
-  log {
+  enabled_log {
     category = "TunnelDiagnosticLog"
-    enabled  = true
     retention_policy {
       enabled = true
       days    = 365
     }
   }
 
-  log {
+  enabled_log {
     category = "RouteDiagnosticLog"
-    enabled  = true
     retention_policy {
       enabled = true
       days    = 365
     }
   }
 
-  log {
+  enabled_log {
     category = "IKEDiagnosticLog"
-    enabled  = true
     retention_policy {
       enabled = true
       days    = 365
     }
   }
 
-  log {
+  enabled_log {
     category = "P2SDiagnosticLog"
-    enabled  = true
     retention_policy {
       enabled = true
       days    = 365

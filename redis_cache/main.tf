@@ -11,6 +11,7 @@ resource "azurerm_redis_cache" "this" {
   family                        = var.family
   sku_name                      = var.sku_name
   public_network_access_enabled = var.public_network_access_enabled
+  redis_version                 = var.redis_version
 
   redis_configuration {
     enable_authentication         = var.enable_authentication

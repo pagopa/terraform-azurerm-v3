@@ -63,10 +63,6 @@ resource "azurerm_linux_function_app_slot" "this" {
     health_check_path   = var.health_check_path
   }
 
-  auth_settings {
-    enabled = false
-  }
-
   app_settings = merge(
     {
       # No downtime on slots swap

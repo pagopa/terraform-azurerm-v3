@@ -1,49 +1,74 @@
-resource "azurerm_app_service_plan" "this" {
-  count               = var.plan_type == "internal" ? 1 : 0
+locals {
+  allowed_ips     = [for ip in var.allowed_ips : { ip_address = ip, virtual_network_subnet_id = null }]
+  allowed_subnets = [for s in var.allowed_subnets : { ip_address = null, virtual_network_subnet_id = s }]
+  ip_restrictions = concat(local.allowed_subnets, local.allowed_ips)
+}
+
+resource "azurerm_service_plan" "this" {
+  count = var.plan_type == "internal" ? 1 : 0
+
   name                = var.plan_name
   location            = var.location
   resource_group_name = var.resource_group_name
 
-  kind = var.plan_kind
-
-  sku {
-    tier = var.plan_sku_tier
-    size = var.plan_sku_size
-  }
+  sku_name = var.sku_name
+  os_type  = "Linux"
 
   maximum_elastic_worker_count = var.plan_maximum_elastic_worker_count
-  reserved                     = var.plan_reserved
-  per_site_scaling             = var.plan_per_site_scaling
+  per_site_scaling_enabled     = var.plan_per_site_scaling
 
   tags = var.tags
 }
 
-resource "azurerm_app_service" "this" {
+resource "azurerm_linux_web_app" "this" {
   name                = var.name
   location            = var.location
   resource_group_name = var.resource_group_name
 
-  app_service_plan_id = var.plan_type == "internal" ? azurerm_app_service_plan.this[0].id : var.plan_id
-  https_only          = var.https_only
+  service_plan_id = var.plan_type == "internal" ? azurerm_service_plan.this[0].id : var.plan_id
+  https_only      = var.https_only
   #tfsec:ignore:azure-appservice-require-client-cert
-  client_cert_enabled     = var.client_cert_enabled
-  client_affinity_enabled = var.client_affinity_enabled
+  client_certificate_enabled = var.client_cert_enabled
+  client_affinity_enabled    = var.client_affinity_enabled
 
-  app_settings = var.app_settings
+  # https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
+  app_settings = merge(
+    {
+      # https://docs.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16
+      WEBSITE_DNS_SERVER = "168.63.129.16"
+      # https://docs.microsoft.com/en-us/azure/azure-monitor/app/sampling
+      APPINSIGHTS_SAMPLING_PERCENTAGE = 5
+    },
+    var.app_settings,
+  )
+
+
 
   site_config {
-    always_on              = var.always_on
-    linux_fx_version       = var.linux_fx_version
+    always_on         = var.always_on
+    use_32_bit_worker = var.use_32_bit_worker_process
+    application_stack {
+      docker_image     = var.docker_image
+      docker_image_tag = var.docker_image_tag
+
+      dotnet_version      = var.dotnet_version
+      python_version      = var.python_version
+      go_version          = var.go_version
+      java_server         = var.java_server
+      java_server_version = var.java_server_version
+      java_version        = var.java_version
+      node_version        = var.node_version
+      php_version         = var.php_version
+      ruby_version        = var.ruby_version
+    }
     app_command_line       = var.app_command_line
-    min_tls_version        = "1.2"
+    minimum_tls_version    = "1.2"
     ftps_state             = var.ftps_state
     vnet_route_all_enabled = var.subnet_id == null ? false : true
 
     health_check_path = var.health_check_path != null ? var.health_check_path : null
 
-    php_version    = "7.4"
-    python_version = "3.4"
-    http2_enabled  = true
+    http2_enabled = true
 
     dynamic "ip_restriction" {
       for_each = var.allowed_subnets
@@ -57,21 +82,16 @@ resource "azurerm_app_service" "this" {
     }
 
     dynamic "ip_restriction" {
-      for_each = var.allowed_ips
+      for_each = local.ip_restrictions
       iterator = ip
 
       content {
-        ip_address                = ip.value
-        virtual_network_subnet_id = null
+        ip_address                = ip.value.ip_address
+        virtual_network_subnet_id = ip.value.virtual_network_subnet_id
         name                      = "rule"
       }
     }
 
-  }
-
-  #tfsec:ignore:azure-appservice-authentication-enabled
-  auth_settings {
-    enabled = false
   }
 
   # Managed identity
@@ -79,20 +99,27 @@ resource "azurerm_app_service" "this" {
     type = "SystemAssigned"
   }
 
-  tags = var.tags
-
   lifecycle {
     ignore_changes = [
-      site_config.0.scm_type,
-      site_config.0.linux_fx_version, # deployments are made outside of Terraform
-      app_settings["DOCKER_CUSTOM_IMAGE_NAME"]
+      app_settings["DOCKER_CUSTOM_IMAGE_NAME"],
+      virtual_network_subnet_id,
+      app_settings["WEBSITE_HEALTHCHECK_MAXPINGFAILURES"],
     ]
   }
+
+  dynamic "sticky_settings" {
+    for_each = length(var.sticky_settings) == 0 ? [] : [1]
+    content {
+      app_setting_names = var.sticky_settings
+    }
+  }
+
+  tags = var.tags
 }
 
 resource "azurerm_app_service_virtual_network_swift_connection" "app_service_virtual_network_swift_connection" {
   count = var.vnet_integration ? 1 : 0
 
-  app_service_id = azurerm_app_service.this.id
+  app_service_id = azurerm_linux_web_app.this.id
   subnet_id      = var.subnet_id
 }
