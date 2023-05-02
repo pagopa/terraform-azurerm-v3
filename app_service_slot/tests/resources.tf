@@ -22,10 +22,6 @@ locals {
   }
 }
 
-resource "random_id" "function_id" {
-  byte_length = 3
-}
-
 resource "azurerm_container_registry" "reg" {
   name                = "${local.project}registry"
   resource_group_name = azurerm_resource_group.rg.name

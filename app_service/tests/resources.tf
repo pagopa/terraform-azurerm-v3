@@ -15,10 +15,6 @@ resource "azurerm_application_insights" "ai" {
   tags = var.tags
 }
 
-resource "random_id" "function_id" {
-  byte_length = 3
-}
-
 resource "azurerm_resource_group" "rg" {
   name     = "${local.project}-rg"
   location = var.location
