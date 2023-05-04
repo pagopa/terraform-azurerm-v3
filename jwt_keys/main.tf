@@ -8,17 +8,10 @@ resource "tls_private_key" "jwt" {
 }
 
 resource "tls_self_signed_cert" "jwt_self" {
-  allowed_uses = [
-    // "crl_signing",
-    // "data_encipherment",
-    "digital_signature",
-    // "key_agreement",
-    // "cert_signing",
-    // "key_encipherment"
-  ]
   private_key_pem       = tls_private_key.jwt.private_key_pem
   validity_period_hours = var.cert_validity_hours
   early_renewal_hours   = var.early_renewal_hours
+  allowed_uses          = var.cert_allowed_uses
   subject {
     common_name         = var.cert_common_name
     street_address      = var.cert_street_address

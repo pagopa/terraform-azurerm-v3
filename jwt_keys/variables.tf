@@ -71,3 +71,17 @@ variable "early_renewal_hours" {
   type    = number
   default = 720
 }
+
+variable "cert_allowed_uses" {
+  type = list(string)
+  default = [
+    // "crl_signing",
+    // "data_encipherment",
+    "digital_signature",
+    // "key_agreement",
+    // "cert_signing",
+    // "key_encipherment"
+  ]
+}
+
+ 
