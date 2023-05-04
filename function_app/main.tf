@@ -216,11 +216,14 @@ resource "azurerm_monitor_metric_alert" "function_app_health_check" {
 resource "azurerm_service_plan" "this" {
   count = var.app_service_plan_id == null ? 1 : 0
 
-  name                = var.app_service_plan_name != null ? var.app_service_plan_name : format("%s-plan", var.name)
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  os_type             = "Linux"
-  sku_name            = var.app_service_plan_info.sku_size
+  name                         = var.app_service_plan_name != null ? var.app_service_plan_name : format("%s-plan", var.name)
+  location                     = var.location
+  resource_group_name          = var.resource_group_name
+  os_type                      = "Linux"
+  sku_name                     = var.app_service_plan_info.sku_size
+  zone_balancing_enabled       = var.app_service_plan_info.zone_balancing_enabled
+  maximum_elastic_worker_count = var.app_service_plan_info.maximum_elastic_worker_count
+  worker_count                 = var.app_service_plan_info.worker_count
 
   per_site_scaling_enabled = false
 

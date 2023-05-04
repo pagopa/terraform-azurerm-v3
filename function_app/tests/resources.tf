@@ -74,5 +74,16 @@ module "function_app" {
     azurerm_subnet.function_app_subnet.id,
   ]
 
+  app_service_plan_info = {
+    kind     = "Linux"
+    sku_size = "P1v3"
+    # The maximum number of workers to use in an Elastic SKU Plan. Cannot be set unless using an Elastic SKU.
+    maximum_elastic_worker_count = 0
+    # The number of Workers (instances) to be allocated.
+    worker_count = 2
+    # Should the Service Plan balance across Availability Zones in the region. Changing this forces a new resource to be created.
+    zone_balancing_enabled = true
+  }
+
   tags = var.tags
 }
