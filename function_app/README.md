@@ -11,6 +11,16 @@ In terraform output you can get the resource group name.
 ## How to use it
 Use the example Terraform template, saved in `terraform-azurerm-v3/function_app/tests`, to test this module.
 
+## Redundancy
+To deploy it in multiple Availability Zones in the region you need to set the following variables:
+- `zone_balancing_enabled = true`
+- `worker_count = <2+>`
+
+Furthermore, you need to set the region (es. `location = northeurope`).
+
+:warning: **At the moment (May 04, 2023), in `westeurope` is not possible to deploy service plans in multiple Availability Zones!**
+
+
 ## How to migrate `from azurerm_function_app` to `azurerm_linux_function_app`
 The following script will remove and import the deprecated resources as new ones.
 It creates a resource group named `test-fnapp<6 hexnumbers>-rg` and every resource into it is named `fnapp<6 hexnumbers>-*`
