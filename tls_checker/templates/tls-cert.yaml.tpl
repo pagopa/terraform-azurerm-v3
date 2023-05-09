@@ -12,11 +12,11 @@ service:
 
 readinessProbe:
   httpGet:
-    port: 8080
+    port: 80
 
 livenessProbe:
   httpGet:
-    port: 8080
+    port: 80
 
 resources:
   requests:
