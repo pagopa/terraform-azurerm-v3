@@ -36,6 +36,7 @@ envConfig:
   Host: 'https://${host}'
   AzureWebJobsStorage: "UseDevelopmentStorage=true"
 
+# load the secret from keyvault
 envSecret:
   APPINSIGHTS_INSTRUMENTATIONKEY: '${appinsights_instrumentationkey}'
 
