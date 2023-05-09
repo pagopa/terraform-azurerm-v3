@@ -208,10 +208,31 @@ variable "client_certificate_enabled" {
   default     = false
 }
 
-variable "sticky_settings" {
+variable "client_certificate_mode" {
+  type        = string
+  default     = "Optional"
+  description = "(Optional) The mode of the Function App's client certificates requirement for incoming requests. Possible values are Required, Optional, and OptionalInteractiveUser."
+}
+
+variable "sticky_app_setting_names" {
   type        = list(string)
   description = "(Optional) A list of app_setting names that the Linux Function App will not swap between Slots when a swap operation is triggered"
   default     = []
+}
+
+variable "sticky_connection_string_names" {
+  type        = list(string)
+  description = "(Optional) A list of connection string names that the Linux Function App will not swap between Slots when a swap operation is triggered"
+  default     = null
+}
+
+variable "app_service_logs" {
+  type = object({
+    disk_quota_mb         = number
+    retention_period_days = number
+  })
+  description = "disk_quota_mb - (Optional) The amount of disk space to use for logs. Valid values are between 25 and 100. Defaults to 35. retention_period_days - (Optional) The retention period for logs in days. Valid values are between 0 and 99999.(never delete)."
+  default = null
 }
 
 # -------------------

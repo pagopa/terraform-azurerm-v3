@@ -239,8 +239,9 @@ resource "azurerm_linux_function_app" "this" {
   #  The backend storage account name which will be used by this Function App (such as the dashboard, logs)
   storage_account_name       = module.storage_account.name
   storage_account_access_key = module.storage_account.primary_access_key
-  https_only                 = var.https_only
-  client_certificate_enabled = var.client_certificate_enabled
+  https_only                  = var.https_only
+  client_certificate_enabled  = var.client_certificate_enabled
+  client_certificate_mode     = var.client_certificate_mode
 
   site_config {
     minimum_tls_version       = "1.2"
@@ -252,6 +253,14 @@ resource "azurerm_linux_function_app" "this" {
     use_32_bit_worker         = var.use_32_bit_worker_process
     application_insights_key  = var.application_insights_instrumentation_key
     health_check_path         = var.health_check_path
+
+    dynamic "app_service_logs" {
+      for_each = var.app_service_logs != null ? [var.app_service_logs] : []
+      content {
+        disk_quota_mb         = app_service_logs.value.disk_quota_mb
+        retention_period_days = app_service_logs.value.retention_period_days
+      }
+    }
 
     application_stack {
       dotnet_version              = var.dotnet_version
@@ -336,8 +345,9 @@ resource "azurerm_linux_function_app" "this" {
   sticky_settings {
     app_setting_names = concat(
       ["SLOT_TASK_HUBNAME"],
-      var.sticky_settings,
+      var.sticky_app_setting_names,
     )
+    connection_string_names = var.sticky_connection_string_names
   }
 
   tags = var.tags
