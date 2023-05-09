@@ -47,7 +47,7 @@ variable "expiration_delta_in_days" {
   description = "(Optional)"
 }
 
-variable "kv_secret_name_for_kv_secret_name_for_application_insights_connection_string" {
+variable "kv_secret_name_for_application_insights_connection_string" {
   type        = string
   description = "(Required) The name of the secret inside the kv that contains the application insights connection string"
 }
