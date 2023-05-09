@@ -20,9 +20,9 @@ resource "helm_release" "helm_this" {
         region                         = var.location_string
         expiration_delta_in_days       = var.expiration_delta_in_days
         host                           = var.https_endpoint
-        appinsights_instrumentationkey = var.application_insights_connection_string
         keyvault_name                  = var.keyvault_name
-        keyvault_tenantid              = var.keyvault_tenantid
+        keyvault_tenant_id              = var.keyvault_tenant_id
+        kv_secret_name_for_application_insights_connection_string = var.kv_secret_name_for_application_insights_connection_string
     })}",
   ]
 }

@@ -38,11 +38,11 @@ envConfig:
 
 # load the secret from keyvault
 envSecret:
-  APPINSIGHTS_INSTRUMENTATIONKEY: '${appinsights_instrumentationkey}'
+  APPINSIGHTS_INSTRUMENTATIONKEY: '${kv_secret_name_for_application_insights_connection_string}'
 
 keyvault:
   name: '${keyvault_name}'
-  tenantId: '${keyvault_tenantid}'
+  tenantId: '${keyvault_tenant_id}'
 
 affinity:
   nodeAffinity:
