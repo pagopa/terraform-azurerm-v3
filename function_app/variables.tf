@@ -109,8 +109,9 @@ variable "application_insights_instrumentation_key" {
 }
 
 variable "app_settings" {
-  type    = map(any)
-  default = {}
+  type        = map(any)
+  description = "(Optional) A map of key-value pairs for App Settings and custom values."
+  default     = {}
 }
 
 variable "https_only" {
@@ -232,7 +233,7 @@ variable "app_service_logs" {
     retention_period_days = number
   })
   description = "disk_quota_mb - (Optional) The amount of disk space to use for logs. Valid values are between 25 and 100. Defaults to 35. retention_period_days - (Optional) The retention period for logs in days. Valid values are between 0 and 99999.(never delete)."
-  default = null
+  default     = null
 }
 
 # -------------------

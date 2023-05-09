@@ -239,9 +239,9 @@ resource "azurerm_linux_function_app" "this" {
   #  The backend storage account name which will be used by this Function App (such as the dashboard, logs)
   storage_account_name       = module.storage_account.name
   storage_account_access_key = module.storage_account.primary_access_key
-  https_only                  = var.https_only
-  client_certificate_enabled  = var.client_certificate_enabled
-  client_certificate_mode     = var.client_certificate_mode
+  https_only                 = var.https_only
+  client_certificate_enabled = var.client_certificate_enabled
+  client_certificate_mode    = var.client_certificate_mode
 
   site_config {
     minimum_tls_version       = "1.2"
