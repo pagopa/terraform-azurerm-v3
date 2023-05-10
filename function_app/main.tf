@@ -339,6 +339,7 @@ resource "azurerm_linux_function_app" "this" {
     ignore_changes = [
       virtual_network_subnet_id,
       app_settings["WEBSITE_HEALTHCHECK_MAXPINGFAILURES"],
+      sticky_settings
     ]
   }
 
