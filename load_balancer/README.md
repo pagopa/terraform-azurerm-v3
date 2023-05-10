@@ -11,7 +11,7 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.44.1 |
 
 ## Modules
 
@@ -54,6 +54,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_azurerm_lb_backend_address_pool_id"></a> [azurerm\_lb\_backend\_address\_pool\_id](#output\_azurerm\_lb\_backend\_address\_pool\_id) | the id for the azurerm\_lb\_backend\_address\_pool resource |
 | <a name="output_azurerm_lb_frontend_ip_configuration"></a> [azurerm\_lb\_frontend\_ip\_configuration](#output\_azurerm\_lb\_frontend\_ip\_configuration) | the frontend\_ip\_configuration for the azurerm\_lb resource |
 | <a name="output_azurerm_lb_id"></a> [azurerm\_lb\_id](#output\_azurerm\_lb\_id) | the id for the azurerm\_lb resource |
 | <a name="output_azurerm_private_ip_address"></a> [azurerm\_private\_ip\_address](#output\_azurerm\_private\_ip\_address) | Private IP Address to assign to the Load Balancer. |
