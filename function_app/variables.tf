@@ -109,8 +109,9 @@ variable "application_insights_instrumentation_key" {
 }
 
 variable "app_settings" {
-  type    = map(any)
-  default = {}
+  type        = map(any)
+  description = "(Optional) A map of key-value pairs for App Settings and custom values."
+  default     = {}
 }
 
 variable "https_only" {
