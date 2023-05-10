@@ -37,6 +37,19 @@ module "function_app" {
 }
 ```
 
+### Sticky values
+
+Sometimes it happens that Terraform fails to modify certain variables even after running terraform apply, and keeps proposing the changes repeatedly. 
+In this case, the variables to be ignored should be included in the sticky_app_setting_names variable. 
+
+E.g. 
+```hcl
+  sticky_app_setting_names = [
+    "DOCKER_REGISTRY_SERVER_PASSWORD",
+    "DOCKER_REGISTRY_SERVER_URL",
+    "DOCKER_REGISTRY_SERVER_USERNAME"
+  ]
+```
 ### Some examples
 
 **Docker**
