@@ -1,3 +1,9 @@
+variable "location" {
+  type        = string
+  default     = "westeurope"
+  description = "(Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created."
+}
+
 variable "name" {
   type        = string
   description = "(Required) The name of the Linux Virtual Machine Scale Set. Changing this forces a new resource to be created."
@@ -13,10 +19,21 @@ variable "resource_group_name" {
   description = "(Required) The name of the Resource Group in which the Linux Virtual Machine Scale Set should be exist. Changing this forces a new resource to be created."
 }
 
-variable "image" {
-  type        = string
-  description = "(Optional) The name of the operating system image as a URN alias, URN, custom image name or ID, or VHD blob URI. Valid URN format: Publisher:Offer:Sku:Version."
-  default     = "Ubuntu2204"
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine_scale_set#source_image_reference
+variable "image_reference" {
+  type = object({
+    publisher = string
+    offer     = string
+    sku       = string
+    version   = string
+  })
+  description = "(Optional) A source_image_reference block as defined below."
+  default = {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts-gen2"
+    version   = "latest"
+  }
 }
 
 variable "vm_sku" {
@@ -54,14 +71,15 @@ variable "subnet_id" {
 variable "encryption_set_id" {
   type        = string
   description = "(Optional) An existing encryption set"
-  default     = "\"\""
+  default     = null
 }
 
-variable "enable_disk_encryption" {
-  type        = bool
-  description = "Whether to add os disk encription to the scale set instances, defaults to `false`"
-  default     = false
+variable "admin_password" {
+  type        = string
+  description = "(Optional) The Password which should be used for the local-administrator on this Virtual Machine. Changing this forces a new resource to be created. will be stored in the raw state as plain-text"
+  default     = null
 }
+
 
 variable "tags" {
   type = map(any)
