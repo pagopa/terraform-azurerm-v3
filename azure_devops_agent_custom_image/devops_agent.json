@@ -1,0 +1,6 @@
+{
+  "isPipelinesAgent": true,
+  "agentFolder": "/agent",
+  "agentDownloadUrl": "https://vstsagentpackage.azureedge.net/agent/2.202.1/vsts-agent-linux-x64-2.202.1.tar.gz",
+  "enableScriptDownloadUrl": "https://vstsagenttools.blob.core.windows.net/tools/ElasticPools/Linux/11/enableagent.sh"
+}
