@@ -4,6 +4,12 @@ variable "prefix" {
   default     = "azrmtest"
 }
 
+variable "public_network_access_enabled" {
+  description = "Enable public access"
+  type        = bool
+  default     = true
+}
+
 variable "location" {
   description = "Resorce location"
   type        = string

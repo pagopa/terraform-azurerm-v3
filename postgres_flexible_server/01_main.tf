@@ -6,6 +6,12 @@ resource "null_resource" "pgbouncer_check" {
   count = length(regexall("^B_.*", var.sku_name)) > 0 && var.pgbouncer_enabled ? "ERROR: PgBouncer is not allow for Burstable(B) series" : 0
 }
 
+resource "azurerm_user_assigned_identity" "postgresql" {
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  name                = "postgresql"
+}
+
 resource "azurerm_postgresql_flexible_server" "this" {
 
   name                = var.name
@@ -46,13 +52,24 @@ resource "azurerm_postgresql_flexible_server" "this" {
     }
   }
 
-  dynamic "customer_managed_key" {
-    for_each = var.customer_managed_key_enabled ? [1] : []
-    content {
-      key_vault_key_id                  = var.customer_managed_key_kv_key_id
-    }
+  # dynamic "customer_managed_key" {
+  #   for_each = var.customer_managed_key_enabled ? [1] : []
+  #   content {
+  #     key_vault_key_id                  = var.customer_managed_key_kv_key_id
+  #     primary_user_assigned_identity_id = azurerm_user_assigned_identity.postgresql.id
+  #   }
 
-  }
+  # }
+
+  #   customer_managed_key {
+  #   key_vault_key_id                  = var.customer_managed_key_kv_key_id
+  #   primary_user_assigned_identity_id = azurerm_user_assigned_identity.postgresql.id
+  # }
+
+  # identity {
+  #   type         = "UserAssigned"
+  #   identity_ids = [azurerm_user_assigned_identity.postgresql.id]
+  # }
 
   dynamic "maintenance_window" {
     for_each = var.maintenance_window_config != null ? ["dummy"] : []

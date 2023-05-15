@@ -87,12 +87,12 @@ module "postgres_flexible_server_private" {
   storage_mb = 32768
 
   ### zones & HA
-  zone                      = 1
+  zone                      = 2
   high_availability_enabled = false
   standby_availability_zone = 3
 
   # customer_managed_key
-  customer_managed_key_enabled = true
+  customer_managed_key_enabled   = true
   customer_managed_key_kv_key_id = azurerm_key_vault_key.generated.id
 
   maintenance_window_config = {
@@ -101,6 +101,9 @@ module "postgres_flexible_server_private" {
     start_minute = 0
   }
 
+  databases = {
+    pgsqlservername1 = { collation = "en_US.utf8" }
+  }
   ### backup
   backup_retention_days        = 7
   geo_redundant_backup_enabled = false
@@ -142,10 +145,23 @@ module "key_vault_test" {
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days = 90
   sku_name                   = "premium"
+
   lock_enable = true
-  terraform_cloud_object_id = data.azurerm_client_config.current.object_id
 
   tags = var.tags
+}
+
+resource "azurerm_key_vault_access_policy" "kv_policy" {
+  key_vault_id = module.key_vault_test.id
+
+  tenant_id = data.azurerm_client_config.current.tenant_id
+  object_id = data.azurerm_client_config.current.object_id
+
+  key_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Recover", "Backup", "Restore",
+  "Rotate", "GetRotationPolicy", "SetRotationPolicy", ]
+  secret_permissions      = ["Get", "List", "Set", "Delete", "Backup", "Recover", "Restore", ]
+  storage_permissions     = []
+  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Restore", "Purge", "Recover", ]
 }
 
 resource "azurerm_key_vault_key" "generated" {

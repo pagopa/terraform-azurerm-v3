@@ -52,6 +52,10 @@ variable "standby_availability_zone" {
   default     = null
   description = "(Optional) Specifies the Availability Zone in which the standby Flexible Server should be located."
 }
+variable "databases" {
+  type        = map(map(string))
+  description = "The name, collation, and charset of the PostgreSQL database(s). (defaults: charset='utf8', collation='en_US.utf8')"
+}
 
 variable "maintenance_window_config" {
   type = object({
@@ -131,7 +135,7 @@ variable "create_mode" {
 variable "zone" {
   type        = number
   description = "(Optional) Specifies the Availability Zone in which the PostgreSQL Flexible Server should be located."
-  default     = 1
+  default     = null
 }
 
 #

@@ -9,7 +9,11 @@ other=$@
 subscription="MOCK_VALUE"
 
 case $action in
-    "init" | "apply" | "plan" | "destroy" )
+    "clean" )
+        rm -rf .terraform* terraform.tfstate*
+        echo "cleaned..."
+        ;;
+    * )
         # shellcheck source=/dev/null
         if [ -e "./backend.ini" ]; then
           source ./backend.ini
@@ -22,13 +26,5 @@ case $action in
 
         terraform init
         terraform "$action" $other
-        ;;
-    "clean" )
-        rm -rf .terraform* terraform.tfstate*
-        echo "cleaned..."
-        ;;
-    * )
-        echo "Missed action: init, apply, plan, destroy clean"
-        exit 1
         ;;
 esac
