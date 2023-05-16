@@ -15,13 +15,7 @@
       "properties": {
         "vnetConfiguration": {
           "internal": ${vnet_internal},
-          "infrastructureSubnetId": "${subnet_id}",
-          "dockerBridgeCidr": "10.2.0.1/16",
-          "platformReservedCidr": "10.1.0.0/16",
-          "platformReservedDnsIP": "10.1.0.2",
-          "outboundSettings": {
-            "outBoundType": "${outbound_type}"
-          }
+          "infrastructureSubnetId": "${subnet_id}"
         },
         "appLogsConfiguration": {
           "destination": "${log_destination}",
