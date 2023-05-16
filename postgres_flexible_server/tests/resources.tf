@@ -127,16 +127,18 @@ resource "azurerm_key_vault_secret" "pgres_flex_admin_login" {
   name         = "${local.project}-pgres-flex-admin-login"
   value        = var.pgres_flex_admin_login
   key_vault_id = module.key_vault_test.id
+  content_type = "text/plain"
 
-depends_on = [ azurerm_key_vault_access_policy.pgsql, azurerm_key_vault_access_policy.user ]
+  depends_on = [azurerm_key_vault_access_policy.pgsql, azurerm_key_vault_access_policy.user]
 }
 
 resource "azurerm_key_vault_secret" "pgres_flex_admin_pwd" {
   name         = "${local.project}-pgres-flex-admin-pwd"
   value        = random_password.password.result
   key_vault_id = module.key_vault_test.id
+  content_type = "password"
 
-  depends_on = [ azurerm_key_vault_access_policy.pgsql, azurerm_key_vault_access_policy.user ]
+  depends_on = [azurerm_key_vault_access_policy.pgsql, azurerm_key_vault_access_policy.user]
 }
 
 module "key_vault_test" {
@@ -183,7 +185,7 @@ resource "azurerm_key_vault_key" "pgsqlkey" {
 
   key_opts = ["unwrapKey", "wrapKey", ]
 
-  depends_on = [ azurerm_key_vault_access_policy.pgsql, azurerm_key_vault_access_policy.user ]
+  depends_on = [azurerm_key_vault_access_policy.pgsql, azurerm_key_vault_access_policy.user]
 }
 
 resource "azurerm_log_analytics_workspace" "test" {
