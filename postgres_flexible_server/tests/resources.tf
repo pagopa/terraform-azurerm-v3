@@ -96,7 +96,7 @@ module "postgres_flexible_server_private" {
   standby_availability_zone = 3
 
   # customer_managed_key
-  customer_managed_key_enabled      = true
+  customer_managed_key_enabled      = false
   customer_managed_key_kv_key_id    = azurerm_key_vault_key.pgsqlkey.id
   primary_user_assigned_identity_id = azurerm_user_assigned_identity.pgsql.id
 

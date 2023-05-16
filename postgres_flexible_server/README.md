@@ -22,7 +22,7 @@ Module that allows the creation of a postgres flexible.
 
 It's now possible to use a `Customer managed key`. To achieve this result you need to set:
 ```
-customer_managed_key_enabled      = true
+customer_managed_key_enabled      = true (default = false)
 ```
 Please have a look at the example in the `tests` folder to understand how to proceed and see a working example.
 
@@ -258,7 +258,7 @@ See [Generic resorce migration](../docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.30.0, <= 3.53.0 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
 
 ## Modules
