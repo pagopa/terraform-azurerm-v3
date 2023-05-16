@@ -1,3 +1,4 @@
+data "azurerm_client_config" "current" {}
 resource "random_password" "password" {
   length           = 16
   special          = true
@@ -6,8 +7,6 @@ resource "random_password" "password" {
   lower            = true
   numeric          = true
 }
-
-data "azurerm_client_config" "current" {}
 
 resource "azurerm_resource_group" "postgres_dbs" {
   name     = "${local.project}-postgres-dbs-rg"
@@ -98,7 +97,7 @@ module "postgres_flexible_server_private" {
 
   # customer_managed_key
   customer_managed_key_enabled      = true
-  customer_managed_key_kv_key_id    = azurerm_key_vault_key.generated.id
+  customer_managed_key_kv_key_id    = azurerm_key_vault_key.pgsqlkey.id
   primary_user_assigned_identity_id = azurerm_user_assigned_identity.pgsql.id
 
   maintenance_window_config = {
@@ -107,9 +106,6 @@ module "postgres_flexible_server_private" {
     start_minute = 0
   }
 
-  databases = {
-    pgsqlservername1 = { collation = "en_US.utf8" }
-  }
   ### backup
   backup_retention_days        = 7
   geo_redundant_backup_enabled = false
@@ -126,21 +122,22 @@ module "postgres_flexible_server_private" {
 
 }
 
-
 # KV secrets flex server
 resource "azurerm_key_vault_secret" "pgres_flex_admin_login" {
   name         = "${local.project}-pgres-flex-admin-login"
   value        = var.pgres_flex_admin_login
   key_vault_id = module.key_vault_test.id
 
+depends_on = [ azurerm_key_vault_access_policy.pgsql, azurerm_key_vault_access_policy.user ]
 }
 
 resource "azurerm_key_vault_secret" "pgres_flex_admin_pwd" {
   name         = "${local.project}-pgres-flex-admin-pwd"
   value        = random_password.password.result
   key_vault_id = module.key_vault_test.id
-}
 
+  depends_on = [ azurerm_key_vault_access_policy.pgsql, azurerm_key_vault_access_policy.user ]
+}
 
 module "key_vault_test" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//key_vault?ref=v6.9.0"
@@ -163,11 +160,8 @@ resource "azurerm_key_vault_access_policy" "pgsql" {
   tenant_id = azurerm_user_assigned_identity.pgsql.tenant_id
   object_id = azurerm_user_assigned_identity.pgsql.principal_id
 
-  key_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Recover", "Backup", "Restore",
-  "Rotate", "GetRotationPolicy", "SetRotationPolicy", "Get", "WrapKey", "UnwrapKey", ]
-  secret_permissions      = ["Get", "List", "Set", "Delete", "Backup", "Recover", "Restore", ]
-  storage_permissions     = []
-  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Restore", "Purge", "Recover", ]
+  key_permissions    = ["Get", "List", "WrapKey", "UnwrapKey", ]
+  secret_permissions = ["Get", "List", ]
 }
 
 resource "azurerm_key_vault_access_policy" "user" {
@@ -177,24 +171,19 @@ resource "azurerm_key_vault_access_policy" "user" {
   object_id = data.azurerm_client_config.current.object_id
 
   key_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Recover", "Backup", "Restore",
-  "Rotate", "GetRotationPolicy", "SetRotationPolicy", ]
-  secret_permissions      = ["Get", "List", "Set", "Delete", "Backup", "Recover", "Restore", ]
-  storage_permissions     = []
-  certificate_permissions = []
+  "Rotate", "GetRotationPolicy", "SetRotationPolicy", "WrapKey", "UnwrapKey", ]
+  secret_permissions = ["Get", "List", "Set", "Delete", "Backup", "Recover", "Restore", ]
 }
 
-resource "azurerm_key_vault_key" "generated" {
-  name         = "generated-certificate"
+resource "azurerm_key_vault_key" "pgsqlkey" {
+  name         = "pgsqlkey"
   key_vault_id = module.key_vault_test.id
   key_type     = "RSA"
   key_size     = 2048
 
-  key_opts = [
-    "get",
-    "list",
-    "unwrapKey",
-    "wrapKey",
-  ]
+  key_opts = ["unwrapKey", "wrapKey", ]
+
+  depends_on = [ azurerm_key_vault_access_policy.pgsql, azurerm_key_vault_access_policy.user ]
 }
 
 resource "azurerm_log_analytics_workspace" "test" {
