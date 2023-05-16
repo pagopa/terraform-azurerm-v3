@@ -46,22 +46,22 @@ resource "azurerm_postgresql_flexible_server" "this" {
     }
   }
 
-  # dynamic "customer_managed_key" {
-  #   for_each = var.customer_managed_key_enabled ? [1] : []
-  #   content {
-  #     key_vault_key_id                  = var.customer_managed_key_kv_key_id
-  #     primary_user_assigned_identity_id = azurerm_user_assigned_identity.postgresql.id
-  #   }
-
-  # }
-
-  identity {
-    type         = "UserAssigned"
-    identity_ids = [var.primary_user_assigned_identity_id]
+  # Enable Customer managed key encryption
+  dynamic "customer_managed_key" {
+    for_each = var.customer_managed_key_enabled ? [1] : []
+    content {
+      key_vault_key_id                  = var.customer_managed_key_kv_key_id
+      primary_user_assigned_identity_id = var.primary_user_assigned_identity_id
+    }
   }
-    customer_managed_key {
-    key_vault_key_id                  = var.customer_managed_key_kv_key_id
-    primary_user_assigned_identity_id = var.primary_user_assigned_identity_id
+
+  dynamic "identity" {
+    for_each = var.customer_managed_key_enabled ? [1] : []
+    content {
+      type         = "UserAssigned"
+      identity_ids = [var.primary_user_assigned_identity_id]
+    }
+
   }
 
   dynamic "maintenance_window" {

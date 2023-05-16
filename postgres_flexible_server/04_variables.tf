@@ -52,10 +52,6 @@ variable "standby_availability_zone" {
   default     = null
   description = "(Optional) Specifies the Availability Zone in which the standby Flexible Server should be located."
 }
-variable "databases" {
-  type        = map(map(string))
-  description = "The name, collation, and charset of the PostgreSQL database(s). (defaults: charset='utf8', collation='en_US.utf8')"
-}
 
 variable "maintenance_window_config" {
   type = object({
@@ -95,18 +91,18 @@ variable "customer_managed_key_enabled" {
 }
 
 variable "customer_managed_key_kv_key_id" {
-  type = string 
+  type        = string
   description = "The ID of the Key Vault Key"
-  default = null
+  default     = null
 }
 
 variable "administrator_login" {
-  type = string
+  type        = string
   description = "Flexible PostgreSql servewr administrator_login"
 }
 
 variable "administrator_password" {
-  type = string
+  type        = string
   description = "Flexible PostgreSql servewr administrator_password"
 }
 
@@ -139,9 +135,9 @@ variable "zone" {
 }
 
 variable "primary_user_assigned_identity_id" {
-  type = string
+  type        = string
   description = "Manages a User Assigned Identity"
-  default = null
+  default     = null
 }
 #
 # DB Configurations
@@ -297,6 +293,5 @@ variable "tags" {
 }
 
 locals {
-  high_availability_zone = var.zone != null && var.zone == 2 ? 3 : 1
-  metric_alerts          = var.custom_metric_alerts != null ? var.custom_metric_alerts : var.default_metric_alerts
+  metric_alerts = var.custom_metric_alerts != null ? var.custom_metric_alerts : var.default_metric_alerts
 }
