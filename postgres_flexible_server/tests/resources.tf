@@ -61,6 +61,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "privatelink_postgres_d
 
   tags = var.tags
 }
+resource "azurerm_user_assigned_identity" "pgsql" {
+  location            = azurerm_resource_group.postgres_dbs.location
+  resource_group_name = azurerm_resource_group.postgres_dbs.name
+  name                = "postgresql"
+}
 
 # https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-compare-single-server-flexible-server
 module "postgres_flexible_server_private" {
@@ -92,8 +97,9 @@ module "postgres_flexible_server_private" {
   standby_availability_zone = 3
 
   # customer_managed_key
-  customer_managed_key_enabled   = true
-  customer_managed_key_kv_key_id = azurerm_key_vault_key.generated.id
+  customer_managed_key_enabled      = true
+  customer_managed_key_kv_key_id    = azurerm_key_vault_key.generated.id
+  primary_user_assigned_identity_id = azurerm_user_assigned_identity.pgsql.id
 
   maintenance_window_config = {
     day_of_week  = 0
@@ -151,7 +157,20 @@ module "key_vault_test" {
   tags = var.tags
 }
 
-resource "azurerm_key_vault_access_policy" "kv_policy" {
+resource "azurerm_key_vault_access_policy" "pgsql" {
+  key_vault_id = module.key_vault_test.id
+
+  tenant_id = azurerm_user_assigned_identity.pgsql.tenant_id
+  object_id = azurerm_user_assigned_identity.pgsql.principal_id
+
+  key_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Recover", "Backup", "Restore",
+  "Rotate", "GetRotationPolicy", "SetRotationPolicy", "Get", "WrapKey", "UnwrapKey", ]
+  secret_permissions      = ["Get", "List", "Set", "Delete", "Backup", "Recover", "Restore", ]
+  storage_permissions     = []
+  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Restore", "Purge", "Recover", ]
+}
+
+resource "azurerm_key_vault_access_policy" "user" {
   key_vault_id = module.key_vault_test.id
 
   tenant_id = data.azurerm_client_config.current.tenant_id
@@ -161,7 +180,7 @@ resource "azurerm_key_vault_access_policy" "kv_policy" {
   "Rotate", "GetRotationPolicy", "SetRotationPolicy", ]
   secret_permissions      = ["Get", "List", "Set", "Delete", "Backup", "Recover", "Restore", ]
   storage_permissions     = []
-  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Restore", "Purge", "Recover", ]
+  certificate_permissions = []
 }
 
 resource "azurerm_key_vault_key" "generated" {
@@ -171,11 +190,9 @@ resource "azurerm_key_vault_key" "generated" {
   key_size     = 2048
 
   key_opts = [
-    "decrypt",
-    "encrypt",
-    "sign",
+    "get",
+    "list",
     "unwrapKey",
-    "verify",
     "wrapKey",
   ]
 }

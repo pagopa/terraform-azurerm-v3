@@ -138,6 +138,11 @@ variable "zone" {
   default     = null
 }
 
+variable "primary_user_assigned_identity_id" {
+  type = string
+  description = "Manages a User Assigned Identity"
+  default = null
+}
 #
 # DB Configurations
 #
