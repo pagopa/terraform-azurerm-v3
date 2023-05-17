@@ -98,12 +98,12 @@ variable "customer_managed_key_kv_key_id" {
 
 variable "administrator_login" {
   type        = string
-  description = "Flexible PostgreSql servewr administrator_login"
+  description = "Flexible PostgreSql server administrator_login"
 }
 
 variable "administrator_password" {
   type        = string
-  description = "Flexible PostgreSql servewr administrator_password"
+  description = "Flexible PostgreSql server administrator_password"
 }
 
 #
