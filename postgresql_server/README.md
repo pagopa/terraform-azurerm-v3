@@ -170,7 +170,7 @@ terraform state rm module.postgres.azurerm_postgresql_server.this
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.30.0, <= 3.53.0 |
 
 ## Modules
 
