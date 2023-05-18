@@ -16,7 +16,7 @@ variable "resource_group_name" {
 variable "image" {
   type        = string
   description = "(Optional) The name of the operating system image as a URN alias, URN, custom image name or ID, or VHD blob URI. Valid URN format: Publisher:Offer:Sku:Version."
-  default     = "UbuntuLTS"
+  default     = "Ubuntu2204"
 }
 
 variable "vm_sku" {
@@ -55,6 +55,12 @@ variable "encryption_set_id" {
   type        = string
   description = "(Optional) An existing encryption set"
   default     = "\"\""
+}
+
+variable "enable_disk_encryption" {
+  type        = bool
+  description = "Whether to add os disk encription to the scale set instances, defaults to `false`"
+  default     = false
 }
 
 variable "tags" {
