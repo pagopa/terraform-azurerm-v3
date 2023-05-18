@@ -47,7 +47,6 @@ resource "null_resource" "this_encrypted" {
   provisioner "local-exec" {
     when    = destroy
     command = <<EOT
-      # az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID && \
       az account set -s ${self.triggers.subscription} && \
       az vmss delete \
         --name ${self.triggers.name} \
@@ -105,7 +104,6 @@ resource "null_resource" "this_not_encrypted" {
   provisioner "local-exec" {
     when    = destroy
     command = <<EOT
-      # az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID && \
       az account set -s ${self.triggers.subscription} && \
       az vmss delete \
         --name ${self.triggers.name} \
