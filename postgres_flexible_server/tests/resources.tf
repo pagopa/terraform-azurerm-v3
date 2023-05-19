@@ -140,7 +140,7 @@ resource "azurerm_key_vault_secret" "pgres_flex_admin_pwd" {
   value        = random_password.password.result
   key_vault_id = module.key_vault_test.id
   content_type = "password"
-    
+
   #####
   ##### This command causes pre-commit to fail in the GitHub Action.
   ##### Uncomment if you intend to use this example.
