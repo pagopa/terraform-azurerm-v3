@@ -119,8 +119,8 @@ module "postgres_flexible_server_private" {
   diagnostic_setting_destination_storage_id = module.storage_account.id
 
   #####
-  ##### Questo comando fa fallire pre-commit nella Github Action
-  # de-commentare se si intende usare questo esempio
+  ##### This command causes pre-commit to fail in the GitHub Action.
+  ##### Uncomment if you intend to use this example.
   # depends_on = [azurerm_private_dns_zone_virtual_network_link.privatelink_postgres_database_azure_com_vnet]
 
 }
@@ -142,8 +142,8 @@ resource "azurerm_key_vault_secret" "pgres_flex_admin_pwd" {
   content_type = "password"
     
   #####
-  ##### Questo comando fa fallire pre-commit nella Github Action
-  # de-commentare se si intende usare questo esempio
+  ##### This command causes pre-commit to fail in the GitHub Action.
+  ##### Uncomment if you intend to use this example.
   # depends_on = [azurerm_key_vault_access_policy.pgsql, azurerm_key_vault_access_policy.user]
 }
 
