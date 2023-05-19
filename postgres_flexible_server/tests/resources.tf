@@ -140,7 +140,10 @@ resource "azurerm_key_vault_secret" "pgres_flex_admin_pwd" {
   value        = random_password.password.result
   key_vault_id = module.key_vault_test.id
   content_type = "password"
-
+    
+  #####
+  ##### Questo comando fa fallire pre-commit nella Github Action
+  # de-commentare se si intende usare questo esempio
   # depends_on = [azurerm_key_vault_access_policy.pgsql, azurerm_key_vault_access_policy.user]
 }
 
