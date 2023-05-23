@@ -133,7 +133,7 @@ resource "azurerm_private_dns_a_record" "api_internal" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.43.0 |
 
 ## Modules
 
@@ -180,6 +180,7 @@ No modules.
 | <a name="input_name"></a> [name](#input\_name) | n/a | `string` | n/a | yes |
 | <a name="input_notification_sender_email"></a> [notification\_sender\_email](#input\_notification\_sender\_email) | Email address from which the notification will be sent. | `string` | `null` | no |
 | <a name="input_policy_path"></a> [policy\_path](#input\_policy\_path) | (Deprecated). Path of the policy file. | `string` | `null` | no |
+| <a name="input_public_ip_address_id"></a> [public\_ip\_address\_id](#input\_public\_ip\_address\_id) | A Public Ip resource ID | `string` | `null` | no |
 | <a name="input_publisher_email"></a> [publisher\_email](#input\_publisher\_email) | The email of publisher/company. | `string` | n/a | yes |
 | <a name="input_publisher_name"></a> [publisher\_name](#input\_publisher\_name) | The name of publisher/company. | `string` | n/a | yes |
 | <a name="input_redis_cache_id"></a> [redis\_cache\_id](#input\_redis\_cache\_id) | The resource ID of the Cache for Redis. | `string` | n/a | yes |
@@ -194,6 +195,7 @@ No modules.
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
 | <a name="input_virtual_network_type"></a> [virtual\_network\_type](#input\_virtual\_network\_type) | The type of virtual network you want to use, valid values include: None, External, Internal | `string` | `null` | no |
 | <a name="input_xml_content"></a> [xml\_content](#input\_xml\_content) | Xml content for all api policy | `string` | `null` | no |
+| <a name="input_zones"></a> [zones](#input\_zones) | List of availability zones | `list(string)` | `[]` | no |
 
 ## Outputs
 

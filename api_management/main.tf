@@ -7,6 +7,7 @@ resource "azurerm_api_management" "this" {
   notification_sender_email = var.notification_sender_email
   sku_name                  = var.sku_name
   zones                     = var.zones
+  public_ip_address_id      = var.public_ip_address_id
 
   # deprecated var.policy_path use xml_content
   dynamic "policy" {

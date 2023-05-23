@@ -349,3 +349,9 @@ variable "zones" {
   default     = []
   description = "List of availability zones"
 }
+
+variable "public_ip_address_id" {
+  type        = string
+  default     = null
+  description = "A Public Ip resource ID"
+}
