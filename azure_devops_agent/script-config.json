@@ -1,6 +1,0 @@
-{
-  "fileUris": [
-    "https://raw.githubusercontent.com/pagopa/terraform-azurerm-v3/main/azure_devops_agent/script-config.sh"
-  ],
-  "commandToExecute": "./script-config.sh"
-}

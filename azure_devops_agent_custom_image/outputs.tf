@@ -5,6 +5,6 @@ output "custom_image_name" {
 
 output "custom_image_id" {
   value       = local.target_image_id
-  description = "Id of the created image"
+  description = "Azure id of the custom image you just created"
 }
 

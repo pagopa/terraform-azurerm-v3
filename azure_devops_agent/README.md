@@ -10,7 +10,7 @@ Install packer https://developer.hashicorp.com/packer/tutorials/docker-get-start
 ## How to use
 
 
-by default, this module creates a ScaleSet using Ubuntu22.04, without using os disk encryption, and providing SSH access using a generated ssh key
+By default, this module creates a ScaleSet using Ubuntu22.04, without using os disk encryption, and providing SSH access using a generated ssh key
 
 ```hcl
 resource "azurerm_resource_group" "azdo_rg" {
@@ -31,7 +31,8 @@ module "module "azdoa_vmss_li" {" {
   subscription_name   = data.azurerm_subscription.current.display_name
   subscription_id     = data.azurerm_subscription.current.id
   location            = var.location
-  source_image_name   = "my-image-name" #the image must be stored in the same subscription/resource group of this resource
+  source_image_name   = "my-image-name" # the image must be stored in the same subscription/resource group of this resource
+  image_type          = "custom" # enables usage of "source_image_name" 
 
   tags = var.tags
 }

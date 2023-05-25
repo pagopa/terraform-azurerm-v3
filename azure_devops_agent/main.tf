@@ -29,11 +29,11 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
 
 
   # only one of source_image_id and source_image_reference is allowed
-  source_image_id = var.source_image_name != null ? local.source_image_id : null
+  source_image_id = var.image_type == "custom" ? local.source_image_id : null
 
   dynamic "source_image_reference" {
     # only one of source_image_id and source_image_reference is allowed
-    for_each = var.image_reference != null ? [1] : []
+    for_each = var.image_type == "standard" ? [1] : []
     content {
       publisher = var.image_reference.publisher
       offer     = var.image_reference.offer
@@ -71,15 +71,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
   single_placement_group      = false
   upgrade_mode                = "Manual"
 
-
-  extension {
-    name                 = "install_requirements"
-    publisher            = "Microsoft.Azure.Extensions"
-    type                 = "CustomScript"
-    type_handler_version = "2.0"
-    settings             = file("${path.module}/script-config.json")
-
-  }
 
   lifecycle {
     ignore_changes = [
