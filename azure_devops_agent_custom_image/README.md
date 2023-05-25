@@ -91,6 +91,6 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_custom_image_id"></a> [custom\_image\_id](#output\_custom\_image\_id) | Id of the created image |
+| <a name="output_custom_image_id"></a> [custom\_image\_id](#output\_custom\_image\_id) | Azure id of the custom image you just created |
 | <a name="output_custom_image_name"></a> [custom\_image\_name](#output\_custom\_image\_name) | Name of the created image |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

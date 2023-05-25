@@ -49,12 +49,12 @@ variable "image_reference" {
 
 
 variable "image_type" {
-  type = string
+  type        = string
   description = "(Required) Defines the source image to be used, whether 'custom' or 'standard'. `custom` requires `source_image_name` to be defined, `standard` requires `image_reference`"
-  default = "standard"
+  default     = "standard"
 
   validation {
-    condition = contains(["standard", "custom"], var.image_type)
+    condition     = contains(["standard", "custom"], var.image_type)
     error_message = "Allowed values for `image_type` are 'custom' or 'standard'"
   }
 }
