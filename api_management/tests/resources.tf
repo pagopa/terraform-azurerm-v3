@@ -68,10 +68,10 @@ module "apim_v2" {
   virtual_network_type      = "Internal"
   zones                     = ["1", "2"]
 
-  public_ip_address_id      = azurerm_public_ip.ip.id
+  public_ip_address_id = azurerm_public_ip.ip.id
 
   redis_connection_string = null
-  redis_cache_id          = null 
+  redis_cache_id          = null
 
   sign_up_enabled = false
 
