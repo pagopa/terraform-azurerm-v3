@@ -6,7 +6,7 @@ resource "tls_private_key" "this_key" {
 
 #store ssh public key
 resource "azurerm_ssh_public_key" "this_public_key" {
-  name                = "azdoa-agent-scaleset-admin-access-key"
+  name                = "${var.name}-admin-access-key"
   resource_group_name = var.resource_group_name
   location            = var.location
   public_key          = tls_private_key.this_key.public_key_openssh
