@@ -5,7 +5,7 @@ variable "namespace" {
 
 variable "certificate_name" {
   type        = string
-  description = "(Required) Name assigned to the certificate installed"
+  description = "(Required) Name of the certificate stored in the keyvault, that will be installed as a secret in aks"
 }
 
 variable "kv_name" {

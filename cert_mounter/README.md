@@ -1,26 +1,19 @@
 # Cert mounter
-This module deploys the cert mounter blueprint in the target namespace, creating a secret for the certificate, retrieved from the key vault given in input
-
-
-
+This module deploys the cert mounter blueprint in the target namespace, creating a secret for the certificate which is retrieved from the key vault given in input
 
 ## How to use
 
-T
 ```hcl
-#fixme
 
 module "cert_mounter" {
   source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cert_mounter?ref=<version>"
-  namespace           = 
-  certificate_name            = 
-  kv_name          = 
-  tenant_id       = 
+  namespace           = var.domain
+  certificate_name    = "${var.aks_cluster_domain_name}-${var.domain}-internal-${var.env}-cstar-pagopa-it" #name of the certificate stored in the given kv
+  kv_name             = data.azurerm_key_vault.kv.name
+  tenant_id           = data.azurerm_subscription.current.tenant_id
 }
 
 ```
-
-
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
