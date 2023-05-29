@@ -1,0 +1,65 @@
+# Cert mounter
+This module deploys the cert mounter blueprint in the target namespace, creating a secret for the certificate, retrieved from the key vault given in input
+
+
+
+
+## How to use
+
+T
+```hcl
+#fixme
+
+module "azdoa_custom_image" {
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cert_mounter?ref=<version>"
+  namespace           = 
+  certificate_name            = 
+  kv_name          = 
+  tenant_id       = 
+}
+
+```
+
+
+
+<!-- markdownlint-disable -->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | <= 3.2.1 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [helm_release.cert_mounter](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_certificate_name"></a> [certificate\_name](#input\_certificate\_name) | (Required) Name assigned to the certificate installed | `string` | n/a | yes |
+| <a name="input_kv_name"></a> [kv\_name](#input\_kv\_name) | (Required) Key vault name where to retrieve the certificate | `string` | n/a | yes |
+| <a name="input_namespace"></a> [namespace](#input\_namespace) | (Required) Namespace where the cert secret will be created | `string` | n/a | yes |
+| <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id) | (Required) Tenant identifier | `string` | n/a | yes |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_custom_image_id"></a> [custom\_image\_id](#output\_custom\_image\_id) | Azure id of the custom image you just created |
+| <a name="output_custom_image_name"></a> [custom\_image\_name](#output\_custom\_image\_name) | Name of the created image |
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
