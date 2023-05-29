@@ -3,10 +3,10 @@ nameOverride: ""
 fullnameOverride: ""
 
 deployment:
-create: true
+  create: true
 
 kvCertificatesName:
-- ${CERTIFICATE_NAME}
+  - ${CERTIFICATE_NAME}
 
 keyvault:
   name: ${KEY_VAULT_NAME}
