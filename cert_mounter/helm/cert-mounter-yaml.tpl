@@ -9,5 +9,5 @@ kvCertificatesName:
 - ${CERTIFICATE_NAME}
 
 keyvault:
-name: ${KEY_VAULT_NAME}
-tenantId: ${TENANT_ID}
+  name: ${KEY_VAULT_NAME}
+  tenantId: ${TENANT_ID}

@@ -8,7 +8,7 @@ resource "helm_release" "cert_mounter" {
   force_update = true
 
   values = [
-    templatefile("${path.module}/helm/cert-mounter.yaml.tpl", {
+    templatefile("${path.module}/helm/cert-mounter-yaml.tpl", {
       NAMESPACE        = var.namespace,
       CERTIFICATE_NAME = var.certificate_name,
       KEY_VAULT_NAME   = var.kv_name

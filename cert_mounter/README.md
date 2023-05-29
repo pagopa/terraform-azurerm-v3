@@ -10,7 +10,7 @@ T
 ```hcl
 #fixme
 
-module "azdoa_custom_image" {
+module "cert_mounter" {
   source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cert_mounter?ref=<version>"
   namespace           = 
   certificate_name            = 
