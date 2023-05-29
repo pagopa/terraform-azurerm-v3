@@ -22,13 +22,14 @@ module "cert_mounter" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.5.1, <= 2.7.1 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | <= 3.2.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.9.0 |
 
 ## Modules
 
@@ -44,15 +45,12 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_certificate_name"></a> [certificate\_name](#input\_certificate\_name) | (Required) Name assigned to the certificate installed | `string` | n/a | yes |
+| <a name="input_certificate_name"></a> [certificate\_name](#input\_certificate\_name) | (Required) Name of the certificate stored in the keyvault, that will be installed as a secret in aks | `string` | n/a | yes |
 | <a name="input_kv_name"></a> [kv\_name](#input\_kv\_name) | (Required) Key vault name where to retrieve the certificate | `string` | n/a | yes |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | (Required) Namespace where the cert secret will be created | `string` | n/a | yes |
 | <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id) | (Required) Tenant identifier | `string` | n/a | yes |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_custom_image_id"></a> [custom\_image\_id](#output\_custom\_image\_id) | Azure id of the custom image you just created |
-| <a name="output_custom_image_name"></a> [custom\_image\_name](#output\_custom\_image\_name) | Name of the created image |
+No outputs.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
