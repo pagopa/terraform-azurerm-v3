@@ -1,6 +1,6 @@
 # Azure devops agent 
 
-This module allow to create an azure devops agent (vm scale set), either using a standard os image or a custom-built image
+This module allows the creation of an Azure DevOps agent (VM scale set), using either a standard OS image or a custom-built image.
 
 ## How to use
 
