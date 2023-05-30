@@ -1,14 +1,8 @@
-# Azure devops agent custom image
+# Azure devops agent 
 
-This module builds, using packer, a custom linux image and stores it on AZ
-
-## Prerequisite
-
-Install packer https://developer.hashicorp.com/packer/tutorials/docker-get-started/get-started-install-cli
-
+This module allow to create an azure devops agent (vm scale set), either using a standard os image or a custom-built image
 
 ## How to use
-
 
 By default, this module creates a ScaleSet using Ubuntu22.04, without using os disk encryption, and providing SSH access using a generated ssh key
 
