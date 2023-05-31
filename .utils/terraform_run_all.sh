@@ -56,14 +56,7 @@ function terraform_init(){
   fi
 }
 
-dirs=$(find . -maxdepth 3 -type f -name "*.tf" -exec dirname {} \; | sort -u)
-
-for folder in $dirs; do
-
-  if [ "$folder" == "./.utils" ]; then
-    continue
-  fi
-  echo "🚀 Run terraform init for $folder"
+for folder in *; do
   terraform_init "${folder}" &
 
   # Add the PID of this background job to the array.
