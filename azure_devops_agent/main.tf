@@ -23,7 +23,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
   resource_group_name = var.resource_group_name
   location            = var.location
   sku                 = var.vm_sku
-  instances           = 2
+  instances           = 1
   admin_username      = "adminuser"
   admin_password      = var.admin_password
 
@@ -70,7 +70,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
   platform_fault_domain_count = 1
   single_placement_group      = false
   upgrade_mode                = "Manual"
-
 
   lifecycle {
     ignore_changes = [

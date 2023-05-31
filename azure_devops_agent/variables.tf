@@ -1,7 +1,7 @@
 variable "location" {
   type        = string
   default     = "westeurope"
-  description = "(Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created."
+  description = "(Optional) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created."
 }
 
 variable "name" {
@@ -27,7 +27,6 @@ variable "resource_group_name" {
 variable "source_image_name" {
   type        = string
   description = "(Optional) The name of an Image which each Virtual Machine in this Scale Set should be based on. It must be stored in the same subscription & resource group of this resource"
-  default     = null
 }
 
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine_scale_set#source_image_reference
@@ -47,11 +46,10 @@ variable "image_reference" {
   }
 }
 
-
 variable "image_type" {
   type        = string
   description = "(Required) Defines the source image to be used, whether 'custom' or 'standard'. `custom` requires `source_image_name` to be defined, `standard` requires `image_reference`"
-  default     = "standard"
+  default     = "custom"
 
   validation {
     condition     = contains(["standard", "custom"], var.image_type)
@@ -102,7 +100,6 @@ variable "admin_password" {
   description = "(Optional) The Password which should be used for the local-administrator on this Virtual Machine. Changing this forces a new resource to be created. will be stored in the raw state as plain-text"
   default     = null
 }
-
 
 variable "tags" {
   type = map(any)
