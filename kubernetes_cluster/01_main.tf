@@ -142,6 +142,7 @@ resource "azurerm_kubernetes_cluster" "this" {
 
   lifecycle {
     ignore_changes = [
+      microsoft_defender["log_analytics_workspace_id"],
       default_node_pool[0].node_count,
     ]
   }
