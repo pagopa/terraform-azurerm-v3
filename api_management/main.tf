@@ -341,9 +341,8 @@ resource "azurerm_monitor_diagnostic_setting" "apim" {
   storage_account_id             = var.sec_storage_id
   log_analytics_destination_type = "AzureDiagnostics"
 
-  log {
+  enabled_log {
     category = "GatewayLogs"
-    enabled  = true
 
     retention_policy {
       enabled = true
@@ -351,9 +350,8 @@ resource "azurerm_monitor_diagnostic_setting" "apim" {
     }
   }
 
-  log {
+  enabled_log {
     category = "WebSocketConnectionLogs"
-    enabled  = true
 
     retention_policy {
       enabled = true

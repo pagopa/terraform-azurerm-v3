@@ -74,6 +74,7 @@ variable "network_rulesets" {
       ip_mask = string
       action  = string
     }))
+    trusted_service_access_enabled = bool #Whether Trusted Microsoft Services are allowed to bypass firewall.
   }))
   default = []
 }

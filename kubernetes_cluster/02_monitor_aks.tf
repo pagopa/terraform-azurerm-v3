@@ -50,9 +50,8 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
   log_analytics_workspace_id = var.sec_log_analytics_workspace_id
   storage_account_id         = var.sec_storage_id
 
-  log {
+  enabled_log {
     category = "kube-audit"
-    enabled  = true
 
     retention_policy {
       enabled = true
@@ -60,9 +59,8 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
     }
   }
 
-  log {
+  enabled_log {
     category = "kube-audit-admin"
-    enabled  = true
 
     retention_policy {
       enabled = true
@@ -70,9 +68,8 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
     }
   }
 
-  log {
+  enabled_log {
     category = "cloud-controller-manager"
-    enabled  = false
 
     retention_policy {
       enabled = false
@@ -80,9 +77,8 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
     }
   }
 
-  log {
+  enabled_log {
     category = "cluster-autoscaler"
-    enabled  = false
 
     retention_policy {
       enabled = false
@@ -90,9 +86,8 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
     }
   }
 
-  log {
+  enabled_log {
     category = "csi-azuredisk-controller"
-    enabled  = false
 
     retention_policy {
       enabled = false
@@ -100,9 +95,8 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
     }
   }
 
-  log {
+  enabled_log {
     category = "csi-azurefile-controller"
-    enabled  = false
 
     retention_policy {
       enabled = false
@@ -110,9 +104,8 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
     }
   }
 
-  log {
+  enabled_log {
     category = "csi-snapshot-controller"
-    enabled  = false
 
     retention_policy {
       enabled = false
@@ -120,9 +113,8 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
     }
   }
 
-  log {
+  enabled_log {
     category = "guard"
-    enabled  = false
 
     retention_policy {
       enabled = false
@@ -130,9 +122,8 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
     }
   }
 
-  log {
+  enabled_log {
     category = "kube-apiserver"
-    enabled  = false
 
     retention_policy {
       enabled = false
@@ -140,9 +131,8 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
     }
   }
 
-  log {
+  enabled_log {
     category = "kube-controller-manager"
-    enabled  = false
 
     retention_policy {
       enabled = false
@@ -150,9 +140,8 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
     }
   }
 
-  log {
+  enabled_log {
     category = "kube-scheduler"
-    enabled  = false
 
     retention_policy {
       enabled = false

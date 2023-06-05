@@ -12,11 +12,11 @@ service:
 
 readinessProbe:
   httpGet:
-    port: 8080
+    port: 80
 
 livenessProbe:
   httpGet:
-    port: 8080
+    port: 80
 
 resources:
   requests:
@@ -36,12 +36,13 @@ envConfig:
   Host: 'https://${host}'
   AzureWebJobsStorage: "UseDevelopmentStorage=true"
 
+# load the secret from keyvault
 envSecret:
-  APPINSIGHTS_INSTRUMENTATIONKEY: '${appinsights_instrumentationkey}'
+  APPINSIGHTS_INSTRUMENTATIONKEY: '${kv_secret_name_for_application_insights_connection_string}'
 
 keyvault:
   name: '${keyvault_name}'
-  tenantId: '${keyvault_tenantid}'
+  tenantId: '${keyvault_tenant_id}'
 
 affinity:
   nodeAffinity:

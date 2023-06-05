@@ -7,7 +7,7 @@ variable "prefix" {
 variable "location" {
   description = "Resorce location"
   type        = string
-  default     = "westeurope"
+  default     = "northeurope"
 }
 
 variable "tags" {
