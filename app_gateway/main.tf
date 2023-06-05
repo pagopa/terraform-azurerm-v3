@@ -299,9 +299,8 @@ resource "azurerm_monitor_diagnostic_setting" "app_gw" {
   log_analytics_workspace_id = var.sec_log_analytics_workspace_id
   storage_account_id         = var.sec_storage_id
 
-  log {
+  enabled_log {
     category = "ApplicationGatewayAccessLog"
-    enabled  = true
 
     retention_policy {
       enabled = true
@@ -309,9 +308,8 @@ resource "azurerm_monitor_diagnostic_setting" "app_gw" {
     }
   }
 
-  log {
+  enabled_log {
     category = "ApplicationGatewayFirewallLog"
-    enabled  = true
 
     retention_policy {
       enabled = true
@@ -319,9 +317,8 @@ resource "azurerm_monitor_diagnostic_setting" "app_gw" {
     }
   }
 
-  log {
+  enabled_log {
     category = "ApplicationGatewayPerformanceLog"
-    enabled  = false
 
     retention_policy {
       days    = 0

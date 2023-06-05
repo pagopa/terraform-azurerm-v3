@@ -70,6 +70,8 @@ variable "app_service_plan_info" {
     kind                         = string # The kind of the App Service Plan to create. Possible values are Windows (also available as App), Linux, elastic (for Premium Consumption) and FunctionApp (for a Consumption Plan).
     sku_size                     = string # Specifies the plan's instance size.
     maximum_elastic_worker_count = number # The maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.
+    worker_count                 = number # The number of Workers (instances) to be allocated.
+    zone_balancing_enabled       = bool   # Should the Service Plan balance across Availability Zones in the region. Changing this forces a new resource to be created.
   })
 
   description = "Allows to configurate the internal service plan"
@@ -78,6 +80,8 @@ variable "app_service_plan_info" {
     kind                         = "Linux"
     sku_size                     = "P1v3"
     maximum_elastic_worker_count = 0
+    worker_count                 = 0
+    zone_balancing_enabled       = false
   }
 }
 
@@ -105,8 +109,9 @@ variable "application_insights_instrumentation_key" {
 }
 
 variable "app_settings" {
-  type    = map(any)
-  default = {}
+  type        = map(any)
+  description = "(Optional) A map of key-value pairs for App Settings and custom values."
+  default     = {}
 }
 
 variable "https_only" {
@@ -204,10 +209,31 @@ variable "client_certificate_enabled" {
   default     = false
 }
 
-variable "sticky_settings" {
+variable "client_certificate_mode" {
+  type        = string
+  default     = "Optional"
+  description = "(Optional) The mode of the Function App's client certificates requirement for incoming requests. Possible values are Required, Optional, and OptionalInteractiveUser."
+}
+
+variable "sticky_app_setting_names" {
   type        = list(string)
   description = "(Optional) A list of app_setting names that the Linux Function App will not swap between Slots when a swap operation is triggered"
   default     = []
+}
+
+variable "sticky_connection_string_names" {
+  type        = list(string)
+  description = "(Optional) A list of connection string names that the Linux Function App will not swap between Slots when a swap operation is triggered"
+  default     = null
+}
+
+variable "app_service_logs" {
+  type = object({
+    disk_quota_mb         = number
+    retention_period_days = number
+  })
+  description = "disk_quota_mb - (Optional) The amount of disk space to use for logs. Valid values are between 25 and 100. Defaults to 35. retention_period_days - (Optional) The retention period for logs in days. Valid values are between 0 and 99999.(never delete)."
+  default     = null
 }
 
 # -------------------

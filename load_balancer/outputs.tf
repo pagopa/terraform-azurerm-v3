@@ -22,3 +22,8 @@ output "azurerm_public_ip_address" {
   description = "the ip address for the azurerm_lb_public_ip resource"
   value       = azurerm_public_ip.this.*.ip_address
 }
+
+output "azurerm_lb_backend_address_pool_id" {
+  description = "the id for the azurerm_lb_backend_address_pool resource"
+  value       = values(azurerm_lb_backend_address_pool.this).*.id
+}
