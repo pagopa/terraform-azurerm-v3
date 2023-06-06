@@ -101,6 +101,19 @@ variable "admin_password" {
   default     = null
 }
 
+
+variable "extension_name" {
+  type        = string
+  default     = null
+  description = "(Optional) name of the extension to add to the VM. Either one of the provided (must match the folder name) or a custom extension (arbitrary name)"
+}
+
+variable "custom_extension_path" {
+  type        = string
+  default     = null
+  description = "(Optional) if 'extension_name' is not in the provided extensions, defines the path where to find the extension settings"
+}
+
 variable "tags" {
   type = map(any)
 }
