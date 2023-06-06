@@ -15,8 +15,10 @@ resource "null_resource" "build_packer_image" {
     base_image_version         = var.base_image_version
     vm_sku                     = var.vm_sku
     target_image_name          = local.target_image_name
+    location                   = var.location
   }
 
+  # remove old packer cache
   provisioner "local-exec" {
     command = <<EOT
     rm -rf "$HOME/.azure/packer"
@@ -37,6 +39,7 @@ resource "null_resource" "build_packer_image" {
     -var "base_image_version=${var.base_image_version}" \
     -var "vm_sku=${var.vm_sku}" \
     -var "target_image_name=${local.target_image_name}" \
+    -var "location=${var.location}" \
     .
     EOT
   }
