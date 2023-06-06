@@ -119,6 +119,10 @@ Here is the list of the provided extensions
 | install_requirements| Installs all the required packages for an azure devops agent, such as az-cli, docker, helm... |
 
 
+Be aware that AzureDevOps adds an extension to the VMs, and if one of your extension is already installed, the one from AZDO will be added with the property `provision_after_extensions` set to the name of your extension.
+This means that whe you want to remove your extension, AzureRM will block you because AZDO extension depends on yours. 
+The solution is to create the scale set, then attach it to a AZDO Agent Pool, and THEN add your extension to the scaleset
+
 ### How to define a new extension
 
 If you want to include a new extension in this module, you simply have to create a new folder in the `extensions` directory, containing the script configuration `json` and `sh` file required to define the extension.

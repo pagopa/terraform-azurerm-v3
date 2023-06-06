@@ -91,7 +91,5 @@ resource "azurerm_virtual_machine_scale_set_extension" "this" {
   type                         = "CustomScript"
   type_handler_version         = "2.0"
   settings                     = file(var.custom_extension_path != null ? var.custom_extension_path : "${path.module}/extensions/${var.extension_name}/script-config.json")
-  # provision after this, to avoid being blocked by this extension added by azdo when updating
-  provision_after_extensions = ["Microsoft.Azure.DevOps.Pipelines.Agent"]
 }
 
