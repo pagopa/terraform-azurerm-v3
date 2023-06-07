@@ -1,10 +1,12 @@
-# Azure devops agent
+# Azure devops agent 
 
-This module allow to create an azure devops agent (vm scale set), and inside the folder scripts has a lot of utilities
+This module allows the creation of an Azure DevOps agent (VM scale set), using either a standard OS image or a custom-built image.
 
 ## How to use
 
-```ts
+By default, this module creates a ScaleSet using Ubuntu22.04, without using os disk encryption, and providing SSH access using a generated ssh key
+
+```hcl
 resource "azurerm_resource_group" "azdo_rg" {
   count    = var.enable_azdoa ? 1 : 0
   name     = local.azuredevops_rg_name
@@ -13,26 +15,56 @@ resource "azurerm_resource_group" "azdo_rg" {
   tags = var.tags
 }
 
-module "azdoa_snet" {
-  source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v3.15.0"
-  count                                     = var.enable_azdoa ? 1 : 0
-  name                                      = local.azuredevops_subnet_name
-  address_prefixes                          = var.cidr_subnet_azdoa
-  resource_group_name                       = azurerm_resource_group.rg_vnet.name
-  virtual_network_name                      = module.vnet.name
-  private_endpoint_network_policies_enabled = true
-}
-
-module "azdoa_vmss_li" {
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=v3.15.0"
+# with custom image (previously built. check the module `azure_devops_agent_custom_image` for more details)
+module "module "azdoa_vmss_li" {" {
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=<version>"
   count               = var.enable_azdoa ? 1 : 0
-  name                = local.azuredevops_agent_vm_name
+  name                = "${local.azuredevops_agent_vm_name}"
   resource_group_name = azurerm_resource_group.azdo_rg[0].name
   subnet_id           = module.azdoa_snet[0].id
-  subscription        = data.azurerm_subscription.current.display_name
-  enable_disk_encryption = false
+  subscription_name   = data.azurerm_subscription.current.display_name
+  subscription_id     = data.azurerm_subscription.current.id
+  location            = var.location
+  source_image_name   = "my-image-name" # the image must be stored in the same subscription/resource group of this resource
+  image_type          = "custom" # enables usage of "source_image_name" 
+
   tags = var.tags
 }
+
+# with default image
+module "module "azdoa_vmss_li" {" {
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=<version>"
+  count               = var.enable_azdoa ? 1 : 0
+  name                = "${local.azuredevops_agent_vm_name}"
+  resource_group_name = azurerm_resource_group.azdo_rg[0].name
+  subnet_id           = module.azdoa_snet[0].id
+  subscription_name   = data.azurerm_subscription.current.display_name
+  subscription_id     = data.azurerm_subscription.current.id
+  location            = var.location
+
+  tags = var.tags
+}
+
+# with standard image
+module "module "azdoa_vmss_li" {" {
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=<version>"
+  count               = var.enable_azdoa ? 1 : 0
+  name                = "${local.azuredevops_agent_vm_name}"
+  resource_group_name = azurerm_resource_group.azdo_rg[0].name
+  subnet_id           = module.azdoa_snet[0].id
+  subscription_name   = data.azurerm_subscription.current.display_name
+  subscription_id     = data.azurerm_subscription.current.id
+  location            = var.location
+  image_reference     = {
+    publisher         = "Canonical"
+    offer             = "0001-com-ubuntu-server-jammy"
+    sku               = "22_04-lts-gen2"
+    version           = "latest"
+  }
+
+  tags = var.tags
+}
+
 
 
 ```
@@ -51,7 +83,8 @@ module "azdoa_vmss_li" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | 4.0.4 |
 
 ## Modules
 
@@ -61,22 +94,27 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [null_resource.this_encrypted](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [null_resource.this_not_encrypted](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [azurerm_linux_virtual_machine_scale_set.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine_scale_set) | resource |
+| [azurerm_ssh_public_key.this_public_key](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/ssh_public_key) | resource |
+| [tls_private_key.this_key](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_admin_password"></a> [admin\_password](#input\_admin\_password) | (Optional) The Password which should be used for the local-administrator on this Virtual Machine. Changing this forces a new resource to be created. will be stored in the raw state as plain-text | `string` | `null` | no |
 | <a name="input_authentication_type"></a> [authentication\_type](#input\_authentication\_type) | (Required) Type of authentication to use with the VM. Defaults to password for Windows and SSH public key for Linux. all enables both ssh and password authentication. | `string` | `"SSH"` | no |
-| <a name="input_enable_disk_encryption"></a> [enable\_disk\_encryption](#input\_enable\_disk\_encryption) | Whether to add os disk encription to the scale set instances, defaults to `false` | `bool` | `false` | no |
-| <a name="input_encryption_set_id"></a> [encryption\_set\_id](#input\_encryption\_set\_id) | (Optional) An existing encryption set | `string` | `"\"\""` | no |
-| <a name="input_image"></a> [image](#input\_image) | (Optional) The name of the operating system image as a URN alias, URN, custom image name or ID, or VHD blob URI. Valid URN format: Publisher:Offer:Sku:Version. | `string` | `"Ubuntu2204"` | no |
+| <a name="input_encryption_set_id"></a> [encryption\_set\_id](#input\_encryption\_set\_id) | (Optional) An existing encryption set | `string` | `null` | no |
+| <a name="input_image_reference"></a> [image\_reference](#input\_image\_reference) | (Optional) A source\_image\_reference block as defined below. | <pre>object({<br>    publisher = string<br>    offer     = string<br>    sku       = string<br>    version   = string<br>  })</pre> | <pre>{<br>  "offer": "0001-com-ubuntu-server-jammy",<br>  "publisher": "Canonical",<br>  "sku": "22_04-lts-gen2",<br>  "version": "latest"<br>}</pre> | no |
+| <a name="input_image_type"></a> [image\_type](#input\_image\_type) | (Required) Defines the source image to be used, whether 'custom' or 'standard'. `custom` requires `source_image_name` to be defined, `standard` requires `image_reference` | `string` | `"custom"` | no |
+| <a name="input_location"></a> [location](#input\_location) | (Optional) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created. | `string` | `"westeurope"` | no |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the Linux Virtual Machine Scale Set. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The name of the Resource Group in which the Linux Virtual Machine Scale Set should be exist. Changing this forces a new resource to be created. | `string` | n/a | yes |
+| <a name="input_source_image_name"></a> [source\_image\_name](#input\_source\_image\_name) | (Optional) The name of an Image which each Virtual Machine in this Scale Set should be based on. It must be stored in the same subscription & resource group of this resource | `string` | n/a | yes |
 | <a name="input_storage_sku"></a> [storage\_sku](#input\_storage\_sku) | (Optional) The SKU of the storage account with which to persist VM. Use a singular sku that would be applied across all disks, or specify individual disks. Usage: [--storage-sku SKU \| --storage-sku ID=SKU ID=SKU ID=SKU...], where each ID is os or a 0-indexed lun. Allowed values: Standard\_LRS, Premium\_LRS, StandardSSD\_LRS, UltraSSD\_LRS, Premium\_ZRS, StandardSSD\_ZRS. | `string` | `"StandardSSD_LRS"` | no |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | (Required) An existing subnet ID | `string` | `null` | no |
-| <a name="input_subscription"></a> [subscription](#input\_subscription) | (Required) Azure subscription | `string` | n/a | yes |
+| <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | (Required) Azure subscription id | `string` | n/a | yes |
+| <a name="input_subscription_name"></a> [subscription\_name](#input\_subscription\_name) | (Required) Azure subscription name | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
 | <a name="input_vm_sku"></a> [vm\_sku](#input\_vm\_sku) | (Optional) Size of VMs in the scale set. Default to Standard\_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info. | `string` | `"Standard_B1s"` | no |
 
