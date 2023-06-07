@@ -12,7 +12,7 @@ resource "azurerm_redis_cache" "this" {
   sku_name                      = var.sku_name
   public_network_access_enabled = var.public_network_access_enabled
   redis_version                 = var.redis_version
-  zones = var.sku_name          == "Premium" ? var.zones : null
+  zones                         = var.sku_name == "Premium" ? var.zones : null
 
   redis_configuration {
     enable_authentication         = var.enable_authentication
