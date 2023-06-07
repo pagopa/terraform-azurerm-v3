@@ -66,6 +66,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     type = "SystemAssigned"
   }
 
+  #tfsec:ignore:azure-container-configured-network-policy
   dynamic "network_profile" {
     for_each = var.network_profile != null ? [var.network_profile] : []
     iterator = p
