@@ -66,11 +66,12 @@ resource "azurerm_kubernetes_cluster" "this" {
     type = "SystemAssigned"
   }
 
-  #tfsec:ignore:azure-container-configured-network-policy
+
   dynamic "network_profile" {
     for_each = var.network_profile != null ? [var.network_profile] : []
     iterator = p
     content {
+      #tfsec:ignore:azure-container-configured-network-policy
       docker_bridge_cidr = p.value.docker_bridge_cidr
       dns_service_ip     = p.value.dns_service_ip
       network_policy     = p.value.network_policy
