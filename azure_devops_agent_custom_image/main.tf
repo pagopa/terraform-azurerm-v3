@@ -57,7 +57,7 @@ resource "null_resource" "build_packer_image" {
     -var "vm_sku=${var.vm_sku}" \
     -var "target_image_name=${local.target_image_name}" \
     -var "location=${var.location}" \
-    -var "shared_gallery_name=${var.shared_gallery_name}" \
+    -var "shared_gallery_name=${azurerm_shared_image_gallery.image_gallery.name}" \
     -var "image_name=${var.image_name}" \
     -var "image_version=${var.image_version}" \
     .

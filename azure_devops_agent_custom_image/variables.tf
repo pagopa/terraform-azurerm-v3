@@ -59,13 +59,6 @@ variable "vm_sku" {
 }
 
 
-variable "shared_gallery_name"{
-  type = string
-  description = "Destination Gallery Name"
-}
-
-
-
 
 variable "tags" {
   type = map(any)
