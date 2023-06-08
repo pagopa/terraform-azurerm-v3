@@ -21,6 +21,14 @@ resource "azurerm_shared_image_gallery" "image_gallery" {
 }
 
 
+resource "azurerm_shared_image" "shared_image_placeholder" {
+  gallery_name        = azurerm_shared_image_gallery.image_gallery.name
+  location            = var.location
+  name                = var.image_name
+  os_type             = "Linux"
+  resource_group_name = azurerm_resource_group.image_resource_group.name
+}
+
 resource "null_resource" "build_packer_image" {
 
   triggers = {
