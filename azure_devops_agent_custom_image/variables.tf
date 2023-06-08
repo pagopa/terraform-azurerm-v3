@@ -58,7 +58,16 @@ variable "vm_sku" {
   default     = "Standard_B1s"
 }
 
+variable "image_type" {
+  type        = string
+  description = "(Required) Defines the type of the image to be created: shared or managed"
+  default     = "shared"
 
+  validation {
+    condition     = contains(["managed", "shared"], var.image_type)
+    error_message = "Allowed values for `image_type` are 'managed' or 'shared'"
+  }
+}
 
 variable "tags" {
   type = map(any)

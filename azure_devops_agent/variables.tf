@@ -52,8 +52,8 @@ variable "image_type" {
   default     = "custom"
 
   validation {
-    condition     = contains(["standard", "custom"], var.image_type)
-    error_message = "Allowed values for `image_type` are 'custom' or 'standard'"
+    condition     = contains(["standard", "custom", "shared"], var.image_type)
+    error_message = "Allowed values for `image_type` are 'custom', 'standard' or 'shared'"
   }
 }
 
@@ -113,6 +113,40 @@ variable "custom_extension_path" {
   default     = null
   description = "(Optional) if 'extension_name' is not in the provided extensions, defines the path where to find the extension settings"
 }
+
+
+variable "shared_subscription_id" {
+  type        = string
+  description = "(Optional) The subscription id where the shared image is stored"
+  default     = null
+}
+
+
+variable "shared_resource_group_name" {
+  type        = string
+  default     = null
+  description = "(Optional) The resource group name where the shared image is stored"
+}
+
+variable "shared_gallery_name" {
+  type        = string
+  default     = null
+  description = "(Optional) The shared image gallery (AZ compute gallery) name the shared image is stored"
+}
+
+variable "shared_image_name" {
+  type        = string
+  default     = null
+  description = "(Optional) The shared image name to be used"
+}
+
+variable "shared_image_version" {
+  type        = string
+  default     = null
+  description = "(Optional) The shared image version to be used"
+}
+
+
 
 variable "tags" {
   type = map(any)

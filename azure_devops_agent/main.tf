@@ -14,8 +14,15 @@ resource "azurerm_ssh_public_key" "this_public_key" {
 
 #build the image id
 locals {
+  # managed id
   source_image_id = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/images/${var.source_image_name}"
+  # shared id
+  shared_source_image_id = "/subscriptions/${var.shared_subscription_id}/resourceGroups/${var.shared_resource_group_name}/providers/Microsoft.Compute/galleries/${var.shared_gallery_name}/images/${var.shared_image_name}/versions/${var.shared_image_version}"
+
+  # final id
+  use_image_id = var.image_type == "custom" ? local.source_image_id : local.shared_source_image_id
 }
+
 
 # create scale set
 resource "azurerm_linux_virtual_machine_scale_set" "this" {
@@ -29,7 +36,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
 
 
   # only one of source_image_id and source_image_reference is allowed
-  source_image_id = var.image_type == "custom" ? local.source_image_id : null
+  source_image_id = var.image_type != "standard" ? local.use_image_id : null
 
   dynamic "source_image_reference" {
     # only one of source_image_id and source_image_reference is allowed
