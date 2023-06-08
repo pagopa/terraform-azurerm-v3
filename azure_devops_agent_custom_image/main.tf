@@ -12,7 +12,7 @@ resource "azurerm_resource_group" "image_resource_group" {
 }
 
 resource "azurerm_shared_image_gallery" "image_gallery" {
-  name                = "azdo-agent-images"
+  name                = "azdo_agent_images"
   resource_group_name = azurerm_resource_group.image_resource_group.name
   location            = azurerm_resource_group.image_resource_group.location
   description         = "Shared images and things."
