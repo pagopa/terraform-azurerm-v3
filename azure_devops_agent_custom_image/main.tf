@@ -4,6 +4,23 @@ locals {
 }
 
 
+resource "azurerm_resource_group" "image_resource_group" {
+  name     = "azdo-rg"
+  location = var.location
+
+  tags = var.tags
+}
+
+resource "azurerm_shared_image_gallery" "image_gallery" {
+  name                = "azdo-agent-images"
+  resource_group_name = azurerm_resource_group.image_resource_group.name
+  location            = azurerm_resource_group.image_resource_group.location
+  description         = "Shared images and things."
+
+  tags = var.tags
+}
+
+
 resource "null_resource" "build_packer_image" {
 
   triggers = {
@@ -40,6 +57,9 @@ resource "null_resource" "build_packer_image" {
     -var "vm_sku=${var.vm_sku}" \
     -var "target_image_name=${local.target_image_name}" \
     -var "location=${var.location}" \
+    -var "shared_gallery_name=${var.shared_gallery_name}" \
+    -var "image_name=${var.image_name}" \
+    -var "image_version=${var.image_version}" \
     .
     EOT
   }

@@ -45,4 +45,19 @@ variable "target_image_name" {
   description = "(Required) name assigned to the generated image. Note that myust be unique and not already exist"
 }
 
+variable "shared_gallery_name"{
+  type = string
+  description = "Destination Gallery Name"
+}
+
+variable "image_name" {
+  type = string
+  description = "Destination Image Name"
+}
+
+variable "image_version"{
+  type = string
+  description = "Destination Image Version"
+}
+
 

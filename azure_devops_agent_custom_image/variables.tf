@@ -58,6 +58,18 @@ variable "vm_sku" {
   default     = "Standard_B1s"
 }
 
+
+variable "shared_gallery_name"{
+  type = string
+  description = "Destination Gallery Name"
+}
+
+
+
+
 variable "tags" {
   type = map(any)
+  default = {
+    CreatedBy = "Terraform"
+  }
 }
