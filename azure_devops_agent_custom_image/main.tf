@@ -49,7 +49,7 @@ resource "null_resource" "build_packer_image" {
     packer init . && \
     packer build \
     -var "subscription=${var.subscription_id}" \
-    -var "target_resource_group_name=${var.resource_group_name}" \
+    -var "target_resource_group_name=${azurerm_resource_group.image_resource_group.name}" \
     -var "base_image_publisher=${var.base_image_publisher}" \
     -var "base_image_offer=${var.base_image_offer}" \
     -var "base_image_sku=${var.base_image_sku}" \
