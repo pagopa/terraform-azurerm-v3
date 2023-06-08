@@ -1,8 +1,3 @@
-locals {
-  # name of the image for 'managed' image_type
-  target_image_name = "${var.image_name}-${var.image_version}"
-  target_image_id   = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/images/${local.target_image_name}"
-}
 
 
 resource "azurerm_resource_group" "image_resource_group" {
@@ -44,6 +39,15 @@ resource "azurerm_shared_image" "shared_image_placeholder" {
 }
 
 
+locals {
+  # name of the image for 'managed' image_type
+  target_image_name = "${var.image_name}-${var.image_version}"
+  target_image_id   = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/images/${local.target_image_name}"
+
+  shared_resource_group_name = var.image_type == "shared" ? azurerm_resource_group.image_resource_group[0].name : null
+  shared_gallery_name=var.image_type == "shared" ? azurerm_shared_image_gallery.image_gallery[0].name : null
+}
+
 
 resource "null_resource" "build_packer_image" {
 
@@ -83,8 +87,8 @@ resource "null_resource" "build_packer_image" {
     -var "location=${var.location}" \
     -var "image_name=${var.image_name}" \
     -var "image_version=${var.image_version}" \
-    -var "shared_resource_group_name=${var.image_type == \"shared\" ? azurerm_resource_group.image_resource_group[0].name : null}" \
-    -var "shared_gallery_name=${var.image_type == \"shared\" ? azurerm_shared_image_gallery.image_gallery[0].name : null}" \
+    -var "shared_resource_group_name=${local.shared_gallery_name}" \
+    -var "shared_gallery_name=${local.shared_gallery_name}" \
     .
     EOT
   }
