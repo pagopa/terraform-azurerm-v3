@@ -11,8 +11,8 @@ resource "azurerm_resource_group" "image_resource_group" {
 resource "azurerm_shared_image_gallery" "image_gallery" {
   count = var.image_type == "shared" ? 1 : 0
   name                = "azdo_agent_images"
-  resource_group_name = azurerm_resource_group.image_resource_group.name
-  location            = azurerm_resource_group.image_resource_group.location
+  resource_group_name = azurerm_resource_group.image_resource_group[count.index].name
+  location            = azurerm_resource_group.image_resource_group[count.index].location
   description         = "Shared images"
 
   tags = var.tags
@@ -21,11 +21,11 @@ resource "azurerm_shared_image_gallery" "image_gallery" {
 
 resource "azurerm_shared_image" "shared_image_placeholder" {
   count = var.image_type == "shared" ? 1 : 0
-  gallery_name        = azurerm_shared_image_gallery.image_gallery.name
+  gallery_name        = azurerm_shared_image_gallery.image_gallery[count.index].name
   location            = var.location
   name                = var.image_name
   os_type             = "Linux"
-  resource_group_name = azurerm_resource_group.image_resource_group.name
+  resource_group_name = azurerm_resource_group.image_resource_group[count.index].name
 
   identifier {
     offer     = var.base_image_offer
