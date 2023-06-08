@@ -17,8 +17,8 @@ source "azure-arm" "ubuntu" {
   image_sku                         = var.base_image_sku
   vm_size                           = var.vm_sku
 
-  managed_image_name                = var.target_image_name
-  managed_image_resource_group_name = var.target_resource_group_name
+#  managed_image_name                = var.target_image_name
+#  managed_image_resource_group_name = var.target_resource_group_name
 
   #https://developer.hashicorp.com/packer/plugins/builders/azure/arm#shared-image-gallery
   shared_image_gallery_destination {
