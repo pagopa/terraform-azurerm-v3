@@ -21,7 +21,7 @@ variable "shared_resource_group_name" {
 }
 
 variable "replication_region" {
-  type = list(string)
+  type = string
   description = "(String) - additional region where the shared image should be replicated"
   default = []
 }
