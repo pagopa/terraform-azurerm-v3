@@ -17,7 +17,7 @@ you will be prompted with a message like the following
 module.azdoa_custom_image.null_resource.build_packer_image (local-exec): ==> azure-arm.ubuntu: Microsoft Azure: To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code CTJELKS6T to authenticate.
 ```
 
-you will be asked for auth access two times at the beginning of the build
+you will be asked for auth access **two times** at the beginning of the build
 
 Then, you can simply pick up the built image name from the log, and configure it to be used as base image for your vm or scale set
 The image name will be found in the logs, in the following line
@@ -32,6 +32,8 @@ data "azurerm_resource_group" "resource_group" {
   name = "${local.project}-azdoa-rg"
 }
 
+
+# managed image
 module "azdoa_custom_image" {
   source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent_custom_image?ref=<version>"
   resource_group_name = data.azurerm_resource_group.resource_group.name
@@ -39,6 +41,23 @@ module "azdoa_custom_image" {
   image_name          = "my_image_name"
   image_version       = "v1"
   subscription_id     = data.azurerm_subscription.current.subscription_id
+
+  image_type = "managed" #default
+}
+
+# shared image
+module "azdoa_custom_image" {
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent_custom_image?ref=<version>"
+  resource_group_name = data.azurerm_resource_group.resource_group.name
+  location            = var.location
+  image_name          = "azdo-agent-custom-image"
+  image_version       = "1.0.0"
+  subscription_id     = data.azurerm_subscription.current.subscription_id
+
+  image_type = "shared" #default
+
+
+  tags = var.tags
 }
 
 ```
