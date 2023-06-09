@@ -15,12 +15,12 @@ resource "azurerm_ssh_public_key" "this_public_key" {
 #build the image id
 locals {
   # managed id
-  source_image_id = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/images/${var.source_image_name}"
+  source_image_id = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/images/${var.image_name}-${var.image_version}"
   # shared id
-  shared_source_image_id = "/subscriptions/${var.shared_subscription_id}/resourceGroups/${var.shared_resource_group_name}/providers/Microsoft.Compute/galleries/${var.shared_gallery_name}/images/${var.shared_image_name}/versions/${var.shared_image_version}"
+  shared_source_image_id = "/subscriptions/${var.shared_subscription_id}/resourceGroups/${var.shared_resource_group_name}/providers/Microsoft.Compute/galleries/${var.shared_gallery_name}/images/${var.image_name}/versions/${var.image_version}"
 
   # final id
-  use_image_id = var.image_type == "custom" ? local.source_image_id : local.shared_source_image_id
+  use_image_id = var.image_type == "managed" ? local.source_image_id : local.shared_source_image_id
 }
 
 

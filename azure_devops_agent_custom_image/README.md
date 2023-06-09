@@ -19,12 +19,6 @@ module.azdoa_custom_image.null_resource.build_packer_image (local-exec): ==> azu
 
 you will be asked for auth access **two times** at the beginning of the build
 
-Then, you can simply pick up the built image name from the log, and configure it to be used as base image for your vm or scale set
-The image name will be found in the logs, in the following line
-
-```
-module.azdoa_custom_image.null_resource.build_packer_image (local-exec): ManagedImageName: my_image_name-v3
-```
 
 Example:
 ```hcl
@@ -71,12 +65,14 @@ module "azdoa_custom_image" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.53.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | <= 3.2.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
 
 ## Modules
@@ -87,6 +83,8 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [azurerm_shared_image.shared_image_placeholder](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/shared_image) | resource |
+| [azurerm_shared_image_gallery.image_gallery](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/shared_image_gallery) | resource |
 | [null_resource.build_packer_image](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 
 ## Inputs
@@ -99,11 +97,12 @@ No modules.
 | <a name="input_base_image_version"></a> [base\_image\_version](#input\_base\_image\_version) | (Optional) - https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine_scale_set#source_image_reference | `string` | `"latest"` | no |
 | <a name="input_force_replacement"></a> [force\_replacement](#input\_force\_replacement) | (Optional) Wheather if the image should be deleted and recreated even if already existing | `bool` | `false` | no |
 | <a name="input_image_name"></a> [image\_name](#input\_image\_name) | (Required) name assigned to the generated image. Note that the pair <image\_name, image\_version> must be unique and not already existing | `string` | n/a | yes |
+| <a name="input_image_type"></a> [image\_type](#input\_image\_type) | (Required) Defines the type of the image to be created: shared or managed | `string` | `"shared"` | no |
 | <a name="input_image_version"></a> [image\_version](#input\_image\_version) | (Required) Version assigned to the generated image. Note that the pair <image\_name, image\_version> must be unique and not already existing | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The name of the Resource Group in which the custom image will be created | `string` | n/a | yes |
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | (Required) Azure subscription id | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
 | <a name="input_vm_sku"></a> [vm\_sku](#input\_vm\_sku) | (Optional) Size of VMs in the scale set. Default to Standard\_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info. | `string` | `"Standard_B1s"` | no |
 
 ## Outputs

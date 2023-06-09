@@ -26,8 +26,9 @@ module "azdoa_vmss_li"  {
   subscription_name   = data.azurerm_subscription.current.display_name
   subscription_id     = data.azurerm_subscription.current.id
   location            = var.location
-  source_image_name   = "my-image-name" # the image must be stored in the same subscription/resource group of this resource
-  image_type          = "custom" # enables usage of "source_image_name" 
+  image_name          = var.azdoa_image_name
+  image_version       = var.azdoa_image_version # the image must be stored in the same subscription/resource group of this resource
+  image_type          = "managed" # enables usage of "image_name" and "image_version" 
 
   tags = var.tags
 }
@@ -99,11 +100,34 @@ module "azdoa_vmss_li" {
   subscription_name   = data.azurerm_subscription.current.display_name
   subscription_id     = data.azurerm_subscription.current.subscription_id
   location            = var.location
-  source_image_name   = var.azdoa_image_name
-  image_type          = "custom"
+  image_name          = var.azdoa_image_name
+  image_version       = var.azdoa_image_version
+  image_type          = "managed"
 
   extension_name = "tcpflow"
   custom_extension_path = "${path.module}/extensions/tcpflow/script-config.json"
+
+  tags = var.tags
+}
+
+
+# with shared image
+module "azdoa_vmss_li" {
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=39c5e91"
+  count               = var.enable_azdoa ? 1 : 0
+  name                = local.azuredevops_agent_vm_name
+  resource_group_name = azurerm_resource_group.azdo_rg[0].name
+  subnet_id           = module.azdoa_snet[0].id
+  subscription_name   = data.azurerm_subscription.current.display_name
+  subscription_id     = data.azurerm_subscription.current.subscription_id
+  location            = var.location
+  image_name          = var.azdoa_image_name
+  image_version       = var.azdoa_image_version
+  image_type          = "shared"
+
+  shared_subscription_id = var.shared_subscription_id
+  shared_resource_group_name = var.shared_rg_name
+  shared_gallery_name = var.shared_gallery_name
 
   tags = var.tags
 }
@@ -118,10 +142,6 @@ Here is the list of the provided extensions
 |------|-----------------------------------------------------------------------------------------------|
 | install_requirements| Installs all the required packages for an azure devops agent, such as az-cli, docker, helm... |
 
-
-Be aware that AzureDevOps adds an extension to the VMs, and if one of your extension is already installed, the one from AZDO will be added with the property `provision_after_extensions` set to the name of your extension.
-This means that whe you want to remove your extension, AzureRM will block you because AZDO extension depends on yours. 
-The solution is to create the scale set, then attach it to a AZDO Agent Pool, and THEN add your extension to the scaleset
 
 ### How to define a new extension
 
@@ -182,12 +202,16 @@ No modules.
 | <a name="input_custom_extension_path"></a> [custom\_extension\_path](#input\_custom\_extension\_path) | (Optional) if 'extension\_name' is not in the provided extensions, defines the path where to find the extension settings | `string` | `null` | no |
 | <a name="input_encryption_set_id"></a> [encryption\_set\_id](#input\_encryption\_set\_id) | (Optional) An existing encryption set | `string` | `null` | no |
 | <a name="input_extension_name"></a> [extension\_name](#input\_extension\_name) | (Optional) name of the extension to add to the VM. Either one of the provided (must match the folder name) or a custom extension (arbitrary name) | `string` | `null` | no |
+| <a name="input_image_name"></a> [image\_name](#input\_image\_name) | (Optional) The image name to be used, valid for 'shared' or 'managed' image\_type | `string` | `null` | no |
 | <a name="input_image_reference"></a> [image\_reference](#input\_image\_reference) | (Optional) A source\_image\_reference block as defined below. | <pre>object({<br>    publisher = string<br>    offer     = string<br>    sku       = string<br>    version   = string<br>  })</pre> | <pre>{<br>  "offer": "0001-com-ubuntu-server-jammy",<br>  "publisher": "Canonical",<br>  "sku": "22_04-lts-gen2",<br>  "version": "latest"<br>}</pre> | no |
-| <a name="input_image_type"></a> [image\_type](#input\_image\_type) | (Required) Defines the source image to be used, whether 'custom' or 'standard'. `custom` requires `source_image_name` to be defined, `standard` requires `image_reference` | `string` | `"custom"` | no |
+| <a name="input_image_type"></a> [image\_type](#input\_image\_type) | (Required) Defines the source image to be used, whether 'managed' or 'standard'. `managed` and `shared` requires `image_name` and `image_version` to be defined, `standard` requires `image_reference` | `string` | `"managed"` | no |
+| <a name="input_image_version"></a> [image\_version](#input\_image\_version) | (Optional) The image version to be used, valid for 'shared' or 'managed' image\_type | `string` | `null` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Optional) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created. | `string` | `"westeurope"` | no |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the Linux Virtual Machine Scale Set. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The name of the Resource Group in which the Linux Virtual Machine Scale Set should be exist. Changing this forces a new resource to be created. | `string` | n/a | yes |
-| <a name="input_source_image_name"></a> [source\_image\_name](#input\_source\_image\_name) | (Optional) The name of an Image which each Virtual Machine in this Scale Set should be based on. It must be stored in the same subscription & resource group of this resource | `string` | n/a | yes |
+| <a name="input_shared_gallery_name"></a> [shared\_gallery\_name](#input\_shared\_gallery\_name) | (Optional) The shared image gallery (AZ compute gallery) name the shared image is stored | `string` | `null` | no |
+| <a name="input_shared_resource_group_name"></a> [shared\_resource\_group\_name](#input\_shared\_resource\_group\_name) | (Optional) The resource group name where the shared image is stored | `string` | `null` | no |
+| <a name="input_shared_subscription_id"></a> [shared\_subscription\_id](#input\_shared\_subscription\_id) | (Optional) The subscription id where the shared image is stored | `string` | `null` | no |
 | <a name="input_storage_sku"></a> [storage\_sku](#input\_storage\_sku) | (Optional) The SKU of the storage account with which to persist VM. Use a singular sku that would be applied across all disks, or specify individual disks. Usage: [--storage-sku SKU \| --storage-sku ID=SKU ID=SKU ID=SKU...], where each ID is os or a 0-indexed lun. Allowed values: Standard\_LRS, Premium\_LRS, StandardSSD\_LRS, UltraSSD\_LRS, Premium\_ZRS, StandardSSD\_ZRS. | `string` | `"StandardSSD_LRS"` | no |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | (Required) An existing subnet ID | `string` | `null` | no |
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | (Required) Azure subscription id | `string` | n/a | yes |
