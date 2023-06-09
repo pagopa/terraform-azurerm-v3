@@ -84,6 +84,7 @@ resource "null_resource" "build_packer_image" {
     -var "image_version=${var.image_version}" \
     -var "shared_resource_group_name=${local.shared_resource_group_name}" \
     -var "shared_gallery_name=${local.shared_gallery_name}" \
+    -var "replication_region=${var.replication_region}" \
     .
     EOT
   }

@@ -69,6 +69,12 @@ variable "image_type" {
   }
 }
 
+variable "replication_region" {
+  type = string
+  description = "(Optional) Additional region where the shared image should be replicated"
+  default = null
+}
+
 variable "tags" {
   type = map(any)
   default = {

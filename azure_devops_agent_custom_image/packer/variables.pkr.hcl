@@ -20,9 +20,9 @@ variable "shared_resource_group_name" {
   description = "(string) - Resource group under which the final artifact will be stored."
 }
 
-variable "replication_regions" {
+variable "replication_region" {
   type = list(string)
-  description = "([]String) - list of regions where the image is replicated"
+  description = "(String) - additional region where the shared image should be replicated"
   default = []
 }
 

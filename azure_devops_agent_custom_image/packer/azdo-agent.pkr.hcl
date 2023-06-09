@@ -29,6 +29,7 @@ source "azure-arm" "ubuntu" {
       gallery_name = var.shared_gallery_name
       image_name = var.image_name
       image_version = var.image_version
+      replication_regions = [var.replication_region]
       storage_account_type = "Standard_LRS"
     }
 
