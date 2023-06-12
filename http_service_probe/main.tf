@@ -14,8 +14,7 @@ resource "azurerm_application_insights_standard_web_test" "this" {
   application_insights_id = var.application_insights_id
   geo_locations           = ["emea-nl-ams-azr"]
   description         = "HTTP service probe"
-  severity            = 0
-  frequency           = "PT5M"
+  frequency           = "300"
   enabled             = var.alert_enabled
 
   request {
