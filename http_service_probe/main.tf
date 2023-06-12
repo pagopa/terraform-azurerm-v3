@@ -19,7 +19,7 @@ resource "azurerm_application_insights_standard_web_test" "this" {
 
   request {
     url = format("%s%s",var.https_endpoint, var.https_endpoint_path)
-    body  = ""
+    body  = null
     http_verb = "GET"
     
     dynamic "header" {
