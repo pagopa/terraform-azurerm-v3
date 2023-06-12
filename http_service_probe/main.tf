@@ -21,7 +21,7 @@ resource "azurerm_application_insights_standard_web_test" "this" {
   request {
     url = format("%s%s",var.https_endpoint, var.https_endpoint_path)
     body  = var.https_probe_body != null ? var.https_probe_body : null
-    http_verb = var.http_probe_method
+    http_verb = var.https_probe_method
     
     dynamic "header" {
         for_each = local.all_headers_value
