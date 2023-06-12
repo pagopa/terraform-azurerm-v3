@@ -26,8 +26,8 @@ resource "azurerm_application_insights_standard_web_test" "this" {
         for_each = { for i, v in local.all_headers_value : local.all_headers_value[i].chiave => i }
 
         content {
-          name = header.chiave.value
-          value = header.valore.value
+          name = header.value["chiave"]
+          value = header.value["valore"]
         }
     }
   }
