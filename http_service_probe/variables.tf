@@ -15,7 +15,12 @@ variable "https_endpoint_path" {
 
 variable "https_probe_headers" {
   type        = string 
-  description = "Https endpoint path to check"
+  description = "Https request headers"
+}
+
+variable "https_probe_body" {
+  type        = string 
+  description = "Https request body"
 }
 
 variable "application_insights_resource_group" {

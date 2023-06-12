@@ -20,7 +20,7 @@ resource "azurerm_application_insights_standard_web_test" "this" {
 
   request {
     url = format("%s%s",var.https_endpoint, var.https_endpoint_path)
-    body  = null
+    body  = var.body != null ? var.body : null
     http_verb = "GET"
     
     dynamic "header" {
@@ -35,7 +35,7 @@ resource "azurerm_application_insights_standard_web_test" "this" {
 
 }
 
-## da migrare appena disponibili le metriche per Microsoft.Insights/webTests
+## migrate to Microsoft.Insights/webTests after GA
 
 resource "azurerm_monitor_metric_alert" "alert_this" {
   name                = local.alert_name
