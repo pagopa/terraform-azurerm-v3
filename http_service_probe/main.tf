@@ -1,5 +1,5 @@
 locals {
-  all_header_json = jsondecode(https_probe_headers)
+  all_header_json = jsondecode(var.https_probe_headers)
   all_headers_value = flatten([
     for k, v in local.all_header_json : {
       valore = v
