@@ -47,12 +47,17 @@ resource "azurerm_monitor_metric_alert" "alert_this" {
   enabled             = var.alert_enabled
 
   criteria {
-    metric_namespace = "Microsoft.Insights/webtests"
-    metric_name      = "WebtestLocationAvailabilityCriteria"
+    metric_namespace = "microsoft.insights/components"
+    metric_name      = "availabilityResults/availabilityPercentage"
     aggregation      = "Average"
     operator         = "LessThan"
     threshold        = 90
 
+    dimension {
+      name     = "availabilityResult/name"
+      operator = "Include"
+      values   = [local.alert_name]
+    }
     
   }
 
