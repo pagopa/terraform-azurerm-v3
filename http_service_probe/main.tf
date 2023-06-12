@@ -5,6 +5,7 @@ locals {
       chiave = k
     }
   ])
+}
 
 resource "azurerm_application_insights_standard_web_test" "this" {
   name                    = local.alert_name
