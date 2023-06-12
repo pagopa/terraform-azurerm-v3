@@ -1,6 +1,7 @@
 locals {
+  all_header_json = jsondecode(https_probe_headers)
   all_headers_value = flatten([
-    for k, v in var.https_probe_headers : {
+    for k, v in local.all_header_json : {
       valore = v
       chiave = k
     }
@@ -23,11 +24,11 @@ resource "azurerm_application_insights_standard_web_test" "this" {
     http_verb = "GET"
     
     dynamic "header" {
-        for_each = { for i, v in local.all_headers_value : local.all_headers_value[i].chiave => i }
+        for_each = local.all_headers_value
 
         content {
-          name = local.all_headers_value[header.value.chiave].chiave
-          value = local.all_headers_value[header.value.chiave].valore
+          name = header.value.chiave
+          value = header.value.valore
         }
     }
   }
