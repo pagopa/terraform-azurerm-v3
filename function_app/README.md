@@ -9,62 +9,173 @@ In terraform output you can get the resource group name.
 ![architecture](./docs/module-arch.drawio.png)
 
 ## How to use it
-Use the example Terraform template, saved in `terraform-azurerm-v3/function_app/tests`, to test this module.
+Use the example Terraform template, saved in `terraform-azurerm-v3/function_app/tests`, to see a working example of this module.
+
+**Note** that the runtime properties are mutually exclusive
+
+```hcl
+module "function_app" {
+  [...]
+  # the following properties are mutually exclusive
+  docker = {
+    image_name = ""
+    image_tag = ""
+    registry_password = ""
+    registry_url = ""
+    registry_username = ""
+  }
+  python_version = ""
+  dotnet_version = ""
+  use_dotnet_isolated_runtime = true|false
+  java_version = ""
+  node_version = ""
+  python_version = ""
+  powershell_core_version = ""
+  use_custom_runtime = ""
+  # end of mutually exclusive properties
+  [...]
+}
+```
+
+### Sticky values
+
+Sometimes it happens that Terraform fails to modify certain variables even after running `terraform apply`, and keeps proposing the changes repeatedly. 
+In this case, the variables to be ignored should be included in the `sticky_app_setting_names` variable. 
+
+E.g. 
+```hcl
+  sticky_app_setting_names = [
+    "DOCKER_REGISTRY_SERVER_PASSWORD",
+    "DOCKER_REGISTRY_SERVER_URL",
+    "DOCKER_REGISTRY_SERVER_USERNAME"
+  ]
+```
+### Some examples
+
+**Docker**
+```hcl
+module "authorizer_function_app" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app?ref=v6.6.0"
+
+  resource_group_name = data.azurerm_resource_group.shared_rg.name
+  name                = "${local.project}-authorizer-fn"
+  location            = var.location
+  health_check_path   = "info"
+  subnet_id           = module.authorizer_functions_snet.id
+  runtime_version     = "~4"
+
+  system_identity_enabled = true
+
+  always_on                                = var.authorizer_function_always_on
+  application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
+  docker = {
+    image_name        = "pagopa${var.env_short}commonacr.azurecr.io/pagopaplatformauthorizer"
+    image_tag         = var.authorizer_functions_app_image_tag
+    registry_password = data.azurerm_container_registry.acr.admin_password
+    registry_url      = "https://${data.azurerm_container_registry.acr.login_server}"
+    registry_username = data.azurerm_container_registry.acr.admin_username
+  }
+
+  sticky_connection_string_names = ["COSMOS_CONN_STRING", "COSMOS_CONNection_STRING"]
+  client_certificate_mode        = "Optional"
+
+
+  cors = {
+    allowed_origins = []
+  }
+
+  app_service_plan_name = "${local.project}-plan-authorizer-fn"
+  app_service_plan_info = {
+    kind                         = var.authorizer_functions_app_sku.kind
+    sku_size                     = var.authorizer_functions_app_sku.sku_size
+    maximum_elastic_worker_count = 1
+    worker_count                 = 1
+    zone_balancing_enabled       = false
+  }
+
+  storage_account_name = replace(format("%s-auth-st", local.project), "-", "")
+
+  app_settings = {
+    linux_fx_version                    = "JAVA|11"
+    FUNCTIONS_WORKER_RUNTIME            = "java"
+    FUNCTIONS_WORKER_PROCESS_COUNT      = 4
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
+    WEBSITE_ENABLE_SYNC_UPDATE_SITE     = true
+
+    DOCKER_REGISTRY_SERVER_URL      = "https://${data.azurerm_container_registry.acr.login_server}"
+    DOCKER_REGISTRY_SERVER_USERNAME = data.azurerm_container_registry.acr.admin_username
+    DOCKER_REGISTRY_SERVER_PASSWORD = data.azurerm_container_registry.acr.admin_password
+
+    COSMOS_CONN_STRING         = data.azurerm_key_vault_secret.authorizer_cosmos_connection_string.value
+    REFRESH_CONFIGURATION_PATH = data.azurerm_key_vault_secret.authorizer_refresh_configuration_url.value
+  }
+
+  allowed_subnets = [data.azurerm_subnet.apim_vnet.id]
+
+  allowed_ips = []
+
+  tags = var.tags
+}
+```
+
+**Python** 
+
+from `tests/resources.tf`
+
+```hcl
+module "function_app" {
+  source = "../../function_app"
+
+  name                = "${local.project}-fn"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  health_check_path   = "/api/v1/info"
+  python_version      = "3.9"
+  runtime_version     = "~4"
+
+  always_on                                = true
+  application_insights_instrumentation_key = azurerm_application_insights.ai.instrumentation_key
+
+  app_settings = merge(
+    local.function_app.app_settings_common, {}
+  )
+
+  subnet_id = azurerm_subnet.function_app_subnet.id
+
+  allowed_subnets = [
+    azurerm_subnet.function_app_subnet.id,
+  ]
+
+  app_service_plan_info = {
+    kind     = "Linux"
+    sku_size = "P1v3"
+    # The maximum number of workers to use in an Elastic SKU Plan. Cannot be set unless using an Elastic SKU.
+    maximum_elastic_worker_count = 0
+    # The number of Workers (instances) to be allocated.
+    worker_count = 2
+    # Should the Service Plan balance across Availability Zones in the region. Changing this forces a new resource to be created.
+    zone_balancing_enabled = true
+  }
+
+  tags = var.tags
+}
+```
+
+## Redundancy
+To deploy it in multiple Availability Zones in the region you need to set the following variables:
+- `zone_balancing_enabled = true`
+- `worker_count = <2+>`
+
+Furthermore, you need to set the region (es. `location = northeurope`).
+
+:warning: **At the moment (May 04, 2023), in `westeurope` is not possible to deploy service plans in multiple Availability Zones!**
+
 
 ## How to migrate `from azurerm_function_app` to `azurerm_linux_function_app`
-The following script will remove and import the deprecated resources as new ones.
-It creates a resource group named `test-fnapp<6 hexnumbers>-rg` and every resource into it is named `fnapp<6 hexnumbers>-*`
+The following [script](https://github.com/pagopa/eng-common-scripts/blob/main/azure/migrate-resource.sh) will remove and import the deprecated resources as new ones.
 
-```
-#!/bin/bash
+Be sure to modify the function `removeAndImport` calls (found at the end of the script) according to your needs
 
-function removeAndImport() {
-    ########################################
-    # Remove and import a Terraform resource
-    ########################################
-    local old_resource_name="$1"
-    # Square brackets are not processed normally by grep, otherwise
-    esc_old_resource_name=$(echo "$old_resource_name" | sed 's/\[/\\[/g; s/\]/\\]/g')
-
-    local new_resource_name="$2"
-
-    if [ -z "$old_resource_name" ] || [ -z "$new_resource_name" ]; then
-        echo "You need to define the resources to be removed and imported in order to proceed"
-    exit 1
-    fi
-    if [ "$(terraform show | grep $esc_old_resource_name)" ]; then
-        # Get the resource ID
-        function_app_id=$(terraform show -json | jq --arg resource "$old_resource_name" '.values.root_module.child_modules[].resources[] | select(.address==$resource).values.id' | tr -d '"')
-        echo "function_app_id: ${function_app_id}"
-        # Import the resource
-        terraform import $new_resource_name $function_app_id
-        if [ $? -eq 0 ]; then
-            echo "Successfully imported the resource with ID: $function_app_id"
-            # Remove the resource from the state file
-            terraform state rm "$old_resource_name"
-            if [ $? -eq 0 ]; then
-                echo "$old_resource_name removed"
-            else
-                echo "I can't remove the resource $old_resource_name from your Terraform state"
-            fi
-        else
-            echo "I can't import the resource $new_resource_name"
-        fi
-    else
-        echo "I can't find the resource $old_resource_name in your Terraform state"
-    fi
-}
-
-# Check if the "Terraform" and "jq" commands are available
-if ! which terraform &> /dev/null && which jq &> /dev/null; then
-  echo "Please install terraform and jq before proceeding."
-  exit 1
-fi
-
-removeAndImport "module.function_app.azurerm_function_app.this" "module.function_app.azurerm_linux_function_app.this"
-
-removeAndImport "module.function_app.azurerm_app_service_plan.this[0]" "module.function_app.azurerm_service_plan.this[0]"
-```
 
 ## Note about migrating from ```azurerm_function_app``` to ```azurerm_linux_function_app```
 
@@ -139,12 +250,14 @@ See [Generic resource migration](../.docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 | <a name="input_allowed_ips"></a> [allowed\_ips](#input\_allowed\_ips) | The IP Address used for this IP Restriction in CIDR notation | `list(string)` | `[]` | no |
 | <a name="input_allowed_subnets"></a> [allowed\_subnets](#input\_allowed\_subnets) | List of subnet ids, The Virtual Network Subnet ID used for this IP Restriction. | `list(string)` | `[]` | no |
 | <a name="input_always_on"></a> [always\_on](#input\_always\_on) | (Optional) Should the app be loaded at all times? Defaults to null. | `bool` | `null` | no |
+| <a name="input_app_service_logs"></a> [app\_service\_logs](#input\_app\_service\_logs) | disk\_quota\_mb - (Optional) The amount of disk space to use for logs. Valid values are between 25 and 100. Defaults to 35. retention\_period\_days - (Optional) The retention period for logs in days. Valid values are between 0 and 99999.(never delete). | <pre>object({<br>    disk_quota_mb         = number<br>    retention_period_days = number<br>  })</pre> | `null` | no |
 | <a name="input_app_service_plan_id"></a> [app\_service\_plan\_id](#input\_app\_service\_plan\_id) | The external app service plan id to associate to the function. If null a new plan is created, use app\_service\_plan\_info to configure it. | `string` | `null` | no |
-| <a name="input_app_service_plan_info"></a> [app\_service\_plan\_info](#input\_app\_service\_plan\_info) | Allows to configurate the internal service plan | <pre>object({<br>    kind                         = string # The kind of the App Service Plan to create. Possible values are Windows (also available as App), Linux, elastic (for Premium Consumption) and FunctionApp (for a Consumption Plan).<br>    sku_size                     = string # Specifies the plan's instance size.<br>    maximum_elastic_worker_count = number # The maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.<br>  })</pre> | <pre>{<br>  "kind": "Linux",<br>  "maximum_elastic_worker_count": 0,<br>  "sku_size": "P1v3"<br>}</pre> | no |
+| <a name="input_app_service_plan_info"></a> [app\_service\_plan\_info](#input\_app\_service\_plan\_info) | Allows to configurate the internal service plan | <pre>object({<br>    kind                         = string # The kind of the App Service Plan to create. Possible values are Windows (also available as App), Linux, elastic (for Premium Consumption) and FunctionApp (for a Consumption Plan).<br>    sku_size                     = string # Specifies the plan's instance size.<br>    maximum_elastic_worker_count = number # The maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.<br>    worker_count                 = number # The number of Workers (instances) to be allocated.<br>    zone_balancing_enabled       = bool   # Should the Service Plan balance across Availability Zones in the region. Changing this forces a new resource to be created.<br>  })</pre> | <pre>{<br>  "kind": "Linux",<br>  "maximum_elastic_worker_count": 0,<br>  "sku_size": "P1v3",<br>  "worker_count": 0,<br>  "zone_balancing_enabled": false<br>}</pre> | no |
 | <a name="input_app_service_plan_name"></a> [app\_service\_plan\_name](#input\_app\_service\_plan\_name) | Name of the app service plan. If null it will be 'computed' | `string` | `null` | no |
-| <a name="input_app_settings"></a> [app\_settings](#input\_app\_settings) | n/a | `map(any)` | `{}` | no |
+| <a name="input_app_settings"></a> [app\_settings](#input\_app\_settings) | (Optional) A map of key-value pairs for App Settings and custom values. | `map(any)` | `{}` | no |
 | <a name="input_application_insights_instrumentation_key"></a> [application\_insights\_instrumentation\_key](#input\_application\_insights\_instrumentation\_key) | Application insights instrumentation key | `string` | n/a | yes |
 | <a name="input_client_certificate_enabled"></a> [client\_certificate\_enabled](#input\_client\_certificate\_enabled) | Should the function app use Client Certificates | `bool` | `false` | no |
+| <a name="input_client_certificate_mode"></a> [client\_certificate\_mode](#input\_client\_certificate\_mode) | (Optional) The mode of the Function App's client certificates requirement for incoming requests. Possible values are Required, Optional, and OptionalInteractiveUser. | `string` | `"Optional"` | no |
 | <a name="input_cors"></a> [cors](#input\_cors) | n/a | <pre>object({<br>    allowed_origins = list(string) # A list of origins which should be able to make cross-origin calls. * can be used to allow all calls.<br>  })</pre> | `null` | no |
 | <a name="input_docker"></a> [docker](#input\_docker) | ##################### Framework choice ##################### | `any` | `{}` | no |
 | <a name="input_domain"></a> [domain](#input\_domain) | Specifies the domain of the Function App. | `string` | `null` | no |
@@ -165,7 +278,8 @@ See [Generic resource migration](../.docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 | <a name="input_python_version"></a> [python\_version](#input\_python\_version) | n/a | `string` | `null` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | n/a | `string` | n/a | yes |
 | <a name="input_runtime_version"></a> [runtime\_version](#input\_runtime\_version) | The runtime version associated with the Function App. Version ~3 is required for Linux Function Apps. | `string` | `"~3"` | no |
-| <a name="input_sticky_settings"></a> [sticky\_settings](#input\_sticky\_settings) | (Optional) A list of app\_setting names that the Linux Function App will not swap between Slots when a swap operation is triggered | `list(string)` | `[]` | no |
+| <a name="input_sticky_app_setting_names"></a> [sticky\_app\_setting\_names](#input\_sticky\_app\_setting\_names) | (Optional) A list of app\_setting names that the Linux Function App will not swap between Slots when a swap operation is triggered | `list(string)` | `[]` | no |
+| <a name="input_sticky_connection_string_names"></a> [sticky\_connection\_string\_names](#input\_sticky\_connection\_string\_names) | (Optional) A list of connection string names that the Linux Function App will not swap between Slots when a swap operation is triggered | `list(string)` | `null` | no |
 | <a name="input_storage_account_durable_name"></a> [storage\_account\_durable\_name](#input\_storage\_account\_durable\_name) | Storage account name only used by the durable function. If null it will be 'computed' | `string` | `null` | no |
 | <a name="input_storage_account_info"></a> [storage\_account\_info](#input\_storage\_account\_info) | n/a | <pre>object({<br>    account_kind                      = string # Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Changing this forces a new resource to be created. Defaults to Storage.<br>    account_tier                      = string # Defines the Tier to use for this storage account. Valid options are Standard and Premium. For BlockBlobStorage and FileStorage accounts only Premium is valid.<br>    account_replication_type          = string # Defines the type of replication to use for this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS.<br>    access_tier                       = string # Defines the access tier for BlobStorage, FileStorage and StorageV2 accounts. Valid options are Hot and Cool, defaults to Hot.<br>    advanced_threat_protection_enable = bool<br>  })</pre> | <pre>{<br>  "access_tier": "Hot",<br>  "account_kind": "StorageV2",<br>  "account_replication_type": "ZRS",<br>  "account_tier": "Standard",<br>  "advanced_threat_protection_enable": true<br>}</pre> | no |
 | <a name="input_storage_account_name"></a> [storage\_account\_name](#input\_storage\_account\_name) | Storage account name. If null it will be 'computed' | `string` | `null` | no |
