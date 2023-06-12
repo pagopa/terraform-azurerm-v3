@@ -23,6 +23,11 @@ variable "https_probe_body" {
   description = "Https request body"
 }
 
+variable "https_probe_method" {
+  type        = string 
+  description = "Https request method"
+}
+
 variable "application_insights_resource_group" {
   type        = string
   description = "(Required) Application Insights resource group"
