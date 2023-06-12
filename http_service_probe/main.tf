@@ -20,22 +20,17 @@ resource "azurerm_application_insights_standard_web_test" "this" {
 
   request {
     url = format("%s%s",var.https_endpoint, var.https_endpoint_path)
-    body  = []
+    body  = ""
     http_verb = "GET"
+    
+    dynamic "header" {
+        for_each = { for i, v in local.all_headers_value : local.all_headers_value[i].chiave => i }
 
-  }
-
-  dynamic "header" {
-    for_each = { for i, v in local.all_headers_value : local.all_headers_value[i].chiave => i }
-
-    content {
-      name = local.all_secrets_value[each.value].chiave
-      value = local.all_secrets_value[each.value].valore
+        content {
+          name = local.all_secrets_value[each.value].chiave
+          value = local.all_secrets_value[each.value].valore
+        }
     }
-  }
-
-  validation_rules {
-    expected_status_code = "0"
   }
 
 }
