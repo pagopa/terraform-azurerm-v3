@@ -34,3 +34,37 @@ resource "azurerm_application_insights_standard_web_test" "this" {
   }
 
 }
+
+
+resource "azurerm_monitor_metric_alert" "alert_this" {
+  name                = local.alert_name
+  resource_group_name = var.application_insights_resource_group
+  scopes              = [azurerm_application_insights_standard_web_test.this.id]
+  description         = "Whenever the average availabilityresults/availabilitypercentage is less than 90%"
+  severity            = 0
+  frequency           = "PT5M"
+  auto_mitigate       = false
+  enabled             = var.alert_enabled
+
+  criteria {
+    metric_namespace = "microsoft.insights/components"
+    metric_name      = "availabilityResults/availabilityPercentage"
+    aggregation      = "Average"
+    operator         = "LessThan"
+    threshold        = 90
+
+    
+  }
+
+  dynamic "action" {
+    for_each = var.application_insights_action_group_ids
+
+    content {
+      action_group_id = action.value
+    }
+  }
+
+  depends_on = [
+    azurerm_application_insights_standard_web_test.this
+  ]
+}
