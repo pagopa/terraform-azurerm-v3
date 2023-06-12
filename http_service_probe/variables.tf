@@ -14,7 +14,7 @@ variable "https_endpoint_path" {
 }
 
 variable "https_probe_headers" {
-  type        = string
+  type        = list
   description = "Https endpoint path to check"
 }
 
