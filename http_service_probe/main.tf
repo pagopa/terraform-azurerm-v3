@@ -23,11 +23,11 @@ resource "azurerm_application_insights_standard_web_test" "this" {
     http_verb = "GET"
     
     dynamic "header" {
-        for_each = local.all_headers_value 
+        for_each = { for i, v in local.all_headers_value : local.all_headers_value[i].chiave => i }
 
         content {
-          name = header.value.chiave
-          value = header.value.valore
+          name = each.value.chiave
+          value = each.value.valore
         }
     }
   }
