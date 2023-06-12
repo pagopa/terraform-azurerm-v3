@@ -47,8 +47,8 @@ resource "azurerm_monitor_metric_alert" "alert_this" {
   enabled             = var.alert_enabled
 
   criteria {
-    metric_namespace = "Microsoft.Insights/webtests"
-    metric_name      = "availabilityResults/availabilityPercentage"
+    metric_namespace = "microsoft.insights/components"
+    metric_name      = "webtests"
     aggregation      = "Average"
     operator         = "LessThan"
     threshold        = 90
