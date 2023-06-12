@@ -35,11 +35,12 @@ resource "azurerm_application_insights_standard_web_test" "this" {
 
 }
 
+## da migrare appena disponibili le metriche per Microsoft.Insights/webTests
 
 resource "azurerm_monitor_metric_alert" "alert_this" {
   name                = local.alert_name
   resource_group_name = var.application_insights_resource_group
-  scopes              = [azurerm_application_insights_standard_web_test.this.id]
+  scopes              = [var.application_insights_id]
   description         = "Whenever the average availabilityresults/availabilitypercentage is less than 90%"
   severity            = 0
   frequency           = "PT5M"
