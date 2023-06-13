@@ -17,8 +17,9 @@ source "azure-arm" "ubuntu" {
   image_sku                         = var.base_image_sku
   vm_size                           = var.vm_sku
 
-  managed_image_name                = var.target_image_name
-  managed_image_resource_group_name = var.target_resource_group_name
+  # mutually exclusive with share image gallery image
+  managed_image_name                = var.shared_gallery_name == null ? var.target_image_name : null
+  managed_image_resource_group_name = var.shared_gallery_name == null ? var.target_resource_group_name : null
 
   #https://developer.hashicorp.com/packer/plugins/builders/azure/arm#shared-image-gallery
   dynamic "shared_image_gallery_destination" {

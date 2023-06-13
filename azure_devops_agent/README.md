@@ -7,6 +7,18 @@ It also gives the possibility to add a custom script extension to the VMs, eithe
 
 By default, this module creates a ScaleSet using Ubuntu22.04, without using os disk encryption, and providing SSH access using a generated ssh key
 
+additional parameters allow you to create VM SS using:
+
+- standard image (provided by az marketplace)
+- custom image (previously built and stored on the same resource group of the SS)
+- shared image (previously built and stored on a Shared Image Gallery, even in a different subscription, if enabled)
+
+with:
+
+- no extensions (the SS will start with the VM image, plain and simple)
+- with provided extension (the VM will run the extension provided at startup)
+- with custom extension (the VM will run the extension you wrote at startup)
+
 ```hcl
 resource "azurerm_resource_group" "azdo_rg" {
   count    = var.enable_azdoa ? 1 : 0
@@ -85,7 +97,7 @@ module "azdoa_vmss_li" {
     version           = "latest"
   }
 
-  extension_name = "install_requirements"
+  extension_name = "install_requirements" # matches the folder name in "extensions" directory 
 
   tags = var.tags
 }
@@ -142,17 +154,6 @@ Here is the list of the provided extensions
 |------|-----------------------------------------------------------------------------------------------|
 | install_requirements| Installs all the required packages for an azure devops agent, such as az-cli, docker, helm... |
 
-
-### How to define a new extension
-
-If you want to include a new extension in this module, you simply have to create a new folder in the `extensions` directory, containing the script configuration `json` and `sh` file required to define the extension.
-The json file is used by the VM to locate the executable file, while the executable contains the actual "source" of the extension.
-
-**N.B.:** json file MUST be named `script-config.json` since by convention that's the name that is loked for by this module
-
-Then you simply need to reference the new extension name when using this module
-
-**N.B.:** be sure to double-check the path defined in `script-config.json`, since you will not get any warning
 
 
 ### How to define a custom extension

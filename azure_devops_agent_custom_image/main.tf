@@ -55,6 +55,7 @@ resource "null_resource" "build_packer_image" {
     image_version        = var.image_version
     location             = var.location
     image_type           = var.image_type
+    replication_region   = var.replication_region
 
   }
 

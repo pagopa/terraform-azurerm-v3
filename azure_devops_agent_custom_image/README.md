@@ -8,6 +8,13 @@ Install packer [here](https://developer.hashicorp.com/packer/tutorials/docker-ge
 
 ## How to use
 
+This module can create managed images (which are stored in the given resource group) or can create shared images, which will require the creation of a Shared Image Gallery and Image Definition in order to be created. 
+These resources will be automatically created by the module if the "shared" `image_type` is defined
+
+The Shared Image Gallery must be manually updated to allow sharing with other subscription, if necessary. The feature is currently (06-2023) in preview, so it is not managable by terraform. 
+[docs](https://learn.microsoft.com/en-us/azure/virtual-machines/create-gallery?tabs=portal%2Cportaldirect%2Ccli2)
+
+
 This module must be runned manually to create the image that will be later used
 
 This module uses interactive authentication to access your target subscription. While running terraform be sure to check for the authentication code and link to enable packer to access your subscription
@@ -33,10 +40,12 @@ module "azdoa_custom_image" {
   resource_group_name = data.azurerm_resource_group.resource_group.name
   location            = var.location
   image_name          = "my_image_name"
-  image_version       = "v1"
+  image_version       = "1.0.0"
   subscription_id     = data.azurerm_subscription.current.subscription_id
 
-  image_type = "managed" #default
+  image_type = "managed"
+
+  tags = var.tags
 }
 
 # shared image
@@ -49,7 +58,6 @@ module "azdoa_custom_image" {
   subscription_id     = data.azurerm_subscription.current.subscription_id
 
   image_type = "shared" #default
-
 
   tags = var.tags
 }
@@ -100,6 +108,7 @@ No modules.
 | <a name="input_image_type"></a> [image\_type](#input\_image\_type) | (Required) Defines the type of the image to be created: shared or managed | `string` | `"shared"` | no |
 | <a name="input_image_version"></a> [image\_version](#input\_image\_version) | (Required) Version assigned to the generated image. Note that the pair <image\_name, image\_version> must be unique and not already existing | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created. | `string` | n/a | yes |
+| <a name="input_replication_region"></a> [replication\_region](#input\_replication\_region) | (Optional) Additional region where the shared image should be replicated | `string` | `null` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The name of the Resource Group in which the custom image will be created | `string` | n/a | yes |
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | (Required) Azure subscription id | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
