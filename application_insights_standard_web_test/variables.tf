@@ -19,19 +19,19 @@ variable "https_endpoint_path" {
 }
 
 variable "https_probe_headers" {
-  type        = string 
+  type        = string
   description = "Https request headers"
   default     = "{}"
 }
 
 variable "https_probe_body" {
-  type        = string 
+  type        = string
   description = "Https request body"
   default     = null
 }
 
 variable "https_probe_method" {
-  type        = string 
+  type        = string
   description = "Https request method"
 }
 
@@ -66,4 +66,10 @@ variable "frequency" {
   type        = number
   description = "Interval in seconds between test runs for this WebTest."
   default     = 300
+}
+
+variable "https_probe_threshold" {
+  type        = number
+  description = "threshold for metric alert"
+  default     = 90
 }

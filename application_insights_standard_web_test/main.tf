@@ -3,7 +3,7 @@ locals {
   all_headers_value = flatten([
     for k, v in local.all_header_json : {
       headervalue = v
-      headername = k
+      headername  = k
     }
   ])
 }
@@ -14,22 +14,22 @@ resource "azurerm_application_insights_standard_web_test" "this" {
   location                = var.location
   application_insights_id = var.application_insights_id
   geo_locations           = ["emea-nl-ams-azr"]
-  description         = "HTTP Standard WebTests"
-  frequency           = var.frequency
-  enabled             = var.alert_enabled
+  description             = "HTTP Standard WebTests"
+  frequency               = var.frequency
+  enabled                 = var.alert_enabled
 
   request {
-    url = format("%s%s",var.https_endpoint, var.https_endpoint_path)
-    body  = var.https_probe_body
+    url       = format("%s%s", var.https_endpoint, var.https_endpoint_path)
+    body      = var.https_probe_body
     http_verb = var.https_probe_method
-    
-    dynamic "header" {
-        for_each = local.all_headers_value
 
-        content {
-          name = header.value.headername
-          value = header.value.headervaule
-        }
+    dynamic "header" {
+      for_each = local.all_headers_value
+
+      content {
+        name  = header.value.headername
+        value = header.value.headervaule
+      }
     }
   }
 
@@ -41,7 +41,7 @@ resource "azurerm_monitor_metric_alert" "alert_this" {
   name                = local.alert_name
   resource_group_name = var.application_insights_resource_group
   scopes              = [var.application_insights_id]
-  description         = "Whenever the average availabilityresults/availabilitypercentage is less than 90%"
+  description         = "Whenever the average availabilityresults/availabilitypercentage is less than ${var.https_probe_threshold}%"
   severity            = 0
   frequency           = "PT5M"
   auto_mitigate       = false
@@ -52,14 +52,14 @@ resource "azurerm_monitor_metric_alert" "alert_this" {
     metric_name      = "availabilityResults/availabilityPercentage"
     aggregation      = "Average"
     operator         = "LessThan"
-    threshold        = 90
+    threshold        = var.https_probe_threshold
 
     dimension {
       name     = "availabilityResult/name"
       operator = "Include"
       values   = [local.alert_name]
     }
-    
+
   }
 
   dynamic "action" {
