@@ -2,8 +2,9 @@
 
 This module create an alert for a http(s) webservice
 
-# Example
+## Example
 
+```hcl
 module "webservice_monitor_01" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//application_insights_standard_web_test?ref=vX.X.X"
   
@@ -20,3 +21,4 @@ module "webservice_monitor_01" {
   https_probe_body                       = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ....  </soapenv:Envelope>"
   https_probe_method                     = "POST"
 }
+```
