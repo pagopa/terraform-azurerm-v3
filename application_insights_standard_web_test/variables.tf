@@ -16,11 +16,13 @@ variable "https_endpoint_path" {
 variable "https_probe_headers" {
   type        = string 
   description = "Https request headers"
+  default     = "{}"
 }
 
 variable "https_probe_body" {
   type        = string 
   description = "Https request body"
+  default     = null
 }
 
 variable "https_probe_method" {
