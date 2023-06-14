@@ -3,6 +3,11 @@ locals {
   alert_name_sha256_limited = substr(sha256(var.alert_name), 0, 5)
 }
 
+variable "location" {
+  type        = string
+  description = "Application insight location."
+}
+
 variable "https_endpoint" {
   type        = string
   description = "Https endpoint to check"
@@ -57,3 +62,8 @@ variable "alert_enabled" {
   default     = true
 }
 
+variable "frequency" {
+  type        = number
+  description = "Interval in seconds between test runs for this WebTest."
+  default     = 300
+}
