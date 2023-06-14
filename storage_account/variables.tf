@@ -62,6 +62,12 @@ variable "is_hns_enabled" {
   description = "Enable Hierarchical Namespace enabled (Azure Data Lake Storage Gen 2). Changing this forces a new resource to be created."
 }
 
+variable "is_sftp_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable SFTP"
+}
+
 variable "allow_nested_items_to_be_public" {
   description = "Allow or disallow public access to all blobs or containers in the storage account."
   type        = bool
