@@ -17,6 +17,8 @@ module "cdn_storage_account" {
   allow_nested_items_to_be_public = true
   public_network_access_enabled   = true
 
+  advanced_threat_protection = var.advanced_threat_protection_enabled
+
   index_document     = var.index_document
   error_404_document = var.error_404_document
 
