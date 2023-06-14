@@ -42,8 +42,8 @@ resource "azurerm_monitor_metric_alert" "alert_this" {
   resource_group_name = var.application_insights_resource_group
   scopes              = [var.application_insights_id]
   description         = "Whenever the average availabilityresults/availabilitypercentage is less than ${var.https_probe_threshold}%"
-  severity            = 0
-  frequency           = "PT5M"
+  severity            = var.metric_severity
+  frequency           = var.metric_frequency
   auto_mitigate       = false
   enabled             = var.alert_enabled
 

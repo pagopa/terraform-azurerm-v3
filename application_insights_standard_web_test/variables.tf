@@ -68,6 +68,18 @@ variable "frequency" {
   default     = 300
 }
 
+variable "metric_frequency" {
+  type        = string
+  description = "Interval in seconds between test runs metric alert"
+  default     = "PT5M"
+}
+
+variable "metric_severity" {
+  type        = number
+  description = "metric alert severity"
+  default     = 0
+}
+
 variable "https_probe_threshold" {
   type        = number
   description = "threshold for metric alert"
