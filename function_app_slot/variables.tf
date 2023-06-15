@@ -17,7 +17,7 @@ variable "resource_group_name" {
 
 variable "runtime_version" {
   type    = string
-  default = "~3"
+  default = "~4"
 }
 
 variable "app_service_plan_id" {

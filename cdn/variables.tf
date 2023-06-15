@@ -298,10 +298,6 @@ variable "hostname" {
   type = string
 }
 
-variable "lock_enabled" {
-  type = bool
-}
-
 variable "index_document" {
   type = string
 }
@@ -331,4 +327,9 @@ variable "dns_zone_name" {
 
 variable "dns_zone_resource_group_name" {
   type = string
+}
+
+variable "advanced_threat_protection_enabled" {
+  type    = bool
+  default = false
 }

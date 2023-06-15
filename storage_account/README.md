@@ -10,7 +10,86 @@ In terraform output you can get the resource group name.
 
 ## How to use it
 
+### simple example
+
 Use the example Terraform template, saved in `tests`, to test this module.
+
+### example with private network and public access denied
+
+```hcl
+#####
+module "backupstorage" {
+  count  = 1
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v6.2.1"
+
+  name                            = replace("${local.project}-backupstorage", "-", "")
+  account_kind                    = "StorageV2"
+  account_tier                    = "Standard"
+  account_replication_type        = "GRS"
+  access_tier                     = "Cool"
+  blob_versioning_enabled         = true
+  resource_group_name             = azurerm_resource_group.rg_storage.name
+  location                        = var.location
+  allow_nested_items_to_be_public = false
+  advanced_threat_protection      = true
+  enable_low_availability_alert   = false
+  public_network_access_enabled   = false
+  tags                            = var.tags
+}
+
+resource "azurerm_private_endpoint" "backupstorage_private_endpoint" {
+  count = 1
+
+  name                = "${local.project}-backupstorage-private-endpoint"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg_storage.name
+  subnet_id           = module.private_endpoint_snet[0].id
+
+  private_dns_zone_group {
+    name                 = "${local.project}-backupstorage-private-dns-zone-group"
+    private_dns_zone_ids = [azurerm_private_dns_zone.storage_account.id]
+  }
+
+  private_service_connection {
+    name                           = "${local.project}-backupstorage-private-service-connection"
+    private_connection_resource_id = module.backupstorage[0].id
+    is_manual_connection           = false
+    subresource_names              = ["blob"]
+  }
+
+  tags = var.tags
+
+  depends_on = [
+    module.backupstorage
+  ]
+}
+
+#
+#
+#
+
+module "private_endpoint_snet" {
+  count = var.enable.core.private_endpoints_subnet ? 1 : 0
+
+  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v6.2.1"
+  name                 = "private-endpoint-snet"
+  resource_group_name  = azurerm_resource_group.rg_vnet.name
+  virtual_network_name = module.vnet.name
+  address_prefixes     = var.cidr_subnet_private_endpoint
+
+  private_endpoint_network_policies_enabled = false
+  service_endpoints = [
+    "Microsoft.Web", "Microsoft.AzureCosmosDB", "Microsoft.EventHub"
+  ]
+}
+
+resource "azurerm_private_dns_zone" "storage_account" {
+  name                = "privatelink.blob.core.windows.net"
+  resource_group_name = azurerm_resource_group.rg_vnet.name
+}
+
+```
+
 
 ## Migration from v2
 
@@ -155,6 +234,7 @@ No modules.
 | <a name="input_error_404_document"></a> [error\_404\_document](#input\_error\_404\_document) | The absolute path to a custom webpage that should be used when a request is made which does not correspond to an existing file. | `string` | `null` | no |
 | <a name="input_index_document"></a> [index\_document](#input\_index\_document) | The webpage that Azure Storage serves for requests to the root of a website or any subfolder. For example, index.html. The value is case-sensitive. | `string` | `null` | no |
 | <a name="input_is_hns_enabled"></a> [is\_hns\_enabled](#input\_is\_hns\_enabled) | Enable Hierarchical Namespace enabled (Azure Data Lake Storage Gen 2). Changing this forces a new resource to be created. | `bool` | `false` | no |
+| <a name="input_is_sftp_enabled"></a> [is\_sftp\_enabled](#input\_is\_sftp\_enabled) | Enable SFTP | `bool` | `false` | no |
 | <a name="input_location"></a> [location](#input\_location) | n/a | `string` | n/a | yes |
 | <a name="input_low_availability_threshold"></a> [low\_availability\_threshold](#input\_low\_availability\_threshold) | The Low Availability threshold. If metric average is under this value, the alert will be triggered. Default is 99.8 | `number` | `99.8` | no |
 | <a name="input_min_tls_version"></a> [min\_tls\_version](#input\_min\_tls\_version) | The minimum supported TLS version for the storage account. Possible values are TLS1\_0, TLS1\_1, and TLS1\_2 | `string` | `"TLS1_2"` | no |

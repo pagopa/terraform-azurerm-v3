@@ -222,7 +222,7 @@ resource "azurerm_service_plan" "this" {
   os_type                      = "Linux"
   sku_name                     = var.app_service_plan_info.sku_size
   zone_balancing_enabled       = var.app_service_plan_info.zone_balancing_enabled
-  maximum_elastic_worker_count = var.app_service_plan_info.maximum_elastic_worker_count
+  maximum_elastic_worker_count = var.app_service_plan_info.kind == "elastic" ? var.app_service_plan_info.maximum_elastic_worker_count : null
   worker_count                 = var.app_service_plan_info.worker_count
 
   per_site_scaling_enabled = false
@@ -241,6 +241,7 @@ resource "azurerm_linux_function_app" "this" {
   storage_account_access_key = module.storage_account.primary_access_key
   https_only                 = var.https_only
   client_certificate_enabled = var.client_certificate_enabled
+  client_certificate_mode    = var.client_certificate_mode
 
   site_config {
     minimum_tls_version       = "1.2"
@@ -252,6 +253,14 @@ resource "azurerm_linux_function_app" "this" {
     use_32_bit_worker         = var.use_32_bit_worker_process
     application_insights_key  = var.application_insights_instrumentation_key
     health_check_path         = var.health_check_path
+
+    dynamic "app_service_logs" {
+      for_each = var.app_service_logs != null ? [var.app_service_logs] : []
+      content {
+        disk_quota_mb         = app_service_logs.value.disk_quota_mb
+        retention_period_days = app_service_logs.value.retention_period_days
+      }
+    }
 
     application_stack {
       dotnet_version              = var.dotnet_version
@@ -329,15 +338,16 @@ resource "azurerm_linux_function_app" "this" {
   lifecycle {
     ignore_changes = [
       virtual_network_subnet_id,
-      app_settings["WEBSITE_HEALTHCHECK_MAXPINGFAILURES"],
+      app_settings["WEBSITE_HEALTHCHECK_MAXPINGFAILURES"]
     ]
   }
 
   sticky_settings {
     app_setting_names = concat(
       ["SLOT_TASK_HUBNAME"],
-      var.sticky_settings,
+      var.sticky_app_setting_names,
     )
+    connection_string_names = var.sticky_connection_string_names
   }
 
   tags = var.tags
