@@ -222,7 +222,7 @@ resource "azurerm_service_plan" "this" {
   os_type                      = "Linux"
   sku_name                     = var.app_service_plan_info.sku_size
   zone_balancing_enabled       = var.app_service_plan_info.zone_balancing_enabled
-  maximum_elastic_worker_count = var.app_service_plan_info.maximum_elastic_worker_count
+  maximum_elastic_worker_count = var.app_service_plan_info.kind == "elastic" ? var.app_service_plan_info.maximum_elastic_worker_count : null
   worker_count                 = var.app_service_plan_info.worker_count
 
   per_site_scaling_enabled = false
