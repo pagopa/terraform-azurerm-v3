@@ -1,29 +1,23 @@
 #!/usr/bin/env bash
 
 
+function check_command(){
+  if command -v "$1";
+  then
+    echo "✅ $1 installed"
+  else
+    echo "❌ $1 NOT installed"
+    exit 1
+  fi
+}
+
 # install zip unzip ca-certificates curl wget apt-transport-https lsb-release gnupg jq
 apt-get -y update
 apt-get -y --allow-unauthenticated install zip unzip ca-certificates curl wget apt-transport-https lsb-release gnupg jq
 
-if ! zip --version
-then
-    echo "zip not installed"
-    exit 1
-fi
-echo "✅ zip installed"
-if ! unzip -v
-then
-    echo "unzip not installed"
-    exit 1
-fi
-echo "✅ unzip installed"
-
-if ! jq --version
-then
-    echo "jq not installed"
-    exit 1
-fi
-echo "✅ jq installed"
+check_command "zip"
+check_command "unzip"
+check_command "jq"
 
 # install az cli
 curl -sL https://aka.ms/InstallAzureCLIDeb | bash
@@ -47,40 +41,11 @@ apt-get -y install  python3-pip
 apt-get -y --allow-unauthenticated install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 
-if ! az --version
-then
-    echo "az not installed"
-    exit 1
-fi
-echo "✅ az-cli installed"
-
-if ! kubectl version --client=true
-then
-    echo "kubectl not installed"
-    exit 1
-fi
-echo "✅ kubectl installed"
-
-if ! docker -v
-then
-    echo "docker not installed"
-    exit 1
-fi
-echo "✅ docker installed"
-
-if ! helm version
-then
-    echo "helm not installed"
-    exit 1
-fi
-echo "✅ helm installed"
-
-if ! python3 --version
-then
-    echo "python3 not installed"
-    exit 1
-fi
-echo "✅ python3 installed"
+check_command "az"
+check_command "kubectl"
+check_command "docker"
+check_command "helm"
+check_command "python3"
 
 # install yq from https://github.com/mikefarah/yq#install
 YQ_VERSION="v4.33.3"
@@ -89,12 +54,7 @@ wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY
   tar xz && mv ${YQ_BINARY} /usr/bin/yq
 
 
-if ! yq --version
-then
-    echo "yq not installed"
-    exit 1
-fi
-echo "✅ yq installed"
+check_command "yq"
 
 # install SOPS from https://github.com/mozilla/sops
 SOPS_VERSION="v3.7.3"
@@ -102,12 +62,7 @@ SOPS_BINARY="3.7.3_amd64.deb"
 wget https://github.com/mozilla/sops/releases/download/v3.7.3/sops_3.7.3_amd64.deb
 apt install -y $PWD/sops_3.7.3_amd64.deb
 
-if ! sops -v
-then
-    echo "sops not installed"
-    exit 1
-fi
-echo "✅ sops installed"
+check_command "sops"
 
 # prepare machine for k6 large load test
 
