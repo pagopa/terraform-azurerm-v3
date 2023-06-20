@@ -26,6 +26,8 @@ The image name will be found in the logs, in the following line
 module.azdoa_custom_image.null_resource.build_packer_image (local-exec): ManagedImageName: my_image_name-v3
 ```
 
+**NB:** the build may fail because it's not able to locate some package; you simply need to try it again 
+
 Example:
 ```hcl
 data "azurerm_resource_group" "resource_group" {

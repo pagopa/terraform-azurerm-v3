@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
 
 
+function check_command(){
+  if command -v "$1";
+  then
+    echo "✅ $1 installed"
+  else
+    echo "❌ $1 NOT installed"
+    exit 1
+  fi
+}
+
 # install zip unzip ca-certificates curl wget apt-transport-https lsb-release gnupg jq
 apt-get -y update
 apt-get -y --allow-unauthenticated install zip unzip ca-certificates curl wget apt-transport-https lsb-release gnupg jq
 
-zip --version
-echo "✅ zip installed"
-unzip --version
-echo "✅ unzip installed"
-jq
-echo "✅ jq installed"
+check_command "zip"
+check_command "unzip"
+check_command "jq"
 
 # install az cli
 curl -sL https://aka.ms/InstallAzureCLIDeb | bash
@@ -33,16 +40,12 @@ apt-get -y update
 apt-get -y install  python3-pip
 apt-get -y --allow-unauthenticated install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
-az --version
-echo "✅ az-cli installed"
-kubectl version --short
-echo "✅ kubectl installed"
-docker -v
-echo "✅ docker installed"
-helm version
-echo "✅ helm installed"
-python3 --version
-echo "✅ python3 installed"
+
+check_command "az"
+check_command "kubectl"
+check_command "docker"
+check_command "helm"
+check_command "python3"
 
 # install yq from https://github.com/mikefarah/yq#install
 YQ_VERSION="v4.33.3"
@@ -50,16 +53,16 @@ YQ_BINARY="yq_linux_amd64"
 wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY}.tar.gz -O - |\
   tar xz && mv ${YQ_BINARY} /usr/bin/yq
 
-yq --version
-echo "✅ yq installed"
+
+check_command "yq"
 
 # install SOPS from https://github.com/mozilla/sops
 SOPS_VERSION="v3.7.3"
 SOPS_BINARY="3.7.3_amd64.deb"
 wget https://github.com/mozilla/sops/releases/download/v3.7.3/sops_3.7.3_amd64.deb
 apt install -y $PWD/sops_3.7.3_amd64.deb
-sops -v
-echo "✅ sops installed"
+
+check_command "sops"
 
 # prepare machine for k6 large load test
 
