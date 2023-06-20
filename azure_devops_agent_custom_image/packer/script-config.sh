@@ -77,7 +77,7 @@ echo "✅ helm installed"
 
 if ! python3 --version
 then
-    echo "python not installed"
+    echo "python3 not installed"
     exit 1
 fi
 echo "✅ python3 installed"
