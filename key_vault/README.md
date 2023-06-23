@@ -53,6 +53,10 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_additional_certificate_permissions"></a> [additional\_certificate\_permissions](#input\_additional\_certificate\_permissions) | (Optional) Additional certificate permissions assigned to the created keyvault, alongside the default already defined | `list(string)` | `null` | no |
+| <a name="input_additional_key_permissions"></a> [additional\_key\_permissions](#input\_additional\_key\_permissions) | (Optional) Additional key permissions assigned to the created keyvault, alongside the default already defined | `list(string)` | `null` | no |
+| <a name="input_additional_secret_permissions"></a> [additional\_secret\_permissions](#input\_additional\_secret\_permissions) | (Optional) Additional secret permissions assigned to the created keyvault, alongside the default already defined | `list(string)` | `null` | no |
+| <a name="input_additional_storage_permissions"></a> [additional\_storage\_permissions](#input\_additional\_storage\_permissions) | (Optional) Additional storage permissions assigned to the created keyvault, alongside the default already defined | `list(string)` | `null` | no |
 | <a name="input_enable_rbac_authorization"></a> [enable\_rbac\_authorization](#input\_enable\_rbac\_authorization) | Boolean flag to specify whether Azure Key Vault uses Role Based Access Control (RBAC) for authorization of data actions. | `bool` | `false` | no |
 | <a name="input_location"></a> [location](#input\_location) | n/a | `string` | n/a | yes |
 | <a name="input_lock_enable"></a> [lock\_enable](#input\_lock\_enable) | Apply lock to block accedentaly deletions. | `bool` | `false` | no |

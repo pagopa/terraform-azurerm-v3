@@ -20,6 +20,16 @@ resource "azurerm_key_vault" "this" {
   tags = var.tags
 }
 
+locals {
+  default_key_permissions    = ["Get", "List", "Update", "Create", "Import", "Delete", "Recover", "Backup", "Restore"]
+  default_secret_permissions = ["Get", "List", "Set", "Delete", "Recover", "Backup", "Restore"]
+  default_certificate_permissions = ["Get", "List", "Update", "Create", "Import",
+    "Delete", "Recover", "Backup", "Restore", "ManageContacts", "ManageIssuers",
+    "GetIssuers", "ListIssuers", "SetIssuers", "DeleteIssuers", "Purge"
+  ]
+  default_storage_permissions = []
+}
+
 # terraform cloud policy
 resource "azurerm_key_vault_access_policy" "terraform_cloud_policy" {
   count        = var.terraform_cloud_object_id != null ? 1 : 0
@@ -27,20 +37,13 @@ resource "azurerm_key_vault_access_policy" "terraform_cloud_policy" {
   tenant_id    = var.tenant_id
   object_id    = var.terraform_cloud_object_id
 
-  key_permissions = ["Get", "List", "Update", "Create", "Import", "Delete",
-    "Recover", "Backup", "Restore"
-  ]
+  key_permissions = var.additional_key_permissions != null ? concat(local.default_key_permissions, var.additional_key_permissions) : local.default_key_permissions
 
-  secret_permissions = ["Get", "List", "Set", "Delete", "Recover", "Backup",
-    "Restore"
-  ]
+  secret_permissions = var.additional_secret_permissions != null ? concat(local.default_secret_permissions, var.additional_secret_permissions) : local.default_secret_permissions
 
-  certificate_permissions = ["Get", "List", "Update", "Create", "Import",
-    "Delete", "Recover", "Backup", "Restore", "ManageContacts", "ManageIssuers",
-    "GetIssuers", "ListIssuers", "SetIssuers", "DeleteIssuers", "Purge"
-  ]
+  certificate_permissions = var.additional_certificate_permissions != null ? concat(local.default_certificate_permissions, var.additional_certificate_permissions) : local.default_certificate_permissions
 
-  storage_permissions = []
+  storage_permissions = var.additional_storage_permissions != null ? concat(local.default_storage_permissions, var.additional_storage_permissions) : local.default_storage_permissions
 
 }
 

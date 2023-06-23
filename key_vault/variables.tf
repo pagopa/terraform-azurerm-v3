@@ -65,3 +65,28 @@ variable "public_network_access_enabled" {
 variable "tags" {
   type = map(any)
 }
+
+
+variable "additional_key_permissions" {
+  type        = list(string)
+  description = "(Optional) Additional key permissions assigned to the created keyvault, alongside the default already defined"
+  default     = null
+}
+
+variable "additional_secret_permissions" {
+  type        = list(string)
+  description = "(Optional) Additional secret permissions assigned to the created keyvault, alongside the default already defined"
+  default     = null
+}
+
+variable "additional_certificate_permissions" {
+  type        = list(string)
+  description = "(Optional) Additional certificate permissions assigned to the created keyvault, alongside the default already defined"
+  default     = null
+}
+
+variable "additional_storage_permissions" {
+  type        = list(string)
+  description = "(Optional) Additional storage permissions assigned to the created keyvault, alongside the default already defined"
+  default     = null
+}
