@@ -24,11 +24,6 @@ variable "resource_group_name" {
   description = "(Required) The name of the Resource Group in which the Linux Virtual Machine Scale Set should be exist. Changing this forces a new resource to be created."
 }
 
-variable "source_image_name" {
-  type        = string
-  description = "(Optional) The name of an Image which each Virtual Machine in this Scale Set should be based on. It must be stored in the same subscription & resource group of this resource"
-}
-
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine_scale_set#source_image_reference
 variable "image_reference" {
   type = object({
@@ -48,12 +43,12 @@ variable "image_reference" {
 
 variable "image_type" {
   type        = string
-  description = "(Required) Defines the source image to be used, whether 'custom' or 'standard'. `custom` requires `source_image_name` to be defined, `standard` requires `image_reference`"
-  default     = "custom"
+  description = "(Required) Defines the source image to be used, whether 'managed' or 'standard'. `managed` and `shared` requires `image_name` and `image_version` to be defined, `standard` requires `image_reference`"
+  default     = "managed"
 
   validation {
-    condition     = contains(["standard", "custom"], var.image_type)
-    error_message = "Allowed values for `image_type` are 'custom' or 'standard'"
+    condition     = contains(["standard", "managed", "shared"], var.image_type)
+    error_message = "Allowed values for `image_type` are 'managed', 'standard' or 'shared'"
   }
 }
 
@@ -100,6 +95,53 @@ variable "admin_password" {
   description = "(Optional) The Password which should be used for the local-administrator on this Virtual Machine. Changing this forces a new resource to be created. will be stored in the raw state as plain-text"
   default     = null
 }
+
+
+variable "extension_name" {
+  type        = string
+  default     = null
+  description = "(Optional) name of the extension to add to the VM. Either one of the provided (must match the folder name) or a custom extension (arbitrary name)"
+}
+
+variable "custom_extension_path" {
+  type        = string
+  default     = null
+  description = "(Optional) if 'extension_name' is not in the provided extensions, defines the path where to find the extension settings"
+}
+
+
+variable "shared_subscription_id" {
+  type        = string
+  description = "(Optional) The subscription id where the shared image is stored"
+  default     = null
+}
+
+
+variable "shared_resource_group_name" {
+  type        = string
+  default     = null
+  description = "(Optional) The resource group name where the shared image is stored"
+}
+
+variable "shared_gallery_name" {
+  type        = string
+  default     = null
+  description = "(Optional) The shared image gallery (AZ compute gallery) name the shared image is stored"
+}
+
+variable "image_name" {
+  type        = string
+  default     = null
+  description = "(Optional) The image name to be used, valid for 'shared' or 'managed' image_type"
+}
+
+variable "image_version" {
+  type        = string
+  default     = null
+  description = "(Optional) The image version to be used, valid for 'shared' or 'managed' image_type"
+}
+
+
 
 variable "tags" {
   type = map(any)

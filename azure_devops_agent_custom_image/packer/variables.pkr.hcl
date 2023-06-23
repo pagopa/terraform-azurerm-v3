@@ -15,6 +15,17 @@ variable "target_resource_group_name" {
   description = "(string) - Resource group under which the final artifact will be stored."
 }
 
+variable "shared_resource_group_name" {
+  type        = string
+  description = "(string) - Resource group under which the final artifact will be stored."
+}
+
+variable "replication_region" {
+  type = string
+  description = "(String) - additional region where the shared image should be replicated"
+  default = null
+}
+
 
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine_scale_set#source_image_reference
 variable "base_image_publisher" {
@@ -43,6 +54,22 @@ variable "vm_sku" {
 variable "target_image_name" {
   type        = string
   description = "(Required) name assigned to the generated image. Note that myust be unique and not already exist"
+}
+
+variable "shared_gallery_name"{
+  type = string
+  description = "Destination Gallery Name"
+  default = null
+}
+
+variable "image_name" {
+  type = string
+  description = "Destination Image Name"
+}
+
+variable "image_version"{
+  type = string
+  description = "Destination Image Version"
 }
 
 
