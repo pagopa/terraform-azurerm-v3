@@ -91,6 +91,12 @@ variable "blob_change_feed_enabled" {
   default     = false
 }
 
+variable "blob_last_access_time_enabled" {
+  description = "(Optional) Is the blob service properties for trace last access tim. Default to false."
+  type        = bool
+  default     = false
+}
+
 variable "blob_change_feed_retention_in_days" {
   description = "(Optional) The duration of change feed events retention in days. The possible values are between 1 and 146000 days (400 years). Setting this to null (or omit this in the configuration file) indicates an infinite retention of the change feed."
   type        = number
