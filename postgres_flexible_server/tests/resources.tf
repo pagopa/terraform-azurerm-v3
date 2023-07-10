@@ -148,7 +148,7 @@ resource "azurerm_key_vault_secret" "pgres_flex_admin_pwd" {
 }
 
 module "key_vault_test" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//key_vault?ref=v6.9.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//key_vault?ref=v6.20.1"
 
   name                       = "${local.project}-kv"
   location                   = azurerm_resource_group.postgres_dbs.location
