@@ -67,21 +67,31 @@ variable "app_service_plan_id" {
 
 variable "app_service_plan_info" {
   type = object({
-    kind                         = string # The kind of the App Service Plan to create. Possible values are Windows (also available as App), Linux, elastic (for Premium Consumption) and FunctionApp (for a Consumption Plan).
-    sku_size                     = string # Specifies the plan's instance size.
-    maximum_elastic_worker_count = number # The maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.
-    worker_count                 = number # The number of Workers (instances) to be allocated.
-    zone_balancing_enabled       = bool   # Should the Service Plan balance across Availability Zones in the region. Changing this forces a new resource to be created.
+    kind                         = string           # The kind of the App Service Plan to create. Possible values are Windows (also available as App), Linux, elastic (for Premium Consumption) and FunctionApp (for a Consumption Plan).
+    sku_size                     = string           # Specifies the plan's instance size.
+    maximum_elastic_worker_count = number           # The maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.
+    worker_count                 = number           # The number of Workers (instances) to be allocated.
+    zone_balancing_enabled       = bool             # Should the Service Plan balance across Availability Zones in the region. Changing this forces a new resource to be created.
+    env_short                    = optional(string) # A short identifier for the environment. This is used to differentiate settings for different environments. For example, 'p' for production, 'u' for UAT, and 'd' for development.
   })
 
   description = "Allows to configurate the internal service plan"
 
   default = {
     kind                         = "Linux"
-    sku_size                     = "P1v3"
+    sku_size                     = "S1"
     maximum_elastic_worker_count = 0
     worker_count                 = 0
     zone_balancing_enabled       = false
+    env_short                    = "d"
+  }
+  validation {
+    condition = (
+      (var.app_service_plan_info.env_short == "p" && contains(["P1v3", "P2v3", "P3v3"], var.app_service_plan_info.sku_size)) ||
+      (var.app_service_plan_info.env_short == "u" && contains(["P1v3", "P2v3", "P3v3", "S1"], var.app_service_plan_info.sku_size)) ||
+      (var.app_service_plan_info.env_short == "d" && var.app_service_plan_info.sku_size == "S1")
+    )
+    error_message = "Invalid SKU size for the given environment."
   }
 }
 
