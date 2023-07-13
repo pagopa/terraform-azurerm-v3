@@ -4,6 +4,34 @@ Module that allows the creation of an Azure function app.
 It creates a resource group named `azrmtest<6 hexnumbers>-rg` and every resource into it is named `azrmtest<6 hexnumbers>-*`.
 In terraform output you can get the resource group name.
 
+# SKU limit
+it's been introduced a new variable, `env_short`
+```
+variable "app_service_plan_info" {
+  type = object({
+    kind                         = string           # The kind of the App Service Plan to create. Possible values are Windows (also available as App), Linux, elastic (for Premium Consumption) and FunctionApp (for a Consumption Plan).
+    sku_size                     = string           # Specifies the plan's instance size.
+    maximum_elastic_worker_count = number           # The maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.
+    worker_count                 = number           # The number of Workers (instances) to be allocated.
+    zone_balancing_enabled       = bool             # Should the Service Plan balance across Availability Zones in the region. Changing this forces a new resource to be created.
+    env_short                    = optional(string) # A short identifier for the environment. This is used to differentiate settings for different environments. For example, 'p' for production, 'u' for UAT, and 'd' for development.
+  })
+```
+
+You must define the environment you are using in order to use it properly.
+Accepted values are the following:
+```
+PROD:
+Any Premium P*V3
+
+UAT:
+Any Premium PXV3
+Standard S1
+
+DEV:
+StandardS1
+```
+
 ## Architecture
 
 ![architecture](./docs/module-arch.drawio.png)
