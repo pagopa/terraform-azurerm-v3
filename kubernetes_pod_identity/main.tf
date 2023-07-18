@@ -1,8 +1,23 @@
+data "azurerm_kubernetes_cluster" "this" {
+  name                = var.cluster_name
+  resource_group_name = var.resource_group_name
+}
+
+data "azurerm_resource_group" "aks_rg" {
+  name = var.resource_group_name
+}
+
+# ------------------------------------------------------
 resource "azurerm_user_assigned_identity" "this" {
   resource_group_name = var.resource_group_name
   location            = var.location
-
   name = var.identity_name
+}
+
+resource "azurerm_role_assignment" "managed_identity_operator" {
+  scope                = data.azurerm_resource_group.aks_rg.id
+  role_definition_name = "Managed Identity Operator"
+  principal_id         = data.azurerm_client_config.example.object_id
 }
 
 resource "azurerm_key_vault_access_policy" "this" {
