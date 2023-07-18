@@ -27,6 +27,19 @@ resource "azurerm_role_assignment" "user_access_administrator" {
   principal_id         = azurerm_user_assigned_identity.this.principal_id
 }
 
+resource "azurerm_role_assignment" "managed_identity_operator_aks" {
+  scope                = data.azurerm_kubernetes_cluster.this.id
+  role_definition_name = "Managed Identity Operator"
+  principal_id         = azurerm_user_assigned_identity.this.principal_id
+}
+
+resource "azurerm_role_assignment" "user_access_administrator_aks" {
+  scope                = data.azurerm_kubernetes_cluster.this.id
+  role_definition_name = "User Access Administrator"
+  principal_id         = azurerm_user_assigned_identity.this.principal_id
+}
+
+
 resource "azurerm_key_vault_access_policy" "this" {
   count = var.key_vault_id == null ? 0 : 1
 
