@@ -17,7 +17,7 @@ resource "azurerm_user_assigned_identity" "this" {
 resource "azurerm_role_assignment" "managed_identity_operator" {
   scope                = data.azurerm_resource_group.aks_rg.id
   role_definition_name = "Managed Identity Operator"
-  principal_id         = data.azurerm_client_config.example.object_id
+  principal_id         = azurerm_user_assigned_identity.this.id
 }
 
 resource "azurerm_key_vault_access_policy" "this" {
