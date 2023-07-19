@@ -86,7 +86,6 @@ resource "null_resource" "create_pod_identity" {
   }
 
   depends_on = [
-    azurerm_role_assignment.managed_identity_operator,
-    azurerm_role_assignment.user_access_administrator
+    azurerm_user_assigned_identity.this
  ]
 }
