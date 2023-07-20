@@ -52,7 +52,7 @@ if you use a version of the module <= 6.6.0 please change this params names:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.64.0 |
 | <a name="provider_helm"></a> [helm](#provider\_helm) | 2.7.1 |
 
 ## Modules
