@@ -63,7 +63,7 @@ module "dns_forwarder" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.64.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
 | <a name="provider_local"></a> [local](#provider\_local) | 2.3.0 |
 
 ## Modules
