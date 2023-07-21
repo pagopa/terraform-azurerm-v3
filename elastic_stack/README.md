@@ -14,10 +14,10 @@ TODO
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.1.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 2.80.0, <= 2.99.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.64.0 |
 | <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | 1.14.0 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | <= 2.16.1 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | <= 2.17.0 |
 
 ## Providers
 
