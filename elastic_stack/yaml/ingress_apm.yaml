@@ -1,10 +1,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: kibana
-  namespace: elastic-system
+  name: apm
+  namespace: ${namespace}
   annotations:
-    kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.class: nginxelk
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/ssl-redirect: 'false'
     nginx.ingress.kubernetes.io/use-regex: 'true'
@@ -17,10 +17,10 @@ spec:
     - host: ${kibana_internal_hostname}
       http:
         paths:
-          - path: /kibana(/|$)(.*)
+          - path: /apm(/|$)(.*)
             pathType: Prefix
             backend:
               service:
-                name: quickstart-kb-http
+                name: quickstart-apm-http
                 port:
-                  number: 5601
+                  number: 8200

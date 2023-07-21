@@ -2,16 +2,23 @@ apiVersion: apm.k8s.elastic.co/v1
 kind: ApmServer
 metadata:
   name: quickstart
-  namespace: elastic-system
+  namespace: ${namespace}
 spec:
-  version: 8.1.2
+  version: 8.6.2
   count: 1
   elasticsearchRef:
     name: quickstart
   podTemplate:
     spec:
-      nodeSelector:
-        elastic: eck
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: elastic
+                operator: In
+                values:
+                  - eck
   http:
     tls:
       selfSignedCertificate:
