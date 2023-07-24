@@ -12,6 +12,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-ssl-verify: "false"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
+  ingressClassName: nginxelk
   tls:
     - hosts:
         - ${kibana_internal_hostname}

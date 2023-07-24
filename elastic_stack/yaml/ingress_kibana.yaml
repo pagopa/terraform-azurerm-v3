@@ -9,6 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: 'false'
     nginx.ingress.kubernetes.io/use-regex: 'true'
 spec:
+  ingressClassName: nginxelk
   tls:
     - hosts:
         - ${kibana_internal_hostname}
