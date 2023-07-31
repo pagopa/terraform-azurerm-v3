@@ -9,6 +9,8 @@ ingress:
 
 service:
   create: false
+  ports:
+    - 80
 
 readinessProbe:
   httpGet:
