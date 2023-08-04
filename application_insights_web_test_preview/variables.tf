@@ -28,6 +28,12 @@ variable "application_insight_id" {
   description = "Application insight id."
 }
 
+variable "description" {
+  type        = string
+  description = "Web Availability Alert description"
+  default     = "Web availability check alert triggered when it fails."
+}
+
 variable "frequency" {
   type        = number
   description = "Interval in seconds between test runs for this WebTest."
