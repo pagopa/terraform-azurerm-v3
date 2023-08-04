@@ -37,7 +37,7 @@ resource "azurerm_monitor_metric_alert" "this" {
       var.application_insight_name
     ),
   ]
-  description   = var.description
+  description   = var.alert_description
   auto_mitigate = var.auto_mitigate
 
   application_insights_web_test_location_availability_criteria {

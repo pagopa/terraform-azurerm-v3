@@ -28,7 +28,7 @@ variable "application_insight_id" {
   description = "Application insight id."
 }
 
-variable "description" {
+variable "alert_description" {
   type        = string
   description = "Web Availability Alert description"
   default     = "Web availability check alert triggered when it fails."
