@@ -104,7 +104,25 @@ variable "subnet_id" {
   default     = null
 }
 
-variable "private_dns_zone_ids" {
+variable "private_dns_zone_sql_ids" {
+  type        = list(string)
+  description = "Used only for private endpoints"
+  default     = []
+}
+
+variable "private_dns_zone_table_ids" {
+  type        = list(string)
+  description = "Used only for private endpoints"
+  default     = []
+}
+
+variable "private_dns_zone_mongo_ids" {
+  type        = list(string)
+  description = "Used only for private endpoints"
+  default     = []
+}
+
+variable "private_dns_zone_cassandra_ids" {
   type        = list(string)
   description = "Used only for private endpoints"
   default     = []
@@ -116,7 +134,25 @@ variable "private_endpoint_enabled" {
   default     = true
 }
 
-variable "private_endpoint_name" {
+variable "private_endpoint_sql_name" {
+  type        = string
+  description = "Private endpoint name. If null it will assume the cosmosdb account name."
+  default     = null
+}
+
+variable "private_endpoint_mongo_name" {
+  type        = string
+  description = "Private endpoint name. If null it will assume the cosmosdb account name."
+  default     = null
+}
+
+variable "private_endpoint_cassandra_name" {
+  type        = string
+  description = "Private endpoint name. If null it will assume the cosmosdb account name."
+  default     = null
+}
+
+variable "private_endpoint_table_name" {
   type        = string
   description = "Private endpoint name. If null it will assume the cosmosdb account name."
   default     = null
@@ -166,12 +202,6 @@ variable "backup_periodic_enabled" {
   })
   description = "Enable Periodic Backup"
   default     = null
-}
-
-variable "lock_enable" {
-  type        = bool
-  default     = false
-  description = "Apply lock to block accedentaly deletions."
 }
 
 variable "tags" {
