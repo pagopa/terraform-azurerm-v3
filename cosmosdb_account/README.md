@@ -155,11 +155,11 @@ No modules.
 | Name | Type |
 |------|------|
 | [azurerm_cosmosdb_account.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/cosmosdb_account) | resource |
-| [azurerm_management_lock.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_lock) | resource |
 | [azurerm_monitor_metric_alert.cosmos_db_provisioned_throughput_exceeded](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_private_endpoint.cassandra](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_private_endpoint.mongo](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_private_endpoint.sql](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
+| [azurerm_private_endpoint.table](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 
 ## Inputs
 
@@ -182,15 +182,20 @@ No modules.
 | <a name="input_key_vault_key_id"></a> [key\_vault\_key\_id](#input\_key\_vault\_key\_id) | (Optional) A versionless Key Vault Key ID for CMK encryption. Changing this forces a new resource to be created. When referencing an azurerm\_key\_vault\_key resource, use versionless\_id instead of id | `string` | `null` | no |
 | <a name="input_kind"></a> [kind](#input\_kind) | Specifies the Kind of CosmosDB to create - possible values are GlobalDocumentDB and MongoDB. | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created. | `string` | n/a | yes |
-| <a name="input_lock_enable"></a> [lock\_enable](#input\_lock\_enable) | Apply lock to block accedentaly deletions. | `bool` | `false` | no |
 | <a name="input_main_geo_location_location"></a> [main\_geo\_location\_location](#input\_main\_geo\_location\_location) | (Required) The name of the Azure region to host replicated data. | `string` | n/a | yes |
 | <a name="input_main_geo_location_zone_redundant"></a> [main\_geo\_location\_zone\_redundant](#input\_main\_geo\_location\_zone\_redundant) | Should zone redundancy be enabled for main region? Set true for prod environments | `bool` | n/a | yes |
 | <a name="input_mongo_server_version"></a> [mongo\_server\_version](#input\_mongo\_server\_version) | The Server Version of a MongoDB account. Possible values are 4.0, 3.6, and 3.2. | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | (Required) Specifies the name of the CosmosDB Account. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_offer_type"></a> [offer\_type](#input\_offer\_type) | The CosmosDB account offer type. At the moment can only be set to Standard | `string` | `"Standard"` | no |
-| <a name="input_private_dns_zone_ids"></a> [private\_dns\_zone\_ids](#input\_private\_dns\_zone\_ids) | Used only for private endpoints | `list(string)` | `[]` | no |
+| <a name="input_private_dns_zone_cassandra_ids"></a> [private\_dns\_zone\_cassandra\_ids](#input\_private\_dns\_zone\_cassandra\_ids) | Used only for private endpoints | `list(string)` | `[]` | no |
+| <a name="input_private_dns_zone_mongo_ids"></a> [private\_dns\_zone\_mongo\_ids](#input\_private\_dns\_zone\_mongo\_ids) | Used only for private endpoints | `list(string)` | `[]` | no |
+| <a name="input_private_dns_zone_sql_ids"></a> [private\_dns\_zone\_sql\_ids](#input\_private\_dns\_zone\_sql\_ids) | Used only for private endpoints | `list(string)` | `[]` | no |
+| <a name="input_private_dns_zone_table_ids"></a> [private\_dns\_zone\_table\_ids](#input\_private\_dns\_zone\_table\_ids) | Used only for private endpoints | `list(string)` | `[]` | no |
+| <a name="input_private_endpoint_cassandra_name"></a> [private\_endpoint\_cassandra\_name](#input\_private\_endpoint\_cassandra\_name) | Private endpoint name. If null it will assume the cosmosdb account name. | `string` | `null` | no |
 | <a name="input_private_endpoint_enabled"></a> [private\_endpoint\_enabled](#input\_private\_endpoint\_enabled) | Enable private endpoint | `bool` | `true` | no |
-| <a name="input_private_endpoint_name"></a> [private\_endpoint\_name](#input\_private\_endpoint\_name) | Private endpoint name. If null it will assume the cosmosdb account name. | `string` | `null` | no |
+| <a name="input_private_endpoint_mongo_name"></a> [private\_endpoint\_mongo\_name](#input\_private\_endpoint\_mongo\_name) | Private endpoint name. If null it will assume the cosmosdb account name. | `string` | `null` | no |
+| <a name="input_private_endpoint_sql_name"></a> [private\_endpoint\_sql\_name](#input\_private\_endpoint\_sql\_name) | Private endpoint name. If null it will assume the cosmosdb account name. | `string` | `null` | no |
+| <a name="input_private_endpoint_table_name"></a> [private\_endpoint\_table\_name](#input\_private\_endpoint\_table\_name) | Private endpoint name. If null it will assume the cosmosdb account name. | `string` | `null` | no |
 | <a name="input_provisioned_throughput_exceeded_threshold"></a> [provisioned\_throughput\_exceeded\_threshold](#input\_provisioned\_throughput\_exceeded\_threshold) | The Provisioned Throughput Exceeded threshold. If metric average is over this value, the alert will be triggered. Default is 0, we want to act as soon as possible. | `number` | `0` | no |
 | <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled) | Whether or not public network access is allowed for this CosmosDB account | `bool` | `false` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The name of the resource group in which the CosmosDB Account is created. Changing this forces a new resource to be created. | `string` | n/a | yes |
@@ -204,7 +209,6 @@ No modules.
 | <a name="output_connection_strings"></a> [connection\_strings](#output\_connection\_strings) | n/a |
 | <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | The endpoint used to connect to the CosmosDB account. |
 | <a name="output_id"></a> [id](#output\_id) | The id of the CosmosDB account. |
-| <a name="output_lock_id"></a> [lock\_id](#output\_lock\_id) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | The name of the CosmosDB created. |
 | <a name="output_primary_key"></a> [primary\_key](#output\_primary\_key) | n/a |
 | <a name="output_primary_master_key"></a> [primary\_master\_key](#output\_primary\_master\_key) | @deprecated |

@@ -86,88 +86,100 @@ resource "azurerm_cosmosdb_account" "this" {
 # Private endpoints
 #
 resource "azurerm_private_endpoint" "sql" {
-  count = var.private_endpoint_enabled && !contains(var.capabilities, "EnableMongo") && !contains(var.capabilities, "EnableCassandra") ? 1 : 0
+  count = var.private_endpoint_enabled && length(var.private_dns_zone_sql_ids) > 0 ? 1 : 0
 
-  name                = coalesce(var.private_endpoint_name, var.name)
+  name                = coalesce(var.private_endpoint_sql_name, format("%s-private-endpoint-sql", var.name))
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.subnet_id
 
   private_service_connection {
-    name                           = coalesce(var.private_endpoint_name, format("%s-private-endpoint", var.name))
+    name                           = coalesce(var.private_endpoint_sql_name, format("%s-private-endpoint-sql", var.name))
     private_connection_resource_id = azurerm_cosmosdb_account.this.id
     is_manual_connection           = false
     subresource_names              = ["Sql"]
   }
 
   dynamic "private_dns_zone_group" {
-    for_each = var.private_dns_zone_ids != null ? ["dummy"] : []
+    for_each = var.private_dns_zone_sql_ids != null ? ["dummy"] : []
     content {
       name                 = "private-dns-zone-group"
-      private_dns_zone_ids = var.private_dns_zone_ids
+      private_dns_zone_ids = var.private_dns_zone_sql_ids
     }
   }
 }
 
 resource "azurerm_private_endpoint" "mongo" {
-  count = var.private_endpoint_enabled && contains(var.capabilities, "EnableMongo") ? 1 : 0
+  count = var.private_endpoint_enabled && length(var.private_dns_zone_mongo_ids) > 0 && contains(var.capabilities, "EnableMongo") ? 1 : 0
 
-  name                = coalesce(var.private_endpoint_name, format("%s-private-endpoint", var.name))
+  name                = coalesce(var.private_endpoint_mongo_name, format("%s-private-endpoint-mongo", var.name))
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.subnet_id
 
   private_service_connection {
-    name                           = coalesce(var.private_endpoint_name, format("%s-private-endpoint", var.name))
+    name                           = coalesce(var.private_endpoint_mongo_name, format("%s-private-endpoint-mongo", var.name))
     private_connection_resource_id = azurerm_cosmosdb_account.this.id
     is_manual_connection           = false
     subresource_names              = ["MongoDB"]
   }
 
   dynamic "private_dns_zone_group" {
-    for_each = var.private_dns_zone_ids != null ? ["dummy"] : []
+    for_each = var.private_dns_zone_mongo_ids != null ? ["dummy"] : []
     content {
       name                 = "private-dns-zone-group"
-      private_dns_zone_ids = var.private_dns_zone_ids
+      private_dns_zone_ids = var.private_dns_zone_mongo_ids
     }
   }
 }
 
 resource "azurerm_private_endpoint" "cassandra" {
-  count = var.private_endpoint_enabled && contains(var.capabilities, "EnableCassandra") ? 1 : 0
+  count = var.private_endpoint_enabled && length(var.private_dns_zone_cassandra_ids) > 0 && contains(var.capabilities, "EnableCassandra") ? 1 : 0
 
-  name                = coalesce(var.private_endpoint_name, var.name)
+  name                = coalesce(var.private_endpoint_cassandra_name, format("%s-private-endpoint-cassandra", var.name))
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.subnet_id
 
   private_service_connection {
-    name                           = coalesce(var.private_endpoint_name, format("%s-private-endpoint", var.name))
+    name                           = coalesce(var.private_endpoint_cassandra_name, format("%s-private-endpoint-cassandra", var.name))
     private_connection_resource_id = azurerm_cosmosdb_account.this.id
     is_manual_connection           = false
     subresource_names              = ["Cassandra"]
   }
 
   dynamic "private_dns_zone_group" {
-    for_each = var.private_dns_zone_ids != null ? ["dummy"] : []
+    for_each = var.private_dns_zone_cassandra_ids != null ? ["dummy"] : []
     content {
       name                 = "private-dns-zone-group"
-      private_dns_zone_ids = var.private_dns_zone_ids
+      private_dns_zone_ids = var.private_dns_zone_cassandra_ids
     }
   }
 }
 
-#
-# Locks
-#
-resource "azurerm_management_lock" "this" {
-  count      = var.lock_enable ? 1 : 0
-  name       = format("%s-lock", azurerm_cosmosdb_account.this.name)
-  scope      = azurerm_cosmosdb_account.this.id
-  lock_level = "CanNotDelete"
-  notes      = "This items can't be deleted in this subscription!"
-}
+resource "azurerm_private_endpoint" "table" {
+  count = var.private_endpoint_enabled && length(var.private_dns_zone_table_ids) > 0 && contains(var.capabilities, "EnableTable") ? 1 : 0
 
+  name                = coalesce(var.private_endpoint_table_name, format("%s-private-endpoint-table", var.name))
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = var.subnet_id
+
+  private_service_connection {
+    name                           = coalesce(var.private_endpoint_table_name, format("%s-private-endpoint-table", var.name))
+    private_connection_resource_id = azurerm_cosmosdb_account.this.id
+    is_manual_connection           = false
+    subresource_names              = ["Table"]
+  }
+
+  dynamic "private_dns_zone_group" {
+    for_each = var.private_dns_zone_table_ids != null ? ["dummy"] : []
+    content {
+      name                 = "private-dns-zone-group"
+      private_dns_zone_ids = var.private_dns_zone_table_ids
+    }
+  }
+}
 
 # -----------------------------------------------
 # Alerts
