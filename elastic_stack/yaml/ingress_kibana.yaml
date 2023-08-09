@@ -4,7 +4,6 @@ metadata:
   name: kibana
   namespace: ${namespace}
   annotations:
-    kubernetes.io/ingress.class: nginxelk
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/ssl-redirect: 'false'
     nginx.ingress.kubernetes.io/use-regex: 'true'
