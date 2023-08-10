@@ -2,16 +2,32 @@ apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
 metadata:
   name: quickstart
-  namespace: elastic-system
+  namespace: ${namespace}
 spec:
-  version: 8.1.2
+  version: 8.6.2
   count: 1
   elasticsearchRef:
     name: quickstart
   podTemplate:
     spec:
-      nodeSelector:
-        elastic: eck
+      containers:
+        - name: kibana
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 1
+            limits:
+              memory: 2Gi
+              cpu: 2
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: elastic
+                operator: In
+                values:
+                  - eck
   http:
     tls:
       selfSignedCertificate:
@@ -22,7 +38,8 @@ spec:
     server.publicBaseUrl: ${external_domain}
     server.name: "kibana"
     csp.strict: false
-    xpack.fleet.agents.elasticsearch.hosts: ["https://elasticsearch-es-http.elastic-system.svc:9200"]
+    xpack.fleet.agents.elasticsearch.hosts: ["https://elasticsearch-quickstart-es-http.default.svc:9200"]
+    #xpack.fleet.agents.fleet_server.hosts: ["https://fleet-server-quickstart-agent-http.default.svc:8220"]
     xpack.fleet.packages:
     - name: system
       version: latest
@@ -58,7 +75,7 @@ spec:
           enabled: true
           vars:
           - name: host
-            value: 0.0.0.0:8200    
+            value: 0.0.0.0:8200
     #xpack:
     #  security:
     #    authc:
