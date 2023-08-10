@@ -25,28 +25,18 @@ resource "azurerm_template_deployment" "this" {
 }
 
 resource "azurerm_monitor_metric_alert" "this" {
-  name                = format("%s-%s", var.name, var.application_insight_name)
+  name                = "${var.name}-${var.application_insight_name}"
   resource_group_name = var.resource_group
   severity            = var.severity
   scopes = [
     var.application_insight_id,
-    format("/subscriptions/%s/resourcegroups/%s/providers/microsoft.insights/webTests/%s-%s",
-      var.subscription_id,
-      var.resource_group,
-      var.name,
-      var.application_insight_name
-    ),
+    "/subscriptions/${var.subscription_id}/resourcegroups/${var.resource_group}/providers/microsoft.insights/webTests/${var.name}-${var.application_insight_name}",
   ]
-  description   = "Web availability check alert triggered when it fails."
+  description   = var.alert_description
   auto_mitigate = var.auto_mitigate
 
   application_insights_web_test_location_availability_criteria {
-    web_test_id = format("/subscriptions/%s/resourcegroups/%s/providers/microsoft.insights/webTests/%s-%s",
-      var.subscription_id,
-      var.resource_group,
-      var.name,
-      var.application_insight_name
-    )
+    web_test_id           = "/subscriptions/${var.subscription_id}/resourcegroups/${var.resource_group}/providers/microsoft.insights/webTests/${var.name}-${var.application_insight_name}"
     component_id          = var.application_insight_id
     failed_location_count = var.failed_location_count
   }
