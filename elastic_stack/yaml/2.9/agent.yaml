@@ -12,11 +12,262 @@ data:
       default:
         type: elasticsearch
         hosts:
-          - '$${ES_HOST}'
-        username: '$${ES_USERNAME}'
-        password: '$${ES_PASSWORD}'
+          - >-
+            ${ES_HOST}
+        username: ${ES_USERNAME}
+        password: ${ES_PASSWORD}
         ssl.verification_mode: none
+    agent:
+      monitoring:
+        enabled: true
+        use_output: default
+        logs: true
+        metrics: true
+    providers.kubernetes:
+      node: ${NODE_NAME}
+      scope: node
+      #Uncomment to enable hints' support
+      #hints.enabled: true
     inputs:
+      - id: kubernetes-cluster-metrics-${system_id}
+        condition: ${kubernetes_leaderelection.leader} == true
+        type: kubernetes/metrics
+        use_output: default
+        meta:
+          package:
+            name: kubernetes
+            version: 1.29.2
+        data_stream:
+          namespace: default
+        streams:
+          - data_stream:
+              dataset: kubernetes.apiserver
+              type: metrics
+            metricsets:
+              - apiserver
+            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            hosts:
+              - 'https://${env.KUBERNETES_SERVICE_HOST}:${env.KUBERNETES_SERVICE_PORT}'
+            period: 30s
+            ssl.certificate_authorities:
+              - /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          - data_stream:
+              dataset: kubernetes.event
+              type: metrics
+            metricsets:
+              - event
+            period: 10s
+            add_metadata: true
+          - data_stream:
+              dataset: kubernetes.state_container
+              type: metrics
+            metricsets:
+              - state_container
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+          - data_stream:
+              dataset: kubernetes.state_cronjob
+              type: metrics
+            metricsets:
+              - state_cronjob
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+          - data_stream:
+              dataset: kubernetes.state_daemonset
+              type: metrics
+            metricsets:
+              - state_daemonset
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+          - data_stream:
+              dataset: kubernetes.state_deployment
+              type: metrics
+            metricsets:
+              - state_deployment
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+          - data_stream:
+              dataset: kubernetes.state_job
+              type: metrics
+            metricsets:
+              - state_job
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+          - data_stream:
+              dataset: kubernetes.state_node
+              type: metrics
+            metricsets:
+              - state_node
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+          - data_stream:
+              dataset: kubernetes.state_persistentvolume
+              type: metrics
+            metricsets:
+              - state_persistentvolume
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+          - data_stream:
+              dataset: kubernetes.state_persistentvolumeclaim
+              type: metrics
+            metricsets:
+              - state_persistentvolumeclaim
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+          - data_stream:
+              dataset: kubernetes.state_pod
+              type: metrics
+            metricsets:
+              - state_pod
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+          - data_stream:
+              dataset: kubernetes.state_replicaset
+              type: metrics
+            metricsets:
+              - state_replicaset
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+          - data_stream:
+              dataset: kubernetes.state_resourcequota
+              type: metrics
+            metricsets:
+              - state_resourcequota
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+          - data_stream:
+              dataset: kubernetes.state_service
+              type: metrics
+            metricsets:
+              - state_service
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+          - data_stream:
+              dataset: kubernetes.state_statefulset
+              type: metrics
+            metricsets:
+              - state_statefulset
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+          - data_stream:
+              dataset: kubernetes.state_storageclass
+              type: metrics
+            metricsets:
+              - state_storageclass
+            add_metadata: true
+            hosts:
+              - 'kube-state-metrics:8080'
+            period: 10s
+            # Openshift:
+            # if to access 'kube-state-metrics' are used third party tools, like kube-rbac-proxy or similar, that perform RBAC authorization
+            # and/or tls termination, then configuration below should be considered:
+            # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            # ssl.certificate_authorities:
+            #   - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
       - id: logfile-system-${system_id}
         revision: ${system_revision}
         name: ${system_name}
@@ -671,7 +922,7 @@ data:
         meta:
           package:
             name: apm
-            version: 8.6.2
+            version: 8.9.0
     revision: 4
     agent:
       download:
@@ -949,16 +1200,27 @@ spec:
       serviceAccountName: elastic-agent
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      # Uncomment if using hints feature
+      #initContainers:
+      #  - name: k8s-templates-downloader
+      #    image: busybox:1.28
+      #    command: ['sh']
+      #    args:
+      #      - -c
+      #      - >-
+      #        mkdir -p /etc/elastic-agent/inputs.d &&
+      #        wget -O - https://github.com/elastic/elastic-agent/archive/8.9.tar.gz | tar xz -C /etc/elastic-agent/inputs.d --strip=5 "elastic-agent-8.9/deploy/kubernetes/elastic-agent-standalone/templates.d"
+      #    volumeMounts:
+      #      - name: external-inputs
+      #        mountPath: /etc/elastic-agent/inputs.d
       containers:
         - name: elastic-agent
-          image: docker.elastic.co/beats/elastic-agent:8.6.2
+          image: docker.elastic.co/beats/elastic-agent:8.9.0
           args: [
             "-c", "/etc/agent.yml",
             "-e",
           ]
           env:
-            - name: ES_HOST
-              value: "https://quickstart-es-http.elastic-system.svc.cluster.local:9200"
             # The basic authentication username used to connect to Elasticsearch
             # This user needs the privileges required to publish events to Elasticsearch.
             - name: ES_USERNAME
@@ -969,6 +1231,8 @@ spec:
                 secretKeyRef:
                   key: elastic
                   name: quickstart-es-elastic-user
+            - name: ES_HOST
+              value: "https://quickstart-es-http.elastic-system.svc.cluster.local:9200"
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
@@ -977,8 +1241,26 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: STATE_PATH
+              value: "/etc/elastic-agent"
           securityContext:
             runAsUser: 0
+            # The following capabilities are needed for 'Defend for containers' integration (cloud-defend)
+            # If you are using this integration, please uncomment these lines before applying.
+            #capabilities:
+            #  add:
+            #    - BPF # (since Linux 5.8) allows loading of BPF programs, create most map types, load BTF, iterate programs and maps.
+            #    - PERFMON # (since Linux 5.8) allows attaching of BPF programs used for performance metrics and observability operations.
+            #    - SYS_RESOURCE # Allow use of special resources or raising of resource limits. Used by 'Defend for Containers' to modify 'rlimit_memlock'
+            ########################################################################################
+            # The following capabilities are needed for Universal Profiling.
+            # More fine graded capabilities are only available for newer Linux kernels.
+            # If you are using the Universal Profiling integration, please uncomment these lines before applying.
+            #procMount: "Unmasked"
+            #privileged: true
+            #capabilities:
+            #  add:
+            #    - SYS_ADMIN
           resources:
             limits:
               cpu: 1500m
@@ -991,6 +1273,9 @@ spec:
               mountPath: /etc/agent.yml
               readOnly: true
               subPath: agent.yml
+            # Uncomment if using hints feature
+            #- name: external-inputs
+            #  mountPath: /etc/elastic-agent/inputs.d
             - name: proc
               mountPath: /hostfs/proc
               readOnly: true
@@ -1009,11 +1294,21 @@ spec:
             - name: var-lib
               mountPath: /hostfs/var/lib
               readOnly: true
+            - name: sys-kernel-debug
+              mountPath: /sys/kernel/debug
+            - name: elastic-agent-state
+              mountPath: /usr/share/elastic-agent/state
+            # If you are using the Universal Profiling integration, please uncomment these lines before applying.
+            #- name: universal-profiling-cache
+            #  mountPath: /var/cache/Elastic
       volumes:
         - name: datastreams
           configMap:
             defaultMode: 0640
             name: agent-node-datastreams
+        # Uncomment if using hints feature
+        #- name: external-inputs
+        #  emptyDir: {}
         - name: proc
           hostPath:
             path: /proc
@@ -1035,6 +1330,24 @@ spec:
         - name: var-lib
           hostPath:
             path: /var/lib
+        # Needed for 'Defend for containers' integration (cloud-defend) and Universal Profiling
+        # If you are not using one of these integrations, then these volumes and the corresponding
+        # mounts can be removed.
+        - name: sys-kernel-debug
+          hostPath:
+            path: /sys/kernel/debug
+        # Mount /var/lib/elastic-agent-managed/kube-system/state to store elastic-agent state
+        # Update 'kube-system' with the namespace of your agent installation
+        - name: elastic-agent-state
+          hostPath:
+            path: /var/lib/elastic-agent-standalone/kube-system/state
+            type: DirectoryOrCreate
+        # Mount required for Universal Profiling.
+        # If you are using the Universal Profiling integration, please uncomment these lines before applying.
+        #- name: universal-profiling-cache
+        #  hostPath:
+        #    path: /var/cache/Elastic
+        #    type: DirectoryOrCreate
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -1142,6 +1455,10 @@ rules:
     resources:
       - podsecuritypolicies
     verbs: ["get", "list", "watch"]
+  - apiGroups: [ "storage.k8s.io" ]
+    resources:
+      - storageclasses
+    verbs: [ "get", "list", "watch" ]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
