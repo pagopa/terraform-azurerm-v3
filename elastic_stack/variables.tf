@@ -24,7 +24,6 @@ variable "namespace" {
   default     = "elastic-system"
 }
 
-
 variable "nodeset_config" {
   type = map(object({
     count            = string
@@ -41,7 +40,6 @@ variable "nodeset_config" {
     }
   }
 }
-
 
 variable "dedicated_log_instance_name" {
   type = list(string)
@@ -60,4 +58,10 @@ variable "eck_license" {
 
 variable "snapshot_secret_name" {
   type = string
+}
+
+variable "eck_version" {
+  type = string
+  description = "ECK (Elastic Cloud on Kubernetes) version, see: https://www.elastic.co/guide/en/cloud-on-k8s/index.html for futher versions"
+  default = "2.9"
 }
