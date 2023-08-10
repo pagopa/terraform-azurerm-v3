@@ -4,7 +4,7 @@ metadata:
   name: quickstart
   namespace: ${namespace}
 spec:
-  version: 8.6.2
+  version: 8.9.0
   secureSettings:
     - secretName: ${snapshot_secret_name} #secret for repository
   nodeSets:
