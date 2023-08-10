@@ -1,0 +1,27 @@
+apiVersion: apm.k8s.elastic.co/v1
+kind: ApmServer
+metadata:
+  name: quickstart
+  namespace: ${namespace}
+spec:
+  version: 8.6.2
+  count: 1
+  elasticsearchRef:
+    name: quickstart
+  podTemplate:
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: elastic
+                operator: In
+                values:
+                  - eck
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  kibanaRef:
+    name: quickstart

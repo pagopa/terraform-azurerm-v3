@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: elastic
+  namespace: ${namespace}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/proxy-ssl-verify: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  ingressClassName: nginxelk
+  tls:
+    - hosts:
+        - ${kibana_internal_hostname}
+      secretName: ${secret_name}
+  rules:
+    - host: ${kibana_internal_hostname}
+      http:
+        paths:
+          - path: /elastic(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: quickstart-es-http
+                port:
+                  number: 9200
