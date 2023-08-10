@@ -65,3 +65,9 @@ variable "eck_version" {
   description = "ECK (Elastic Cloud on Kubernetes) version, see: https://www.elastic.co/guide/en/cloud-on-k8s/index.html for futher versions"
   default = "2.9"
 }
+
+variable "tenant_id" {
+  type = string
+  description = "Tenant ID for azure"
+  default = "7788edaf-0346-4068-9d79-c868aed15b3d"
+}

@@ -37,6 +37,7 @@ locals {
     namespace     = var.namespace
     secret_name   = var.secret_name
     keyvault_name = var.keyvault_name
+    tenant_id = var.tenant_id
   }))
 
   kibana_mounter_yaml = yamldecode(templatefile("${path.module}/yaml/${var.eck_version}/mounter.yaml", {
