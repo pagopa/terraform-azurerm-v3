@@ -76,6 +76,7 @@ locals {
     for instance_name in var.dedicated_log_instance_name : "'/var/log/containers/${instance_name}-*.log'"
   ]))
 
+  #https://raw.githubusercontent.com/elastic/elastic-agent/8.9/deploy/kubernetes/elastic-agent-standalone-kubernetes.yaml
   agent_yaml = templatefile("${path.module}/yaml/${var.eck_version}/agent.yaml", {
     namespace                     = var.namespace
     dedicated_log_instance_name   = var.dedicated_log_instance_name

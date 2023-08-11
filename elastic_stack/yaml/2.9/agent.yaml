@@ -47,7 +47,7 @@ data:
               - apiserver
             bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
             hosts:
-              - 'https://${env.KUBERNETES_SERVICE_HOST}:${env.KUBERNETES_SERVICE_PORT}'
+              - 'https://$${env.KUBERNETES_SERVICE_HOST}:$${env.KUBERNETES_SERVICE_PORT}'
             period: 30s
             ssl.certificate_authorities:
               - /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
