@@ -24,7 +24,7 @@ data:
         logs: true
         metrics: true
     providers.kubernetes:
-      node: ${NODE_NAME}
+      node: $${NODE_NAME}
       scope: node
       #Uncomment to enable hints' support
       #hints.enabled: true
