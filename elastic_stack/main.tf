@@ -1,67 +1,82 @@
 #############
 # Install CRDs and Operator
-# https://www.elastic.co/guide/en/cloud-on-k8s/2.1/k8s-deploy-eck.html
-# version 2.6.1
+# https://www.elastic.co/guide/en/cloud-on-k8s/index.html
 #############
 locals {
-  orig_crd_yaml     = file("${path.module}/yaml/crds.yaml")
+  #https://download.elastic.co/downloads/eck/2.9.0/crds.yaml
+  orig_crd_yaml     = file("${path.module}/yaml/${var.eck_version}/crds.yaml")
   crd_yaml_del_time = replace(local.orig_crd_yaml, "\n  creationTimestamp: null", "")
   crd_yaml          = local.crd_yaml_del_time
 
-  orig_operator_yaml          = file("${path.module}/yaml/operator.yaml")
+  #https://download.elastic.co/downloads/eck/2.9.0/operator.yaml
+  orig_operator_yaml          = file("${path.module}/yaml/${var.eck_version}/operator.yaml")
   operator_yaml_set_namespace = replace(local.orig_operator_yaml, "namespace: elastic-system", "namespace: ${var.namespace}") #usato il replace per essere più comodi in un futuro cambio versione
   operator_yaml               = local.operator_yaml_set_namespace
 
-  elastic_yaml = templatefile("${path.module}/yaml/elastic.yaml", {
+  #
+  # Elastic
+  #
+  # changed to set node config info
+  elastic_yaml = templatefile("${path.module}/yaml/${var.eck_version}/elastic.yaml", {
     namespace            = var.namespace
     nodeset_config       = var.nodeset_config
     snapshot_secret_name = var.snapshot_secret_name
   })
 
-  elastic_ingress_yaml = yamldecode(templatefile("${path.module}/yaml/ingress_elastic.yaml", {
+  elastic_ingress_yaml = yamldecode(templatefile("${path.module}/yaml/${var.eck_version}/ingress_elastic.yaml", {
     namespace                = var.namespace
     kibana_internal_hostname = var.kibana_internal_hostname
     secret_name              = var.secret_name
   }))
 
-  kibana_secret_provider_yaml = yamldecode(templatefile("${path.module}/yaml/SecretProvider.yaml", {
+  #
+  # Kibana
+  #
+  kibana_secret_provider_yaml = yamldecode(templatefile("${path.module}/yaml/${var.eck_version}/SecretProvider.yaml", {
     namespace     = var.namespace
     secret_name   = var.secret_name
     keyvault_name = var.keyvault_name
+    tenant_id     = var.tenant_id
   }))
 
-  kibana_mounter_yaml = yamldecode(templatefile("${path.module}/yaml/mounter.yaml", {
+  kibana_mounter_yaml = yamldecode(templatefile("${path.module}/yaml/${var.eck_version}/mounter.yaml", {
     namespace   = var.namespace
     secret_name = var.secret_name
   }))
 
-  kibana_yaml = templatefile("${path.module}/yaml/kibana.yaml", {
+  kibana_yaml = templatefile("${path.module}/yaml/${var.eck_version}/kibana.yaml", {
     namespace       = var.namespace
     external_domain = var.kibana_external_domain
   })
 
-  kibana_ingress_yaml = yamldecode(templatefile("${path.module}/yaml/ingress_kibana.yaml", {
+  kibana_ingress_yaml = yamldecode(templatefile("${path.module}/yaml/${var.eck_version}/ingress_kibana.yaml", {
     namespace                = var.namespace
     kibana_internal_hostname = var.kibana_internal_hostname
     secret_name              = var.secret_name
   }))
 
-  apm_yaml = templatefile("${path.module}/yaml/apm.yaml", {
+  #
+  # APM
+  #
+  apm_yaml = templatefile("${path.module}/yaml/${var.eck_version}/apm.yaml", {
     namespace = var.namespace
   })
 
-  apm_ingress_yaml = yamldecode(templatefile("${path.module}/yaml/ingress_apm.yaml", {
+  apm_ingress_yaml = yamldecode(templatefile("${path.module}/yaml/${var.eck_version}/ingress_apm.yaml", {
     namespace                = var.namespace
     kibana_internal_hostname = var.kibana_internal_hostname
     secret_name              = var.secret_name
   }))
 
+  #
+  # Other
+  #
   logs_general_to_exclude_paths = distinct(flatten([
     for instance_name in var.dedicated_log_instance_name : "'/var/log/containers/${instance_name}-*.log'"
   ]))
 
-
-  agent_yaml = templatefile("${path.module}/yaml/agent.yaml", {
+  #https://raw.githubusercontent.com/elastic/elastic-agent/8.9/deploy/kubernetes/elastic-agent-standalone-kubernetes.yaml
+  agent_yaml = templatefile("${path.module}/yaml/${var.eck_version}/agent.yaml", {
     namespace                     = var.namespace
     dedicated_log_instance_name   = var.dedicated_log_instance_name
     logs_general_to_exclude_paths = local.logs_general_to_exclude_paths
@@ -149,8 +164,7 @@ resource "kubernetes_manifest" "operator" {
 
 #############
 # Install Elasticsearch cluster
-# https://www.elastic.co/guide/en/cloud-on-k8s/2.1/k8s-deploy-elasticsearch.html
-# version 8.6.2
+# https://www.elastic.co/guide/en/cloud-on-k8s/master/k8s-deploy-elasticsearch.html
 #############
 ####################
 ## USE trick for crd https://medium.com/@danieljimgarcia/dont-use-the-terraform-kubernetes-manifest-resource-6c7ff4fe629a
@@ -274,8 +288,7 @@ resource "null_resource" "wait_kibana" {
 
 #############
 # Install APM Server
-# https://www.elastic.co/guide/en/cloud-on-k8s/2.1/k8s-apm-eck-managed-es.html
-# version 8.6.2
+# https://www.elastic.co/guide/en/cloud-on-k8s/master/k8s-apm-eck-managed-es.html
 #############
 ####################
 ## USE trick for crd https://medium.com/@danieljimgarcia/dont-use-the-terraform-kubernetes-manifest-resource-6c7ff4fe629a
