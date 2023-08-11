@@ -61,7 +61,7 @@ variable "snapshot_secret_name" {
 }
 
 variable "eck_version" {
-  type = string
+  type        = string
   description = "ECK (Elastic Cloud on Kubernetes) version, see: https://www.elastic.co/guide/en/cloud-on-k8s/index.html for futher versions"
   validation {
     condition     = contains(["2.9", "2.6"], var.eck_version)
@@ -70,7 +70,7 @@ variable "eck_version" {
 }
 
 variable "tenant_id" {
-  type = string
+  type        = string
   description = "Tenant ID for azure"
-  default = "7788edaf-0346-4068-9d79-c868aed15b3d"
+  default     = "7788edaf-0346-4068-9d79-c868aed15b3d"
 }

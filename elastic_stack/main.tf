@@ -1,7 +1,6 @@
 #############
 # Install CRDs and Operator
-# https://www.elastic.co/guide/en/cloud-on-k8s/2.1/k8s-deploy-eck.html
-# version 2.6.1
+# https://www.elastic.co/guide/en/cloud-on-k8s/index.html
 #############
 locals {
   #https://download.elastic.co/downloads/eck/2.9.0/crds.yaml
@@ -14,9 +13,9 @@ locals {
   operator_yaml_set_namespace = replace(local.orig_operator_yaml, "namespace: elastic-system", "namespace: ${var.namespace}") #usato il replace per essere più comodi in un futuro cambio versione
   operator_yaml               = local.operator_yaml_set_namespace
 
-#
-# Elastic
-#
+  #
+  # Elastic
+  #
   # changed to set node config info
   elastic_yaml = templatefile("${path.module}/yaml/${var.eck_version}/elastic.yaml", {
     namespace            = var.namespace
@@ -30,14 +29,14 @@ locals {
     secret_name              = var.secret_name
   }))
 
-#
-# Kibana
-#
+  #
+  # Kibana
+  #
   kibana_secret_provider_yaml = yamldecode(templatefile("${path.module}/yaml/${var.eck_version}/SecretProvider.yaml", {
     namespace     = var.namespace
     secret_name   = var.secret_name
     keyvault_name = var.keyvault_name
-    tenant_id = var.tenant_id
+    tenant_id     = var.tenant_id
   }))
 
   kibana_mounter_yaml = yamldecode(templatefile("${path.module}/yaml/${var.eck_version}/mounter.yaml", {
@@ -56,9 +55,9 @@ locals {
     secret_name              = var.secret_name
   }))
 
-#
-# APM
-#
+  #
+  # APM
+  #
   apm_yaml = templatefile("${path.module}/yaml/${var.eck_version}/apm.yaml", {
     namespace = var.namespace
   })
@@ -69,9 +68,9 @@ locals {
     secret_name              = var.secret_name
   }))
 
-#
-# Other
-#
+  #
+  # Other
+  #
   logs_general_to_exclude_paths = distinct(flatten([
     for instance_name in var.dedicated_log_instance_name : "'/var/log/containers/${instance_name}-*.log'"
   ]))
@@ -165,8 +164,7 @@ resource "kubernetes_manifest" "operator" {
 
 #############
 # Install Elasticsearch cluster
-# https://www.elastic.co/guide/en/cloud-on-k8s/2.1/k8s-deploy-elasticsearch.html
-# version 8.6.2
+# https://www.elastic.co/guide/en/cloud-on-k8s/master/k8s-deploy-elasticsearch.html
 #############
 ####################
 ## USE trick for crd https://medium.com/@danieljimgarcia/dont-use-the-terraform-kubernetes-manifest-resource-6c7ff4fe629a
@@ -290,8 +288,7 @@ resource "null_resource" "wait_kibana" {
 
 #############
 # Install APM Server
-# https://www.elastic.co/guide/en/cloud-on-k8s/2.1/k8s-apm-eck-managed-es.html
-# version 8.6.2
+# https://www.elastic.co/guide/en/cloud-on-k8s/master/k8s-apm-eck-managed-es.html
 #############
 ####################
 ## USE trick for crd https://medium.com/@danieljimgarcia/dont-use-the-terraform-kubernetes-manifest-resource-6c7ff4fe629a
