@@ -30,7 +30,7 @@ data:
       #hints.enabled: true
     inputs:
       - id: kubernetes-cluster-metrics-${system_id}
-        condition: ${kubernetes_leaderelection.leader} == true
+        condition: $${kubernetes_leaderelection.leader} == true
         type: kubernetes/metrics
         use_output: default
         meta:
