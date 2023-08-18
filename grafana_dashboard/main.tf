@@ -8,7 +8,7 @@ provider "grafana" {
 locals {
 allowed_resource_by_file=fileset("${path.module}/dashboard/*.json","*.json")
 allowed_resource_type_replaced = [
-        for item in local.allowed_resource_by_type:
+        for item in local.allowed_resource_by_file:
                 replace(item, "_", "/")
         ]
 allowed_resource_type = trimsuffix(local.allowed_resource_type_replaced,".json")
