@@ -6,7 +6,7 @@ provider "grafana" {
 }
 
 locals {
-allowed_resource_by_file=fileset("${path.module}/dashboard/*.json","*.json")
+allowed_resource_by_file=fileset("${path.module}/dashboard","*.json")
 allowed_resource_type_replaced = [
         for item in local.allowed_resource_by_file:
                 replace(item, "_", "/")
@@ -20,7 +20,7 @@ allowed_resource_type =  [
 }
 
 data "azurerm_resources" "sub_resources" {
-  for_each = local.allowed_resource_type
+  for_each = toset(local.allowed_resource_type)
   type = each.key
 
   required_tags = {
