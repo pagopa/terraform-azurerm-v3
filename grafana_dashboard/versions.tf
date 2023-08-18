@@ -6,5 +6,9 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.30.0, <= 3.64.0"
     }
+    grafana = {
+      source  = "grafana/grafana"
+      version = "~> 1.21.0"
+    }
   }
 }
