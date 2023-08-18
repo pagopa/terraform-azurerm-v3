@@ -21,7 +21,7 @@ allowed_resource_type =  [
 
 data "azurerm_resources" "sub_resources" {
   #for_each = toset(local.allowed_resource_type)
-  type = ["Microsoft.DBforPostgreSQL/flexibleServers","Microsoft.Storage/storageAccounts"]
+  type = "Microsoft.DBforPostgreSQL/flexibleServers"
 
   required_tags = {
     grafana = "yes"
