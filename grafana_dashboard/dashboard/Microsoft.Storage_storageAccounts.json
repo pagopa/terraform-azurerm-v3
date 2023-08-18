@@ -1,0 +1,164 @@
+{
+    "__inputs": [
+        {
+          "name": "TITOLOTEST",
+          "label": "titolo",
+          "description": "",
+          "type": "text"
+        }
+      ],
+        "annotations": {
+          "list": [
+            {
+              "builtIn": 1,
+              "datasource": {
+                "type": "grafana",
+                "uid": "-- Grafana --"
+              },
+              "enable": true,
+              "hide": true,
+              "iconColor": "rgba(0, 211, 255, 1)",
+              "name": "Annotations & Alerts",
+              "target": {
+                "limit": 100,
+                "matchAny": false,
+                "tags": [],
+                "type": "dashboard"
+              },
+              "type": "dashboard"
+            }
+          ]
+        },
+        "editable": true,
+        "fiscalYearStartMonth": 0,
+        "graphTooltip": 0,
+        "id": 69,
+        "links": [],
+        "liveNow": false,
+        "panels": [
+          {
+            "datasource": {
+              "type": "grafana-azure-monitor-datasource",
+              "uid": "azure-monitor-oob"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 9,
+              "w": 12,
+              "x": 0,
+              "y": 0
+            },
+            "id": 2,
+            "options": {
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "targets": [
+              {
+                "azureMonitor": {
+                  "aggregation": "Total",
+                  "allowedTimeGrainsMs": [
+                    60000,
+                    300000,
+                    900000,
+                    1800000,
+                    3600000,
+                    21600000,
+                    43200000,
+                    86400000
+                  ],
+                  "dimensionFilters": [],
+                  "metricName": "Transactions",
+                  "metricNamespace": "microsoft.storage/storageaccounts",
+                  "resourceGroup": "pagopa-d-nodo-sec-rg",
+                  "resourceName": "pagopadnodonodocertssa",
+                  "timeGrain": "auto"
+                },
+                "datasource": {
+                  "type": "grafana-azure-monitor-datasource",
+                  "uid": "azure-monitor-oob"
+                },
+                "queryType": "Azure Monitor",
+                "refId": "A",
+                "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              }
+            ],
+            "title": "Panel Title",
+            "type": "timeseries"
+          }
+        ],
+        "schemaVersion": 37,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+          "list": []
+        },
+        "time": {
+          "from": "now-6h",
+          "to": "now"
+        },
+        "timepicker": {},
+        "timezone": "",
+        "title": "${TITOLOTEST}",
+        "uid": "Md6uXecVk${TITOLOTEST}",
+        "weekStart": ""
+      }
