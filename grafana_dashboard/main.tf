@@ -11,7 +11,12 @@ allowed_resource_type_replaced = [
         for item in local.allowed_resource_by_file:
                 replace(item, "_", "/")
         ]
-allowed_resource_type = trimsuffix(local.allowed_resource_type_replaced,".json")
+allowed_resource_type =  [
+        for item in local.allowed_resource_type_replaced:
+                trimsuffix(item,".json")
+        ]
+
+
 }
 
 data "azurerm_resources" "sub_resources" {
