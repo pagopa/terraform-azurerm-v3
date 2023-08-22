@@ -1,11 +1,16 @@
 {
     "__inputs": [
+      {
+        "name": "prefix",
+        "label": "prefix",
+        "description": "",
+        "type": "text"
+      },
         {
           "name": "ds",
           "label": "Datasource",
           "description": "",
-          "type": "text",
-          "value":"Azure Monitor"
+          "type": "text"
         },
         {
           "name": "sub",
@@ -4020,7 +4025,7 @@
         ]
       },
       "timezone": "",
-      "title": "Azure PostgreSQL Flexi",
+      "title": "$prefix - Azure PostgreSQL Flexible",
       "uid": "cd4c59cd-fecc-48f9-9ce0-73735e72c02f",
       "version": 19,
       "weekStart": ""
