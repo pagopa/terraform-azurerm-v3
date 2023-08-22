@@ -90,7 +90,7 @@
               "showLineNumbers": false,
               "showMiniMap": false
             },
-            "content": "# Postgres Flexible Nodo\n",
+            "content": "# Postgres Flexible ${resource}\n",
             "mode": "markdown"
           },
           "pluginVersion": "9.5.6",
