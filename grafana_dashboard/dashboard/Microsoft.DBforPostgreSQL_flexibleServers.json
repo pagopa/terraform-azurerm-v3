@@ -3911,7 +3911,7 @@
         ]
       },
       "timezone": "",
-      "title": "$prefix - Azure PostgreSQL Flexible",
+      "title": "${prefix} - Azure PostgreSQL Flexible",
       "uid": "cd4c59cd-fecc-48f9-9ce0-73735e72c02f",
       "version": 19,
       "weekStart": ""
