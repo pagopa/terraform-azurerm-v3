@@ -64,6 +64,13 @@ apt install -y $PWD/sops_3.7.3_amd64.deb
 
 check_command "sops"
 
+VELERO_VERSION=v1.11.1
+wget https://github.com/vmware-tanzu/velero/releases/download/${VELERO_VERSION}/velero-${VELERO_VERSION}-linux-amd64.tar.gz && \
+tar -zxvf velero-${VELERO_VERSION}-linux-amd64.tar.gz && \
+sudo mv velero-${VELERO_VERSION}-linux-amd64/velero /usr/bin/velero
+
+check_command "velero"
+
 # prepare machine for k6 large load test
 
 sysctl -w net.ipv4.ip_local_port_range="1024 65535"
