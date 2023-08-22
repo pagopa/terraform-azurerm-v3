@@ -1,8 +1,8 @@
 {
     "__inputs": [
       {
-        "name": "domain",
-        "label": "domain",
+        "name": "prefix",
+        "label": "prefix",
         "description": "",
         "type": "text"
       },
@@ -90,7 +90,7 @@
               "showLineNumbers": false,
               "showMiniMap": false
             },
-            "content": "# Postgres Flexible ${domain} - ${resource}\n",
+            "content": "# Postgres Flexible ${prefix} - ${resource}\n",
             "mode": "markdown"
           },
           "pluginVersion": "9.5.6",
@@ -3911,6 +3911,7 @@
         ]
       },
       "timezone": "",
-      "title": "${domain} - ${resource}",
+      "title": "${resource}",
+      "uid":"${sub}-${resource}",
       "weekStart": ""
   }
