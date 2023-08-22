@@ -3912,6 +3912,6 @@
       },
       "timezone": "",
       "title": "${resource}",
-      "uid":"${sub}-${resource}",
+      "uid":"${rg}-${resource}",
       "weekStart": ""
   }
