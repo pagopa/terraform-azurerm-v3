@@ -125,7 +125,7 @@
         },
         {
           "datasource": {
-            "uid": "$ds"
+            "uid": "${ds}"
           },
           "fieldConfig": {
             "defaults": {
@@ -215,8 +215,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "cpu_percent",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -258,11 +258,11 @@
                 ]
               },
               "datasource": {
-                "uid": "$ds"
+                "uid": "${ds}"
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "timeShift": "1m",
@@ -271,7 +271,7 @@
         },
         {
           "datasource": {
-            "uid": "$ds"
+            "uid": "${ds}"
           },
           "fieldConfig": {
             "defaults": {
@@ -361,8 +361,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "memory_percent",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -404,11 +404,11 @@
                 ]
               },
               "datasource": {
-                "uid": "$ds"
+                "uid": "${ds}"
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "timeShift": "1m",
@@ -417,7 +417,7 @@
         },
         {
           "datasource": {
-            "uid": "$ds"
+            "uid": "${ds}"
           },
           "fieldConfig": {
             "defaults": {
@@ -510,8 +510,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "iops",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -553,11 +553,11 @@
                 ]
               },
               "datasource": {
-                "uid": "$ds"
+                "uid": "${ds}"
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "timeShift": "1m",
@@ -566,7 +566,7 @@
         },
         {
           "datasource": {
-            "uid": "$ds"
+            "uid": "${ds}"
           },
           "fieldConfig": {
             "defaults": {
@@ -656,8 +656,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "storage_percent",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -699,11 +699,11 @@
                 ]
               },
               "datasource": {
-                "uid": "$ds"
+                "uid": "${ds}"
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "timeShift": "1m",
@@ -804,8 +804,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "storage_free",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -847,11 +847,11 @@
                 ]
               },
               "datasource": {
-                "uid": "$ds"
+                "uid": "${ds}"
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "timeShift": "1m",
@@ -983,8 +983,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "storage_used",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -1026,11 +1026,11 @@
                 ]
               },
               "datasource": {
-                "uid": "$ds"
+                "uid": "${ds}"
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "timeShift": "1m",
@@ -1138,8 +1138,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "active_connections",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -1186,7 +1186,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "timeShift": "1m",
@@ -1294,8 +1294,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "connections_failed",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -1337,11 +1337,11 @@
                 ]
               },
               "datasource": {
-                "uid": "$ds"
+                "uid": "${ds}"
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "timeShift": "1m",
@@ -1431,8 +1431,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "network_bytes_ingress",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -1479,7 +1479,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             },
             {
               "appInsights": {
@@ -1514,8 +1514,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "network_bytes_egress",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -1562,7 +1562,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "B",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "thresholds": [],
@@ -1719,8 +1719,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "storage_percent",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -1767,7 +1767,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             },
             {
               "appInsights": {
@@ -1802,8 +1802,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "cpu_percent",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -1850,7 +1850,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "B",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             },
             {
               "appInsights": {
@@ -1885,8 +1885,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "iops",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -1934,7 +1934,7 @@
               "hide": false,
               "queryType": "Azure Monitor",
               "refId": "C",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "timeShift": "1m",
@@ -2061,8 +2061,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "read_throughput",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -2109,7 +2109,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             },
             {
               "appInsights": {
@@ -2144,8 +2144,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "write_throughput",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -2192,7 +2192,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "B",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             },
             {
               "appInsights": {
@@ -2227,8 +2227,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "write_iops",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -2275,7 +2275,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "C",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             },
             {
               "appInsights": {
@@ -2310,8 +2310,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "read_iops",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -2358,7 +2358,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "D",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "timeShift": "1m",
@@ -2448,8 +2448,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "active_connections",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -2496,7 +2496,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             },
             {
               "appInsights": {
@@ -2531,8 +2531,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "connections_failed",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -2579,7 +2579,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "B",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "thresholds": [],
@@ -2715,8 +2715,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "txlogs_storage_used",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -2763,7 +2763,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "timeShift": "1m",
@@ -2829,8 +2829,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "disk_queue_depth",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto"
               },
               "datasource": {
@@ -2839,7 +2839,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "title": "Disk Queue Depth",
@@ -2939,8 +2939,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "backup_storage_used",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -2987,7 +2987,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "timeShift": "1m",
@@ -3107,8 +3107,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "cpu_percent",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -3156,7 +3156,7 @@
               "hide": false,
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "thresholds": [],
@@ -3279,8 +3279,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "memory_percent",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -3327,7 +3327,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "thresholds": [],
@@ -3450,8 +3450,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "storage_percent",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -3498,7 +3498,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "thresholds": [],
@@ -3621,8 +3621,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "active_connections",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -3669,7 +3669,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "thresholds": [],
@@ -3792,8 +3792,8 @@
                 "metricDefinition": "Microsoft.DBforPostgreSQL/flexibleServers",
                 "metricName": "connections_failed",
                 "metricNamespace": "microsoft.dbforpostgresql/flexibleservers",
-                "resourceGroup": "$rg",
-                "resourceName": "$resource",
+                "resourceGroup": "${rg}",
+                "resourceName": "${resource}",
                 "timeGrain": "auto",
                 "timeGrains": [
                   {
@@ -3840,7 +3840,7 @@
               },
               "queryType": "Azure Monitor",
               "refId": "A",
-              "subscription": "bbe47ad4-08b3-4925-94c5-1278e5819b86"
+              "subscription": "${sub}"
             }
           ],
           "thresholds": [],
