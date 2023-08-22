@@ -16,3 +16,13 @@ variable "prefix" {
     error_message = "Max length is 6 chars."
   }
 }
+
+variable "domain" {
+  type = string
+  validation {
+    condition = (
+      length(var.domain) <= 12
+    )
+    error_message = "Max length is 12 chars."
+  }
+}

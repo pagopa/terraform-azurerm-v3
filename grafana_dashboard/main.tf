@@ -53,7 +53,7 @@ resource "grafana_folder" "domainsfolder" {
   provider = grafana.cloud
   for_each = { for i in range(length(local.dashboard_folder_map)) : local.dashboard_folder_map[i].name => i }
 
-  title = "${upper(var.prefix)}-${upper(local.dashboard_folder_map[each.value].name)}-dashboard"
+  title = "${upper(var.prefix)}-${upper(local.dashboard_folder_map[each.value].name)}"
 }
 
 resource "grafana_dashboard" "azure_monitor_storage_insights" {
@@ -67,7 +67,7 @@ resource "grafana_dashboard" "azure_monitor_storage_insights" {
                     rg = "${local.dashboard_resource_map[each.value].rgroup}"
                     sub = "${local.dashboard_resource_map[each.value].sub}"
                     ds = "Azure Monitor"
-                    prefix = "${var.prefix}" 
+                    domain = "${var.domain}" 
                   }
                 )
   folder      = grafana_folder.domainsfolder["${split("/", local.dashboard_resource_map[each.value].type)[1]}"].id
