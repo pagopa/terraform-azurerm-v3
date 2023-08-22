@@ -60,7 +60,7 @@ resource "grafana_dashboard" "azure_monitor_storage_insights" {
   provider = grafana.cloud
   for_each = { for i in range(length(local.dashboard_resource_map)) : local.dashboard_resource_map[i].name => i }
 
-  config_json = templatefile("${path.module}/dashboard/${replace(local.dashboard_resource_map[each.value].type, "/", "_")}.json", { resource = "${format("%s", local.dashboard_resource_map[each.value].name)}", rg = "${format("%s", local.dashboard_resource_map[each.value].rgroup)}", sub = "${format("%s", local.dashboard_resource_map[each.value].sub)}" })
+  config_json = templatefile("${path.module}/dashboard/${replace(local.dashboard_resource_map[each.value].type, "/", "_")}.json", { resource = "${format("%s", local.dashboard_resource_map[each.value].name)}", rg = "${format("%s", local.dashboard_resource_map[each.value].rgroup)}", sub = "${format("%s", local.dashboard_resource_map[each.value].sub)}", ds = "Azure Monitor", prefix = "${var.prefix}" })
   folder      = grafana_folder.domainsfolder["${split("/", local.dashboard_resource_map[each.value].type)[1]}"].id
   overwrite   = true
 }
