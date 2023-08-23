@@ -33,6 +33,31 @@
     "panels": [
       {
         "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "id": 43,
+        "options": {
+          "code": {
+            "language": "plaintext",
+            "showLineNumbers": false,
+            "showMiniMap": false
+          },
+          "content": "# App Gateway - ${resource}\n",
+          "mode": "markdown"
+        },
+        "pluginVersion": "9.5.6",
+        "title": "pagopa",
+        "type": "text"
+      },
+      {
+        "datasource": {
           "type": "grafana-azure-monitor-datasource",
           "uid": "azure-monitor-oob"
         },
