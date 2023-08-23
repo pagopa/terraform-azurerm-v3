@@ -127,7 +127,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"cpuCapacityNanoCores\" \n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, * ) by Computer\n| summarize TotalCores=sum(CounterValue), x=\"join\"\n| join ( \n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"cpuUsageNanoCores\"\n    | where InstanceName contains '$AKS'\n    | summarize arg_max(TimeGenerated, * ) by Computer\n    | summarize TotalUsedCores=sum(CounterValue), x=\"join\"\n) on x\n|project now(), CpuPercentage=(TotalUsedCores / TotalCores) * 100",
+                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"cpuCapacityNanoCores\" \n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, * ) by Computer\n| summarize TotalCores=sum(CounterValue), x=\"join\"\n| join ( \n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"cpuUsageNanoCores\"\n    | where InstanceName contains '${resource}'\n    | summarize arg_max(TimeGenerated, * ) by Computer\n    | summarize TotalUsedCores=sum(CounterValue), x=\"join\"\n) on x\n|project now(), CpuPercentage=(TotalUsedCores / TotalCores) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -219,7 +219,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"memoryAllocatableBytes\" \n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, * ) by Computer\n| summarize TotalMem=sum(CounterValue), x=\"join\"\n| join ( \n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryRssBytes\"\n    | where InstanceName contains '$AKS'\n    | summarize arg_max(TimeGenerated, * ) by Computer\n    | summarize TotalUsedMem=sum(CounterValue), x=\"join\"\n) on x\n|project now(), MemPercentage=(TotalUsedMem / TotalMem) * 100",
+                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"memoryAllocatableBytes\" \n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, * ) by Computer\n| summarize TotalMem=sum(CounterValue), x=\"join\"\n| join ( \n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryRssBytes\"\n    | where InstanceName contains '${resource}'\n    | summarize arg_max(TimeGenerated, * ) by Computer\n    | summarize TotalUsedMem=sum(CounterValue), x=\"join\"\n) on x\n|project now(), MemPercentage=(TotalUsedMem / TotalMem) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -311,7 +311,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"memoryAllocatableBytes\" \n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, * ) by Computer\n| summarize TotalMem=sum(CounterValue), x=\"join\"\n| join ( \n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryWorkingSetBytes\"\n    | where InstanceName contains '$AKS'\n    | summarize arg_max(TimeGenerated, * ) by Computer\n    | summarize TotalUsedMem=sum(CounterValue), x=\"join\"\n) on x\n|project now(), MemPercentage=(TotalUsedMem / TotalMem) * 100",
+                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"memoryAllocatableBytes\" \n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, * ) by Computer\n| summarize TotalMem=sum(CounterValue), x=\"join\"\n| join ( \n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryWorkingSetBytes\"\n    | where InstanceName contains '${resource}'\n    | summarize arg_max(TimeGenerated, * ) by Computer\n    | summarize TotalUsedMem=sum(CounterValue), x=\"join\"\n) on x\n|project now(), MemPercentage=(TotalUsedMem / TotalMem) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -402,7 +402,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf \n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"cpuCapacityNanoCores\" \n| where InstanceName contains '$AKS'\n| extend TimeForm = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n| summarize count(), CpuTotal=sum(CounterValue) by TimeForm\n| join kind = inner (\n    Perf \n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"cpuUsageNanoCores\"\n    | where InstanceName contains '$AKS'\n    | extend TimeForm = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n    | summarize count(), CpuUsed=sum(CounterValue) by TimeForm\n) on TimeForm\n| order by TimeForm asc\n|project make_datetime(TimeForm), Cpu=(CpuUsed / CpuTotal) * 100",
+                  "query": "Perf \n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"cpuCapacityNanoCores\" \n| where InstanceName contains '${resource}'\n| extend TimeForm = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n| summarize count(), CpuTotal=sum(CounterValue) by TimeForm\n| join kind = inner (\n    Perf \n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"cpuUsageNanoCores\"\n    | where InstanceName contains '${resource}'\n    | extend TimeForm = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n    | summarize count(), CpuUsed=sum(CounterValue) by TimeForm\n) on TimeForm\n| order by TimeForm asc\n|project make_datetime(TimeForm), Cpu=(CpuUsed / CpuTotal) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -437,7 +437,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf \n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"memoryAllocatableBytes\" \n| where InstanceName contains '$AKS'\n| extend TimeForm = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n| summarize count(), MemTotal=sum(CounterValue) by TimeForm\n| join kind = inner (\n    Perf \n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryWorkingSetBytes\"\n    | where InstanceName contains '$AKS'\n    | extend TimeForm = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n    | summarize count(), MemUsed=sum(CounterValue) by TimeForm\n) on TimeForm\n| order by TimeForm asc\n|project make_datetime(TimeForm), MemWorkingSet=(MemUsed / MemTotal) * 100",
+                  "query": "Perf \n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"memoryAllocatableBytes\" \n| where InstanceName contains '${resource}'\n| extend TimeForm = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n| summarize count(), MemTotal=sum(CounterValue) by TimeForm\n| join kind = inner (\n    Perf \n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryWorkingSetBytes\"\n    | where InstanceName contains '${resource}'\n    | extend TimeForm = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n    | summarize count(), MemUsed=sum(CounterValue) by TimeForm\n) on TimeForm\n| order by TimeForm asc\n|project make_datetime(TimeForm), MemWorkingSet=(MemUsed / MemTotal) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -472,7 +472,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf \n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"memoryAllocatableBytes\" \n| where InstanceName contains '$AKS'\n| extend TimeForm = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n| summarize count(), MemTotal=sum(CounterValue) by TimeForm\n| join kind = inner (\n    Perf \n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryRssBytes\"\n    | where InstanceName contains '$AKS'\n    | extend TimeForm = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n    | summarize count(), MemUsed=sum(CounterValue) by TimeForm\n) on TimeForm\n| order by TimeForm asc\n|project make_datetime(TimeForm), MemRss=(MemUsed / MemTotal) * 100",
+                  "query": "Perf \n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"memoryAllocatableBytes\" \n| where InstanceName contains '${resource}'\n| extend TimeForm = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n| summarize count(), MemTotal=sum(CounterValue) by TimeForm\n| join kind = inner (\n    Perf \n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryRssBytes\"\n    | where InstanceName contains '${resource}'\n    | extend TimeForm = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n    | summarize count(), MemUsed=sum(CounterValue) by TimeForm\n) on TimeForm\n| order by TimeForm asc\n|project make_datetime(TimeForm), MemRss=(MemUsed / MemTotal) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -592,7 +592,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubeNodeInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"$AKS\"\n| summarize arg_max(TimeGenerated, *) by Computer\n| summarize nodecount=count() by Status\n| project now(), nodecount, Status",
+                  "query": "KubeNodeInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"${resource}\"\n| summarize arg_max(TimeGenerated, *) by Computer\n| summarize nodecount=count() by Status\n| project now(), nodecount, Status",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -715,7 +715,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"$AKS\"\n| summarize arg_max(TimeGenerated, *) by Name\n| summarize podcount=count() by PodStatus\n| project now(), podcount, PodStatus",
+                  "query": "KubePodInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"${resource}\"\n| summarize arg_max(TimeGenerated, *) by Name\n| summarize podcount=count() by PodStatus\n| project now(), podcount, PodStatus",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -838,7 +838,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubeNodeInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"$AKS\"\n| order by TimeGenerated asc\n| summarize nodecount=count() by TimeGenerated",
+                  "query": "KubeNodeInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"${resource}\"\n| order by TimeGenerated asc\n| summarize nodecount=count() by TimeGenerated",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -959,7 +959,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"$AKS\"\n| summarize podcount=count() by TimeGenerated\n| order by TimeGenerated asc",
+                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"${resource}\"\n| summarize podcount=count() by TimeGenerated\n| order by TimeGenerated asc",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -1110,7 +1110,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"cpuAllocatableNanoCores\" \n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, *) by Computer\n| summarize TotalCores=sum(CounterValue), x=\"join\"\n| join kind = inner (\n    KubePodInventory\n    | where TimeGenerated > ago(2m)\n    | where ClusterName == \"$AKS\"\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project Name, ContainerName, Namespace\n    | join kind = inner (\n        Perf\n        | where TimeGenerated > ago(2m)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'cpuUsageNanoCores'\n        | where InstanceName contains '$AKS'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | summarize arg_max(TimeGenerated, *) by ContainerName\n        | project ContainerName, CounterValue\n    ) on ContainerName\n    | project Name, Namespace, CounterValue\n    | summarize CoresPerNamespace=sum(CounterValue) by Namespace, x=\"join\"\n) on x\n| project now(), Namespace, CpuPercentage=(CoresPerNamespace / TotalCores) * 100",
+                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"cpuAllocatableNanoCores\" \n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, *) by Computer\n| summarize TotalCores=sum(CounterValue), x=\"join\"\n| join kind = inner (\n    KubePodInventory\n    | where TimeGenerated > ago(2m)\n    | where ClusterName == \"${resource}\"\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project Name, ContainerName, Namespace\n    | join kind = inner (\n        Perf\n        | where TimeGenerated > ago(2m)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'cpuUsageNanoCores'\n        | where InstanceName contains '${resource}'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | summarize arg_max(TimeGenerated, *) by ContainerName\n        | project ContainerName, CounterValue\n    ) on ContainerName\n    | project Name, Namespace, CounterValue\n    | summarize CoresPerNamespace=sum(CounterValue) by Namespace, x=\"join\"\n) on x\n| project now(), Namespace, CpuPercentage=(CoresPerNamespace / TotalCores) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -1200,7 +1200,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"cpuAllocatableNanoCores\" \n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, *) by Computer\n| summarize TotalCores=sum(CounterValue), x=\"join\"\n| join kind = inner (\n    KubePodInventory\n    | where TimeGenerated > ago(2m)\n    | where ClusterName == \"$AKS\"\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project Name, ContainerName, Namespace\n    | join kind = inner (\n        Perf\n        | where $__timeFilter(TimeGenerated)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'cpuUsageNanoCores'\n        | where InstanceName contains '$AKS'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | extend Time = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n        | project Time, ContainerName, CounterValue\n    ) on ContainerName\n    | project Time, Name, Namespace, CoresPerNamespace=CounterValue, x=\"join\"  \n) on x\n| summarize CoresPerNamespace=sum(CoresPerNamespace) by Time, Namespace, TotalCores\n| order by Time asc\n| project make_datetime(Time), Namespace, CpuPercentage=(CoresPerNamespace / TotalCores) * 100",
+                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"cpuAllocatableNanoCores\" \n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, *) by Computer\n| summarize TotalCores=sum(CounterValue), x=\"join\"\n| join kind = inner (\n    KubePodInventory\n    | where TimeGenerated > ago(2m)\n    | where ClusterName == \"${resource}\"\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project Name, ContainerName, Namespace\n    | join kind = inner (\n        Perf\n        | where $__timeFilter(TimeGenerated)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'cpuUsageNanoCores'\n        | where InstanceName contains '${resource}'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | extend Time = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n        | project Time, ContainerName, CounterValue\n    ) on ContainerName\n    | project Time, Name, Namespace, CoresPerNamespace=CounterValue, x=\"join\"  \n) on x\n| summarize CoresPerNamespace=sum(CoresPerNamespace) by Time, Namespace, TotalCores\n| order by Time asc\n| project make_datetime(Time), Namespace, CpuPercentage=(CoresPerNamespace / TotalCores) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -1321,7 +1321,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"$AKS\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName, Namespace\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'cpuUsageNanoCores'\n    | where InstanceName contains '$AKS'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | extend Time = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n    | project Time, ContainerName, CounterValue\n) on ContainerName\n| summarize CoresPerNamespace=sum(CounterValue) by Time, Namespace\n| order by Time asc\n| project make_datetime(Time), Namespace, CoresPerNamespace / 1000000",
+                  "query": "KubePodInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"${resource}\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName, Namespace\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'cpuUsageNanoCores'\n    | where InstanceName contains '${resource}'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | extend Time = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n    | project Time, ContainerName, CounterValue\n) on ContainerName\n| summarize CoresPerNamespace=sum(CounterValue) by Time, Namespace\n| order by Time asc\n| project make_datetime(Time), Namespace, CoresPerNamespace / 1000000",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -1444,7 +1444,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"memoryAllocatableBytes\" \n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, *) by Computer\n| summarize TotalMem=toreal(sum(CounterValue)), x=\"join\"\n| join kind = inner (\n    KubePodInventory\n    | where TimeGenerated > ago(2m)\n    | where ClusterName == \"$AKS\"\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project Name, ContainerName, Namespace\n    | join kind = inner (\n        Perf\n        | where TimeGenerated > ago(2m)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'memoryRssBytes'\n        | where InstanceName contains '$AKS'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | summarize arg_max(TimeGenerated, *) by ContainerName\n        | project ContainerName, CounterValue\n    ) on ContainerName\n    | project Name, Namespace, CounterValue\n    | summarize MemPerNamespace=sum(CounterValue) by Namespace, x=\"join\"\n) on x\n| project now(), Namespace, MemPercentage=(MemPerNamespace / TotalMem) * 100",
+                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"memoryAllocatableBytes\" \n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, *) by Computer\n| summarize TotalMem=toreal(sum(CounterValue)), x=\"join\"\n| join kind = inner (\n    KubePodInventory\n    | where TimeGenerated > ago(2m)\n    | where ClusterName == \"${resource}\"\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project Name, ContainerName, Namespace\n    | join kind = inner (\n        Perf\n        | where TimeGenerated > ago(2m)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'memoryRssBytes'\n        | where InstanceName contains '${resource}'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | summarize arg_max(TimeGenerated, *) by ContainerName\n        | project ContainerName, CounterValue\n    ) on ContainerName\n    | project Name, Namespace, CounterValue\n    | summarize MemPerNamespace=sum(CounterValue) by Namespace, x=\"join\"\n) on x\n| project now(), Namespace, MemPercentage=(MemPerNamespace / TotalMem) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -1554,7 +1554,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"memoryAllocatableBytes\" \n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, *) by Computer\n| summarize TotalCores=sum(CounterValue), x=\"join\"\n| join kind = inner (\n    KubePodInventory\n    | where TimeGenerated > ago(2m)\n    | where ClusterName == \"$AKS\"\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project Name, ContainerName, Namespace\n    | join kind = inner (\n        Perf\n        | where $__timeFilter(TimeGenerated)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'memoryRssBytes'\n        | where InstanceName contains '$AKS'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | extend Time = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n        | project Time, ContainerName, CounterValue\n    ) on ContainerName\n    | project Time, Name, Namespace, CoresPerNamespace=CounterValue, x=\"join\"  \n) on x\n| summarize CoresPerNamespace=sum(CoresPerNamespace) by Time, Namespace, TotalCores\n| order by Time asc\n| project make_datetime(Time), Namespace, CpuPercentage=(CoresPerNamespace / TotalCores) * 100",
+                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\" \n| where CounterName == \"memoryAllocatableBytes\" \n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, *) by Computer\n| summarize TotalCores=sum(CounterValue), x=\"join\"\n| join kind = inner (\n    KubePodInventory\n    | where TimeGenerated > ago(2m)\n    | where ClusterName == \"${resource}\"\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project Name, ContainerName, Namespace\n    | join kind = inner (\n        Perf\n        | where $__timeFilter(TimeGenerated)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'memoryRssBytes'\n        | where InstanceName contains '${resource}'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | extend Time = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n        | project Time, ContainerName, CounterValue\n    ) on ContainerName\n    | project Time, Name, Namespace, CoresPerNamespace=CounterValue, x=\"join\"  \n) on x\n| summarize CoresPerNamespace=sum(CoresPerNamespace) by Time, Namespace, TotalCores\n| order by Time asc\n| project make_datetime(Time), Namespace, CpuPercentage=(CoresPerNamespace / TotalCores) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -1695,7 +1695,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"$AKS\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName, Namespace\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'memoryRssBytes'\n    | where InstanceName contains '$AKS'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | extend Time = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n    | project Time, ContainerName, CounterValue\n) on ContainerName\n| summarize MemoryPerNamespace=sum(CounterValue) by Time, Namespace\n| order by Time asc\n| project make_datetime(Time), Namespace, MemoryPerNamespace",
+                  "query": "KubePodInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"${resource}\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName, Namespace\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'memoryRssBytes'\n    | where InstanceName contains '${resource}'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | extend Time = format_datetime(TimeGenerated, \"yyyy-MM-dd HH:mm\")\n    | project Time, ContainerName, CounterValue\n) on ContainerName\n| summarize MemoryPerNamespace=sum(CounterValue) by Time, Namespace\n| order by Time asc\n| project make_datetime(Time), Namespace, MemoryPerNamespace",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -1863,7 +1863,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"cpuCapacityNanoCores\"\n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Node=Computer, CPU=(CounterValue / 1000000000)",
+                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"cpuCapacityNanoCores\"\n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Node=Computer, CPU=(CounterValue / 1000000000)",
                   "resultFormat": "table",
                   "workspace": "${workspace}"
                 },
@@ -1957,7 +1957,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"cpuUsageNanoCores\"\n| where $__timeFilter(TimeGenerated)\n| where InstanceName contains '$AKS'\n| order by TimeGenerated asc\n| project TimeGenerated, Node=Computer, CPU=(CounterValue / 1000000000)",
+                  "query": "Perf\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"cpuUsageNanoCores\"\n| where $__timeFilter(TimeGenerated)\n| where InstanceName contains '${resource}'\n| order by TimeGenerated asc\n| project TimeGenerated, Node=Computer, CPU=(CounterValue / 1000000000)",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -2079,7 +2079,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"cpuCapacityNanoCores\"\n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Computer, CpuTotal=(CounterValue)\n| join kind=inner (\n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"cpuUsageNanoCores\"\n    | where InstanceName contains '$AKS'\n    | project TimeGenerated, Computer, CpuUsed=(CounterValue)\n) on Computer\n| order by TimeGenerated asc\n| project TimeGenerated, Computer, CpuPercentageUsad=(CpuUsed / CpuTotal) * 100",
+                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"cpuCapacityNanoCores\"\n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Computer, CpuTotal=(CounterValue)\n| join kind=inner (\n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"cpuUsageNanoCores\"\n    | where InstanceName contains '${resource}'\n    | project TimeGenerated, Computer, CpuUsed=(CounterValue)\n) on Computer\n| order by TimeGenerated asc\n| project TimeGenerated, Computer, CpuPercentageUsad=(CpuUsed / CpuTotal) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -2173,7 +2173,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"cpuCapacityNanoCores\"\n| where $__timeFilter(TimeGenerated)\n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Computer, CpuTotal=(CounterValue)\n| join kind=inner (\n    Perf\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"cpuUsageNanoCores\"\n    | where $__timeFilter(TimeGenerated)\n    | where InstanceName contains '$AKS'\n    | project TimeGenerated, Computer, CpuUsed=(CounterValue)\n) on Computer\n| order by TimeGenerated asc\n| project TimeGenerated, Computer, CpuPercentageUsad=(CpuUsed / CpuTotal) * 100",
+                  "query": "Perf\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"cpuCapacityNanoCores\"\n| where $__timeFilter(TimeGenerated)\n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Computer, CpuTotal=(CounterValue)\n| join kind=inner (\n    Perf\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"cpuUsageNanoCores\"\n    | where $__timeFilter(TimeGenerated)\n    | where InstanceName contains '${resource}'\n    | project TimeGenerated, Computer, CpuUsed=(CounterValue)\n) on Computer\n| order by TimeGenerated asc\n| project TimeGenerated, Computer, CpuPercentageUsad=(CpuUsed / CpuTotal) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -2341,7 +2341,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryCapacityBytes\"\n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Node=Computer, Memory=(CounterValue)",
+                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryCapacityBytes\"\n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Node=Computer, Memory=(CounterValue)",
                   "resultFormat": "table",
                   "workspace": "${workspace}"
                 },
@@ -2434,7 +2434,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryRssBytes\"\n| where InstanceName contains '$AKS'\n| order by TimeGenerated asc\n| project TimeGenerated, Node=Computer, MemoryWorkingSet=(CounterValue)",
+                  "query": "Perf\n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryRssBytes\"\n| where InstanceName contains '${resource}'\n| order by TimeGenerated asc\n| project TimeGenerated, Node=Computer, MemoryWorkingSet=(CounterValue)",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -2558,7 +2558,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryWorkingSetBytes\"\n| where InstanceName contains '$AKS'\n| order by TimeGenerated asc\n| project TimeGenerated, Node=Computer, MemoryWorkingSet=(CounterValue)",
+                  "query": "Perf\n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryWorkingSetBytes\"\n| where InstanceName contains '${resource}'\n| order by TimeGenerated asc\n| project TimeGenerated, Node=Computer, MemoryWorkingSet=(CounterValue)",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -2681,7 +2681,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryAllocatableBytes\"\n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Computer, MemTotal=(CounterValue)\n| join kind = inner (\n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryRssBytes\"\n    | where InstanceName contains '$AKS'\n    | project TimeGenerated, Computer, MemUsed=(CounterValue)\n) on Computer\n| order by TimeGenerated asc\n| project TimeGenerated, Computer, MemPercentageUsad=(MemUsed / MemTotal) * 100",
+                  "query": "Perf\n| where TimeGenerated > ago(2m)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryAllocatableBytes\"\n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Computer, MemTotal=(CounterValue)\n| join kind = inner (\n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryRssBytes\"\n    | where InstanceName contains '${resource}'\n    | project TimeGenerated, Computer, MemUsed=(CounterValue)\n) on Computer\n| order by TimeGenerated asc\n| project TimeGenerated, Computer, MemPercentageUsad=(MemUsed / MemTotal) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -2773,7 +2773,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where TimeGenerated > now(-2m)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryAllocatableBytes\"\n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Computer, MemTotal=(CounterValue)\n| join kind = inner (\n    Perf\n    | where TimeGenerated > now(-2m)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryWorkingSetBytes\"\n    | where InstanceName contains '$AKS'\n    | project TimeGenerated, Computer, MemUsed=(CounterValue)\n) on Computer\n| order by TimeGenerated asc\n| project TimeGenerated, Computer, MemPercentageUsad=(MemUsed / MemTotal) * 100",
+                  "query": "Perf\n| where TimeGenerated > now(-2m)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryAllocatableBytes\"\n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Computer, MemTotal=(CounterValue)\n| join kind = inner (\n    Perf\n    | where TimeGenerated > now(-2m)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryWorkingSetBytes\"\n    | where InstanceName contains '${resource}'\n    | project TimeGenerated, Computer, MemUsed=(CounterValue)\n) on Computer\n| order by TimeGenerated asc\n| project TimeGenerated, Computer, MemPercentageUsad=(MemUsed / MemTotal) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -2865,7 +2865,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryAllocatableBytes\"\n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Computer, MemTotal=(CounterValue)\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryWorkingSetBytes\"    \n    | where InstanceName contains '$AKS'\n    | project TimeGenerated, Computer, MemUsed=(CounterValue)\n) on Computer\n| order by TimeGenerated asc\n| project TimeGenerated, Computer, MemPercentageUsad=(MemUsed / MemTotal) * 100",
+                  "query": "Perf\n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryAllocatableBytes\"\n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Computer, MemTotal=(CounterValue)\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryWorkingSetBytes\"    \n    | where InstanceName contains '${resource}'\n    | project TimeGenerated, Computer, MemUsed=(CounterValue)\n) on Computer\n| order by TimeGenerated asc\n| project TimeGenerated, Computer, MemPercentageUsad=(MemUsed / MemTotal) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -2987,7 +2987,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "Perf\n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryAllocatableBytes\"\n| where InstanceName contains '$AKS'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Computer, MemTotal=(CounterValue)\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryRssBytes\"    \n    | where InstanceName contains '$AKS'\n    | project TimeGenerated, Computer, MemUsed=(CounterValue)\n) on Computer\n| order by TimeGenerated asc\n| project TimeGenerated, Computer, MemPercentageUsad=(MemUsed / MemTotal) * 100",
+                  "query": "Perf\n| where $__timeFilter(TimeGenerated)\n| where ObjectName == \"K8SNode\"\n| where CounterName == \"memoryAllocatableBytes\"\n| where InstanceName contains '${resource}'\n| summarize arg_max(TimeGenerated, *) by Computer\n| project Computer, MemTotal=(CounterValue)\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == \"K8SNode\"\n    | where CounterName == \"memoryRssBytes\"    \n    | where InstanceName contains '${resource}'\n    | project TimeGenerated, Computer, MemUsed=(CounterValue)\n) on Computer\n| order by TimeGenerated asc\n| project TimeGenerated, Computer, MemPercentageUsad=(MemUsed / MemTotal) * 100",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -3135,7 +3135,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "InsightsMetrics\n| where $__timeFilter(TimeGenerated)\n| where _ResourceId like \"$AKS\"\n| where Name == \"used_percent\"\n| extend tags=todynamic(Tags)\n| where tags[\"container.azm.ms/clusterName\"] == \"$AKS\"\n| extend hostName=tags.hostName\n| extend device=tags.device\n| extend disk=strcat(device, \"/\" , hostName)\n| order by TimeGenerated asc\n| project TimeGenerated, disk, Val",
+                  "query": "InsightsMetrics\n| where $__timeFilter(TimeGenerated)\n| where _ResourceId like \"${resource}\"\n| where Name == \"used_percent\"\n| extend tags=todynamic(Tags)\n| where tags[\"container.azm.ms/clusterName\"] == \"${resource}\"\n| extend hostName=tags.hostName\n| extend device=tags.device\n| extend disk=strcat(device, \"/\" , hostName)\n| order by TimeGenerated asc\n| project TimeGenerated, disk, Val",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -3255,7 +3255,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "InsightsMetrics\n| where $__timeFilter(TimeGenerated)\n| where _ResourceId like \"$AKS\"\n| where Name == \"used\"\n| extend tags=todynamic(Tags)\n| where tags[\"container.azm.ms/clusterName\"] == \"$AKS\"\n| extend hostName=tags.hostName\n| extend device=tags.device\n| extend disk=strcat(device, \"/\" , hostName)\n| order by TimeGenerated asc\n| project TimeGenerated, disk, Val",
+                  "query": "InsightsMetrics\n| where $__timeFilter(TimeGenerated)\n| where _ResourceId like \"${resource}\"\n| where Name == \"used\"\n| extend tags=todynamic(Tags)\n| where tags[\"container.azm.ms/clusterName\"] == \"${resource}\"\n| extend hostName=tags.hostName\n| extend device=tags.device\n| extend disk=strcat(device, \"/\" , hostName)\n| order by TimeGenerated asc\n| project TimeGenerated, disk, Val",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -3375,7 +3375,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "InsightsMetrics\n| where $__timeFilter(TimeGenerated)\n| where _ResourceId like \"$AKS\"\n| where Name == \"free\"\n| extend tags=todynamic(Tags)\n| where tags[\"container.azm.ms/clusterName\"] == \"$AKS\"\n| extend hostName=tags.hostName\n| extend device=tags.device\n| extend disk=strcat(device, \"/\" , hostName)\n| order by TimeGenerated asc\n| project TimeGenerated, disk, Val",
+                  "query": "InsightsMetrics\n| where $__timeFilter(TimeGenerated)\n| where _ResourceId like \"${resource}\"\n| where Name == \"free\"\n| extend tags=todynamic(Tags)\n| where tags[\"container.azm.ms/clusterName\"] == \"${resource}\"\n| extend hostName=tags.hostName\n| extend device=tags.device\n| extend disk=strcat(device, \"/\" , hostName)\n| order by TimeGenerated asc\n| project TimeGenerated, disk, Val",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -3522,7 +3522,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "InsightsMetrics\n| where $__timeFilter(TimeGenerated)\n| where _ResourceId like \"$AKS\"\n| where Name == \"bytes_recv\"\n| extend tags=todynamic(Tags)\n| where tags[\"container.azm.ms/clusterName\"] == \"$AKS\"\n| extend hostName=tags.hostName\n| extend device=tags.interface\n| extend hostInterface=strcat(device, \"/\" , hostName)\n| order by TimeGenerated asc\n| project TimeGenerated, hostInterface, Val",
+                  "query": "InsightsMetrics\n| where $__timeFilter(TimeGenerated)\n| where _ResourceId like \"${resource}\"\n| where Name == \"bytes_recv\"\n| extend tags=todynamic(Tags)\n| where tags[\"container.azm.ms/clusterName\"] == \"${resource}\"\n| extend hostName=tags.hostName\n| extend device=tags.interface\n| extend hostInterface=strcat(device, \"/\" , hostName)\n| order by TimeGenerated asc\n| project TimeGenerated, hostInterface, Val",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -3642,7 +3642,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "InsightsMetrics\n| where $__timeFilter(TimeGenerated)\n| where _ResourceId like \"$AKS\"\n| where Name == \"bytes_sent\"\n| extend tags=todynamic(Tags)\n| where tags[\"container.azm.ms/clusterName\"] == \"$AKS\"\n| extend hostName=tags.hostName\n| extend device=tags.interface\n| extend hostInterface=strcat(device, \"/\" , hostName)\n| order by TimeGenerated asc\n| project TimeGenerated, hostInterface, Val",
+                  "query": "InsightsMetrics\n| where $__timeFilter(TimeGenerated)\n| where _ResourceId like \"${resource}\"\n| where Name == \"bytes_sent\"\n| extend tags=todynamic(Tags)\n| where tags[\"container.azm.ms/clusterName\"] == \"${resource}\"\n| extend hostName=tags.hostName\n| extend device=tags.interface\n| extend hostInterface=strcat(device, \"/\" , hostName)\n| order by TimeGenerated asc\n| project TimeGenerated, hostInterface, Val",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -3821,7 +3821,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"$AKS\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'cpuLimitNanoCores'\n    | where InstanceName contains '$AKS'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project ContainerName, CpuLimit=CounterValue\n    | join kind = inner (\n        Perf\n        | where TimeGenerated > ago(2m)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'cpuUsageNanoCores'\n        | where InstanceName contains '$AKS'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | summarize arg_max(TimeGenerated, *) by ContainerName\n        | project TimeGenerated, ContainerName, CpuUsage=CounterValue\n    ) on ContainerName\n) on ContainerName\n| order by Name asc\n| project Name, CpuLimit=(CpuLimit / 1000000), CpuUsage=(CpuUsage / 1000000)",
+                  "query": "KubePodInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"${resource}\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'cpuLimitNanoCores'\n    | where InstanceName contains '${resource}'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project ContainerName, CpuLimit=CounterValue\n    | join kind = inner (\n        Perf\n        | where TimeGenerated > ago(2m)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'cpuUsageNanoCores'\n        | where InstanceName contains '${resource}'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | summarize arg_max(TimeGenerated, *) by ContainerName\n        | project TimeGenerated, ContainerName, CpuUsage=CounterValue\n    ) on ContainerName\n) on ContainerName\n| order by Name asc\n| project Name, CpuLimit=(CpuLimit / 1000000), CpuUsage=(CpuUsage / 1000000)",
                   "resultFormat": "table",
                   "workspace": "${workspace}"
                 },
@@ -3914,7 +3914,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"$AKS\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'cpuUsageNanoCores'\n    | where InstanceName contains '$AKS'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | project TimeGenerated, ContainerName, CounterValue\n) on ContainerName\n| order by TimeGenerated asc\n| project TimeGenerated, Name, CounterValue=(CounterValue / 1000000)",
+                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"${resource}\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'cpuUsageNanoCores'\n    | where InstanceName contains '${resource}'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | project TimeGenerated, ContainerName, CounterValue\n) on ContainerName\n| order by TimeGenerated asc\n| project TimeGenerated, Name, CounterValue=(CounterValue / 1000000)",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -4038,7 +4038,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"$AKS\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'cpuLimitNanoCores'\n    | where InstanceName contains '$AKS'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project ContainerName, CpuLimit=CounterValue\n    | join kind = inner (\n        Perf\n        | where $__timeFilter(TimeGenerated)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'cpuUsageNanoCores'\n        | where InstanceName contains '$AKS'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | project TimeGenerated, ContainerName, CpuUsage=CounterValue\n    ) on ContainerName\n    | project TimeGenerated, ContainerName, CpuPercentage=(CpuUsage / CpuLimit) * 100\n) on ContainerName\n| order by TimeGenerated asc\n| project TimeGenerated, Name, CpuPercentage",
+                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"${resource}\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'cpuLimitNanoCores'\n    | where InstanceName contains '${resource}'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project ContainerName, CpuLimit=CounterValue\n    | join kind = inner (\n        Perf\n        | where $__timeFilter(TimeGenerated)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'cpuUsageNanoCores'\n        | where InstanceName contains '${resource}'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | project TimeGenerated, ContainerName, CpuUsage=CounterValue\n    ) on ContainerName\n    | project TimeGenerated, ContainerName, CpuPercentage=(CpuUsage / CpuLimit) * 100\n) on ContainerName\n| order by TimeGenerated asc\n| project TimeGenerated, Name, CpuPercentage",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -4218,7 +4218,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"$AKS\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'memoryLimitBytes'\n    | where InstanceName contains '$AKS'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project ContainerName, MemLimit=CounterValue\n) on ContainerName\n| order by Name asc\n| project Name, MemLimit",
+                  "query": "KubePodInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"${resource}\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where TimeGenerated > ago(2m)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'memoryLimitBytes'\n    | where InstanceName contains '${resource}'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project ContainerName, MemLimit=CounterValue\n) on ContainerName\n| order by Name asc\n| project Name, MemLimit",
                   "resultFormat": "table",
                   "workspace": "${workspace}"
                 },
@@ -4309,7 +4309,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"$AKS\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'memoryRssBytes'    \n    | where InstanceName contains '$AKS'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | project TimeGenerated, ContainerName, CounterValue\n) on ContainerName\n| order by TimeGenerated asc\n| project TimeGenerated, Name, CounterValue=(CounterValue)",
+                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"${resource}\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'memoryRssBytes'    \n    | where InstanceName contains '${resource}'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | project TimeGenerated, ContainerName, CounterValue\n) on ContainerName\n| order by TimeGenerated asc\n| project TimeGenerated, Name, CounterValue=(CounterValue)",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -4431,7 +4431,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"$AKS\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'memoryWorkingSetBytes'    \n    | where InstanceName contains '$AKS'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | project TimeGenerated, ContainerName, CounterValue\n) on ContainerName\n| order by TimeGenerated asc\n| project TimeGenerated, Name, CounterValue=(CounterValue)",
+                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"${resource}\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'memoryWorkingSetBytes'    \n    | where InstanceName contains '${resource}'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | project TimeGenerated, ContainerName, CounterValue\n) on ContainerName\n| order by TimeGenerated asc\n| project TimeGenerated, Name, CounterValue=(CounterValue)",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -4553,7 +4553,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"$AKS\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'memoryLimitBytes'\n    | where InstanceName contains '$AKS'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project ContainerName, MemLimit=CounterValue\n    | join kind = inner (\n        Perf\n        | where $__timeFilter(TimeGenerated)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'memoryRssBytes'\n        | where InstanceName contains '$AKS'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | project TimeGenerated, ContainerName, MemUsage=CounterValue\n    ) on ContainerName\n    | project TimeGenerated, ContainerName, MemPercentage=(MemUsage / MemLimit) * 100\n) on ContainerName\n| order by TimeGenerated asc\n| project TimeGenerated, Name, MemPercentage",
+                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"${resource}\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'memoryLimitBytes'\n    | where InstanceName contains '${resource}'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project ContainerName, MemLimit=CounterValue\n    | join kind = inner (\n        Perf\n        | where $__timeFilter(TimeGenerated)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'memoryRssBytes'\n        | where InstanceName contains '${resource}'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | project TimeGenerated, ContainerName, MemUsage=CounterValue\n    ) on ContainerName\n    | project TimeGenerated, ContainerName, MemPercentage=(MemUsage / MemLimit) * 100\n) on ContainerName\n| order by TimeGenerated asc\n| project TimeGenerated, Name, MemPercentage",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -4675,7 +4675,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"$AKS\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'memoryLimitBytes'\n    | where InstanceName contains '$AKS'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project ContainerName, MemLimit=CounterValue\n    | join kind = inner (\n        Perf\n        | where $__timeFilter(TimeGenerated)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'memoryWorkingSetBytes'\n        | where InstanceName contains '$AKS'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | project TimeGenerated, ContainerName, MemUsage=CounterValue\n    ) on ContainerName\n    | project TimeGenerated, ContainerName, MemPercentage=(MemUsage / MemLimit) * 100\n) on ContainerName\n| order by TimeGenerated asc\n| project TimeGenerated, Name, MemPercentage",
+                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"${resource}\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by ContainerName\n| project Name, ContainerName\n| join kind = inner (\n    Perf\n    | where $__timeFilter(TimeGenerated)\n    | where ObjectName == 'K8SContainer'\n    | where CounterName == 'memoryLimitBytes'\n    | where InstanceName contains '${resource}'\n    | extend ContainerNameParts = split(InstanceName, '/')\n    | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n    | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n    | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n    | summarize arg_max(TimeGenerated, *) by ContainerName\n    | project ContainerName, MemLimit=CounterValue\n    | join kind = inner (\n        Perf\n        | where $__timeFilter(TimeGenerated)\n        | where ObjectName == 'K8SContainer'\n        | where CounterName == 'memoryWorkingSetBytes'\n        | where InstanceName contains '${resource}'\n        | extend ContainerNameParts = split(InstanceName, '/')\n        | extend ContainerNamePartCount = array_length(ContainerNameParts)            \n        | extend PodUIDIndex = ContainerNamePartCount - 2, ContainerNameIndex = ContainerNamePartCount - 1 \n        | extend ContainerName = strcat(ContainerNameParts[PodUIDIndex], '/', ContainerNameParts[ContainerNameIndex])\n        | project TimeGenerated, ContainerName, MemUsage=CounterValue\n    ) on ContainerName\n    | project TimeGenerated, ContainerName, MemPercentage=(MemUsage / MemLimit) * 100\n) on ContainerName\n| order by TimeGenerated asc\n| project TimeGenerated, Name, MemPercentage",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -4823,7 +4823,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where TimeGenerated > ago(30m)\n| where ClusterName == \"$AKS\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by Name\n| project Pod=Name, Namespace, PodStatus, Node=Computer, PodRestartCount, ContainerRestartCount, PodStartTime, ControllerKind",
+                  "query": "KubePodInventory\n| where TimeGenerated > ago(30m)\n| where ClusterName == \"${resource}\"\n| where Namespace == \"$Namespace\"\n| summarize arg_max(TimeGenerated, *) by Name\n| project Pod=Name, Namespace, PodStatus, Node=Computer, PodRestartCount, ContainerRestartCount, PodStartTime, ControllerKind",
                   "resultFormat": "table",
                   "workspace": "${workspace}"
                 },
@@ -4913,7 +4913,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"$AKS\"\n| summarize arg_max(TimeGenerated, *) by Name\n| summarize qtd=count() by Namespace\n| project now(), Namespace, qtd",
+                  "query": "KubePodInventory\n| where TimeGenerated > ago(2m)\n| where ClusterName == \"${resource}\"\n| summarize arg_max(TimeGenerated, *) by Name\n| summarize qtd=count() by Namespace\n| project now(), Namespace, qtd",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -5036,7 +5036,7 @@
                   "valueColumn": ""
                 },
                 "azureLogAnalytics": {
-                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"$AKS\"\n| summarize count() by TimeGenerated, Namespace\n| order by TimeGenerated asc",
+                  "query": "KubePodInventory\n| where $__timeFilter(TimeGenerated)\n| where ClusterName == \"${resource}\"\n| summarize count() by TimeGenerated, Namespace\n| order by TimeGenerated asc",
                   "resultFormat": "time_series",
                   "workspace": "${workspace}"
                 },
@@ -5122,7 +5122,7 @@
             "type": "grafana-azure-monitor-datasource",
             "uid": "azure-monitor-oob"
           },
-          "definition": "KubePodInventory | where ClusterName == \"$AKS\" | summarize count() by Namespace | project Namespace",
+          "definition": "KubePodInventory | where ClusterName == \"${resource}\" | summarize count() by Namespace | project Namespace",
           "hide": 0,
           "includeAll": false,
           "multi": false,
@@ -5131,9 +5131,7 @@
           "query": {
             "azureLogAnalytics": {
               "query": "KubePodInventory | where ClusterName == \"${resource}\" | summarize count() by Namespace | project Namespace",
-              "resources": [
-                "/subscriptions/${sub}/resourcegroups/${rg}/providers/microsoft.operationalinsights/workspaces/${workspace}"
-              ]
+              "workspace": "${workspace}"
             },
             "queryType": "Azure Log Analytics",
             "refId": "A",
