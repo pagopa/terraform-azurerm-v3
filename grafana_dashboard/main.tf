@@ -67,7 +67,8 @@ resource "grafana_dashboard" "azure_monitor_storage_insights" {
                     rg = "${local.dashboard_resource_map[each.value].rgroup}"
                     sub = "${local.dashboard_resource_map[each.value].sub}"
                     ds = "Azure Monitor"
-                    prefix = "${var.prefix}" 
+                    prefix = "${var.prefix}"
+                    workspace = "${var.monitor_workspace}"
                   }
                 )
   folder      = grafana_folder.domainsfolder["${split("/", local.dashboard_resource_map[each.value].type)[1]}"].id

@@ -16,3 +16,7 @@ variable "prefix" {
     error_message = "Max length is 6 chars."
   }
 }
+
+variable "monitor_workspace" {
+  type = string
+}
