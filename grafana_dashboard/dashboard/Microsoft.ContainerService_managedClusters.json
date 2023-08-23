@@ -5130,9 +5130,9 @@
           "options": [],
           "query": {
             "azureLogAnalytics": {
-              "query": "KubePodInventory | where ClusterName == \"$AKS\" | summarize count() by Namespace | project Namespace",
+              "query": "KubePodInventory | where ClusterName == \"${resource}\" | summarize count() by Namespace | project Namespace",
               "resources": [
-                "/subscriptions/bbe47ad4-08b3-4925-94c5-1278e5819b86/resourcegroups/defaultresourcegroup-weu/providers/microsoft.operationalinsights/workspaces/defaultworkspace-bbe47ad4-08b3-4925-94c5-1278e5819b86-weu"
+                "/subscriptions/${sub}/resourcegroups/${rg}/providers/microsoft.operationalinsights/workspaces/${workspace}"
               ]
             },
             "queryType": "Azure Log Analytics",
