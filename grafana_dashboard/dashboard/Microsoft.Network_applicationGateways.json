@@ -747,7 +747,7 @@
               "metricDefinition": "Microsoft.Network/applicationGateways",
               "metricName": "TotalRequests",
               "metricNamespace": "Microsoft.Network/applicationGateways",
-              "resourceGroup": "Prod",
+              "resourceGroup": "${rg}",
               "resourceName": "${resource}",
               "timeGrain": "auto",
               "timeGrains": [
@@ -927,7 +927,7 @@
               "metricDefinition": "Microsoft.Network/applicationGateways",
               "metricName": "CurrentConnections",
               "metricNamespace": "Microsoft.Network/applicationGateways",
-              "resourceGroup": "Prod",
+              "resourceGroup": "${rg}",
               "resourceName": "${resource}",
               "timeGrain": "auto",
               "timeGrains": [
@@ -1284,7 +1284,7 @@
               "metricDefinition": "Microsoft.Network/applicationGateways",
               "metricName": "Throughput",
               "metricNamespace": "Microsoft.Network/applicationGateways",
-              "resourceGroup": "Prod",
+              "resourceGroup": "${rg}",
               "resourceName": "${resource}",
               "timeGrain": "auto",
               "timeGrains": [
@@ -2576,7 +2576,7 @@
             "azureLogAnalytics": {
               "query": "AzureDiagnostics \r\n| where  ResourceProvider == \"MICROSOFT.NETWORK\" and Category == \"ApplicationGatewayFirewallLog\" and action_s == \"Blocked\"\n| where TimeGenerated >= $__timeFrom() and TimeGenerated <= $__timeTo()\n| order by TimeGenerated asc",
               "resultFormat": "table",
-              "workspace": "08934564-b6bd-42d1-9f9f-b777176b0835"
+              "workspace": "${workspace}"
             },
             "azureMonitor": {
               "aggOptions": [],
@@ -2668,7 +2668,7 @@
             "azureLogAnalytics": {
               "query": "AzureDiagnostics\r\n| where ResourceProvider == \"MICROSOFT.NETWORK\" and Category == \"ApplicationGatewayFirewallLog\"\r and action_s == \"Blocked\"\n| where TimeGenerated >= $__timeFrom() and TimeGenerated <= $__timeTo()\n| summarize count() by clientIp_s, bin(TimeGenerated, $__interval)\n",
               "resultFormat": "time_series",
-              "workspace": "08934564-b6bd-42d1-9f9f-b777176b0835"
+              "workspace": "${workspace}"
             },
             "azureMonitor": {
               "aggOptions": [],
@@ -2760,7 +2760,7 @@
             "azureLogAnalytics": {
               "query": "AzureDiagnostics\r\n| where ResourceProvider == \"MICROSOFT.NETWORK\" and Category == \"ApplicationGatewayFirewallLog\"\r \n| where TimeGenerated >= $__timeFrom() and TimeGenerated <= $__timeTo()\n| summarize Count=count() by details_file_s, bin(TimeGenerated, $__interval)",
               "resultFormat": "time_series",
-              "workspace": "08934564-b6bd-42d1-9f9f-b777176b0835"
+              "workspace": "${workspace}"
             },
             "azureMonitor": {
               "aggOptions": [],
@@ -2841,7 +2841,7 @@
             "azureLogAnalytics": {
               "query": "AzureDiagnostics\r\n| where ResourceProvider == \"MICROSOFT.NETWORK\" and Category == \"ApplicationGatewayFirewallLog\"\r and action_s == \"Blocked\"\n| where TimeGenerated >= $__timeFrom() and TimeGenerated <= $__timeTo()\n| project TimeGenerated, clientIp_s, requestUri_s, details_file_s",
               "resultFormat": "table",
-              "workspace": "08934564-b6bd-42d1-9f9f-b777176b0835"
+              "workspace": "${workspace}"
             },
             "azureMonitor": {
               "aggOptions": [],
@@ -2872,109 +2872,6 @@
     "schemaVersion": 38,
     "style": "dark",
     "tags": [],
-    "templating": {
-      "list": [
-        {
-          "current": {
-            "selected": false,
-            "text": "Azure Monitor",
-            "value": "Azure Monitor"
-          },
-          "hide": 0,
-          "includeAll": false,
-          "multi": false,
-          "name": "Subscription",
-          "options": [],
-          "query": "grafana-azure-monitor-datasource",
-          "queryValue": "",
-          "refresh": 1,
-          "regex": "",
-          "skipUrlSync": false,
-          "type": "datasource"
-        },
-        {
-          "current": {
-            "selected": false,
-            "text": "io-infra-rg",
-            "value": "io-infra-rg"
-          },
-          "datasource": {
-            "type": "grafana-azure-monitor-datasource",
-            "uid": "${ds}"
-          },
-          "definition": "ResourceGroups()",
-          "hide": 0,
-          "includeAll": false,
-          "label": "ResourceGroup",
-          "multi": false,
-          "name": "ResourceGroup",
-          "options": [],
-          "query": "ResourceGroups()",
-          "refresh": 1,
-          "regex": "",
-          "skipUrlSync": false,
-          "sort": 0,
-          "tagValuesQuery": "",
-          "tagsQuery": "",
-          "type": "query",
-          "useTags": false
-        },
-        {
-          "current": {
-            "selected": false,
-            "text": "microsoft.streamanalytics/streamingjobs",
-            "value": "microsoft.streamanalytics/streamingjobs"
-          },
-          "datasource": {
-            "type": "grafana-azure-monitor-datasource",
-            "uid": "${ds}"
-          },
-          "definition": "Namespaces($rg)",
-          "hide": 0,
-          "includeAll": false,
-          "label": "Namespace",
-          "multi": false,
-          "name": "Namespace",
-          "options": [],
-          "query": "Namespaces($rg)",
-          "refresh": 1,
-          "regex": "",
-          "skipUrlSync": false,
-          "sort": 0,
-          "tagValuesQuery": "",
-          "tagsQuery": "",
-          "type": "query",
-          "useTags": false
-        },
-        {
-          "current": {
-            "isNone": true,
-            "selected": false,
-            "text": "None",
-            "value": ""
-          },
-          "datasource": {
-            "type": "grafana-azure-monitor-datasource",
-            "uid": "${ds}"
-          },
-          "definition": "ResourceNames($rg,$Namespace)",
-          "hide": 0,
-          "includeAll": false,
-          "multi": false,
-          "name": "ResourceName",
-          "options": [],
-          "query": "ResourceNames($rg,$Namespace)",
-          "refresh": 2,
-          "regex": "",
-          "skipUrlSync": false,
-          "sort": 0,
-          "tagValuesQuery": "",
-          "tagsQuery": "",
-          "type": "query",
-          "useTags": false
-        }
-      ]
-    },
     "time": {
       "from": "now-3h",
       "to": "now"
