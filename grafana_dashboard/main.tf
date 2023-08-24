@@ -6,7 +6,7 @@ provider "grafana" {
 }
 
 locals {
-  allowed_resource_by_file = fileset("${path.module}/dashboard", "*.json")
+  allowed_resource_by_file = fileset("${path.module}/${var.dashboard_directory_path}", "*.json")
   allowed_resource_type_replaced = [
     for item in local.allowed_resource_by_file :
     replace(item, "_", "/")
@@ -61,7 +61,7 @@ resource "grafana_dashboard" "azure_monitor_storage_insights" {
   for_each = { for i in range(length(local.dashboard_resource_map)) : local.dashboard_resource_map[i].name => i }
 
   config_json = templatefile(
-                  "${path.module}/dashboard/${replace(local.dashboard_resource_map[each.value].type, "/", "_")}.json", 
+                  "${path.module}/${var.dashboard_directory_path}/${replace(local.dashboard_resource_map[each.value].type, "/", "_")}.json", 
                   { 
                     resource = "${local.dashboard_resource_map[each.value].name}" 
                     rg = "${local.dashboard_resource_map[each.value].rgroup}"

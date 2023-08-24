@@ -4,11 +4,11 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "= 3.25.0"
+      version = "<= 3.64.0"
     }
     grafana = {
       source  = "grafana/grafana"
-      version = "~> 1.21.0"
+      version = "~> 2.20.0"
     }
   }
 }

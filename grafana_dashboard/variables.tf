@@ -20,3 +20,8 @@ variable "prefix" {
 variable "monitor_workspace" {
   type = string
 }
+
+variable "dashboard_directory_path" {
+  type = string
+  default = "dashboard"
+}
