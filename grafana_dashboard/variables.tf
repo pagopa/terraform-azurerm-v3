@@ -22,6 +22,6 @@ variable "monitor_workspace" {
 }
 
 variable "dashboard_directory_path" {
-  type = string
+  type    = string
   default = "dashboard"
 }

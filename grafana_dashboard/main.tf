@@ -41,7 +41,7 @@ locals {
         type   = d.type
         name   = d.name
         rgroup = split("/", d.id)[4]
-        sub = split("/", d.id)[0]
+        sub    = split("/", d.id)[0]
       }
     ]
   ])
@@ -61,16 +61,16 @@ resource "grafana_dashboard" "azure_monitor_grafana" {
   for_each = { for i in range(length(local.dashboard_resource_map)) : local.dashboard_resource_map[i].name => i }
 
   config_json = templatefile(
-                  "${path.module}/${var.dashboard_directory_path}/${replace(local.dashboard_resource_map[each.value].type, "/", "_")}.json", 
-                  { 
-                    resource = "${local.dashboard_resource_map[each.value].name}" 
-                    rg = "${local.dashboard_resource_map[each.value].rgroup}"
-                    sub = "${local.dashboard_resource_map[each.value].sub}"
-                    ds = "Azure Monitor"
-                    prefix = "${var.prefix}"
-                    workspace = "${var.monitor_workspace}"
-                  }
-                )
-  folder      = grafana_folder.domainsfolder["${split("/", local.dashboard_resource_map[each.value].type)[1]}"].id
-  overwrite   = true
+    "${path.module}/${var.dashboard_directory_path}/${replace(local.dashboard_resource_map[each.value].type, "/", "_")}.json",
+    {
+      resource  = "${local.dashboard_resource_map[each.value].name}"
+      rg        = "${local.dashboard_resource_map[each.value].rgroup}"
+      sub       = "${local.dashboard_resource_map[each.value].sub}"
+      ds        = "Azure Monitor"
+      prefix    = "${var.prefix}"
+      workspace = "${var.monitor_workspace}"
+    }
+  )
+  folder    = grafana_folder.domainsfolder["${split("/", local.dashboard_resource_map[each.value].type)[1]}"].id
+  overwrite = true
 }
