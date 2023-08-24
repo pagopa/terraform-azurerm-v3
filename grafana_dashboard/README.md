@@ -19,6 +19,13 @@ module "auto_dashboard" {
 }
 
 ```
+# Add a dashboard JSON template
+
+Create e grafana dashboard json template and put in "dashboard" or "custom" directory.
+N.B. the name of JSON template file MUST be as Azure Namespace type replacing "/" with "_"
+example:
+
+    Microsoft.ContainerService/managedClusters -> Microsoft.ContainerService_managedClusters.json
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
