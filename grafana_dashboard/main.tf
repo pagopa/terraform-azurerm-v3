@@ -56,7 +56,7 @@ resource "grafana_folder" "domainsfolder" {
   title = "${upper(var.prefix)}-${upper(local.dashboard_folder_map[each.value].name)}"
 }
 
-resource "grafana_dashboard" "azure_monitor_storage_insights" {
+resource "grafana_dashboard" "azure_monitor_grafana" {
   provider = grafana.cloud
   for_each = { for i in range(length(local.dashboard_resource_map)) : local.dashboard_resource_map[i].name => i }
 
