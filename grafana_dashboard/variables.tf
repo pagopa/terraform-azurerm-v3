@@ -3,7 +3,7 @@ variable "grafana_url" {
 }
 
 variable "grafana_api_key" {
-  type    = string
+  type = string
 }
 
 variable "prefix" {
