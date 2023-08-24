@@ -18,6 +18,8 @@ module "auto_dashboard" {
   dashboard_directory_path = "pagopa"
 }
 
+```
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
