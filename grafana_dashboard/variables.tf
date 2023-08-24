@@ -1,10 +1,10 @@
 variable "grafana_url" {
-  type = string
+  type        = string
   description = "Grafana Managed url"
 }
 
 variable "grafana_api_key" {
-  type = string
+  type        = string
   description = "Grafana Managed Service Account key"
 }
 
@@ -16,15 +16,16 @@ variable "prefix" {
     )
     error_message = "Max length is 6 chars."
   }
+  description = "product label used for dashboard folder and title"
 }
 
 variable "monitor_workspace_id" {
-  type = string
+  type        = string
   description = "Azure Log Analytics workspace id"
 }
 
 variable "dashboard_directory_path" {
-  type    = string
-  default = "dashboard"
+  type        = string
+  default     = "dashboard"
   description = "path for dashboard template"
 }

@@ -60,11 +60,11 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_dashboard_directory_path"></a> [dashboard\_directory\_path](#input\_dashboard\_directory\_path) | n/a | `string` | `"dashboard"` | no |
-| <a name="input_grafana_api_key"></a> [grafana\_api\_key](#input\_grafana\_api\_key) | n/a | `string` | n/a | yes |
-| <a name="input_grafana_url"></a> [grafana\_url](#input\_grafana\_url) | n/a | `string` | n/a | yes |
-| <a name="input_monitor_workspace"></a> [monitor\_workspace](#input\_monitor\_workspace) | n/a | `string` | n/a | yes |
-| <a name="input_prefix"></a> [prefix](#input\_prefix) | n/a | `string` | n/a | yes |
+| <a name="input_dashboard_directory_path"></a> [dashboard\_directory\_path](#input\_dashboard\_directory\_path) | path for dashboard template | `string` | `"dashboard"` | no |
+| <a name="input_grafana_api_key"></a> [grafana\_api\_key](#input\_grafana\_api\_key) | Grafana Managed Service Account key | `string` | n/a | yes |
+| <a name="input_grafana_url"></a> [grafana\_url](#input\_grafana\_url) | Grafana Managed url | `string` | n/a | yes |
+| <a name="input_monitor_workspace_id"></a> [monitor\_workspace\_id](#input\_monitor\_workspace\_id) | Azure Log Analytics workspace id | `string` | n/a | yes |
+| <a name="input_prefix"></a> [prefix](#input\_prefix) | product label used for dashboard folder and title | `string` | n/a | yes |
 
 ## Outputs
 
