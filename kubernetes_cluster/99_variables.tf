@@ -367,11 +367,6 @@ variable "velero_backup_storage_account_name" {
   default = null
 }
 
-variable "velero_backup_storage_account_id" {
-  type = string
-  description = "(Required if velero enabled) Id of the storage account where Velero keeps the backups"
-  default = null
-}
 
 variable "subscription_id" {
   type = string
