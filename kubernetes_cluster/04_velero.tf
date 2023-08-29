@@ -14,7 +14,7 @@ resource "azurerm_storage_container" "velero_backup_container" {
 
 data "azuread_client_config" "current" {}
 
-resource "azuread_application" "velero_applicaiton" {
+resource "azuread_application" "velero_application" {
   count = var.velero_enabled ? 1 : 0
   display_name     = "velero-application"
   owners           = [data.azuread_client_config.current.object_id]
@@ -23,12 +23,12 @@ resource "azuread_application" "velero_applicaiton" {
 
 resource "azuread_application_password" "velero_application_password" {
   count = var.velero_enabled ? 1 : 0
-  application_object_id = azuread_application.velero_applicaiton[0].object_id
+  application_object_id = azuread_application.velero_application[0].object_id
 }
 
 resource "azuread_service_principal" "velero_sp" {
   count = var.velero_enabled ? 1 : 0
-  application_id    = azuread_application.velero_applicaiton[0].application_id
+  application_id    = azuread_application.velero_application[0].application_id
   owners            = [data.azuread_client_config.current.object_id]
 }
 
@@ -49,10 +49,11 @@ resource "azurerm_role_assignment" "velero_sp_role" {
 resource "local_file" "credentials" {
   count = var.velero_enabled ? 1 : 0
 
+
   content  = templatefile("./velero-credentials.tpl", {
     subscription_id = var.subscription_id
     tenant_id = var.tenant_id
-    client_id = azuread_application.velero_applicaiton[0].application_id
+    client_id = azuread_application.velero_application[0].application_id
     client_secret = azuread_application_password.velero_application_password[0].value
     backup_rg = var.resource_group_name
   })
@@ -60,9 +61,11 @@ resource "local_file" "credentials" {
 
   lifecycle {
     replace_triggered_by = [
-      azurerm_storage_container.velero_backup_container,
-      azuread_application.velero_applicaiton[0],
+      azurerm_storage_container.velero_backup_container[0],
+      azuread_application.velero_application[0],
+      azuread_service_principal.velero_sp[0],
       azuread_application_password.velero_application_password[0]
+
 
     ]
   }
@@ -79,7 +82,7 @@ resource "null_resource" "install_velero" {
     rg = var.resource_group_name
     subscription_id = var.subscription_id
     tenant_id=var.tenant_id
-    client_id=azuread_application.velero_applicaiton[0].application_id
+    client_id=azuread_application.velero_application[0].application_id
     client_secret=azuread_application_password.velero_application_password[0].value
     resource_group=var.resource_group_name
   }
@@ -102,8 +105,11 @@ resource "null_resource" "install_velero" {
 
   lifecycle {
     replace_triggered_by = [
-      local_file.credentials
-
+      local_file.credentials[0],
+      azurerm_storage_container.velero_backup_container[0],
+      azuread_service_principal.velero_sp[0],
+      azuread_application.velero_application[0],
+      azuread_application_password.velero_application_password[0]
     ]
   }
 }
