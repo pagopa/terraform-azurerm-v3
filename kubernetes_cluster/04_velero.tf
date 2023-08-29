@@ -99,6 +99,13 @@ resource "null_resource" "install_velero" {
     --backup-location-config resourceGroup=${var.resource_group_name},storageAccount=${data.azurerm_storage_account.velero_storage_account[0].name},subscriptionId=${var.subscription_id} \
     EOT
   }
+
+  lifecycle {
+    replace_triggered_by = [
+      local_file.credentials
+
+    ]
+  }
 }
 
 
