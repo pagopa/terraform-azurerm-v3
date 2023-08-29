@@ -60,11 +60,10 @@ resource "local_file" "credentials" {
 
   lifecycle {
     replace_triggered_by = [
-      var.subscription_id,
-      var.tenant_id,
-      azuread_application.velero_applicaiton[0].application_id,
-      azuread_application_password.velero_application_password[0].value,
-      var.resource_group_name
+      azurerm_storage_container.velero_backup_container,
+      azuread_application.velero_applicaiton[0],
+      azuread_application_password.velero_application_password[0]
+
     ]
   }
 }
