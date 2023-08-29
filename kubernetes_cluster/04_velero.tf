@@ -105,7 +105,7 @@ resource "null_resource" "schedule_backup" {
   provisioner "local-exec" {
     when    = destroy
     command = <<EOT
-    velero schedule delete ${null_resource.schedule_backup.triggers.name} --confirm
+    velero schedule delete ${self.triggers.name} --confirm
     EOT
   }
 
