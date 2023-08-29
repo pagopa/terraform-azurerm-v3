@@ -63,7 +63,7 @@ resource "null_resource" "install_velero" {
   depends_on = [local_file.credentials]
 
   triggers = {
-    bucket = azurerm_storage_container.velero_backup_container.name
+    bucket = azurerm_storage_container.velero_backup_container[0].name
     storage_account = data.azurerm_storage_account.velero_storage_account.id
     rg = var.resource_group_name
     subscription_id = var.subscription_id
