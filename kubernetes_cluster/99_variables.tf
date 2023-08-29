@@ -382,12 +382,12 @@ variable "tenant_id" {
 
 variable "velero_backup_schedule" {
   type = string
-  description = "(Required if velero backup enabled) Cron expression for the scheduled velero backup including all namespaces. ref: https://velero.io/docs/v1.9/backup-reference/"
+  description = "(Optional) Cron expression for the scheduled velero backup including all namespaces. ref: https://velero.io/docs/v1.9/backup-reference/"
   default = "0 3 * * *"
 }
 
 variable "velero_backup_ttl" {
   type = string
-  description = "(Required if velero backup enabled) TTL for velero 'all namespaces' backup, expressed using '<number>h<number>m<number>s' format"
+  description = "(Optional) TTL for velero 'all namespaces' backup, expressed using '<number>h<number>m<number>s' format"
   default = "360h0m0s"
 }
