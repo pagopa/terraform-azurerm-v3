@@ -22,26 +22,26 @@ resource "azuread_application" "velero_applicaiton" {
 
 resource "azuread_application_password" "velero_application_password" {
   count = var.velero_enabled ? 1 : 0
-  application_object_id = azuread_application.velero_applicaiton.object_id
+  application_object_id = azuread_application.velero_applicaiton[0].object_id
 }
 
-resource "azuread_service_principal" "sp" {
+resource "azuread_service_principal" "velero_sp" {
   count = var.velero_enabled ? 1 : 0
-  application_id    = azuread_application.velero_applicaiton.application_id
+  application_id    = azuread_application.velero_applicaiton[0].application_id
   owners            = [data.azuread_client_config.current.object_id]
 }
 
 resource "azuread_service_principal_password" "velero_principal_password" {
   count = var.velero_enabled ? 1 : 0
-  service_principal_id = azuread_service_principal.sp.object_id
+  service_principal_id = azuread_service_principal.velero_sp[0].object_id
 }
 
 
-resource "azurerm_role_assignment" "sp_role" {
+resource "azurerm_role_assignment" "velero_sp_role" {
   count = var.velero_enabled ? 1 : 0
   scope                = "/subscriptions/${var.subscription_id}"
   role_definition_name = "Contributor"
-  principal_id         = azuread_service_principal.sp.object_id
+  principal_id         = azuread_service_principal.velero_sp[0].object_id
 }
 
 
@@ -50,8 +50,8 @@ resource "local_file" "credentials" {
   content  = templatefile("./velero-credentials.tpl", {
     subscription_id = var.subscription_id
     tenant_id = var.tenant_id
-    client_id = azuread_application.velero_applicaiton.application_id
-    client_secret = azuread_application_password.velero_application_password.value
+    client_id = azuread_application.velero_applicaiton[0].application_id
+    client_secret = azuread_application_password.velero_application_password[0].value
     backup_rg = var.resource_group_name
   })
   filename = "${path.module}/credentials-velero.txt"
@@ -67,7 +67,7 @@ resource "null_resource" "install_velero" {
     storage_account = data.azurerm_storage_account.velero_storage_account.id
     rg = var.resource_group_name
     subscription_id = var.subscription_id
-    credentials = filemd5(local_file.credentials.filename)
+    credentials = filemd5(local_file.credentials[0].filename)
   }
 
   provisioner "local-exec" {
@@ -80,8 +80,8 @@ resource "null_resource" "install_velero" {
   provisioner "local-exec" {
     command     = <<EOT
     velero install --provider azure --plugins velero/velero-plugin-for-microsoft-azure:v1.5.0 \
-    --bucket ${azurerm_storage_container.velero_backup_container.name} \
-    --secret-file ${local_file.credentials.filename} \
+    --bucket ${azurerm_storage_container.velero_backup_container[0].name} \
+    --secret-file ${local_file.credentials[0].filename} \
     --backup-location-config resourceGroup=${var.resource_group_name},storageAccount=${data.azurerm_storage_account.velero_storage_account.name},subscriptionId=${var.subscription_id} \
     EOT
   }
