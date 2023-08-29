@@ -68,7 +68,10 @@ resource "null_resource" "install_velero" {
     storage_account = data.azurerm_storage_account.velero_storage_account[0].id
     rg = var.resource_group_name
     subscription_id = var.subscription_id
-    credentials = filemd5(local_file.credentials[0].filename)
+    tenant_id=var.tenant_id
+    client_id=azuread_application.velero_applicaiton[0].application_id
+    client_secret=azuread_application_password.velero_application_password[0].value
+    resource_group=var.resource_group_name
   }
 
   provisioner "local-exec" {
