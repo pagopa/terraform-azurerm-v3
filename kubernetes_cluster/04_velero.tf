@@ -1,4 +1,5 @@
 data "azurerm_storage_account" "velero_storage_account" {
+  count = var.velero_enabled ? 1 : 0
   name = var.velero_backup_storage_account_name
   resource_group_name = var.resource_group_name
 }
@@ -6,7 +7,7 @@ data "azurerm_storage_account" "velero_storage_account" {
 resource "azurerm_storage_container" "velero_backup_container" {
   count = var.velero_enabled ? 1 : 0
   name                  = var.velero_backup_storage_container_name
-  storage_account_name  = data.azurerm_storage_account.velero_storage_account.name
+  storage_account_name  = data.azurerm_storage_account.velero_storage_account[0].name
   container_access_type = "private"
 
 }
@@ -64,7 +65,7 @@ resource "null_resource" "install_velero" {
 
   triggers = {
     bucket = azurerm_storage_container.velero_backup_container[0].name
-    storage_account = data.azurerm_storage_account.velero_storage_account.id
+    storage_account = data.azurerm_storage_account.velero_storage_account[0].id
     rg = var.resource_group_name
     subscription_id = var.subscription_id
     credentials = filemd5(local_file.credentials[0].filename)
@@ -82,7 +83,7 @@ resource "null_resource" "install_velero" {
     velero install --provider azure --plugins velero/velero-plugin-for-microsoft-azure:v1.5.0 \
     --bucket ${azurerm_storage_container.velero_backup_container[0].name} \
     --secret-file ${local_file.credentials[0].filename} \
-    --backup-location-config resourceGroup=${var.resource_group_name},storageAccount=${data.azurerm_storage_account.velero_storage_account.name},subscriptionId=${var.subscription_id} \
+    --backup-location-config resourceGroup=${var.resource_group_name},storageAccount=${data.azurerm_storage_account.velero_storage_account[0].name},subscriptionId=${var.subscription_id} \
     EOT
   }
 }
