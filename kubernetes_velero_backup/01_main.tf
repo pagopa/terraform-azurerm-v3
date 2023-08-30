@@ -1,6 +1,6 @@
 resource "null_resource" "schedule_backup" {
 
-  for_each = var.namespaces
+  for_each = toset(var.namespaces)
 
   triggers = {
     backup_name = var.backup_name
