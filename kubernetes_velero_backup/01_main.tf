@@ -1,21 +1,27 @@
 resource "null_resource" "schedule_backup" {
 
+  for_each = var.namespaces
+
   triggers = {
-    scheduling = var.backup_scheduling
+    backup_name = var.backup_name
+    schedule = var.schedule
+    volume_snapshot = var.volume_snapshot
+    ttl = var.ttl
+    namespace = each.value
 
   }
 
   provisioner "local-exec" {
     when    = destroy
     command = <<EOT
-    velero schedule delete ${self.triggers.scheduling.backup_name} --confirm
+    velero schedule delete ${self.triggers.backup_name}-${self.triggers.namespace} --confirm
     EOT
   }
 
 
   provisioner "local-exec" {
     command     = <<EOT
-    velero create schedule ${var.backup_scheduling.backup_name} --schedule="${var.backup_scheduling.schedule}" --ttl ${var.backup_scheduling.ttl} --include-namespaces ${join(", ", var.backup_scheduling.namespaces)}
+    velero create schedule ${self.triggers.backup_name}-${self.triggers.namespace} --schedule="${var.schedule}" --ttl ${var.ttl} --include-namespaces ${each.value}
     EOT
   }
 }
