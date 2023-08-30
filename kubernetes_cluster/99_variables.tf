@@ -391,3 +391,9 @@ variable "velero_backup_ttl" {
   description = "(Optional) TTL for velero 'all namespaces' backup, expressed using '<number>h<number>m<number>s' format"
   default = "360h0m0s"
 }
+
+variable "velero_volume_snapshot" {
+  type = bool
+  description = "(Optional) Whether or not to execute the persistence volume snapshot. Disabled by default"
+  default = false
+}

@@ -139,7 +139,7 @@ resource "null_resource" "schedule_backup" {
 
   provisioner "local-exec" {
     command     = <<EOT
-    velero create schedule ${local.all_namespace_backup_name} --schedule="${var.velero_backup_schedule}" --ttl ${var.velero_backup_ttl}
+    velero create schedule ${local.all_namespace_backup_name} --schedule="${var.velero_backup_schedule}" --ttl ${var.velero_backup_ttl} --snapshot-volumes ${var.velero_volume_snapshot}
     EOT
   }
 }
