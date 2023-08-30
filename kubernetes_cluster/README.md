@@ -13,11 +13,16 @@ By default the modules have a default set of metric alerts.
 * If you want is possible to add new **custom metrics alerts** using the varible: `custom_metric_alerts`
 * Or override the **default metrics alert** using the variable: `default_metric_alerts`. (is prefered to add new metrics)
 
+## Backup
+
+If needed, this module can also install Velero to automate the namespace backups. Check [AKS Cluster](#aks-cluster) for details
+
+
 ## How to use it
 
 ### Variable definition example
 
-```ts
+```hcl
 #
 # ⛴ AKS PROD
 #
@@ -437,7 +442,7 @@ variable "keda_helm_version" {
 
 ### Variables values
 
-```ts
+```hcl
 rg_vnet_aks_name           = "dvopla-d-neu-dev01-aks-vnet-rg"
 vnet_aks_name              = "dvopla-d-neu-dev01-aks-vnet"
 public_ip_aksoutbound_name = "dvopla-d-dev01-aksoutbound-pip-1"
@@ -484,11 +489,29 @@ keda_helm_version        = "2.6.2"
 
 ### AKS Cluster
 
-```ts
+```hcl
   resource "azurerm_resource_group" "rg_aks" {
     name     = local.aks_rg_name
     location = var.location
     tags     = var.tags
+  }
+
+  # required for velero backups
+  module "velero_storage_account" {
+    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.2.0"
+  
+    name = "${var.prefix}velerosa"
+    account_kind                    = "BlobStorage"
+    account_tier                    = "Standard"
+    account_replication_type        = "LRS"
+    blob_versioning_enabled         = true
+    resource_group_name             = azurerm_resource_group.rg_aks.name
+    location                        = var.location
+    allow_nested_items_to_be_public = true
+    advanced_threat_protection      = true
+    enable_low_availability_alert   = false
+    public_network_access_enabled   = true
+    tags                            = var.tags
   }
 
   module "aks" {
@@ -552,6 +575,18 @@ keda_helm_version        = "2.6.2"
       service_cidr       = "10.250.0.0/16"
     }
     # end network
+    
+    #
+    # Velero backup
+    #
+    velero_enabled = true
+    velero_backup_enabled = false
+    velero_backup_storage_account_name = module.velero_storage_account.name
+    velero_backup_storage_container_name = "velero-backup"
+    subscription_id = data.azurerm_subscription.current.subscription_id
+    tenant_id = data.azurerm_subscription.current.tenant_id
+    velero_backup_ttl = "2h0m0s"
+    velero_backup_schedule = "0 12 * * *"
 
     rbac_enabled        = true
     aad_admin_group_ids = var.env_short == "d" ? [data.azuread_group.adgroup_admin.object_id, data.azuread_group.adgroup_developers.object_id, data.azuread_group.adgroup_externals.object_id] : [data.azuread_group.adgroup_admin.object_id]
@@ -662,8 +697,17 @@ sh terraform.sh import dev01 'module.aks[0].azurerm_kubernetes_cluster_node_pool
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.64.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | <= 3.2.1 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | 2.41.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
+| <a name="provider_local"></a> [local](#provider\_local) | 2.4.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
 
 ## Modules
 
@@ -673,16 +717,27 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [azuread_application.velero_application](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application) | resource |
+| [azuread_application_password.velero_application_password](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_password) | resource |
+| [azuread_service_principal.velero_sp](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
+| [azuread_service_principal_password.velero_principal_password](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal_password) | resource |
 | [azurerm_kubernetes_cluster.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster) | resource |
 | [azurerm_kubernetes_cluster_node_pool.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster_node_pool) | resource |
 | [azurerm_monitor_diagnostic_setting.aks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
 | [azurerm_monitor_metric_alert.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_role_assignment.aks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_role_assignment.velero_sp_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.vnet_outbound_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.vnet_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_storage_container.velero_backup_container](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
+| [local_file.credentials](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
 | [null_resource.b_series_not_ephemeral_system_check](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.b_series_not_ephemeral_user_check](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.enable_pod_identity](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.install_velero](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.schedule_backup](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
+| [azurerm_storage_account.velero_storage_account](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/storage_account) | data source |
 
 ## Inputs
 
@@ -713,6 +768,7 @@ No modules.
 | <a name="input_sec_log_analytics_workspace_id"></a> [sec\_log\_analytics\_workspace\_id](#input\_sec\_log\_analytics\_workspace\_id) | Log analytics workspace security (it should be in a different subscription). | `string` | `null` | no |
 | <a name="input_sec_storage_id"></a> [sec\_storage\_id](#input\_sec\_storage\_id) | Storage Account security (it should be in a different subscription). | `string` | `null` | no |
 | <a name="input_sku_tier"></a> [sku\_tier](#input\_sku\_tier) | (Optional) The SKU Tier that should be used for this Kubernetes Cluster. Possible values are Free and Paid (which includes the Uptime SLA) | `string` | `"Free"` | no |
+| <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | (Required if velero enabled) ID of the subscriiption | `string` | `null` | no |
 | <a name="input_system_node_pool_availability_zones"></a> [system\_node\_pool\_availability\_zones](#input\_system\_node\_pool\_availability\_zones) | (Optional) List of availability zones for system node pool | `list(string)` | <pre>[<br>  "1",<br>  "2",<br>  "3"<br>]</pre> | no |
 | <a name="input_system_node_pool_enable_host_encryption"></a> [system\_node\_pool\_enable\_host\_encryption](#input\_system\_node\_pool\_enable\_host\_encryption) | (Optional) Should the nodes in the Default Node Pool have host encryption enabled? Defaults to true. | `bool` | `true` | no |
 | <a name="input_system_node_pool_max_pods"></a> [system\_node\_pool\_max\_pods](#input\_system\_node\_pool\_max\_pods) | (Optional) The maximum number of pods that can run on each agent. Changing this forces a new resource to be created. | `number` | `250` | no |
@@ -727,6 +783,7 @@ No modules.
 | <a name="input_system_node_pool_ultra_ssd_enabled"></a> [system\_node\_pool\_ultra\_ssd\_enabled](#input\_system\_node\_pool\_ultra\_ssd\_enabled) | (Optional) Used to specify whether the UltraSSD is enabled in the Default Node Pool. Defaults to false. | `bool` | `false` | no |
 | <a name="input_system_node_pool_vm_size"></a> [system\_node\_pool\_vm\_size](#input\_system\_node\_pool\_vm\_size) | (Required) The size of the Virtual Machine, such as Standard\_B4ms or Standard\_D4s\_vX. See https://pagopa.atlassian.net/wiki/spaces/DEVOPS/pages/134840344/Best+practice+su+prodotti | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
+| <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id) | (Required if velero enabled) ID of the tenant | `string` | `null` | no |
 | <a name="input_upgrade_settings_max_surge"></a> [upgrade\_settings\_max\_surge](#input\_upgrade\_settings\_max\_surge) | The maximum number or percentage of nodes which will be added to the Node Pool size during an upgrade. | `string` | `"33%"` | no |
 | <a name="input_user_node_pool_availability_zones"></a> [user\_node\_pool\_availability\_zones](#input\_user\_node\_pool\_availability\_zones) | (Optional) List of availability zones for user node pool | `list(string)` | <pre>[<br>  "1",<br>  "2",<br>  "3"<br>]</pre> | no |
 | <a name="input_user_node_pool_enable_host_encryption"></a> [user\_node\_pool\_enable\_host\_encryption](#input\_user\_node\_pool\_enable\_host\_encryption) | (Optional) Should the nodes in the Default Node Pool have host encryption enabled? Defaults to true. | `bool` | `false` | no |
@@ -743,6 +800,13 @@ No modules.
 | <a name="input_user_node_pool_tags"></a> [user\_node\_pool\_tags](#input\_user\_node\_pool\_tags) | (Optional) A mapping of tags to assign to the Node Pool. | `map(any)` | `{}` | no |
 | <a name="input_user_node_pool_ultra_ssd_enabled"></a> [user\_node\_pool\_ultra\_ssd\_enabled](#input\_user\_node\_pool\_ultra\_ssd\_enabled) | (Optional) Used to specify whether the UltraSSD is enabled in the Default Node Pool. Defaults to false. | `bool` | `false` | no |
 | <a name="input_user_node_pool_vm_size"></a> [user\_node\_pool\_vm\_size](#input\_user\_node\_pool\_vm\_size) | (Required) The size of the Virtual Machine, such as Standard\_B4ms or Standard\_D4s\_vX. See https://pagopa.atlassian.net/wiki/spaces/DEVOPS/pages/134840344/Best+practice+su+prodotti | `string` | n/a | yes |
+| <a name="input_velero_backup_enabled"></a> [velero\_backup\_enabled](#input\_velero\_backup\_enabled) | (Optional) Enables the scheduled Velero backups of all the namespaces | `bool` | `false` | no |
+| <a name="input_velero_backup_schedule"></a> [velero\_backup\_schedule](#input\_velero\_backup\_schedule) | (Optional) Cron expression for the scheduled velero backup including all namespaces, in UTC timezone. ref: https://velero.io/docs/v1.9/backup-reference/ | `string` | `"0 3 * * *"` | no |
+| <a name="input_velero_backup_storage_account_name"></a> [velero\_backup\_storage\_account\_name](#input\_velero\_backup\_storage\_account\_name) | (Required if velero enabled) Name of the storage account where Velero keeps the backups | `string` | `null` | no |
+| <a name="input_velero_backup_storage_container_name"></a> [velero\_backup\_storage\_container\_name](#input\_velero\_backup\_storage\_container\_name) | (Required if velero enabled) Name of the storage container where Velero keeps the backups | `string` | `null` | no |
+| <a name="input_velero_backup_ttl"></a> [velero\_backup\_ttl](#input\_velero\_backup\_ttl) | (Optional) TTL for velero 'all namespaces' backup, expressed using '<number>h<number>m<number>s' format | `string` | `"360h0m0s"` | no |
+| <a name="input_velero_enabled"></a> [velero\_enabled](#input\_velero\_enabled) | (Optional) Installs Velero on the cluster | `bool` | `false` | no |
+| <a name="input_velero_volume_snapshot"></a> [velero\_volume\_snapshot](#input\_velero\_volume\_snapshot) | (Optional) Whether or not to execute the persistence volume snapshot. Disabled by default | `bool` | `false` | no |
 | <a name="input_vnet_id"></a> [vnet\_id](#input\_vnet\_id) | (Required) Virtual network id, where the k8s cluster is deployed. | `string` | n/a | yes |
 | <a name="input_vnet_subnet_id"></a> [vnet\_subnet\_id](#input\_vnet\_subnet\_id) | (Optional) The ID of a Subnet where the Kubernetes Node Pool should exist. Changing this forces a new resource to be created. | `string` | `null` | no |
 

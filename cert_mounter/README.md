@@ -25,6 +25,12 @@ module "cert_mounter" {
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.5.1, <= 2.7.1 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | <= 3.2.1 |
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.9.0 |
+
 ## Modules
 
 No modules.

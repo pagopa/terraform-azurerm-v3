@@ -343,57 +343,57 @@ variable "tags" {
 
 
 variable "velero_enabled" {
-  type = bool
+  type        = bool
   description = "(Optional) Installs Velero on the cluster"
-  default = false
+  default     = false
 }
 
 variable "velero_backup_enabled" {
-  type = bool
+  type        = bool
   description = "(Optional) Enables the scheduled Velero backups of all the namespaces"
-  default = false
+  default     = false
 }
 
 variable "velero_backup_storage_container_name" {
-  type = string
+  type        = string
   description = "(Required if velero enabled) Name of the storage container where Velero keeps the backups"
-  default = null
+  default     = null
 }
 
 
 variable "velero_backup_storage_account_name" {
-  type = string
+  type        = string
   description = "(Required if velero enabled) Name of the storage account where Velero keeps the backups"
-  default = null
+  default     = null
 }
 
 
 variable "subscription_id" {
-  type = string
+  type        = string
   description = "(Required if velero enabled) ID of the subscriiption"
-  default = null
+  default     = null
 }
 
 variable "tenant_id" {
-  type = string
+  type        = string
   description = "(Required if velero enabled) ID of the tenant"
-  default = null
+  default     = null
 }
 
 variable "velero_backup_schedule" {
-  type = string
-  description = "(Optional) Cron expression for the scheduled velero backup including all namespaces. ref: https://velero.io/docs/v1.9/backup-reference/"
-  default = "0 3 * * *"
+  type        = string
+  description = "(Optional) Cron expression for the scheduled velero backup including all namespaces, in UTC timezone. ref: https://velero.io/docs/v1.9/backup-reference/"
+  default     = "0 3 * * *"
 }
 
 variable "velero_backup_ttl" {
-  type = string
+  type        = string
   description = "(Optional) TTL for velero 'all namespaces' backup, expressed using '<number>h<number>m<number>s' format"
-  default = "360h0m0s"
+  default     = "360h0m0s"
 }
 
 variable "velero_volume_snapshot" {
-  type = bool
+  type        = bool
   description = "(Optional) Whether or not to execute the persistence volume snapshot. Disabled by default"
-  default = false
+  default     = false
 }

@@ -1,14 +1,12 @@
 resource "null_resource" "schedule_backup" {
-
   for_each = toset(var.namespaces)
 
   triggers = {
-    backup_name = var.backup_name
-    schedule = var.schedule
+    backup_name     = var.backup_name
+    schedule        = var.schedule
     volume_snapshot = var.volume_snapshot
-    ttl = var.ttl
-    namespace = each.value
-
+    ttl             = var.ttl
+    namespace       = each.value
   }
 
   provisioner "local-exec" {
@@ -18,10 +16,9 @@ resource "null_resource" "schedule_backup" {
     EOT
   }
 
-
   provisioner "local-exec" {
-    command     = <<EOT
-    velero create schedule ${self.triggers.backup_name}-${self.triggers.namespace} --schedule="${var.schedule}" --ttl ${var.ttl} --include-namespaces ${each.value}
+    command = <<EOT
+    velero schedule create ${self.triggers.backup_name}-${self.triggers.namespace} --schedule="${var.schedule}" --ttl ${var.ttl} --include-namespaces ${each.value}
     EOT
   }
 }
