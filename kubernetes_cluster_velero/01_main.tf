@@ -5,7 +5,7 @@ data "azurerm_storage_account" "velero_storage_account" {
 
 resource "azurerm_storage_container" "velero_backup_container" {
   name                  = var.backup_storage_container_name
-  storage_account_name  = data.azurerm_storage_account.velero_storage_account[0].name
+  storage_account_name  = data.azurerm_storage_account.velero_storage_account.name
   container_access_type = "private"
 
 }
