@@ -24,7 +24,6 @@ resource "azuread_application_password" "velero_application_password" {
 resource "azuread_service_principal" "velero_sp" {
   application_id = azuread_application.velero_application.application_id
   owners         = [data.azuread_client_config.current.object_id]
-  tags           = var.tags
 }
 
 resource "azuread_service_principal_password" "velero_principal_password" {
