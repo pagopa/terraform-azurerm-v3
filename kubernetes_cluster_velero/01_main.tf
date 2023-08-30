@@ -13,7 +13,7 @@ resource "azurerm_storage_container" "velero_backup_container" {
 data "azuread_client_config" "current" {}
 
 locals {
-  application_base_name = "velero-application"
+  application_base_name  = "velero-application"
   final_application_name = var.application_prefix == null ? local.application_base_name : "${var.application_prefix}-${local.application_base_name}"
 }
 

@@ -93,11 +93,13 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_application_prefix"></a> [application\_prefix](#input\_application\_prefix) | (Optional) Prefix used in the AD Application name, if provided | `string` | `null` | no |
 | <a name="input_backup_enabled"></a> [backup\_enabled](#input\_backup\_enabled) | (Optional) Enables the scheduled Velero backups of all the namespaces | `bool` | `false` | no |
 | <a name="input_backup_schedule"></a> [backup\_schedule](#input\_backup\_schedule) | (Optional) Cron expression for the scheduled velero backup including all namespaces, in UTC timezone. ref: https://velero.io/docs/v1.9/backup-reference/ | `string` | `"0 3 * * *"` | no |
 | <a name="input_backup_storage_account_name"></a> [backup\_storage\_account\_name](#input\_backup\_storage\_account\_name) | (Required) Name of the storage account where Velero keeps the backups | `string` | n/a | yes |
 | <a name="input_backup_storage_container_name"></a> [backup\_storage\_container\_name](#input\_backup\_storage\_container\_name) | (Required) Name of the storage container where Velero keeps the backups | `string` | n/a | yes |
 | <a name="input_backup_ttl"></a> [backup\_ttl](#input\_backup\_ttl) | (Optional) TTL for velero 'all namespaces' backup, expressed using '<number>h<number>m<number>s' format | `string` | `"360h0m0s"` | no |
+| <a name="input_plugin_version"></a> [plugin\_version](#input\_plugin\_version) | (Optional) Version for the velero plugin | `string` | `"v1.5.0"` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) Name of the resource group in which the backup storage account is located | `string` | n/a | yes |
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | (Required) ID of the subscriiption | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |

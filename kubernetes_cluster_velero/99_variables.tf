@@ -54,13 +54,13 @@ variable "volume_snapshot" {
 }
 
 variable "plugin_version" {
-  type = string
+  type        = string
   description = "(Optional) Version for the velero plugin"
-  default = "v1.5.0"
+  default     = "v1.5.0"
 }
 
 variable "application_prefix" {
-  type = string
+  type        = string
   description = "(Optional) Prefix used in the AD Application name, if provided"
-  default = null
+  default     = null
 }
