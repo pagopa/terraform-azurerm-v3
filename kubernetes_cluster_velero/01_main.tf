@@ -15,7 +15,6 @@ data "azuread_client_config" "current" {}
 resource "azuread_application" "velero_application" {
   display_name = "velero-application"
   owners       = [data.azuread_client_config.current.object_id]
-  tags         = var.tags
 }
 
 resource "azuread_application_password" "velero_application_password" {
