@@ -12,6 +12,11 @@ resource "azurerm_storage_container" "velero_backup_container" {
 
 data "azuread_client_config" "current" {}
 
+locals {
+  application_base_name = "velero-application"
+  final_application_name = var.application_prefix == null ? local.application_base_name : "${var.application_prefix}-${local.application_base_name}"
+}
+
 resource "azuread_application" "velero_application" {
   display_name = "velero-application"
   owners       = [data.azuread_client_config.current.object_id]
@@ -80,7 +85,7 @@ resource "null_resource" "install_velero" {
 
   provisioner "local-exec" {
     command = <<EOT
-    velero install --provider azure --plugins velero/velero-plugin-for-microsoft-azure:v1.5.0 \
+    velero install --provider azure --plugins velero/velero-plugin-for-microsoft-azure:${var.plugin_version} \
     --bucket ${azurerm_storage_container.velero_backup_container.name} \
     --secret-file ${local_file.credentials.filename} \
     --backup-location-config resourceGroup=${var.resource_group_name},storageAccount=${data.azurerm_storage_account.velero_storage_account.name},subscriptionId=${var.subscription_id} \

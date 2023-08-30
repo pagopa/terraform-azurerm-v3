@@ -52,3 +52,15 @@ variable "volume_snapshot" {
   description = "(Optional) Whether or not to execute the persistence volume snapshot. Disabled by default"
   default     = false
 }
+
+variable "plugin_version" {
+  type = string
+  description = "(Optional) Version for the velero plugin"
+  default = "v1.5.0"
+}
+
+variable "application_prefix" {
+  type = string
+  description = "(Optional) Prefix used in the AD Application name, if provided"
+  default = null
+}
