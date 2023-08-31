@@ -18,7 +18,7 @@ locals {
 }
 
 resource "azuread_application" "velero_application" {
-  display_name = "velero-application"
+  display_name = local.final_application_name
   owners       = [data.azuread_client_config.current.object_id]
 }
 
