@@ -64,3 +64,9 @@ variable "application_prefix" {
   description = "(Optional) Prefix used in the AD Application name, if provided"
   default     = null
 }
+
+variable "all_ns_backup_name" {
+  type        = string
+  description = "(Optional) Name assigned to the 'all namespaces' backup"
+  default     = "all-ns-backup"
+}

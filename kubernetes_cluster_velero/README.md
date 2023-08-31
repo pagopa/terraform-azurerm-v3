@@ -93,6 +93,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_all_ns_backup_name"></a> [all\_ns\_backup\_name](#input\_all\_ns\_backup\_name) | (Optional) Name assigned to the 'all namespaces' backup | `string` | `"all-ns-backup"` | no |
 | <a name="input_application_prefix"></a> [application\_prefix](#input\_application\_prefix) | (Optional) Prefix used in the AD Application name, if provided | `string` | `null` | no |
 | <a name="input_backup_enabled"></a> [backup\_enabled](#input\_backup\_enabled) | (Optional) Enables the scheduled Velero backups of all the namespaces | `bool` | `false` | no |
 | <a name="input_backup_schedule"></a> [backup\_schedule](#input\_backup\_schedule) | (Optional) Cron expression for the scheduled velero backup including all namespaces, in UTC timezone. ref: https://velero.io/docs/v1.9/backup-reference/ | `string` | `"0 3 * * *"` | no |

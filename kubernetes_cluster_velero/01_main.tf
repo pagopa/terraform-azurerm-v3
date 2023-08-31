@@ -103,9 +103,6 @@ resource "null_resource" "install_velero" {
   }
 }
 
-locals {
-  all_namespace_backup_name = "all-ns-backup"
-}
 
 resource "null_resource" "schedule_backup" {
   count      = var.backup_enabled ? 1 : 0
@@ -113,7 +110,7 @@ resource "null_resource" "schedule_backup" {
 
   triggers = {
     cron = var.backup_schedule
-    name = local.all_namespace_backup_name
+    name = var.all_ns_backup_name
   }
 
   provisioner "local-exec" {
@@ -125,7 +122,7 @@ resource "null_resource" "schedule_backup" {
 
   provisioner "local-exec" {
     command = <<EOT
-    velero create schedule ${local.all_namespace_backup_name} --schedule="${var.backup_schedule}" --ttl ${var.backup_ttl} --snapshot-volumes=${var.volume_snapshot}
+    velero create schedule ${var.all_ns_backup_name} --schedule="${var.backup_schedule}" --ttl ${var.backup_ttl} --snapshot-volumes=${var.volume_snapshot}
     EOT
   }
 }
