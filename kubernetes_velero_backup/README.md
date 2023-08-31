@@ -11,9 +11,12 @@ This module requires Velero to be installed; check module `kubernetes_cluster` f
 ```hcl
 module "aks_namespace_backup" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_velero_backup?ref=<version>"
-
+  
+  # required
   backup_name = "daily-backup"
   namespaces = ["my-namespace-name"]
+  
+  # optional
   ttl = "100h0m0s"
   schedule = "0 3 * * *" #refers to UTC timezone
   volume_snapshot = false
