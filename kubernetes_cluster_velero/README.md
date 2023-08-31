@@ -34,14 +34,21 @@ This module installs Velero on the configured aks cluster, and optionally schedu
   module "velero" {
     source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_cluster_velero?ref=<version>"
     
-    backup_enabled = false
+    # required
     backup_storage_account_name = module.velero_storage_account.name
     backup_storage_container_name = "velero-backup"
     resource_group_name = azurerm_resource_group.rg_velero_backup.name
     subscription_id = data.azurerm_subscription.current.subscription_id
     tenant_id = data.azurerm_subscription.current.tenant_id
+    
+    # optional
+    backup_enabled = false
     backup_ttl = "2h0m0s"
     backup_schedule = "0 12 * * *"
+    volume_snapshot = false
+    plugin_version = "v1.5.0"
+    application_prefix = "my-app"
+    all_ns_backup_name = "total-backup"
 
     tags = var.tags
   }
