@@ -11,7 +11,7 @@ variable "volume_snapshot" {
 
 variable "namespaces" {
   type        = list(string)
-  description = "(Required) List of namespace names to backup"
+  description = "(Required) List of namespace names to backup. Use 'ALL' for an all-namespaces backup"
 }
 
 variable "schedule" {

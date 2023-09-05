@@ -4,7 +4,7 @@ Module that allows the scheduling of velero backups for specific namespaces
 
 ## How to use it
 
-This module requires Velero to be installed; check module `kubernetes_cluster` for details on the installation
+This module requires Velero to be installed; check module `kubernetes_cluster_velero` for details on the installation
 
 ### Variable definition example
 
@@ -21,9 +21,11 @@ module "aks_namespace_backup" {
   schedule = "0 3 * * *" #refers to UTC timezone
   volume_snapshot = false
 }
-
 ```
 
+You can declare which namespace to backup, and you can also use the keyword `ALL` to trigger an all-namespaces backup. It can be used alongside the other namespace names 
+
+The final backup name will be: `backup_name`-`namespace_name`-`datetime`
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -55,7 +57,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_backup_name"></a> [backup\_name](#input\_backup\_name) | (Required) Name assigned to the backup, used as prefix for the namespace name | `string` | n/a | yes |
-| <a name="input_namespaces"></a> [namespaces](#input\_namespaces) | (Required) List of namespace names to backup | `list(string)` | n/a | yes |
+| <a name="input_namespaces"></a> [namespaces](#input\_namespaces) | (Required) List of namespace names to backup. Use 'ALL' for an all-namespaces backup | `list(string)` | n/a | yes |
 | <a name="input_schedule"></a> [schedule](#input\_schedule) | (Optional) Cron expression for the scheduled velero backup, in UTC timezone. ref: https://velero.io/docs/v1.9/backup-reference/ | `string` | `"0 3 * * *"` | no |
 | <a name="input_ttl"></a> [ttl](#input\_ttl) | (Optional) TTL for velero backup, expressed using '<number>h<number>m<number>s' format | `string` | `"360h0m0s"` | no |
 | <a name="input_volume_snapshot"></a> [volume\_snapshot](#input\_volume\_snapshot) | (Optional) Whether or not to execute the persistence volume snapshot. Disabled by default | `bool` | `false` | no |

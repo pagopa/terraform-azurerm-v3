@@ -1,24 +1,58 @@
-data "azurerm_storage_account" "velero_storage_account" {
-  name                = var.backup_storage_account_name
+module "velero_storage_account" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.2.0"
+
+  name                            = "${var.prefix}velerosa"
+  account_kind                    = "BlobStorage"
+  account_tier                    = "Standard"
+  account_replication_type        = "LRS"
+  blob_versioning_enabled         = true
+  resource_group_name             = var.resource_group_name
+  location                        = var.location
+  allow_nested_items_to_be_public = false
+  advanced_threat_protection      = true
+  enable_low_availability_alert   = false
+  public_network_access_enabled   = false
+  tags                            = var.tags
+}
+
+resource "azurerm_private_endpoint" "velero_storage_private_endpoint" {
+  count = 1
+
+  name                = "${var.prefix}-velerosa-private-endpoint"
+  location            = var.location
   resource_group_name = var.resource_group_name
+  subnet_id           = var.private_endpoint_subnet_id
+
+  private_dns_zone_group {
+    name                 = "${var.prefix}-velerosa-private-dns-zone-group"
+    private_dns_zone_ids = [var.storage_account_private_dns_zone_id]
+  }
+
+  private_service_connection {
+    name                           = "${var.prefix}-velerosa-private-service-connection"
+    private_connection_resource_id = module.velero_storage_account.id
+    is_manual_connection           = false
+    subresource_names              = ["blob"]
+  }
+
+  tags = var.tags
 }
 
 resource "azurerm_storage_container" "velero_backup_container" {
   name                  = var.backup_storage_container_name
-  storage_account_name  = data.azurerm_storage_account.velero_storage_account.name
+  storage_account_name  = module.velero_storage_account.name
   container_access_type = "private"
 
+  depends_on = [
+    azurerm_private_endpoint.velero_storage_private_endpoint
+  ]
 }
 
 data "azuread_client_config" "current" {}
 
-locals {
-  application_base_name  = "velero-application"
-  final_application_name = var.application_prefix == null ? local.application_base_name : "${var.application_prefix}-${local.application_base_name}"
-}
 
 resource "azuread_application" "velero_application" {
-  display_name = local.final_application_name
+  display_name = "${var.prefix}-velero-application"
   owners       = [data.azuread_client_config.current.object_id]
 }
 
@@ -35,9 +69,15 @@ resource "azuread_service_principal_password" "velero_principal_password" {
   service_principal_id = azuread_service_principal.velero_sp.object_id
 }
 
-resource "azurerm_role_assignment" "velero_sp_role" {
+resource "azurerm_role_assignment" "velero_sp_aks_role" {
   scope                = "/subscriptions/${var.subscription_id}"
-  role_definition_name = "Contributor"
+  role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
+  principal_id         = azuread_service_principal.velero_sp.object_id
+}
+
+resource "azurerm_role_assignment" "velero_sp_storage_role" {
+  scope                = module.velero_storage_account.id
+  role_definition_name = "Storage Account Contributor"
   principal_id         = azuread_service_principal.velero_sp.object_id
 }
 
@@ -67,7 +107,7 @@ resource "null_resource" "install_velero" {
 
   triggers = {
     bucket          = azurerm_storage_container.velero_backup_container.name
-    storage_account = data.azurerm_storage_account.velero_storage_account.id
+    storage_account = module.velero_storage_account.id
     rg              = var.resource_group_name
     subscription_id = var.subscription_id
     tenant_id       = var.tenant_id
@@ -88,7 +128,7 @@ resource "null_resource" "install_velero" {
     velero install --provider azure --plugins velero/velero-plugin-for-microsoft-azure:${var.plugin_version} \
     --bucket ${azurerm_storage_container.velero_backup_container.name} \
     --secret-file ${local_file.credentials.filename} \
-    --backup-location-config resourceGroup=${var.resource_group_name},storageAccount=${data.azurerm_storage_account.velero_storage_account.name},subscriptionId=${var.subscription_id} \
+    --backup-location-config resourceGroup=${var.resource_group_name},storageAccount=${module.velero_storage_account.name},subscriptionId=${var.subscription_id} \
     EOT
   }
 
@@ -104,27 +144,5 @@ resource "null_resource" "install_velero" {
 }
 
 
-resource "null_resource" "schedule_backup" {
-  count      = var.backup_enabled ? 1 : 0
-  depends_on = [null_resource.install_velero]
-
-  triggers = {
-    cron = var.backup_schedule
-    name = var.all_ns_backup_name
-  }
-
-  provisioner "local-exec" {
-    when    = destroy
-    command = <<EOT
-    velero schedule delete ${self.triggers.name} --confirm
-    EOT
-  }
-
-  provisioner "local-exec" {
-    command = <<EOT
-    velero create schedule ${var.all_ns_backup_name} --schedule="${var.backup_schedule}" --ttl ${var.backup_ttl} --snapshot-volumes=${var.volume_snapshot}
-    EOT
-  }
-}
 
 
