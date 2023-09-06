@@ -14,11 +14,6 @@ variable "backup_storage_container_name" {
 }
 
 
-variable "backup_storage_account_name" {
-  type        = string
-  description = "(Required) Name of the storage account where Velero keeps the backups"
-}
-
 
 variable "subscription_id" {
   type        = string

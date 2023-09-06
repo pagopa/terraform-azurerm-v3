@@ -39,7 +39,7 @@ resource "azurerm_private_endpoint" "velero_storage_private_endpoint" {
 }
 
 resource "azurerm_storage_container" "velero_backup_container" {
-  name                  = var.backup_storage_container_name
+  name                  = "${var.prefix}-velero-backup"
   storage_account_name  = module.velero_storage_account.name
   container_access_type = "private"
 
