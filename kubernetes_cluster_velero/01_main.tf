@@ -87,7 +87,7 @@ resource "azurerm_role_assignment" "velero_sp_storage_role" {
 
 resource "local_file" "credentials" {
 
-  content = templatefile("./velero-credentials.tpl", {
+  content = templatefile("${path.module}/velero-credentials.tpl", {
     subscription_id = var.subscription_id
     tenant_id       = var.tenant_id
     client_id       = azuread_application.velero_application.application_id
