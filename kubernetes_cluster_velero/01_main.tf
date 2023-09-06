@@ -74,7 +74,7 @@ resource "azuread_service_principal_password" "velero_principal_password" {
 }
 
 resource "azurerm_role_assignment" "velero_sp_aks_role" {
-  scope                = "/subscriptions/${var.subscription_id}"
+  scope                = var.aks_cluster_id
   role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
   principal_id         = azuread_service_principal.velero_sp.object_id
 }
