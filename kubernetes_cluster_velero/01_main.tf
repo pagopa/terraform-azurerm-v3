@@ -1,7 +1,11 @@
+locals {
+  sa_prefix = replace(replace(var.prefix, "-", ""), "_", "")
+}
+
 module "velero_storage_account" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.2.0"
 
-  name                            = "${var.prefix}velerosa"
+  name                            = "${local.sa_prefix}velerosa"
   account_kind                    = "BlobStorage"
   account_tier                    = "Standard"
   account_replication_type        = "LRS"
