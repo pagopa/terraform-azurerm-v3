@@ -25,13 +25,16 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
     tenant_id = data.azurerm_subscription.current.tenant_id
     prefix = "my-app"
     location = var.location
-    storage_account_private_dns_zone_id = azurerm_private_dns_zone.storage_account.id
-    private_endpoint_subnet_id = module.private_endpoint_snet.id
     aks_cluster_name = module.aks.name
     aks_cluster_rg = azurerm_resource_group.rg_aks.name
     
     # optional
     plugin_version = "v1.7.1"
+    use_storage_private_endpoint = true
+    
+    # required if use_storage_private_endpoint = true
+    storage_account_private_dns_zone_id = azurerm_private_dns_zone.storage_account.id
+    private_endpoint_subnet_id = module.private_endpoint_snet.id
 
     tags = var.tags
   }
@@ -92,12 +95,13 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
 | <a name="input_location"></a> [location](#input\_location) | (Required) Resource location | `string` | n/a | yes |
 | <a name="input_plugin_version"></a> [plugin\_version](#input\_plugin\_version) | (Optional) Version for the velero plugin | `string` | `"v1.7.1"` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | (Required) Prefix used in the Velero dedicated resource names | `string` | n/a | yes |
-| <a name="input_private_endpoint_subnet_id"></a> [private\_endpoint\_subnet\_id](#input\_private\_endpoint\_subnet\_id) | (Required) Subnet id where to create the private endpoint for backups storage account | `string` | n/a | yes |
+| <a name="input_private_endpoint_subnet_id"></a> [private\_endpoint\_subnet\_id](#input\_private\_endpoint\_subnet\_id) | (Optional) Subnet id where to create the private endpoint for backups storage account | `string` | `null` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) Name of the resource group in which the backup storage account is located | `string` | n/a | yes |
-| <a name="input_storage_account_private_dns_zone_id"></a> [storage\_account\_private\_dns\_zone\_id](#input\_storage\_account\_private\_dns\_zone\_id) | (Required) Storage account private dns zone id, used in the private endpoint creation | `string` | n/a | yes |
+| <a name="input_storage_account_private_dns_zone_id"></a> [storage\_account\_private\_dns\_zone\_id](#input\_storage\_account\_private\_dns\_zone\_id) | (Optional) Storage account private dns zone id, used in the private endpoint creation | `string` | `null` | no |
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | (Required) ID of the subscription | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
 | <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id) | (Required) ID of the tenant | `string` | n/a | yes |
+| <a name="input_use_storage_private_endpoint"></a> [use\_storage\_private\_endpoint](#input\_use\_storage\_private\_endpoint) | (Optional) Whether to make the storage account private and use a private endpoint to connect | `bool` | `true` | no |
 
 ## Outputs
 

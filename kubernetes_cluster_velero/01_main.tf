@@ -20,12 +20,12 @@ module "velero_storage_account" {
   allow_nested_items_to_be_public = false
   advanced_threat_protection      = true
   enable_low_availability_alert   = false
-  public_network_access_enabled   = false
+  public_network_access_enabled   = var.use_storage_private_endpoint ? false : true
   tags                            = var.tags
 }
 
 resource "azurerm_private_endpoint" "velero_storage_private_endpoint" {
-  count = 1
+  count = var.use_storage_private_endpoint ? 1 : 0
 
   name                = "${var.prefix}-velerosa-private-endpoint"
   location            = var.location
@@ -52,9 +52,7 @@ resource "azurerm_storage_container" "velero_backup_container" {
   storage_account_name  = module.velero_storage_account.name
   container_access_type = "private"
 
-  depends_on = [
-    azurerm_private_endpoint.velero_storage_private_endpoint
-  ]
+  depends_on = var.use_storage_private_endpoint ? [azurerm_private_endpoint.velero_storage_private_endpoint] : []
 }
 
 data "azuread_client_config" "current" {}

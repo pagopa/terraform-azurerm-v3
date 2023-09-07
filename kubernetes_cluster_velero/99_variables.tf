@@ -52,10 +52,18 @@ variable "location" {
 
 variable "storage_account_private_dns_zone_id" {
   type        = string
-  description = "(Required) Storage account private dns zone id, used in the private endpoint creation"
+  description = "(Optional) Storage account private dns zone id, used in the private endpoint creation"
+  default     = null
 }
 
 variable "private_endpoint_subnet_id" {
   type        = string
-  description = "(Required) Subnet id where to create the private endpoint for backups storage account"
+  description = "(Optional) Subnet id where to create the private endpoint for backups storage account"
+  default     = null
+}
+
+variable "use_storage_private_endpoint" {
+  type        = bool
+  description = "(Optional) Whether to make the storage account private and use a private endpoint to connect"
+  default     = true
 }
