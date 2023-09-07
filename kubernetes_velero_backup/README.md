@@ -1,6 +1,9 @@
 # kubernetes velero backup
 
 Module that allows the scheduling of velero backups for specific namespaces
+Note that this module selects the correct cluster to work on using the command `kubectl config use-context "<cluster_name>"`, so you should have that context available in your `.kube` folder.
+This is achievable using the utility script `k8setup.sh` included in the aks-setup folder of your IaC project
+
 
 ## How to use it
 
@@ -13,6 +16,7 @@ module "aks_namespace_backup" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_velero_backup?ref=<version>"
   
   # required
+  aks_cluster_name = module.aks.name
   backup_name = "daily-backup"
   namespaces = ["my-namespace-name"]
   
@@ -56,6 +60,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_aks_cluster_name"></a> [aks\_cluster\_name](#input\_aks\_cluster\_name) | (Required) Name of the aks cluster on which Velero will be installed | `string` | n/a | yes |
 | <a name="input_backup_name"></a> [backup\_name](#input\_backup\_name) | (Required) Name assigned to the backup, used as prefix for the namespace name | `string` | n/a | yes |
 | <a name="input_namespaces"></a> [namespaces](#input\_namespaces) | (Required) List of namespace names to backup. Use 'ALL' for an all-namespaces backup | `list(string)` | n/a | yes |
 | <a name="input_schedule"></a> [schedule](#input\_schedule) | (Optional) Cron expression for the scheduled velero backup, in UTC timezone. ref: https://velero.io/docs/v1.9/backup-reference/ | `string` | `"0 3 * * *"` | no |

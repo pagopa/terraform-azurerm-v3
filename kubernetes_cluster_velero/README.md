@@ -1,7 +1,8 @@
 # kubernetes_cluster_velero
 
 This module installs Velero on the configured aks cluster
-Note that you must have the proper cluster selected using `kubectl config use-context "<cluster_name>"` or using the utility script `k8setup.sh` usually found in the IaC project's aks-setup folder
+Note that this module selects the correct cluster to work on using the command `kubectl config use-context "<cluster_name>"`, so you should have that context available in your `.kube` folder.
+This is achievable using the utility script `k8setup.sh` included in the aks-setup folder of your IaC project
 
 
 ## How to use it
@@ -26,10 +27,11 @@ Note that you must have the proper cluster selected using `kubectl config use-co
     location = var.location
     storage_account_private_dns_zone_id = azurerm_private_dns_zone.storage_account.id
     private_endpoint_subnet_id = module.private_endpoint_snet.id
-    aks_cluster_id = module.aks.id
+    aks_cluster_name = module.aks.name
+    aks_cluster_rg = azurerm_resource_group.rg_aks.name
     
     # optional
-    plugin_version = "v1.5.0"
+    plugin_version = "v1.7.1"
 
     tags = var.tags
   }
@@ -78,16 +80,17 @@ Note that you must have the proper cluster selected using `kubectl config use-co
 | [local_file.credentials](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
 | [null_resource.install_velero](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
+| [azurerm_kubernetes_cluster.aks_cluster](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/kubernetes_cluster) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aks_cluster_id"></a> [aks\_cluster\_id](#input\_aks\_cluster\_id) | (Required) AKS cluster id used in role assignment to velero sp | `string` | n/a | yes |
-| <a name="input_backup_storage_account_name"></a> [backup\_storage\_account\_name](#input\_backup\_storage\_account\_name) | (Required) Name of the storage account where Velero keeps the backups | `string` | n/a | yes |
+| <a name="input_aks_cluster_name"></a> [aks\_cluster\_name](#input\_aks\_cluster\_name) | (Required) Name of the aks cluster on which Velero will be installed | `string` | n/a | yes |
+| <a name="input_aks_cluster_rg"></a> [aks\_cluster\_rg](#input\_aks\_cluster\_rg) | (Required) AKS cluster resource group name | `string` | n/a | yes |
 | <a name="input_backup_storage_container_name"></a> [backup\_storage\_container\_name](#input\_backup\_storage\_container\_name) | (Required) Name of the storage container where Velero keeps the backups | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Resource location | `string` | n/a | yes |
-| <a name="input_plugin_version"></a> [plugin\_version](#input\_plugin\_version) | (Optional) Version for the velero plugin | `string` | `"v1.5.0"` | no |
+| <a name="input_plugin_version"></a> [plugin\_version](#input\_plugin\_version) | (Optional) Version for the velero plugin | `string` | `"v1.7.1"` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | (Required) Prefix used in the Velero dedicated resource names | `string` | n/a | yes |
 | <a name="input_private_endpoint_subnet_id"></a> [private\_endpoint\_subnet\_id](#input\_private\_endpoint\_subnet\_id) | (Required) Subnet id where to create the private endpoint for backups storage account | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) Name of the resource group in which the backup storage account is located | `string` | n/a | yes |

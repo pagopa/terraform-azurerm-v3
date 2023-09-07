@@ -116,15 +116,15 @@ resource "null_resource" "install_velero" {
   depends_on = [local_file.credentials]
 
   triggers = {
-    bucket          = azurerm_storage_container.velero_backup_container.name
-    storage_account = module.velero_storage_account.name
-    subscription_id = var.subscription_id
-    tenant_id       = var.tenant_id
-    client_id       = azuread_application.velero_application.application_id
-    client_secret   = azuread_application_password.velero_application_password.value
-    resource_group  = var.resource_group_name
-    plugin_version  = var.plugin_version
-    cluster_name    = var.aks_cluster_name
+    bucket                = azurerm_storage_container.velero_backup_container.name
+    storage_account       = module.velero_storage_account.name
+    subscription_id       = var.subscription_id
+    tenant_id             = var.tenant_id
+    client_id             = azuread_application.velero_application.application_id
+    client_secret         = azuread_application_password.velero_application_password.value
+    resource_group        = var.resource_group_name
+    plugin_version        = var.plugin_version
+    cluster_name          = var.aks_cluster_name
     credentials_file_name = local_file.credentials.filename
   }
 

@@ -25,3 +25,8 @@ variable "ttl" {
   description = "(Optional) TTL for velero backup, expressed using '<number>h<number>m<number>s' format"
   default     = "360h0m0s"
 }
+
+variable "aks_cluster_name" {
+  type        = string
+  description = "(Required) Name of the aks cluster on which Velero will be installed"
+}

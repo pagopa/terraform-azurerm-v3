@@ -14,12 +14,12 @@ variable "backup_storage_container_name" {
 }
 
 variable "aks_cluster_name" {
-  type = string
+  type        = string
   description = "(Required) Name of the aks cluster on which Velero will be installed"
 }
 
 variable "aks_cluster_rg" {
-  type = string
+  type        = string
   description = "(Required) AKS cluster resource group name"
 }
 
@@ -36,7 +36,7 @@ variable "tenant_id" {
 variable "plugin_version" {
   type        = string
   description = "(Optional) Version for the velero plugin"
-  default     = "v1.5.0"
+  default     = "v1.7.1"
 }
 
 variable "prefix" {
@@ -58,10 +58,4 @@ variable "storage_account_private_dns_zone_id" {
 variable "private_endpoint_subnet_id" {
   type        = string
   description = "(Required) Subnet id where to create the private endpoint for backups storage account"
-}
-
-
-variable "aks_cluster_id" {
-  type        = string
-  description = "(Required) AKS cluster id used in role assignment to velero sp"
 }

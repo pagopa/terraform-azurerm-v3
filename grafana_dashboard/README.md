@@ -41,8 +41,8 @@ example:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | <= 3.64.0 |
-| <a name="provider_grafana.cloud"></a> [grafana.cloud](#provider\_grafana.cloud) | >= 2.2.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.64.0 |
+| <a name="provider_grafana.cloud"></a> [grafana.cloud](#provider\_grafana.cloud) | 2.2.0 |
 
 ## Modules
 
