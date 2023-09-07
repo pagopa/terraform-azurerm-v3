@@ -2,6 +2,11 @@ locals {
   sa_prefix = replace(replace(var.prefix, "-", ""), "_", "")
 }
 
+data "azurerm_kubernetes_cluster" "aks_cluster" {
+  name                = var.aks_cluster_name
+  resource_group_name = var.aks_cluster_rg
+}
+
 module "velero_storage_account" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.2.0"
 
@@ -74,7 +79,7 @@ resource "azuread_service_principal_password" "velero_principal_password" {
 }
 
 resource "azurerm_role_assignment" "velero_sp_aks_role" {
-  scope                = var.aks_cluster_id
+  scope                = data.azurerm_kubernetes_cluster.aks_cluster.id #var.aks_cluster_id
   role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
   principal_id         = azuread_service_principal.velero_sp.object_id
 }
@@ -106,8 +111,17 @@ resource "local_file" "credentials" {
   }
 }
 
+resource "null_resource" "switch_context" {
+  provisioner "local-exec" {
+    command = <<EOT
+    kubectl config use-context "${var.aks_cluster_name}"
+    EOT
+  }
+}
+
+
 resource "null_resource" "install_velero" {
-  depends_on = [local_file.credentials]
+  depends_on = [local_file.credentials, null_resource.switch_context]
 
   triggers = {
     bucket          = azurerm_storage_container.velero_backup_container.name
@@ -118,6 +132,8 @@ resource "null_resource" "install_velero" {
     client_id       = azuread_application.velero_application.application_id
     client_secret   = azuread_application_password.velero_application_password.value
     resource_group  = var.resource_group_name
+    plugin_version  = var.plugin_version
+    cluster_name    = var.aks_cluster_name
   }
 
   provisioner "local-exec" {

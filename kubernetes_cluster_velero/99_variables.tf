@@ -13,7 +13,15 @@ variable "backup_storage_container_name" {
   description = "(Required) Name of the storage container where Velero keeps the backups"
 }
 
+variable "aks_cluster_name" {
+  type = string
+  description = "(Required) Name of the aks cluster on which Velero will be installed"
+}
 
+variable "aks_cluster_rg" {
+  type = string
+  description = "(Required) AKS cluster resource group name"
+}
 
 variable "subscription_id" {
   type        = string

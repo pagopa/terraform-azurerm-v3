@@ -1,7 +1,7 @@
 # kubernetes_cluster_velero
 
-This module installs Velero on the configured aks cluster, and optionally schedules the backup for all the namespaces
-
+This module installs Velero on the configured aks cluster
+Note that you must have the proper cluster selected using `kubectl config use-context "<cluster_name>"` or using the utility script `k8setup.sh` usually found in the IaC project's aks-setup folder
 
 
 ## How to use it
@@ -12,7 +12,6 @@ This module installs Velero on the configured aks cluster, and optionally schedu
     location = var.location
     tags     = var.tags
   }
-
  
   module "velero" {
     source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_cluster_velero?ref=<version>"
