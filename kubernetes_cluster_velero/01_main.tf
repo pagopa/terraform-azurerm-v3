@@ -111,23 +111,9 @@ resource "local_file" "credentials" {
   }
 }
 
-resource "null_resource" "switch_context" {
-  provisioner "local-exec" {
-    command = <<EOT
-    kubectl config use-context "${var.aks_cluster_name}"
-    EOT
-  }
-
-  lifecycle {
-    replace_triggered_by = [
-      null_resource.install_velero
-    ]
-  }
-}
-
 
 resource "null_resource" "install_velero" {
-  depends_on = [local_file.credentials, null_resource.switch_context]
+  depends_on = [local_file.credentials]
 
   triggers = {
     bucket          = azurerm_storage_container.velero_backup_container.name
@@ -145,12 +131,14 @@ resource "null_resource" "install_velero" {
   provisioner "local-exec" {
     when    = destroy
     command = <<EOT
+    kubectl config use-context "${var.aks_cluster_name}" && \
     velero uninstall --force
     EOT
   }
 
   provisioner "local-exec" {
     command = <<EOT
+    kubectl config use-context "${var.aks_cluster_name}" && \
     velero install --provider azure --plugins velero/velero-plugin-for-microsoft-azure:${var.plugin_version} \
     --bucket ${azurerm_storage_container.velero_backup_container.name} \
     --secret-file ${local_file.credentials.filename} \
