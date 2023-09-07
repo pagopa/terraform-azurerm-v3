@@ -52,7 +52,7 @@ resource "azurerm_storage_container" "velero_backup_container" {
   storage_account_name  = module.velero_storage_account.name
   container_access_type = "private"
 
-  depends_on = var.use_storage_private_endpoint ? [azurerm_private_endpoint.velero_storage_private_endpoint] : []
+  depends_on =  [azurerm_private_endpoint.velero_storage_private_endpoint]
 }
 
 data "azuread_client_config" "current" {}
