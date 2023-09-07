@@ -41,13 +41,6 @@ module "domain_pod_identity" {
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | <= 3.2.1 |
 
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.71.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
-
 ## Modules
 
 No modules.
