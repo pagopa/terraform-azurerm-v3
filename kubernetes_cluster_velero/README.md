@@ -98,6 +98,8 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
 | <a name="input_private_endpoint_subnet_id"></a> [private\_endpoint\_subnet\_id](#input\_private\_endpoint\_subnet\_id) | (Optional) Subnet id where to create the private endpoint for backups storage account | `string` | `null` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) Name of the resource group in which the backup storage account is located | `string` | n/a | yes |
 | <a name="input_storage_account_private_dns_zone_id"></a> [storage\_account\_private\_dns\_zone\_id](#input\_storage\_account\_private\_dns\_zone\_id) | (Optional) Storage account private dns zone id, used in the private endpoint creation | `string` | `null` | no |
+| <a name="input_storage_account_replication_type"></a> [storage\_account\_replication\_type](#input\_storage\_account\_replication\_type) | (Optional) Replication type used for the backup storage account | `string` | `"ZRS"` | no |
+| <a name="input_storage_account_tier"></a> [storage\_account\_tier](#input\_storage\_account\_tier) | (Optional) Tier used for the backup storage account | `string` | `"Standard"` | no |
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | (Required) ID of the subscription | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
 | <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id) | (Required) ID of the tenant | `string` | n/a | yes |

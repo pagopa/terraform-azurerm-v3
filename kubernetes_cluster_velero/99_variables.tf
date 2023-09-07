@@ -67,3 +67,16 @@ variable "use_storage_private_endpoint" {
   description = "(Optional) Whether to make the storage account private and use a private endpoint to connect"
   default     = true
 }
+
+
+variable "storage_account_tier" {
+  type        = string
+  description = "(Optional) Tier used for the backup storage account"
+  default     = "Standard"
+}
+
+variable "storage_account_replication_type" {
+  type        = string
+  description = "(Optional) Replication type used for the backup storage account"
+  default     = "ZRS"
+}
