@@ -117,6 +117,12 @@ resource "null_resource" "switch_context" {
     kubectl config use-context "${var.aks_cluster_name}"
     EOT
   }
+
+  lifecycle {
+    replace_triggered_by = [
+      null_resource.install_velero
+    ]
+  }
 }
 
 
