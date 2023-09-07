@@ -117,8 +117,7 @@ resource "null_resource" "install_velero" {
 
   triggers = {
     bucket          = azurerm_storage_container.velero_backup_container.name
-    storage_account = module.velero_storage_account.id
-    rg              = var.resource_group_name
+    storage_account = module.velero_storage_account.name
     subscription_id = var.subscription_id
     tenant_id       = var.tenant_id
     client_id       = azuread_application.velero_application.application_id
@@ -126,23 +125,24 @@ resource "null_resource" "install_velero" {
     resource_group  = var.resource_group_name
     plugin_version  = var.plugin_version
     cluster_name    = var.aks_cluster_name
+    credentials_file_name = local_file.credentials.filename
   }
 
   provisioner "local-exec" {
     when    = destroy
     command = <<EOT
-    kubectl config use-context "${var.aks_cluster_name}" && \
+    kubectl config use-context "${self.triggers.cluster_name}" && \
     velero uninstall --force
     EOT
   }
 
   provisioner "local-exec" {
     command = <<EOT
-    kubectl config use-context "${var.aks_cluster_name}" && \
-    velero install --provider azure --plugins velero/velero-plugin-for-microsoft-azure:${var.plugin_version} \
-    --bucket ${azurerm_storage_container.velero_backup_container.name} \
-    --secret-file ${local_file.credentials.filename} \
-    --backup-location-config resourceGroup=${var.resource_group_name},storageAccount=${module.velero_storage_account.name},subscriptionId=${var.subscription_id} \
+    kubectl config use-context "${self.triggers.cluster_name}" && \
+    velero install --provider azure --plugins velero/velero-plugin-for-microsoft-azure:${self.triggers.plugin_version} \
+    --bucket ${self.triggers.bucket} \
+    --secret-file ${self.triggers.credentials_file_name} \
+    --backup-location-config resourceGroup=${self.triggers.resource_group},storageAccount=${self.triggers.storage_account},subscriptionId=${self.triggers.subscription_id} \
     EOT
   }
 
