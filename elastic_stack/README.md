@@ -19,14 +19,6 @@ TODO
 | <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | 1.14.0 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | <= 2.17.0 |
 
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | 1.14.0 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.17.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
-
 ## Modules
 
 No modules.

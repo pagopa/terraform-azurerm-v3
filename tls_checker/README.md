@@ -48,13 +48,6 @@ if you use a version of the module <= 6.6.0 please change this params names:
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | <= 2.7.1 |
 
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.71.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.7.1 |
-
 ## Modules
 
 No modules.
