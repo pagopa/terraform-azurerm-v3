@@ -13,11 +13,13 @@ By default the modules have a default set of metric alerts.
 * If you want is possible to add new **custom metrics alerts** using the varible: `custom_metric_alerts`
 * Or override the **default metrics alert** using the variable: `default_metric_alerts`. (is prefered to add new metrics)
 
+
+
 ## How to use it
 
 ### Variable definition example
 
-```ts
+```hcl
 #
 # ⛴ AKS PROD
 #
@@ -437,7 +439,7 @@ variable "keda_helm_version" {
 
 ### Variables values
 
-```ts
+```hcl
 rg_vnet_aks_name           = "dvopla-d-neu-dev01-aks-vnet-rg"
 vnet_aks_name              = "dvopla-d-neu-dev01-aks-vnet"
 public_ip_aksoutbound_name = "dvopla-d-dev01-aksoutbound-pip-1"
@@ -484,7 +486,7 @@ keda_helm_version        = "2.6.2"
 
 ### AKS Cluster
 
-```ts
+```hcl
   resource "azurerm_resource_group" "rg_aks" {
     name     = local.aks_rg_name
     location = var.location
@@ -552,7 +554,7 @@ keda_helm_version        = "2.6.2"
       service_cidr       = "10.250.0.0/16"
     }
     # end network
-
+    
     rbac_enabled        = true
     aad_admin_group_ids = var.env_short == "d" ? [data.azuread_group.adgroup_admin.object_id, data.azuread_group.adgroup_developers.object_id, data.azuread_group.adgroup_externals.object_id] : [data.azuread_group.adgroup_admin.object_id]
 
