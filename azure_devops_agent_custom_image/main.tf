@@ -5,6 +5,10 @@ locals {
 
 data "azuread_client_config" "current" {}
 
+data "azurerm_resource_group" "target_resource_group" {
+  name = var.resource_group_name
+}
+
 resource "azuread_application" "packer_application" {
   display_name = "${var.prefix}-packer-application"
   owners       = [data.azuread_client_config.current.object_id]
@@ -20,12 +24,19 @@ resource "azuread_service_principal" "packer_sp" {
   owners         = [data.azuread_client_config.current.object_id]
 }
 
-resource "azuread_service_principal_password" "velero_principal_password" {
+resource "azuread_service_principal_password" "packer_principal_password" {
   service_principal_id = azuread_service_principal.packer_sp.object_id
 }
 
-resource "azurerm_role_assignment" "velero_sp_aks_role" {
+resource "azurerm_role_assignment" "packer_sp_sub_reader_role" {
   scope                = "/subscriptions/${var.subscription_id}"
+  role_definition_name = "Reader"
+  principal_id         = azuread_service_principal.packer_sp.object_id
+}
+
+
+resource "azurerm_role_assignment" "packer_sp_aks_role" {
+  scope                = data.azurerm_resource_group.target_resource_group.id
   role_definition_name = "Contributor"
   principal_id         = azuread_service_principal.packer_sp.object_id
 }
