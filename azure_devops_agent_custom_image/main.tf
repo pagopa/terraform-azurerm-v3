@@ -41,6 +41,11 @@ resource "azurerm_role_assignment" "packer_sp_rg_role" {
   principal_id         = azuread_service_principal.packer_sp.object_id
 }
 
+resource "azurerm_resource_group" "tmp_rg" {
+  location = var.location
+  name     = var.tmp_rg_name
+}
+
 resource "azurerm_role_assignment" "packer_sp_tmp_rg_role" {
   scope                = "/subscriptions/${var.subscription_id}/resourceGroups/${var.tmp_rg_name}"
   role_definition_name = "Owner"
