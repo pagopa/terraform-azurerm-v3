@@ -23,7 +23,7 @@ source "azure-arm" "ubuntu" {
 
   build_resource_group_name          = var.tmp_rg_name
 
-  location                          = var.location
+#  location                          = var.location
   ssh_username                      = "packer"
   ssh_password                      = "password"
   communicator                      = "ssh"
