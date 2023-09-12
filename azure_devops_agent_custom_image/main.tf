@@ -78,8 +78,8 @@ resource "null_resource" "build_packer_image" {
     -var "vm_sku=${var.vm_sku}" \
     -var "target_image_name=${local.target_image_name}" \
     -var "location=${var.location}" \
-    -var "client_id=${azuread_service_principal.packer_sp.application_id}" \
-    -var "client_secret=${azuread_service_principal_password.packer_principal_password.value}" \
+    -var "client_id=${azuread_application.packer_application.application_id}" \
+    -var "client_secret=${azuread_application_password.velero_application_password.value}" \
     .
     EOT
   }
