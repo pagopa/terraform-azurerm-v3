@@ -67,3 +67,8 @@ variable "prefix" {
   type = string
   description = "(Required) prefix used in resource creation"
 }
+variable "tmp_rg_name" {
+  type = string
+  description = "(Optional) Packer build temporary resource group name"
+  default = "tmp-packer-build"
+}

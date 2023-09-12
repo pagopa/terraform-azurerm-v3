@@ -21,6 +21,8 @@ source "azure-arm" "ubuntu" {
   managed_image_name                = "${var.target_image_name}"
   managed_image_resource_group_name = var.target_resource_group_name
 
+  temp_resource_group_name          = var.tmp_rg_name
+
   location                          = var.location
   ssh_username                      = "packer"
   ssh_password                      = "password"

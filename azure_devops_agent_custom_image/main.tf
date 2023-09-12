@@ -35,8 +35,14 @@ resource "azurerm_role_assignment" "packer_sp_sub_reader_role" {
 }
 
 
-resource "azurerm_role_assignment" "packer_sp_aks_role" {
+resource "azurerm_role_assignment" "packer_sp_rg_role" {
   scope                = data.azurerm_resource_group.target_resource_group.id
+  role_definition_name = "Contributor"
+  principal_id         = azuread_service_principal.packer_sp.object_id
+}
+
+resource "azurerm_role_assignment" "packer_sp_tmp_rg_role" {
+  scope                = "/subscriptions/${var.subscription_id}/resourcegroups/${var.tmp_rg_name}"
   role_definition_name = "Contributor"
   principal_id         = azuread_service_principal.packer_sp.object_id
 }
@@ -80,6 +86,7 @@ resource "null_resource" "build_packer_image" {
     -var "location=${var.location}" \
     -var "client_id=${azuread_application.packer_application.application_id}" \
     -var "client_secret=${azuread_application_password.velero_application_password.value}" \
+    -var "tmp_rg_name=${var.tmp_rg_name}" \
     .
     EOT
   }
