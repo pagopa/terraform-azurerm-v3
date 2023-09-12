@@ -46,3 +46,14 @@ variable "target_image_name" {
 }
 
 
+variable "client_id" {
+  type        = string
+  description = "(Required) Service principal client id"
+}
+
+variable "cclient_secret" {
+  type        = string
+  description = "(Required) service principal client secret"
+}
+
+

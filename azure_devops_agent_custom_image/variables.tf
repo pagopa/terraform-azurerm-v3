@@ -61,3 +61,9 @@ variable "vm_sku" {
 variable "tags" {
   type = map(any)
 }
+
+
+variable "prefix" {
+  type = string
+  description = "(Required) prefix used in resource creation"
+}

@@ -8,9 +8,10 @@ packer {
 }
 
 source "azure-arm" "ubuntu" {
-  use_interactive_auth              = true
+  #use_interactive_auth              = true
   subscription_id                   = var.subscription
-
+  client_id                         = var.client_id
+  client_secret                     = var.client_secret
   os_type                           = "Linux"
   image_publisher                   = var.base_image_publisher
   image_offer                       = var.base_image_offer

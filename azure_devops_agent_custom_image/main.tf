@@ -3,6 +3,27 @@ locals {
   target_image_id   = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/images/${local.target_image_name}"
 }
 
+data "azuread_client_config" "current" {}
+
+resource "azuread_application" "packer_application" {
+  display_name = "${var.prefix}-packer-application"
+  owners       = [data.azuread_client_config.current.object_id]
+}
+
+resource "azuread_application_password" "velero_application_password" {
+  application_object_id = azuread_application.packer_application.object_id
+}
+
+resource "azuread_service_principal" "packer_sp" {
+
+  application_id = azuread_application.packer_application.application_id
+  owners         = [data.azuread_client_config.current.object_id]
+}
+
+resource "azuread_service_principal_password" "velero_principal_password" {
+  service_principal_id = azuread_service_principal.packer_sp.object_id
+}
+
 
 resource "null_resource" "build_packer_image" {
 
@@ -40,6 +61,8 @@ resource "null_resource" "build_packer_image" {
     -var "vm_sku=${var.vm_sku}" \
     -var "target_image_name=${local.target_image_name}" \
     -var "location=${var.location}" \
+    -var "client_id=${azuread_service_principal.packer_sp.id}" \
+    -var "client_secret=${azuread_service_principal_password.velero_principal_password.value}" \
     .
     EOT
   }
