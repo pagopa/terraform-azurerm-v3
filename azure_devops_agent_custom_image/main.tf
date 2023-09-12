@@ -67,6 +67,10 @@ resource "null_resource" "build_packer_image" {
     location                   = var.location
   }
 
+  depends_on = [
+    azurerm_role_assignment.packer_sp_tmp_rg_role
+  ]
+
   # remove old packer cache
   provisioner "local-exec" {
     command = <<EOT
