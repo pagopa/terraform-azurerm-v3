@@ -4,6 +4,10 @@ This module installs Velero on the configured aks cluster
 Note that this module selects the correct cluster to work on using the command `kubectl config use-context "<cluster_name>"`, so you should have that context available in your `.kube` folder.
 This is achievable using the utility script `k8setup.sh` included in the aks-setup folder of your IaC project
 
+## Requirements
+
+In order to use this module you need Velero installed locally and/or on your devops agent. It is included since `v7.5.0` of `azure_Devops_agent_custom_image`
+
 
 ## How to use it
 
