@@ -26,7 +26,7 @@ resource "azuread_service_principal_password" "velero_principal_password" {
 
 resource "azurerm_role_assignment" "velero_sp_aks_role" {
   scope                = "/subscriptions/${var.subscription_id}"
-  role_definition_name = "Reader"
+  role_definition_name = "Contributor"
   principal_id         = azuread_service_principal.packer_sp.object_id
 }
 
