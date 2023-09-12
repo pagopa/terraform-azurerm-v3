@@ -51,7 +51,7 @@ variable "client_id" {
   description = "(Required) Service principal client id"
 }
 
-variable "cclient_secret" {
+variable "client_secret" {
   type        = string
   description = "(Required) service principal client secret"
 }
