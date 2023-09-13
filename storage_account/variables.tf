@@ -92,7 +92,7 @@ variable "blob_change_feed_enabled" {
 }
 
 variable "blob_last_access_time_enabled" {
-  description = "(Optional) Is the blob service properties for trace last access tim. Default to false."
+  description = "(Optional) Is the blob service properties for trace last access time. Default to false."
   type        = bool
   default     = false
 }
