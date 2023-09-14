@@ -1,8 +1,8 @@
 resource "azurerm_user_assigned_identity" "this" {
+  name = var.identity_name
+
   resource_group_name = var.resource_group_name
   location            = var.location
-
-  name = var.identity_name
 }
 
 resource "azurerm_key_vault_access_policy" "this" {
@@ -17,6 +17,10 @@ resource "azurerm_key_vault_access_policy" "this" {
   certificate_permissions = var.certificate_permissions
   key_permissions         = var.key_permissions
   secret_permissions      = var.secret_permissions
+
+  depends_on = [
+    azurerm_user_assigned_identity.this
+  ]
 }
 
 resource "null_resource" "create_pod_identity" {
@@ -36,6 +40,13 @@ resource "null_resource" "create_pod_identity" {
         --namespace ${self.triggers.namespace} \
         --name ${self.triggers.name} \
         --identity-resource-id ${self.triggers.identity_id}
+
+      echo "✅ pod identity created"
+
+      az aks pod-identity list \
+        --resource-group ${self.triggers.resource_group} \
+        --cluster-name ${self.triggers.cluster_name} \
+        --query 'podIdentityProfile.userAssignedIdentities[].{name:name, state:provisioningState}' || true
     EOT
   }
 
@@ -47,6 +58,17 @@ resource "null_resource" "create_pod_identity" {
         --cluster-name ${self.triggers.cluster_name} \
         --namespace ${self.triggers.namespace} \
         --name ${self.triggers.name}
+
+      echo "✅ pod identity deleted"
+
+      az aks pod-identity list \
+        --resource-group ${self.triggers.resource_group} \
+        --cluster-name ${self.triggers.cluster_name} \
+        --query 'podIdentityProfile.userAssignedIdentities[].{name:name, state:provisioningState}' || true
     EOT
   }
+
+  depends_on = [
+    azurerm_user_assigned_identity.this
+  ]
 }

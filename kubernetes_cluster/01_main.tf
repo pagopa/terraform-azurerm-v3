@@ -198,6 +198,8 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
 # Role Assigments
 #
 resource "azurerm_role_assignment" "aks" {
+  count = var.log_analytics_workspace_id != null ? 1 : 0
+
   scope                = azurerm_kubernetes_cluster.this.id
   role_definition_name = "Monitoring Metrics Publisher"
   principal_id         = azurerm_kubernetes_cluster.this.oms_agent[0].oms_agent_identity[0].object_id

@@ -13,11 +13,13 @@ By default the modules have a default set of metric alerts.
 * If you want is possible to add new **custom metrics alerts** using the varible: `custom_metric_alerts`
 * Or override the **default metrics alert** using the variable: `default_metric_alerts`. (is prefered to add new metrics)
 
+
+
 ## How to use it
 
 ### Variable definition example
 
-```ts
+```hcl
 #
 # ⛴ AKS PROD
 #
@@ -437,7 +439,7 @@ variable "keda_helm_version" {
 
 ### Variables values
 
-```ts
+```hcl
 rg_vnet_aks_name           = "dvopla-d-neu-dev01-aks-vnet-rg"
 vnet_aks_name              = "dvopla-d-neu-dev01-aks-vnet"
 public_ip_aksoutbound_name = "dvopla-d-dev01-aksoutbound-pip-1"
@@ -484,7 +486,7 @@ keda_helm_version        = "2.6.2"
 
 ### AKS Cluster
 
-```ts
+```hcl
   resource "azurerm_resource_group" "rg_aks" {
     name     = local.aks_rg_name
     location = var.location
@@ -552,7 +554,7 @@ keda_helm_version        = "2.6.2"
       service_cidr       = "10.250.0.0/16"
     }
     # end network
-
+    
     rbac_enabled        = true
     aad_admin_group_ids = var.env_short == "d" ? [data.azuread_group.adgroup_admin.object_id, data.azuread_group.adgroup_developers.object_id, data.azuread_group.adgroup_externals.object_id] : [data.azuread_group.adgroup_admin.object_id]
 
@@ -662,15 +664,8 @@ sh terraform.sh import dev01 'module.aks[0].azurerm_kubernetes_cluster_node_pool
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.53.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | <= 3.2.1 |
-
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
 
 ## Modules
 

@@ -1,14 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: kibana
-  namespace: elastic-system
+  name: elastic
+  namespace: ${namespace}
   annotations:
-    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/ssl-redirect: 'false'
     nginx.ingress.kubernetes.io/use-regex: 'true'
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/proxy-ssl-verify: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
+  ingressClassName: nginxelk
   tls:
     - hosts:
         - ${kibana_internal_hostname}
@@ -17,10 +20,10 @@ spec:
     - host: ${kibana_internal_hostname}
       http:
         paths:
-          - path: /kibana(/|$)(.*)
+          - path: /elastic(/|$)(.*)
             pathType: Prefix
             backend:
               service:
-                name: quickstart-kb-http
+                name: quickstart-es-http
                 port:
-                  number: 5601
+                  number: 9200

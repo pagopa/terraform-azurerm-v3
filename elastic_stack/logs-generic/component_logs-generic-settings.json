@@ -1,0 +1,10 @@
+{
+  "template":{
+    "settings": {
+      "index.lifecycle.name": "logs-generic"
+    }
+  },
+  "_meta": {
+    "description": "Settings for generic"
+  }
+}

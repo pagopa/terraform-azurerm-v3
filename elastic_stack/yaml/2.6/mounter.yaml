@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ${secret_name}-kibana-mounter
-  namespace: elastic-system
+  namespace: ${namespace}
   labels:
     app: ${secret_name}-kibana-mounter
 spec:
@@ -38,3 +38,12 @@ spec:
           readOnly: true
           volumeAttributes:
             secretProviderClass: ${secret_name}-kibana
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: elastic
+                operator: In
+                values:
+                  - eck
