@@ -163,6 +163,28 @@ variable "custom_domain" {
   }
 }
 
+# -------------------
+# Immutability Policy
+# -------------------
+
+variable "enable_immutability_policy" {
+  type        = bool
+  description = "Enable immutability policy for stored elements"
+  default     = false
+}
+
+variable "immutability_policy" {
+  type = object({
+    allow_protected_append_writes = boolean
+    period_since_creation_in_days = number
+  })
+  description = "Properties to setup the immutability policy"
+  default = {
+    allow_protected_append_writes = false
+    period_since_creation_in_days = 730
+  }
+}
+
 
 # -------------------
 # Alerts variables

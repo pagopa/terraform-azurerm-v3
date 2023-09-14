@@ -81,6 +81,16 @@ resource "azurerm_storage_account" "this" {
     }
   }
 
+  dynamic "immutability_policy" {
+    for_each = var.enable_immutability_policy ? [1] : []
+
+    content {
+      allow_protected_append_writes = var.immutability_policy.allow_protected_append_writes
+      state                         = "Locked"
+      period_since_creation_in_days = var.immutability_policy.period_since_creation_in_days
+    }
+  }
+
   # the use of storage_account_customer_managed_key resource will cause a bug on the plan: this paramenter will always see as changed.
   lifecycle {
     ignore_changes = [
