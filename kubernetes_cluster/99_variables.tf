@@ -340,3 +340,4 @@ variable "sec_storage_id" {
 variable "tags" {
   type = map(any)
 }
+

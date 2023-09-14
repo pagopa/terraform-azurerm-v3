@@ -50,13 +50,7 @@ module "web_test_availability_alert_rules_for_api" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.53.0 |
-
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
 
 ## Modules
 
@@ -74,6 +68,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_actions"></a> [actions](#input\_actions) | n/a | <pre>list(object({<br>    action_group_id = string<br>  }))</pre> | n/a | yes |
+| <a name="input_alert_description"></a> [alert\_description](#input\_alert\_description) | Web Availability Alert description | `string` | `"Web availability check alert triggered when it fails."` | no |
 | <a name="input_application_insight_id"></a> [application\_insight\_id](#input\_application\_insight\_id) | Application insight id. | `string` | n/a | yes |
 | <a name="input_application_insight_name"></a> [application\_insight\_name](#input\_application\_insight\_name) | Application insight instance name. | `string` | n/a | yes |
 | <a name="input_auto_mitigate"></a> [auto\_mitigate](#input\_auto\_mitigate) | (Optional) Should the alerts in this Metric Alert be auto resolved? Defaults to false. | `bool` | `false` | no |

@@ -58,7 +58,3 @@ output "connection_strings" {
 output "principal_id" {
   value = azurerm_cosmosdb_account.this.identity.0.principal_id
 }
-
-output "lock_id" {
-  value = var.lock_enable ? azurerm_management_lock.this[0].id : null
-}

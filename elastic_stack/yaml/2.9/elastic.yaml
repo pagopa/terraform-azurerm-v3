@@ -1,0 +1,58 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: quickstart
+  namespace: ${namespace}
+spec:
+  version: 8.9.0
+  secureSettings:
+    - secretName: ${snapshot_secret_name} #secret for repository
+  nodeSets:
+  %{~ for k, v in nodeset_config ~}
+  - name: ${k}
+    count: ${v.count}
+    config:
+      node.roles: [${join(", ", v.roles)}]
+      node.store.allow_mmap: false
+      azure.client.default.endpoint_suffix: core.windows.net
+      azure.client.default.max_retries: 7
+      azure.client.default.timeout: 10s
+    podTemplate:
+      spec:
+        containers:
+        - name: elasticsearch
+          #resources:
+          #  requests:
+          #    memory: 6Gi
+          #    cpu: 1
+          #  limits:
+          #    memory: 8Gi
+          #    cpu: 2
+        affinity:
+          #podAntiAffinity:
+          #  preferredDuringSchedulingIgnoredDuringExecution:
+          #  - weight: 100
+          #    podAffinityTerm:
+          #      labelSelector:
+          #        matchLabels:
+          #          elasticsearch.k8s.elastic.co/cluster-name: quickstart
+          #      topologyKey: kubernetes.io/hostname
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: elastic
+                  operator: In
+                  values:
+                    - eck
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: ${v.storage}
+        storageClassName: ${v.storageClassName}
+  %{~ endfor ~}
