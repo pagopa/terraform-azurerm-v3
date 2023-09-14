@@ -72,6 +72,7 @@ variable "early_renewal_hours" {
   default = 720
 }
 
+# List of key usages allowed for the issued certificate: https://datatracker.ietf.org/doc/html/rfc5280
 variable "cert_allowed_uses" {
   type = list(string)
   default = [
