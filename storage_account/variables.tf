@@ -175,7 +175,7 @@ variable "enable_immutability_policy" {
 
 variable "immutability_policy" {
   type = object({
-    allow_protected_append_writes = boolean
+    allow_protected_append_writes = bool
     period_since_creation_in_days = number
   })
   description = "Properties to setup the immutability policy"
