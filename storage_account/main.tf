@@ -37,9 +37,9 @@ resource "azurerm_storage_account" "this" {
       }
 
       dynamic "restore_policy" {
-        for_each = (var.blob_restore_policy_days == 0 ? [] : [1])
+        for_each = (var.blob_storage_policy.blob_restore_policy_days == 0 ? [] : [1])
         content {
-          days = var.blob_restore_policy_days
+          days = var.blob_storage_policy.blob_restore_policy_days
         }
       }
     }
@@ -82,12 +82,12 @@ resource "azurerm_storage_account" "this" {
   }
 
   dynamic "immutability_policy" {
-    for_each = var.enable_immutability_policy ? [1] : []
+    for_each = var.blob_storage_policy.enable_immutability_policy ? [1] : []
 
     content {
-      allow_protected_append_writes = var.immutability_policy.allow_protected_append_writes
-      state                         = "Locked"
-      period_since_creation_in_days = var.immutability_policy.period_since_creation_in_days
+      allow_protected_append_writes = var.immutability_policy_props.allow_protected_append_writes
+      state                         = var.immutability_policy_props.state
+      period_since_creation_in_days = var.immutability_policy_props.period_since_creation_in_days
     }
   }
 

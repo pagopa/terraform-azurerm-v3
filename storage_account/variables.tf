@@ -97,12 +97,6 @@ variable "blob_change_feed_retention_in_days" {
   default     = null
 }
 
-variable "blob_restore_policy_days" {
-  description = "(Optional) Specifies the number of days that the blob can be restored, between 1 and 365 days. This must be less than the days specified for delete_retention_policy."
-  type        = number
-  default     = 0
-}
-
 variable "cross_tenant_replication_enabled" {
   description = "(Optional) Should cross Tenant replication be enabled? Defaults to false."
   type        = bool
@@ -167,21 +161,40 @@ variable "custom_domain" {
 # Immutability Policy
 # -------------------
 
-variable "enable_immutability_policy" {
-  type        = bool
-  description = "Enable immutability policy for stored elements"
-  default     = false
+variable "blob_storage_policy" {
+  type = object({
+    enable_immutability_policy = bool
+    blob_restore_policy_days   = number
+  })
+  description = "Handle immutability policy for stored elements"
+  default = {
+    enable_immutability_policy = false
+    blob_restore_policy_days   = 0
+  }
+
+  # https://learn.microsoft.com/en-us/azure/storage/blobs/point-in-time-restore-overview#limitations-and-known-issues
+  validation {
+    condition     = (var.blob_storage_policy.enable_immutability_policy == true && var.blob_storage_policy.blob_restore_policy_days == 0) || var.blob_storage_policy.enable_immutability_policy == false
+    error_message = "Immutability policy doesn't support Point-in-Time restore"
+  }
 }
 
-variable "immutability_policy" {
+variable "immutability_policy_props" {
   type = object({
     allow_protected_append_writes = bool
+    state                         = string
     period_since_creation_in_days = number
   })
-  description = "Properties to setup the immutability policy"
+  description = "Properties to setup the immutability policy. The resource can be created only with \"Disabled\" and \"Unlocked\" state. Change to \"Locked\" state doens't update the resource for a bug of the current module."
   default = {
     allow_protected_append_writes = false
+    state                         = "Unlocked"
     period_since_creation_in_days = 730
+  }
+
+  validation {
+    condition     = contains(["Disabled", "Unlocked", "Locked"], var.immutability_policy_props.state)
+    error_message = "Allowed values for immutability_policy.state are \"Disabled\", \"Unlocked\" or \"Locked\""
   }
 }
 
