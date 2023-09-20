@@ -20,13 +20,18 @@ check_command "jq"
 # install az cli
 curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 check_command "az"
+check_command "az"
 
 # install helm
 az acr helm install-cli -y --client-version 3.12.0
 check_command "helm"
+check_command "helm"
 
 # install kubectl
 az aks install-cli --client-version 1.25.10 --kubelogin-version 0.0.29
+check_command "kubectl"
+
+# setup Docker installation from https://docs.docker.com/engine/install/ubuntu/
 check_command "kubectl"
 
 # setup DOCKER installation from https://docs.docker.com/engine/install/ubuntu/

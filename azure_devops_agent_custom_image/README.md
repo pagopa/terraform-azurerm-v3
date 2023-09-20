@@ -56,12 +56,6 @@ module "azdoa_custom_image" {
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | <= 3.2.1 |
 
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
-
 ## Modules
 
 No modules.
