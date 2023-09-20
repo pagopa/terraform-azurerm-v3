@@ -333,3 +333,10 @@ variable "advanced_threat_protection_enabled" {
   type    = bool
   default = false
 }
+
+
+variable "storage_account_nested_items_public" {
+  type        = bool
+  default     = true
+  description = "(Optional) reflects to property 'allow_nested_items_to_be_public' on storage account module"
+}
