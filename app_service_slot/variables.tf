@@ -1,23 +1,7 @@
-variable "location" {
-  type        = string
-  default     = "westeurope"
-  description = "(Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created."
-}
-
-variable "resource_group_name" {
-  type        = string
-  description = "(Required) The name of the resource group in which to create the App Service and App Service Plan."
-}
-
 ## App service
 variable "app_service_id" {
   type        = string
   description = "(Required) The id of the App Service within which to create the App Service Slot."
-}
-
-variable "app_service_name" {
-  type        = string
-  description = "(Required) The name of the App Service within which to create the App Service Slot. Changing this forces a new resource to be created."
 }
 
 variable "https_only" {
