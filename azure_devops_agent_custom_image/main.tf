@@ -76,7 +76,9 @@ resource "null_resource" "build_packer_image" {
   }
 
   depends_on = [
-    azurerm_role_assignment.packer_sp_tmp_rg_role
+    azurerm_role_assignment.packer_sp_tmp_rg_role,
+    azurerm_resource_group.build_rg,
+    azuread_application.packer_application
   ]
 
   # remove old packer cache
