@@ -47,7 +47,7 @@ resource "azurerm_role_assignment" "packer_sp_rg_role" {
 
 resource "azurerm_resource_group" "build_rg" {
   location = var.location
-  name     = "${var.tmp_rg_name}-${random_id.rg_randomizer}"
+  name     = "${var.tmp_rg_name}-${random_id.rg_randomizer.hex}"
 }
 
 resource "azurerm_role_assignment" "packer_sp_tmp_rg_role" {
