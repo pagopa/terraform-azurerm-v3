@@ -46,3 +46,19 @@ variable "target_image_name" {
 }
 
 
+variable "client_id" {
+  type        = string
+  description = "(Required) Service principal client id"
+}
+
+variable "client_secret" {
+  type        = string
+  description = "(Required) service principal client secret"
+}
+
+variable "build_rg_name" {
+  type        = string
+  description = "(Required) temporary build resource group name"
+}
+
+

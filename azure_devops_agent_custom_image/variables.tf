@@ -46,6 +46,7 @@ variable "base_image_sku" {
   default     = "22_04-lts-gen2"
   description = "(Optional) - https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine_scale_set#source_image_reference"
 }
+
 variable "base_image_version" {
   type        = string
   default     = "latest"
@@ -60,4 +61,15 @@ variable "vm_sku" {
 
 variable "tags" {
   type = map(any)
+}
+
+variable "prefix" {
+  type        = string
+  description = "(Required) prefix used in resource creation"
+}
+
+variable "build_rg_name" {
+  type        = string
+  description = "(Optional) Packer build temporary resource group name"
+  default     = "tmp-packer-build"
 }
