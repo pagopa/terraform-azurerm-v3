@@ -10,6 +10,10 @@ data "azurerm_resource_group" "target_resource_group" {
 }
 
 resource "random_id" "rg_randomizer" {
+  keepers = {
+    image_name = var.image_name
+    image_version = var.image_version
+  }
   byte_length = 8
 }
 
