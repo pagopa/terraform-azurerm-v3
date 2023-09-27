@@ -11,7 +11,7 @@ data "azurerm_resource_group" "target_resource_group" {
 
 resource "random_id" "rg_randomizer" {
   keepers = {
-    image_name = var.image_name
+    image_name    = var.image_name
     image_version = var.image_version
   }
   byte_length = 8
@@ -51,10 +51,10 @@ resource "azurerm_role_assignment" "packer_sp_rg_role" {
 
 resource "azurerm_resource_group" "build_rg" {
   location = var.location
-  name     = "${var.tmp_rg_name}-${random_id.rg_randomizer.hex}"
+  name     = "${var.build_rg_name}-${random_id.rg_randomizer.hex}"
 }
 
-resource "azurerm_role_assignment" "packer_sp_tmp_rg_role" {
+resource "azurerm_role_assignment" "packer_sp_build_rg_role" {
   scope                = azurerm_resource_group.build_rg.id
   role_definition_name = "Owner"
   principal_id         = azuread_service_principal.packer_sp.object_id
@@ -76,7 +76,7 @@ resource "null_resource" "build_packer_image" {
   }
 
   depends_on = [
-    azurerm_role_assignment.packer_sp_tmp_rg_role,
+    azurerm_role_assignment.packer_sp_build_rg_role,
     azurerm_resource_group.build_rg,
     azuread_application.packer_application
   ]
@@ -105,7 +105,7 @@ resource "null_resource" "build_packer_image" {
     -var "location=${var.location}" \
     -var "client_id=${azuread_application.packer_application.application_id}" \
     -var "client_secret=${azuread_application_password.velero_application_password.value}" \
-    -var "tmp_rg_name=${azurerm_resource_group.build_rg.name}" \
+    -var "build_rg_name=${azurerm_resource_group.build_rg.name}" \
     .
     EOT
   }

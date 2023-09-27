@@ -56,7 +56,7 @@ variable "client_secret" {
   description = "(Required) service principal client secret"
 }
 
-variable "tmp_rg_name" {
+variable "build_rg_name" {
   type        = string
   description = "(Required) temporary build resource group name"
 }
