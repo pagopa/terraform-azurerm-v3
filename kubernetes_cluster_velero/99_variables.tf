@@ -80,3 +80,9 @@ variable "storage_account_replication_type" {
   description = "(Optional) Replication type used for the backup storage account"
   default     = "ZRS"
 }
+
+variable "storage_account_kind" {
+  type        = string
+  default     = "StorageV2"
+  description = "(Optional) Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Defaults to StorageV2"
+}
