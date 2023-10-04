@@ -155,7 +155,6 @@ resource "null_resource" "this" {
     name : var.name
   }
 
-  # https://docs.microsoft.com/it-it/cli/azure/ad/sp?view=azure-cli-latest#az_ad_sp_create_for_rbac
   provisioner "local-exec" {
     command = <<EOT
       if ${self.triggers.immutability_policy}; then
