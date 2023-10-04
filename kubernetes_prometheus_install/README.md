@@ -1,0 +1,58 @@
+# kubernetes prometheus installation
+
+This installs Prometheus into your AKS cluster, using the given namespace.
+
+**For production use**
+
+Change the `storage_class_name` varaible in order to use a Zone Redundant storage class (see `kubernetes_storage_class` module)
+
+
+
+## How to use it
+
+```hcl
+module "aks_prometheus_install" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_prometheus_install?ref=<version>"
+  
+  aks_cluster_name = "my-cluster-name"
+  prometheus_namespace = "monitoring"
+  storage_class_name = "default-zrs" #example of ZRS storage class created by kubernetes_storage_class
+}
+```
+
+
+<!-- markdownlint-disable -->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | <= 3.2.1 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [helm_release.prometheus](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [null_resource.trigger_helm_release](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_aks_cluster_name"></a> [aks\_cluster\_name](#input\_aks\_cluster\_name) | (Required) Cluster name where these storage classes will be created | `string` | n/a | yes |
+| <a name="input_k8s_kube_config_path_prefix"></a> [k8s\_kube\_config\_path\_prefix](#input\_k8s\_kube\_config\_path\_prefix) | (Optional) Path to kube config files | `string` | `"~/.kube"` | no |
+| <a name="input_prometheus_helm"></a> [prometheus\_helm](#input\_prometheus\_helm) | prometheus helm chart configuration | <pre>object({<br>    chart_version = string,<br>    alertmanager = object({<br>      image_name = optional(string, "quay.io/prometheus/alertmanager"),<br>      image_tag  = optional(string, "v0.25.0"),<br>    }),<br>    configmap_reload_prometheus = object({<br>      image_name = optional(string, "jimmidyson/configmap-reload"),<br>      image_tag  = optional(string, "v0.9.0"),<br>    }),<br>    configmap_reload_alertmanager = object({<br>      image_name = optional(string, "jimmidyson/configmap-reload"),<br>      image_tag  = optional(string, "v0.9.0"),<br>    }),<br>    node_exporter = object({<br>      image_name = optional(string, "quay.io/prometheus/node-exporter"),<br>      image_tag  = optional(string, "v1.6.1"),<br>    }),<br>    server = object({<br>      image_name = optional(string, "quay.io/prometheus/prometheus"),<br>      image_tag  = optional(string, "v2.45.0"),<br>    }),<br>    pushgateway = object({<br>      image_name = optional(string, "prom/pushgateway"),<br>      image_tag  = optional(string, "v1.6.0"),<br>    }),<br>  })</pre> | <pre>{<br>  "alertmanager": {<br>    "image_name": "quay.io/prometheus/alertmanager",<br>    "image_tag": "v0.25.0"<br>  },<br>  "chart_version": "15.18.0",<br>  "configmap_reload_alertmanager": {<br>    "image_name": "jimmidyson/configmap-reload",<br>    "image_tag": "v0.9.0"<br>  },<br>  "configmap_reload_prometheus": {<br>    "image_name": "jimmidyson/configmap-reload",<br>    "image_tag": "v0.9.0"<br>  },<br>  "node_exporter": {<br>    "image_name": "quay.io/prometheus/node-exporter",<br>    "image_tag": "v1.6.1"<br>  },<br>  "pushgateway": {<br>    "image_name": "prom/pushgateway",<br>    "image_tag": "v1.6.0"<br>  },<br>  "server": {<br>    "image_name": "quay.io/prometheus/prometheus",<br>    "image_tag": "v2.45.0"<br>  }<br>}</pre> | no |
+| <a name="input_prometheus_namespace"></a> [prometheus\_namespace](#input\_prometheus\_namespace) | (Required) Name of the monitoring namespace, used to install prometheus resources | `string` | n/a | yes |
+| <a name="input_storage_class_name"></a> [storage\_class\_name](#input\_storage\_class\_name) | (Optional) Storage class name used for prometheus server and alertmanager | `string` | `"default"` | no |
+
+## Outputs
+
+No outputs.
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
