@@ -182,19 +182,12 @@ variable "blob_storage_policy" {
 variable "immutability_policy_props" {
   type = object({
     allow_protected_append_writes = bool
-    state                         = string
     period_since_creation_in_days = number
   })
   description = "Properties to setup the immutability policy. The resource can be created only with \"Disabled\" and \"Unlocked\" state. Change to \"Locked\" state doens't update the resource for a bug of the current module."
   default = {
     allow_protected_append_writes = false
-    state                         = "Unlocked"
     period_since_creation_in_days = 730
-  }
-
-  validation {
-    condition     = contains(["Disabled", "Unlocked", "Locked"], var.immutability_policy_props.state)
-    error_message = "Allowed values for immutability_policy.state are \"Disabled\", \"Unlocked\" or \"Locked\""
   }
 }
 

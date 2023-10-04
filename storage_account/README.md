@@ -90,6 +90,10 @@ resource "azurerm_private_dns_zone" "storage_account" {
 
 ```
 
+## Known Issues
+
+- Applying the immutability policy on an existing storage account fails due to a 404 NotFound error on the threat protection creation for the new storage. Solution, delete the resource and create the new one with the immutability policy.
+- Changing the `period_since_creation_in_days` will be updated in terraform state but not in the cloud provider resource. Solution, change the value using the Azure portal.
 
 ## Migration from v2
 
@@ -202,6 +206,7 @@ No modules.
 | [azurerm_advanced_threat_protection.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/advanced_threat_protection) | resource |
 | [azurerm_monitor_metric_alert.storage_account_low_availability](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_storage_account.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
+| [null_resource.this](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 
 ## Inputs
 
@@ -226,7 +231,7 @@ No modules.
 | <a name="input_enable_identity"></a> [enable\_identity](#input\_enable\_identity) | (Optional) If true, set the identity as SystemAssigned | `bool` | `false` | no |
 | <a name="input_enable_low_availability_alert"></a> [enable\_low\_availability\_alert](#input\_enable\_low\_availability\_alert) | Enable the Low Availability alert. Default is true | `bool` | `true` | no |
 | <a name="input_error_404_document"></a> [error\_404\_document](#input\_error\_404\_document) | The absolute path to a custom webpage that should be used when a request is made which does not correspond to an existing file. | `string` | `null` | no |
-| <a name="input_immutability_policy_props"></a> [immutability\_policy\_props](#input\_immutability\_policy\_props) | Properties to setup the immutability policy. The resource can be created only with "Disabled" and "Unlocked" state. Change to "Locked" state doens't update the resource for a bug of the current module. | <pre>object({<br>    allow_protected_append_writes = bool<br>    state                         = string<br>    period_since_creation_in_days = number<br>  })</pre> | <pre>{<br>  "allow_protected_append_writes": false,<br>  "period_since_creation_in_days": 730,<br>  "state": "Unlocked"<br>}</pre> | no |
+| <a name="input_immutability_policy_props"></a> [immutability\_policy\_props](#input\_immutability\_policy\_props) | Properties to setup the immutability policy. The resource can be created only with "Disabled" and "Unlocked" state. Change to "Locked" state doens't update the resource for a bug of the current module. | <pre>object({<br>    allow_protected_append_writes = bool<br>    period_since_creation_in_days = number<br>  })</pre> | <pre>{<br>  "allow_protected_append_writes": false,<br>  "period_since_creation_in_days": 730<br>}</pre> | no |
 | <a name="input_index_document"></a> [index\_document](#input\_index\_document) | The webpage that Azure Storage serves for requests to the root of a website or any subfolder. For example, index.html. The value is case-sensitive. | `string` | `null` | no |
 | <a name="input_is_hns_enabled"></a> [is\_hns\_enabled](#input\_is\_hns\_enabled) | Enable Hierarchical Namespace enabled (Azure Data Lake Storage Gen 2). Changing this forces a new resource to be created. | `bool` | `false` | no |
 | <a name="input_is_sftp_enabled"></a> [is\_sftp\_enabled](#input\_is\_sftp\_enabled) | Enable SFTP | `bool` | `false` | no |

@@ -36,7 +36,7 @@ module "storage_account" {
 module "storage_account_immutable" {
   source = "../../storage_account"
 
-  name                            = replace("${local.project}-immutable-st", "-", "")
+  name                            = replace("${local.project}-im-st", "-", "")
   account_kind                    = "StorageV2"
   account_tier                    = "Standard"
   access_tier                     = "Hot"
@@ -61,7 +61,6 @@ module "storage_account_immutable" {
   immutability_policy_props = {
     allow_protected_append_writes = false
     period_since_creation_in_days = 1
-    state                         = "Unlocked"
   }
 
   tags = var.tags
