@@ -1,6 +1,9 @@
 # GitHub Federatewd Identity for Runners
 
 This module allows the creation of a User Managed Identity federated with GitHub.
+
+Module is intended to be used against `infrastructure` repo. It is also designed to keep naming consistency, so most of them are auto calculated (TBD).
+
 The module's output contains the identity data.
 
 ## How to use it

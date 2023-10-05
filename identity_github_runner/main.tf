@@ -1,7 +1,11 @@
+data "azurerm_resource_group" "identity_rg" {
+  name = local.resource_group_name
+}
+
 resource "azurerm_user_assigned_identity" "identity" {
-  location            = var.location
-  name                = "${var.project}-github-identity-${var.identity_role}"
-  resource_group_name = var.resource_group_name
+  location            = data.azurerm_resource_group.identity_rg.location
+  name                = "${local.name}-github-identity-${var.identity_role}"
+  resource_group_name = data.azurerm_resource_group.identity_rg.location
 
   tags = var.tags
 }
@@ -14,8 +18,8 @@ resource "azurerm_role_assignment" "identity_role_assignment" {
 }
 
 resource "azurerm_federated_identity_credential" "identity_credentials" {
-  name                = "${var.project}-github-${var.github.repository}-${var.identity_role}"
-  resource_group_name = var.resource_group_name
+  name                = "${local.name}-github-${var.github.repository}-${var.identity_role}"
+  resource_group_name = local.resource_group_name
   audience            = var.github.audience
   issuer              = var.github.issuer
   parent_id           = azurerm_user_assigned_identity.identity.id

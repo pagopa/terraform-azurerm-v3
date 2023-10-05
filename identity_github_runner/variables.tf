@@ -1,36 +1,29 @@
-variable "location" {
-  type        = string
-  description = "Identity region"
-
-  validation {
-    condition     = length(var.location) > 3
-    error_message = "Location must have at least of 3 chars"
-  }
-}
-
 variable "tags" {
   type        = map(any)
   description = "Identity tags"
 }
 
-variable "project" {
-  type    = string
-  default = "Project name according to PagoPA conventions"
+variable "prefix" {
+  type        = string
+  description = "Project prefix"
 
   validation {
-    condition     = length(var.project) > 3
-    error_message = "Project name must have at least of 3 chars"
+    condition = (
+      length(var.prefix) < 6
+    )
+    error_message = "Max length is 6 chars."
   }
 }
 
-variable "resource_group_name" {
+variable "env_short" {
   type        = string
-  description = "The name of the resource group that must own the identity"
-  default     = "identity-rg"
+  description = "Short environment prefix"
 
   validation {
-    condition     = length(var.resource_group_name) > 3
-    error_message = "Resource group name must have at least of 3 chars"
+    condition = (
+      length(var.env_short) <= 1
+    )
+    error_message = "Max length is 1 chars."
   }
 }
 

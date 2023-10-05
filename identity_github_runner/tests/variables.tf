@@ -18,3 +18,9 @@ variable "tags" {
     Source    = "https://github.com/pagopa/terraform-azurerm-v3"
   }
 }
+
+variable "repository" {
+  type        = string
+  description = "Repository name"
+  default     = "terraform-azurerm-v3"
+}

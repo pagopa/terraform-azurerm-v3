@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "rg" {
-  name     = "${local.project}-rg"
+  name     = "${local.project}-identity-rg"
   location = var.location
 
   tags = var.tags
@@ -8,13 +8,12 @@ resource "azurerm_resource_group" "rg" {
 module "identity-ci" {
   source = "../"
 
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  project             = local.project
-  identity_role       = "ci"
+  prefix        = var.prefix
+  env_short     = random_id.unique.hex
+  identity_role = "ci"
   github = {
-    repository = "io-infra"
-    subject    = "dev"
+    repository = var.repository
+    subject    = var.prefix
   }
 
   tags = var.tags
@@ -23,13 +22,12 @@ module "identity-ci" {
 module "identity-cd" {
   source = "../"
 
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  project             = local.project
-  identity_role       = "cd"
+  prefix        = var.prefix
+  env_short     = random_id.unique.hex
+  identity_role = "cd"
   github = {
-    repository = "io-infra"
-    subject    = "dev"
+    repository = var.repository
+    subject    = var.prefix
   }
 
   tags = var.tags
