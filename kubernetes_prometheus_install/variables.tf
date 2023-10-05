@@ -3,17 +3,6 @@ variable "prometheus_namespace" {
   description = "(Required) Name of the monitoring namespace, used to install prometheus resources"
 }
 
-variable "k8s_kube_config_path_prefix" {
-  type        = string
-  default     = "~/.kube"
-  description = "(Optional) Path to kube config files"
-}
-
-variable "aks_cluster_name" {
-  type        = string
-  description = "(Required) Cluster name where these storage classes will be created"
-}
-
 variable "storage_class_name" {
   type        = string
   default     = "default"
