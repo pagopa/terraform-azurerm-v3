@@ -37,9 +37,9 @@ resource "azurerm_storage_account" "this" {
       }
 
       dynamic "restore_policy" {
-        for_each = (var.blob_restore_policy_days == 0 ? [] : [1])
+        for_each = (var.blob_storage_policy.blob_restore_policy_days == 0 ? [] : [1])
         content {
-          days = var.blob_restore_policy_days
+          days = var.blob_storage_policy.blob_restore_policy_days
         }
       }
     }
@@ -81,10 +81,22 @@ resource "azurerm_storage_account" "this" {
     }
   }
 
+  dynamic "immutability_policy" {
+    for_each = var.blob_storage_policy.enable_immutability_policy ? [1] : []
+
+    content {
+      allow_protected_append_writes = var.immutability_policy_props.allow_protected_append_writes
+      state                         = "Unlocked"
+      period_since_creation_in_days = var.immutability_policy_props.period_since_creation_in_days
+    }
+  }
+
   # the use of storage_account_customer_managed_key resource will cause a bug on the plan: this paramenter will always see as changed.
+  # the state property is ignored because is overridden from a null_resource.
   lifecycle {
     ignore_changes = [
-      customer_managed_key
+      customer_managed_key,
+      immutability_policy.0.state
     ]
   }
 
@@ -133,4 +145,29 @@ resource "azurerm_monitor_metric_alert" "storage_account_low_availability" {
   }
 
   tags = var.tags
+}
+
+resource "null_resource" "immutability" {
+
+  triggers = {
+    immutability_policy : var.blob_storage_policy.enable_immutability_policy
+    resouce_group_name : var.resource_group_name
+    name : var.name
+  }
+
+  provisioner "local-exec" {
+    command = <<EOT
+      if ${self.triggers.immutability_policy}; then
+        az storage account update --immutability-state Locked \
+          --resource-group ${self.triggers.resouce_group_name} \
+          --name ${self.triggers.name} \
+          --query "id"
+        # query is used to hide other properties from logging
+      fi
+    EOT
+  }
+
+  depends_on = [
+    azurerm_storage_account.this
+  ]
 }
