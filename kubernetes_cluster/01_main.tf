@@ -8,7 +8,7 @@ resource "null_resource" "b_series_not_ephemeral_user_check" {
 }
 
 data "azurerm_resource_group" "aks_rg" {
-  name = "var.resource_group_name"
+  name = var.resource_group_name
 }
 
 #tfsec:ignore:AZU008
