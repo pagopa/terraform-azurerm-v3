@@ -196,7 +196,7 @@ resource "azurerm_role_assignment" "aks" {
   role_definition_name = "Monitoring Metrics Publisher"
   principal_id         = azurerm_kubernetes_cluster.this.oms_agent[0].oms_agent_identity[0].object_id
 
-    depends_on = [ azurerm_kubernetes_cluster.this ]
+  depends_on = [azurerm_kubernetes_cluster.this]
 
 }
 
@@ -205,7 +205,7 @@ resource "azurerm_role_assignment" "vnet_role" {
   role_definition_name = "Network Contributor"
   principal_id         = azurerm_kubernetes_cluster.this.identity[0].principal_id
 
-    depends_on = [ azurerm_kubernetes_cluster.this ]
+  depends_on = [azurerm_kubernetes_cluster.this]
 
 }
 
@@ -216,6 +216,6 @@ resource "azurerm_role_assignment" "vnet_outbound_role" {
   role_definition_name = "Network Contributor"
   principal_id         = azurerm_kubernetes_cluster.this.identity[0].principal_id
 
-  depends_on = [ azurerm_kubernetes_cluster.this ]
+  depends_on = [azurerm_kubernetes_cluster.this]
 
 }

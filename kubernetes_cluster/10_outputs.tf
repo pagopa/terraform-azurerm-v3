@@ -17,7 +17,7 @@ output "private_fqdn" {
 }
 
 output "kubelet_identity_id" {
-  value = azurerm_kubernetes_cluster.this.kubelet_identity.0.object_id
+  value       = azurerm_kubernetes_cluster.this.kubelet_identity.0.object_id
   description = "The Object ID of the user-defined Managed Identity assigned to the Kubelets.If not specified a Managed Identity is created automatically. Changing this forces a new resource to be created."
 }
 
@@ -27,11 +27,11 @@ output "identity_principal_id" {
 }
 
 output "managed_resource_group_name" {
-  value = azurerm_kubernetes_cluster.this.node_resource_group
+  value       = azurerm_kubernetes_cluster.this.node_resource_group
   description = " The auto-generated Resource Group which contains the resources for this Managed Kubernetes Cluster."
 }
 
 output "managed_resource_group_id" {
-    value = azurerm_kubernetes_cluster.this.node_resource_group_id
-    description = "The ID of the Resource Group containing the resources for this Managed Kubernetes Cluster."
+  value       = azurerm_kubernetes_cluster.this.node_resource_group_id
+  description = "The ID of the Resource Group containing the resources for this Managed Kubernetes Cluster."
 }
