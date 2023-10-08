@@ -235,7 +235,7 @@ resource "azurerm_role_assignment" "vnet_outbound_role" {
 resource "azurerm_role_assignment" "managed_identity_operator_vs_aks_managed_identity" {
   scope                = data.azurerm_resource_group.aks_rg.id
   role_definition_name = "Managed Identity Operator"
-  principal_id         = azurerm_kubernetes_cluster.this.identity_principal_id
+  principal_id         = azurerm_kubernetes_cluster.this.identity.0.principal_id
 
   depends_on = [ azurerm_kubernetes_cluster.this ]
 }
