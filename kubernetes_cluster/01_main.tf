@@ -58,9 +58,7 @@ resource "azurerm_kubernetes_cluster" "this" {
   }
 
   automatic_channel_upgrade       = var.automatic_channel_upgrade
-  api_server_access_profile {
-    authorized_ip_ranges = var.api_server_authorized_ip_ranges
-  }
+  api_server_authorized_ip_ranges = var.api_server_authorized_ip_ranges #tfsec:ignore:AZU008
 
   # managed identity type: https://docs.microsoft.com/en-us/azure/aks/use-managed-identity
   identity {
