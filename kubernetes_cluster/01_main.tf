@@ -7,6 +7,9 @@ resource "null_resource" "b_series_not_ephemeral_user_check" {
   count = length(regexall("Standard_B", var.user_node_pool_vm_size)) > 0 && var.user_node_pool_os_disk_type == "Ephemeral" ? "ERROR: Burstable(B) series don't allow Ephemeral disks" : 0
 }
 
+data "azurerm_resource_group" "aks_rg" {
+  name = "var.resource_group_name"
+}
 
 #tfsec:ignore:AZU008
 #tfsec:ignore:azure-container-logging addon_profile is deprecated, false positive
@@ -59,7 +62,9 @@ resource "azurerm_kubernetes_cluster" "this" {
   }
 
   automatic_channel_upgrade       = var.automatic_channel_upgrade
-  api_server_authorized_ip_ranges = var.api_server_authorized_ip_ranges #tfsec:ignore:AZU008
+  api_server_access_profile {
+    authorized_ip_ranges = var.api_server_authorized_ip_ranges
+  }
 
   # managed identity type: https://docs.microsoft.com/en-us/azure/aks/use-managed-identity
   identity {
@@ -70,7 +75,6 @@ resource "azurerm_kubernetes_cluster" "this" {
     for_each = var.network_profile != null ? [var.network_profile] : []
     iterator = p
     content {
-      docker_bridge_cidr = p.value.docker_bridge_cidr
       dns_service_ip     = p.value.dns_service_ip
       network_policy     = p.value.network_policy
       network_plugin     = p.value.network_plugin
@@ -203,12 +207,18 @@ resource "azurerm_role_assignment" "aks" {
   scope                = azurerm_kubernetes_cluster.this.id
   role_definition_name = "Monitoring Metrics Publisher"
   principal_id         = azurerm_kubernetes_cluster.this.oms_agent[0].oms_agent_identity[0].object_id
+
+    depends_on = [ azurerm_kubernetes_cluster.this ]
+
 }
 
 resource "azurerm_role_assignment" "vnet_role" {
   scope                = var.vnet_id
   role_definition_name = "Network Contributor"
   principal_id         = azurerm_kubernetes_cluster.this.identity[0].principal_id
+
+    depends_on = [ azurerm_kubernetes_cluster.this ]
+
 }
 
 resource "azurerm_role_assignment" "vnet_outbound_role" {
@@ -217,4 +227,15 @@ resource "azurerm_role_assignment" "vnet_outbound_role" {
   scope                = each.key
   role_definition_name = "Network Contributor"
   principal_id         = azurerm_kubernetes_cluster.this.identity[0].principal_id
+
+  depends_on = [ azurerm_kubernetes_cluster.this ]
+
+}
+
+resource "azurerm_role_assignment" "managed_identity_operator_vs_aks_managed_identity" {
+  scope                = data.azurerm_resource_group.aks_rg.id
+  role_definition_name = "Managed Identity Operator"
+  principal_id         = module.aks[0].identity_principal_id
+
+  depends_on = [ azurerm_kubernetes_cluster.this ]
 }
