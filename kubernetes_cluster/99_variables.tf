@@ -258,7 +258,6 @@ variable "api_server_authorized_ip_ranges" {
 
 variable "network_profile" {
   type = object({
-    docker_bridge_cidr = string # e.g. '172.17.0.1/16'
     dns_service_ip     = string # e.g. '10.2.0.10'. IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns)
     network_policy     = string # e.g. 'azure'. Sets up network policy to be used with Azure CNI. Currently supported values are calico and azure.
     network_plugin     = string # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
@@ -266,7 +265,6 @@ variable "network_profile" {
     service_cidr       = string # e.g. '10.2.0.0/16'. The Network Range used by the Kubernetes service
   })
   default = {
-    docker_bridge_cidr = "172.17.0.1/16"
     dns_service_ip     = "10.2.0.10"
     network_policy     = "azure"
     network_plugin     = "azure"
