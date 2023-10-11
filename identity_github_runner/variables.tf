@@ -3,6 +3,11 @@ variable "tags" {
   description = "Identity tags"
 }
 
+variable "location" {
+  type        = string
+  description = "Resource group and identity location"
+}
+
 variable "prefix" {
   type        = string
   description = "Project prefix"

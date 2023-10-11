@@ -1,4 +1,4 @@
-# GitHub Federatewd Identity for Runners
+# GitHub Federated Identity for Azure
 
 This module allows the creation of a User Managed Identity federated with GitHub.
 

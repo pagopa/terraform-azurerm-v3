@@ -1,11 +1,12 @@
-data "azurerm_resource_group" "identity_rg" {
-  name = local.resource_group_name
+resource "azurerm_resource_group" "identity_rg" {
+  name     = local.resource_group_name
+  location = var.location
 }
 
 resource "azurerm_user_assigned_identity" "identity" {
-  location            = data.azurerm_resource_group.identity_rg.location
+  location            = azurerm_resource_group.identity_rg.location
   name                = "${local.name}-github-identity-${var.identity_role}"
-  resource_group_name = data.azurerm_resource_group.identity_rg.location
+  resource_group_name = azurerm_resource_group.identity_rg.name
 
   tags = var.tags
 }
