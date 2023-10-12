@@ -85,21 +85,23 @@ resource "null_resource" "build_packer_image" {
   provisioner "local-exec" {
     working_dir = "${path.module}/packer"
     command     = <<EOT
-    packer init . && \
-    packer build -debug \
-    -var "subscription=${var.subscription_id}" \
-    -var "target_resource_group_name=${var.resource_group_name}" \
-    -var "base_image_publisher=${var.base_image_publisher}" \
-    -var "base_image_offer=${var.base_image_offer}" \
-    -var "base_image_sku=${var.base_image_sku}" \
-    -var "base_image_version=${var.base_image_version}" \
-    -var "vm_sku=${var.vm_sku}" \
-    -var "target_image_name=${local.target_image_name}" \
-    -var "location=${var.location}" \
-    -var "client_id=${azuread_application.packer_application.application_id}" \
-    -var "client_secret=${azuread_application_password.packer_application_password.value}" \
-    -var "build_rg_name=${azurerm_resource_group.build_rg.name}" \
-    .
+    {
+      packer init . && \
+      packer build \
+      -var "subscription=${var.subscription_id}" \
+      -var "target_resource_group_name=${var.resource_group_name}" \
+      -var "base_image_publisher=${var.base_image_publisher}" \
+      -var "base_image_offer=${var.base_image_offer}" \
+      -var "base_image_sku=${var.base_image_sku}" \
+      -var "base_image_version=${var.base_image_version}" \
+      -var "vm_sku=${var.vm_sku}" \
+      -var "target_image_name=${local.target_image_name}" \
+      -var "location=${var.location}" \
+      -var "client_id=${azuread_application.packer_application.application_id}" \
+      -var "client_secret=${azuread_application_password.packer_application_password.value}" \
+      -var "build_rg_name=${azurerm_resource_group.build_rg.name}" \
+      .
+    } >> /tmp/packer-dnsforwarder.log
     EOT
   }
 
