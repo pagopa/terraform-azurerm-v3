@@ -39,7 +39,7 @@ build {
 
   provisioner "file" {
     source = "./docker-compose.yml"
-    destination = "/etc/docker-compose.yml"
+    destination = "/home/packer/docker-compose.yml"
   }
 
   provisioner "shell" {
