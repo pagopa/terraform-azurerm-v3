@@ -1,7 +1,7 @@
 packer {
   required_plugins {
     azure = {
-      version = ">= 1.4.2"
+      version = "<= 2.1.0"
       source  = "github.com/hashicorp/azure"
     }
   }
@@ -35,6 +35,11 @@ build {
   provisioner "file" {
     source = "./script-config.sh"
     destination = "/tmp/script-config.sh"
+  }
+
+  provisioner "file" {
+    source = "./docker-compose.yml"
+    destination = "/app/docker-compose.yml"
   }
 
   provisioner "shell" {
