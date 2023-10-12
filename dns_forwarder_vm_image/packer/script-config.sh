@@ -44,11 +44,15 @@ wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY
 
 check_command "yq"
 
-echo "[INFO] run dns forwarder"
-cd /home/packer || return
+# disabled ubuntu internal dns resolver to allow coredns to connecto to port 53
+sudo systemctl stop systemd-resolved && sudo systemctl disable systemd-resolved
+
+echo "🚀 prepare to run dns forwarder"
+
+cd /home/packer || exit
 docker compose up -d || exit
 
-echo "[INFO] dns forwarder running"
+echo "✅ dns forwarder running"
 
 # prepare machine for k6 large load test
 
