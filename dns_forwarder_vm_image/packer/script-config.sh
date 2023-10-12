@@ -45,7 +45,7 @@ wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY
 check_command "yq"
 
 echo "[INFO] run dns forwarder"
-cd /app || return
+cd /etc || return
 docker compose up -d || exit
 
 echo "[INFO] dns forwarder running"
