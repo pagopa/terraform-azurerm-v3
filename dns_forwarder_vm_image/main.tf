@@ -86,7 +86,7 @@ resource "null_resource" "build_packer_image" {
     working_dir = "${path.module}/packer"
     command     = <<EOT
     packer init . && \
-    packer build \
+    packer build -debug \
     -var "subscription=${var.subscription_id}" \
     -var "target_resource_group_name=${var.resource_group_name}" \
     -var "base_image_publisher=${var.base_image_publisher}" \
