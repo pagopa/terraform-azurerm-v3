@@ -51,7 +51,7 @@ echo "🚀 prepare to run dns forwarder"
 
 # disabled ubuntu internal dns resolver to allow coredns to connecto to port 53
 sudo systemctl stop systemd-resolved && sudo systemctl disable systemd-resolved
-echo "✅ systemd-resolved disabled"
+echo "✅ systemd-resolved disabled, port 53 free"
 
 cd /home/packer || exit
 docker compose up -d || exit
