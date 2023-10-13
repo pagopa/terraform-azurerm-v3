@@ -1,3 +1,10 @@
+locals {
+  packer_application_name = "${var.prefix}-packer-dnsforwarder-app"
+  target_image_name       = "${var.image_name}-${var.image_version}"
+  target_image_id         = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/images/${local.target_image_name}"
+}
+
+
 variable "location" {
   type        = string
   description = "(Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created."
@@ -56,7 +63,7 @@ variable "base_image_version" {
 variable "vm_sku" {
   type        = string
   description = "(Optional) Size of VMs in the scale set. Default to Standard_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info."
-  default     = "Standard_B1s"
+  default     = "Standard_B2s"
 }
 
 variable "tags" {
@@ -71,5 +78,5 @@ variable "prefix" {
 variable "build_rg_name" {
   type        = string
   description = "(Optional) Packer build temporary resource group name"
-  default     = "tmp-packer-build"
+  default     = "tmp-packer-dnsforwarder-build"
 }

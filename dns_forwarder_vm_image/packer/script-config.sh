@@ -18,21 +18,6 @@ check_command "zip"
 check_command "unzip"
 check_command "jq"
 
-# install az cli
-curl -sL https://aka.ms/InstallAzureCLIDeb | bash
-
-check_command "az"
-
-# install helm
-az acr helm install-cli -y --client-version 3.12.0
-
-check_command "helm"
-
-# install kubectl
-az aks install-cli --client-version 1.25.10 --kubelogin-version 0.0.29
-
-check_command "kubectl"
-
 # setup DOCKER installation from https://docs.docker.com/engine/install/ubuntu/
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
     gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
@@ -59,23 +44,23 @@ wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY
 
 check_command "yq"
 
-# install SOPS from https://github.com/mozilla/sops
-SOPS_VERSION="3.7.3"
-wget "https://github.com/mozilla/sops/releases/download/v${SOPS_VERSION}/sops_${SOPS_VERSION}_amd64.deb"
-apt install -y "$PWD/sops_${SOPS_VERSION}_amd64.deb"
+docker compose pull
+echo "✅ docker pulled image before disable dns forwarder default"
 
-check_command "sops"
+echo "🚀 prepare to run dns forwarder"
 
-# install Velero
-VELERO_VERSION=v1.11.1
-wget https://github.com/vmware-tanzu/velero/releases/download/${VELERO_VERSION}/velero-${VELERO_VERSION}-linux-amd64.tar.gz && \
-tar -zxvf velero-${VELERO_VERSION}-linux-amd64.tar.gz && \
-sudo mv velero-${VELERO_VERSION}-linux-amd64/velero /usr/bin/velero
+# disabled ubuntu internal dns resolver to allow coredns to connecto to port 53
+sudo systemctl stop systemd-resolved && sudo systemctl disable systemd-resolved
+echo "✅ systemd-resolved disabled, port 53 free"
 
-check_command "velero"
+cd /home/packer || exit
+docker compose up -d || exit
+
+nc -zv localhost 53
+
+echo "✅ dns forwarder running"
 
 # prepare machine for k6 large load test
-
 sysctl -w net.ipv4.ip_local_port_range="1024 65535"
 sysctl -w net.ipv4.tcp_tw_reuse=1
 sysctl -w net.ipv4.tcp_timestamps=1

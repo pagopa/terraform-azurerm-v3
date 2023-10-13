@@ -7,7 +7,6 @@ resource "null_resource" "b_series_not_ephemeral_user_check" {
   count = length(regexall("Standard_B", var.user_node_pool_vm_size)) > 0 && var.user_node_pool_os_disk_type == "Ephemeral" ? "ERROR: Burstable(B) series don't allow Ephemeral disks" : 0
 }
 
-
 #tfsec:ignore:AZU008
 #tfsec:ignore:azure-container-logging addon_profile is deprecated, false positive
 resource "azurerm_kubernetes_cluster" "this" {
@@ -70,13 +69,12 @@ resource "azurerm_kubernetes_cluster" "this" {
     for_each = var.network_profile != null ? [var.network_profile] : []
     iterator = p
     content {
-      docker_bridge_cidr = p.value.docker_bridge_cidr
-      dns_service_ip     = p.value.dns_service_ip
-      network_policy     = p.value.network_policy
-      network_plugin     = p.value.network_plugin
-      outbound_type      = p.value.outbound_type
-      service_cidr       = p.value.service_cidr
-      load_balancer_sku  = "standard"
+      dns_service_ip    = p.value.dns_service_ip
+      network_policy    = p.value.network_policy
+      network_plugin    = p.value.network_plugin
+      outbound_type     = p.value.outbound_type
+      service_cidr      = p.value.service_cidr
+      load_balancer_sku = "standard"
       load_balancer_profile {
         outbound_ip_address_ids = var.outbound_ip_address_ids
       }
@@ -203,12 +201,18 @@ resource "azurerm_role_assignment" "aks" {
   scope                = azurerm_kubernetes_cluster.this.id
   role_definition_name = "Monitoring Metrics Publisher"
   principal_id         = azurerm_kubernetes_cluster.this.oms_agent[0].oms_agent_identity[0].object_id
+
+  depends_on = [azurerm_kubernetes_cluster.this]
+
 }
 
 resource "azurerm_role_assignment" "vnet_role" {
   scope                = var.vnet_id
   role_definition_name = "Network Contributor"
   principal_id         = azurerm_kubernetes_cluster.this.identity[0].principal_id
+
+  depends_on = [azurerm_kubernetes_cluster.this]
+
 }
 
 resource "azurerm_role_assignment" "vnet_outbound_role" {
@@ -217,4 +221,7 @@ resource "azurerm_role_assignment" "vnet_outbound_role" {
   scope                = each.key
   role_definition_name = "Network Contributor"
   principal_id         = azurerm_kubernetes_cluster.this.identity[0].principal_id
+
+  depends_on = [azurerm_kubernetes_cluster.this]
+
 }

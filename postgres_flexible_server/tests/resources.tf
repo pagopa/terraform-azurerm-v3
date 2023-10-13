@@ -221,7 +221,10 @@ module "storage_account" {
   blob_delete_retention_days           = 7
   blob_change_feed_enabled             = true
   blob_change_feed_retention_in_days   = 10
-  blob_restore_policy_days             = 6
+  blob_storage_policy = {
+    blob_restore_policy_days   = 6
+    enable_immutability_policy = false
+  }
 
   tags = var.tags
 }

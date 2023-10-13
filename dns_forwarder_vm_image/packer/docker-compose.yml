@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  azure-core-dns:
+    image: ghcr.io/pagopa/azure-core-dns:v1.0.0@sha256:60568ad25764ae2a15d4d46e04afb96c0a79390c69c2181a5bdd243fe758a0e0
+    container_name: dns-forwarder
+    restart: always
+    ports:
+      - "53:53"

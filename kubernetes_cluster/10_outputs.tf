@@ -25,3 +25,13 @@ output "identity_principal_id" {
   value       = azurerm_kubernetes_cluster.this.identity.0.principal_id
   description = "The Principal ID associated with this Managed Service Identity."
 }
+
+output "managed_resource_group_name" {
+  value       = azurerm_kubernetes_cluster.this.node_resource_group
+  description = " The auto-generated Resource Group which contains the resources for this Managed Kubernetes Cluster."
+}
+
+output "managed_resource_group_id" {
+  value       = azurerm_kubernetes_cluster.this.node_resource_group_id
+  description = "The ID of the Resource Group containing the resources for this Managed Kubernetes Cluster."
+}

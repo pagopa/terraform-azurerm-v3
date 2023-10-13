@@ -14,7 +14,7 @@ module "cdn_storage_account" {
   blob_versioning_enabled         = true
   resource_group_name             = var.resource_group_name
   location                        = var.location
-  allow_nested_items_to_be_public = true
+  allow_nested_items_to_be_public = var.storage_account_nested_items_public
   public_network_access_enabled   = true
 
   advanced_threat_protection = var.advanced_threat_protection_enabled
