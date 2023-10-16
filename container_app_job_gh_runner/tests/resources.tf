@@ -12,14 +12,14 @@ module "runner" {
     secret_name         = var.key_vault.secret_name
   }
 
-  # this creates a subnet in the specified vnet using CIDR block set here. Set /23 CIDR block
+  # creates a subnet in the specified existing vnet. Use a /23 CIDR block
   network = {
     rg_vnet      = var.network.rg_vnet
     vnet         = var.network.vnet
     cidr_subnets = var.network.cidr_subnets
   }
 
-  # set reference to the log analytics workspace you want to use to log
+  # set reference to the log analytics workspace you want to use for logging
   environment = {
     workspace_id = var.environment.workspace_id
     customerId   = var.environment.customerId
