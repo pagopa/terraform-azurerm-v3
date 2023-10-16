@@ -67,7 +67,7 @@ variable "app" {
 
   validation {
     condition = (
-      length(var.app.repos) >= 1
+      var.app.repos != null && length(var.app.repos) >= 1
     )
     error_message = "List of repos must supplied"
   }

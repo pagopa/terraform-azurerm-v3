@@ -28,7 +28,7 @@ variable "key_vault" {
   default = {
     resource_group_name = "azrmtest-keyvault-rg"
     name                = "azrmtest-keyvault"
-    secret_name         = "gh_pat"
+    secret_name         = "gh-pat"
   }
 }
 
@@ -62,5 +62,8 @@ variable "app" {
 
   default = {
     repo_owner = "pagopa"
+    repos = [
+      "terraform-azurerm-v3"
+    ]
   }
 }
