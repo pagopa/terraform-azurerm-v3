@@ -1,10 +1,20 @@
-# Azure devops agent custom image
+# dns forwarder vm image
 
-This module allow to create a custom linux image and store it in the provided resource group
+This module allow to create a custom linux image and setup core dns to use as dns forwarder
 
-## Prerequisite
+## Prerequisite (client side)
 
 Install packer [here](https://developer.hashicorp.com/packer/tutorials/docker-get-started/get-started-install-cli)
+
+## How it works
+
+to make coredns work, we chose to use docker compose with a custom image (pagopa) taken from this repository: <https://github.com/pagopa/azure-core-dns> which contains coredns configured to work with the azure dns server, in this way it is easier to keep the coredns updated coredns
+
+## How to debug
+
+Unfortunately the packer run within terraform does not show logs as it contains sensitive values.
+
+To allow debugging, the script has been made to generate a log file in the path `/tmp/packer-dnsforwarder.log` so that it can be viewed and analyzed later
 
 ## How to use
 
@@ -13,30 +23,21 @@ This module must be runned manually to create the image that will be later used
 The final image is built in a temporary resource group, named after the build resource group name passed in input, combined with a random code. This resource group, for technical limitations, is kept in the subscription and deleted upon the next image build (the image name/version has to change in order to trigger the deletion)
 
 Once done, you can simply pick up the built image name from the log, and configure it to be used as base image for your vm or scale set
-The image name will be found in the logs, in the following line
-
-```sh
-module.azdoa_custom_image.null_resource.build_packer_image (local-exec): ManagedImageName: my_image_name-v3
-```
 
 **NB:** the build may fail because it's not able to locate some package; you simply need to try it again
 
 Example:
 
 ```hcl
-data "azurerm_resource_group" "resource_group" {
-  name = "${local.project}-azdoa-rg"
-}
-
-module "azdoa_custom_image" {
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent_custom_image?ref=<version>"
-  resource_group_name = data.azurerm_resource_group.resource_group.name
+module "dns_forwarder_image" {
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder_vm_image?ref=dns-forwarder-scaleset-vm"
+  resource_group_name = data.azurerm_resource_group.rg_vnet_core.name
   location            = var.location
-  image_name          = "my_image_name"
+  image_name          = "${local.product}-dns-forwarder-ubuntu2204-image"
   image_version       = "v1"
   subscription_id     = data.azurerm_subscription.current.subscription_id
-  prefix              = "devopla"
-  
+  prefix              = "pagopa-u"
+
   tags = var.tags
 }
 
