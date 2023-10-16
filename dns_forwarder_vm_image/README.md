@@ -8,7 +8,9 @@ Install packer [here](https://developer.hashicorp.com/packer/tutorials/docker-ge
 
 ## How it works
 
-to make coredns work, we chose to use docker compose with a custom image (pagopa) taken from this repository: <https://github.com/pagopa/azure-core-dns> which contains coredns configured to work with the azure dns server, in this way it is easier to keep the coredns updated coredns
+to make coredns work, we chose to use docker compose with a custom image (pagopa) taken from this repository: <https://github.com/pagopa/azure-core-dns> which contains coredns configured to work with the azure dns server, in this way it is easier to keep the coredns updated coredns.
+
+> The dns forwarder image expose port 53 in TCP/UDP for azure vpn
 
 ## How to debug
 

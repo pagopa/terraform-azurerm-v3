@@ -1,71 +1,36 @@
-# Azure devops agent 
+# DNS forwarder scale set vm
 
-This module allows the creation of an Azure DevOps agent (VM scale set), using either a standard OS image or a custom-built image.
+This module allows the creation of an dns forwarder (VM scale set), with a custom-built image.
+
+The dns forwarder vm expose port 53 in TCP/UDP for azure vpn
 
 ## How to use
 
-By default, this module creates a ScaleSet using Ubuntu22.04, without using os disk encryption, and providing SSH access using a generated ssh key
-
 ```hcl
-resource "azurerm_resource_group" "azdo_rg" {
-  count    = var.enable_azdoa ? 1 : 0
-  name     = local.azuredevops_rg_name
-  location = var.location
-
-  tags = var.tags
-}
-
-# with custom image (previously built. check the module `azure_devops_agent_custom_image` for more details)
-module "module "azdoa_vmss_li" {" {
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=<version>"
-  count               = var.enable_azdoa ? 1 : 0
-  name                = "${local.azuredevops_agent_vm_name}"
-  resource_group_name = azurerm_resource_group.azdo_rg[0].name
-  subnet_id           = module.azdoa_snet[0].id
-  subscription_name   = data.azurerm_subscription.current.display_name
-  subscription_id     = data.azurerm_subscription.current.id
-  location            = var.location
-  source_image_name   = "my-image-name" # the image must be stored in the same subscription/resource group of this resource
-  image_type          = "custom" # enables usage of "source_image_name" 
-
-  tags = var.tags
+module "dns_forwarder_backup_snet" {
+  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v7.11.0"
+  count                = var.dns_forwarder_backup_is_enabled.uat || var.dns_forwarder_backup_is_enabled.prod ? 1 : 0
+  name                 = "${local.project}-dns-forwarder-backup-snet"
+  address_prefixes     = var.cidr_subnet_dns_forwarder_backup
+  resource_group_name  = data.azurerm_resource_group.rg_vnet_core.name
+  virtual_network_name = data.azurerm_virtual_network.vnet_core.name
 }
 
 # with default image
-module "module "azdoa_vmss_li" {" {
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=<version>"
-  count               = var.enable_azdoa ? 1 : 0
-  name                = "${local.azuredevops_agent_vm_name}"
-  resource_group_name = azurerm_resource_group.azdo_rg[0].name
-  subnet_id           = module.azdoa_snet[0].id
+module "dns_forwarder_backup_vmss_li" {
+
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder_scale_set_vm?ref=dns-forwarder-scaleset-vm"
+  count               = var.dns_forwarder_backup_is_enabled.uat || var.dns_forwarder_backup_is_enabled.prod ? 1 : 0
+  name                = local.dns_forwarder_backup_name
+  resource_group_name = data.azurerm_resource_group.rg_vnet_core.name
+  subnet_id           = module.dns_forwarder_backup_snet[0].id
   subscription_name   = data.azurerm_subscription.current.display_name
-  subscription_id     = data.azurerm_subscription.current.id
+  subscription_id     = data.azurerm_subscription.current.subscription_id
   location            = var.location
+  source_image_name   = "${local.product}-dns-forwarder-ubuntu2204-image-v4"
 
   tags = var.tags
 }
-
-# with standard image
-module "module "azdoa_vmss_li" {" {
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=<version>"
-  count               = var.enable_azdoa ? 1 : 0
-  name                = "${local.azuredevops_agent_vm_name}"
-  resource_group_name = azurerm_resource_group.azdo_rg[0].name
-  subnet_id           = module.azdoa_snet[0].id
-  subscription_name   = data.azurerm_subscription.current.display_name
-  subscription_id     = data.azurerm_subscription.current.id
-  location            = var.location
-  image_reference     = {
-    publisher         = "Canonical"
-    offer             = "0001-com-ubuntu-server-jammy"
-    sku               = "22_04-lts-gen2"
-    version           = "latest"
-  }
-
-  tags = var.tags
-}
-
-
 
 ```
 
