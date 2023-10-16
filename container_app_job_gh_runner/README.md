@@ -59,10 +59,10 @@ No modules.
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | n/a | <pre>object({<br>    workspace_id = string<br>    customerId   = string<br>    sharedKey    = string<br>  })</pre> | n/a | yes |
 | <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | n/a | <pre>object({<br>    resource_group_name = string<br>    name                = string<br>    secret_name         = string<br>  })</pre> | n/a | yes |
-| <a name="input_location"></a> [location](#input\_location) | Resource group and identity location | `string` | n/a | yes |
+| <a name="input_location"></a> [location](#input\_location) | Resource group and resources location | `string` | n/a | yes |
 | <a name="input_network"></a> [network](#input\_network) | n/a | <pre>object({<br>    rg_vnet      = string<br>    vnet         = string<br>    cidr_subnets = list(string)<br>  })</pre> | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Project prefix | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Identity tags | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags for new resources | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
 
 ## Outputs
 
