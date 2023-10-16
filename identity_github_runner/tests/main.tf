@@ -22,5 +22,5 @@ resource "random_id" "unique" {
 }
 
 locals {
-  project = "${var.prefix}${random_id.unique.hex}"
+  env_short = substr(random_id.unique.hex, 0, 1)
 }

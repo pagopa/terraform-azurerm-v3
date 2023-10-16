@@ -3,11 +3,6 @@ variable "tags" {
   description = "Identity tags"
 }
 
-variable "location" {
-  type        = string
-  description = "Resource group and identity location"
-}
-
 variable "prefix" {
   type        = string
   description = "Project prefix"
@@ -32,10 +27,16 @@ variable "env_short" {
   }
 }
 
+variable "domain" {
+  type        = string
+  description = "App domain name"
+
+  default = ""
+}
+
 variable "identity_role" {
   type        = string
-  description = "Identity role should be either ci or cd. Necessary permissions will be given according to the scope of the identity"
-  default     = "ci"
+  description = "Identity role should be either ci or cd"
 
   validation {
     condition     = contains(["ci", "cd"], var.identity_role)
@@ -70,32 +71,26 @@ variable "github" {
   }
 }
 
-variable "ci_roles" {
-  type        = list(string)
-  description = "List of roles assigned to ci identity at subscription level"
-  default = [
-    "Reader",
-    "Reader and Data Access",
-    "Storage Blob Data Reader",
-    "Storage File Data SMB Share Reader",
-    "Storage Queue Data Reader",
-    "Storage Table Data Reader",
-    "PagoPA Export Deployments Template",
-    "Key Vault Secrets User",
-    "DocumentDB Account Contributor",
-    "API Management Service Contributor"
-  ]
+variable "ci_rbac_roles" {
+  type = object({
+    subscription    = set(string)
+    resource_groups = map(list(string))
+  })
+
+  default = {
+    subscription    = ["Reader"]
+    resource_groups = {}
+  }
 }
 
-variable "cd_roles" {
-  type        = list(string)
-  description = "List of roles assigned to cd identity at subscription level"
-  default = [
-    "Contributor",
-    "Storage Account Contributor",
-    "Storage Blob Data Contributor",
-    "Storage File Data SMB Share Contributor",
-    "Storage Queue Data Contributor",
-    "Storage Table Data Contributor",
-  ]
+variable "cd_rbac_roles" {
+  type = object({
+    subscription    = set(string)
+    resource_groups = map(list(string))
+  })
+
+  default = {
+    subscription    = ["Contributor"]
+    resource_groups = {}
+  }
 }

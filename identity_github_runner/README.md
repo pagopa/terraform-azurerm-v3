@@ -30,21 +30,23 @@ No modules.
 | Name | Type |
 |------|------|
 | [azurerm_federated_identity_credential.identity_credentials](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/federated_identity_credential) | resource |
-| [azurerm_resource_group.identity_rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
-| [azurerm_role_assignment.identity_role_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_role_assignment.identity_rg_role_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_role_assignment.identity_subscription_role_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_user_assigned_identity.identity](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
+| [azurerm_resource_group.identity_rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
+| [azurerm_resource_group.resource_group_details](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
 | [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_cd_roles"></a> [cd\_roles](#input\_cd\_roles) | List of roles assigned to cd identity at subscription level | `list(string)` | <pre>[<br>  "Contributor",<br>  "Storage Account Contributor",<br>  "Storage Blob Data Contributor",<br>  "Storage File Data SMB Share Contributor",<br>  "Storage Queue Data Contributor",<br>  "Storage Table Data Contributor"<br>]</pre> | no |
-| <a name="input_ci_roles"></a> [ci\_roles](#input\_ci\_roles) | List of roles assigned to ci identity at subscription level | `list(string)` | <pre>[<br>  "Reader",<br>  "Reader and Data Access",<br>  "Storage Blob Data Reader",<br>  "Storage File Data SMB Share Reader",<br>  "Storage Queue Data Reader",<br>  "Storage Table Data Reader",<br>  "PagoPA Export Deployments Template",<br>  "Key Vault Secrets User",<br>  "DocumentDB Account Contributor",<br>  "API Management Service Contributor"<br>]</pre> | no |
+| <a name="input_cd_rbac_roles"></a> [cd\_rbac\_roles](#input\_cd\_rbac\_roles) | n/a | <pre>object({<br>    subscription    = set(string)<br>    resource_groups = map(list(string))<br>  })</pre> | <pre>{<br>  "resource_groups": {},<br>  "subscription": [<br>    "Contributor"<br>  ]<br>}</pre> | no |
+| <a name="input_ci_rbac_roles"></a> [ci\_rbac\_roles](#input\_ci\_rbac\_roles) | n/a | <pre>object({<br>    subscription    = set(string)<br>    resource_groups = map(list(string))<br>  })</pre> | <pre>{<br>  "resource_groups": {},<br>  "subscription": [<br>    "Reader"<br>  ]<br>}</pre> | no |
+| <a name="input_domain"></a> [domain](#input\_domain) | App domain name | `string` | `""` | no |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
 | <a name="input_github"></a> [github](#input\_github) | GitHub Organization, repository name and scope permissions | <pre>object({<br>    org               = optional(string, "pagopa")<br>    repository        = string<br>    audience          = optional(list(string), ["api://AzureADTokenExchange"])<br>    issuer            = optional(string, "https://token.actions.githubusercontent.com")<br>    credentials_scope = optional(string, "environment")<br>    subject           = string<br>  })</pre> | n/a | yes |
-| <a name="input_identity_role"></a> [identity\_role](#input\_identity\_role) | Identity role should be either ci or cd. Necessary permissions will be given according to the scope of the identity | `string` | `"ci"` | no |
-| <a name="input_location"></a> [location](#input\_location) | Resource group and identity location | `string` | n/a | yes |
+| <a name="input_identity_role"></a> [identity\_role](#input\_identity\_role) | Identity role should be either ci or cd | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Project prefix | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Identity tags | `map(any)` | n/a | yes |
 

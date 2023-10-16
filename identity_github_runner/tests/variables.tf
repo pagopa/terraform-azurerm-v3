@@ -4,6 +4,12 @@ variable "prefix" {
   default     = "azrmtest"
 }
 
+variable "domain" {
+  description = "App domain name"
+  type        = string
+  default     = ""
+}
+
 variable "location" {
   description = "Resorce location"
   type        = string

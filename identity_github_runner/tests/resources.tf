@@ -1,12 +1,20 @@
 # https://pagopa.atlassian.net/wiki/spaces/Technology/pages/734527975/GitHub+OIDC+OP
 
+# resource group name should follow the convention specified in README.md file
+resource "azurerm_resource_group" "identity_rg" {
+  name     = var.domain == "" ? "${var.prefix}-${local.env_short}-identity-rg" : "${var.prefix}-${local.env_short}-${var.domain}identity-rg"
+  location = var.location
+}
+
 module "identity-ci" {
   source = "../" # change me with module URI
 
-  location      = var.location
-  prefix        = var.prefix
-  env_short     = random_id.unique.hex # change me with your env
-  identity_role = "ci"                 # possible values: `ci` and `cd`. Choose yours depending on the pipeline kind
+  prefix    = var.prefix
+  env_short = local.env_short # change me with your env
+  domain    = var.domain      # optional, default is empty string
+
+  identity_role = "ci" # possible values: `ci` and `cd`. Choose yours depending on the pipeline kind
+
   github = {
     repository        = var.repository # your repository name
     credentials_scope = "environment"  # (optional) federation scope. Module's default is `environment`; other values are branch, pr and tag
@@ -16,14 +24,24 @@ module "identity-ci" {
   tags = var.tags
 }
 
-# everything as above, except for the role
+# everything as above, except for write roles
 module "identity-cd" {
   source = "../"
 
-  location      = var.location
-  prefix        = var.prefix
-  env_short     = random_id.unique.hex
+  prefix    = var.prefix
+  env_short = local.env_short
+
   identity_role = "cd"
+
+  cd_rbac_roles = {
+    subscription = []
+    resource_groups = {
+      "${var.prefix}-${local.env_short}-identity-rg" = [
+        "Contributor"
+      ]
+    }
+  }
+
   github = {
     repository = var.repository
     subject    = var.prefix
