@@ -16,6 +16,24 @@ Ensure to create a resource group by using the naming convention `<prefix>-<shor
 
 You should create an identity for CI and another one for CD scenarios. By default, CI identites only have `Reader` access on the subscription, meanwhile CDs have `Contributor` role. This can be customized according to your needs by adding or removing roles with subscription or resource group scopes. However, the `minimum privilege principle` should be followed.
 
+### Identity management
+
+Each domain should use a single resource group.
+Each domain should use a single pair of identity (CI+CD).
+Each identity should have a different federated credential for each repository.
+
+Example:
+`prefix`: `azrmtest`
+`env_short`: `9`
+`domain`: ``
+`identity_role`: `ci`
+`github.repository`: `terraform-azurerm-v3`
+`app_name`: `messages`
+
+Resource group name: `azrmtest-9-identity-rg`
+Identity name: `azrmtest-9-github-identity-ci` and `azrmtest-9-github-identity-cd`
+Federated credential: `azrmtest-9-github-terraform-azurerm-v3-messages-ci` and `azrmtest-9-github-terraform-azurerm-v3-messages-cd`
+
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -45,6 +63,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_app_name"></a> [app\_name](#input\_app\_name) | App name | `string` | `""` | no |
 | <a name="input_cd_rbac_roles"></a> [cd\_rbac\_roles](#input\_cd\_rbac\_roles) | n/a | <pre>object({<br>    subscription    = set(string)<br>    resource_groups = map(list(string))<br>  })</pre> | <pre>{<br>  "resource_groups": {},<br>  "subscription": [<br>    "Contributor"<br>  ]<br>}</pre> | no |
 | <a name="input_ci_rbac_roles"></a> [ci\_rbac\_roles](#input\_ci\_rbac\_roles) | n/a | <pre>object({<br>    subscription    = set(string)<br>    resource_groups = map(list(string))<br>  })</pre> | <pre>{<br>  "resource_groups": {},<br>  "subscription": [<br>    "Reader"<br>  ]<br>}</pre> | no |
 | <a name="input_domain"></a> [domain](#input\_domain) | App domain name | `string` | `""` | no |

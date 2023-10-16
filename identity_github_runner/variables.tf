@@ -34,6 +34,13 @@ variable "domain" {
   default = ""
 }
 
+variable "app_name" {
+  type        = string
+  description = "App name"
+
+  default = ""
+}
+
 variable "identity_role" {
   type        = string
   description = "Identity role should be either ci or cd"
