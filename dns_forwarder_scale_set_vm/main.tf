@@ -29,18 +29,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
 
 
   # only one of source_image_id and source_image_reference is allowed
-  source_image_id = var.image_type == "custom" ? local.source_image_id : null
-
-  dynamic "source_image_reference" {
-    # only one of source_image_id and source_image_reference is allowed
-    for_each = var.image_type == "standard" ? [1] : []
-    content {
-      publisher = var.image_reference.publisher
-      offer     = var.image_reference.offer
-      sku       = var.image_reference.sku
-      version   = var.image_reference.version
-    }
-  }
+  source_image_id = local.source_image_id
 
   os_disk {
     storage_account_type   = var.storage_sku
