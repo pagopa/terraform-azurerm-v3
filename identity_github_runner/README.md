@@ -1,16 +1,20 @@
 # GitHub Federated Identity for Azure
 
-This module allows the creation of a User Managed Identity federated with GitHub.
-
-Module is intended to be used against `infrastructure` repo. It is also designed to keep naming consistency, so most of them are auto calculated:
-- resource group
-- identity name
+This module allows the creation of a User Managed Identity federated with GitHub. Module is intended to be used against `infrastructure` repo.
 
 The module's output contains the identity data.
 
 ## How to use it
 
 Use the Terraform template in `./tests` as template for testing and getting advices.
+
+### Before using it
+
+Ensure to create a resource group by using the naming convention `<prefix>-<shortenv>-<domain>` (`domain` can be empty). Module search this resource group and if it is not found, a failure is thrown.
+
+### RBAC roles
+
+You should create an identity for CI and another one for CD scenarios. By default, CI identites only have `Reader` access on the subscription, meanwhile CDs have `Contributor` role. This can be customized according to your needs by adding or removing roles with subscription or resource group scopes. However, the `minimum privilege principle` should be followed.
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
