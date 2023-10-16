@@ -1,3 +1,8 @@
+#build the image id
+locals {
+  source_image_id = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/images/${var.source_image_name}"
+}
+
 #create access ssh key
 resource "tls_private_key" "this_key" {
   algorithm = "RSA"
@@ -10,11 +15,6 @@ resource "azurerm_ssh_public_key" "this_public_key" {
   resource_group_name = var.resource_group_name
   location            = var.location
   public_key          = tls_private_key.this_key.public_key_openssh
-}
-
-#build the image id
-locals {
-  source_image_id = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/images/${var.source_image_name}"
 }
 
 # create scale set
