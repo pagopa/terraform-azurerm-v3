@@ -48,9 +48,8 @@ variable "network" {
 
 variable "environment" {
   type = object({
-    workspace_id = string
-    customerId   = string
-    sharedKey    = string
+    customerId = string
+    sharedKey  = string
   })
 }
 

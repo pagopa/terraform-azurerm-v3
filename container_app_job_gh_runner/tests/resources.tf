@@ -46,9 +46,8 @@ module "runner" {
 
   # set reference to the log analytics workspace you want to use for logging
   environment = {
-    workspace_id = var.environment.workspace_id
-    customerId   = var.environment.customerId
-    sharedKey    = var.environment.sharedKey
+    customerId = var.environment.customerId
+    sharedKey  = var.environment.sharedKey
   }
 
   # set app properties - especially the list of repos to support

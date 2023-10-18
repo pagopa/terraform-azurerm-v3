@@ -48,14 +48,17 @@ variable "network" {
     )
     error_message = "CIDR block must be supplied"
   }
+
+  description = "Existing VNet information and subnet CIDR block to use (must be /23)"
 }
 
 variable "environment" {
   type = object({
-    workspace_id = string
-    customerId   = string
-    sharedKey    = string
+    customerId = string
+    sharedKey  = string
   })
+
+  description = "Container App Environment logging configuration (Log Analytics Workspace)"
 }
 
 variable "app" {
@@ -71,6 +74,8 @@ variable "app" {
     )
     error_message = "List of repos must supplied"
   }
+
+  description = "Container App job configuration"
 }
 
 variable "key_vault" {
@@ -79,4 +84,6 @@ variable "key_vault" {
     name                = string
     secret_name         = string
   })
+
+  description = "Data of the KeyVault which stores PAT as secret"
 }
