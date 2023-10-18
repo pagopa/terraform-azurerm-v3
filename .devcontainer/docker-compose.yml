@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      # command:
+      #   "--env-file .devcontainer/devcontainer.env"
+    volumes:
+      - ..:/workspaces:cached
+      # - "$HOME/.config/powershell:/home/vscode/.config/powershell"
+      # - source=${localEnv:HOME}${localEnv:USERPROFILE}\\.config\\powershell,target=/home/vscode/..aws/credentials,type=bind,consistency=cached
+      - /var/run/docker.sock:/var/run/docker-host.sock
+    command: sleep infinity

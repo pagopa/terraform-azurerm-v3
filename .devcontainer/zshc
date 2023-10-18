@@ -1,0 +1,30 @@
+
+plugins=(git)
+
+# Example aliases
+alias zshconfig="code ~/.zshrc"
+alias fishconfig="code ~/.config/fish/config.fish"
+alias pwshconfig="code ~/.config/powershell/Microsoft.PowerShell_profile.ps1"
+
+# PATH="/usr/local/bin:$PATH" should work even without this since that path is already in PATH
+
+# OhMyPosh
+if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
+  eval "$(oh-my-posh init zsh)"
+  eval "$(oh-my-posh init zsh --config 'https://raw.githubusercontent.com/Krusty93/OhMyPoshCustomThemes/main/powershell_theme.json')"
+fi
+
+alias proj="cd ~/_proj"
+alias desktop="cd ~/Desktop"
+alias documents="cd ~/Documents"
+alias t="terraform"
+alias root="cd ~/"
+alias d="docker"
+alias k="kubectl"
+alias cls="clear"
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/andreagrillo/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)

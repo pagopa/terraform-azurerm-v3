@@ -1,0 +1,141 @@
+{
+  "name": "Azure Terraform",
+  "dockerComposeFile": [
+    "docker-compose.yml"
+  ],
+  "service": "devcontainer",
+  "workspaceFolder": "/workspaces",
+  // "runArgs": [
+  //   "--init",
+  //   "--env-file",
+  //   ".devcontainer/devcontainer.env"
+  // ],
+  // "remoteEnv": {
+    // Sets environment variables required for terrafom remote backend
+    // "TF_BACKEND_RESOURCE_GROUP": "${containerEnv:TF_BACKEND_RESOURCE_GROUP}",
+    // "TF_BACKEND_LOCATION": "${containerEnv:TF_BACKEND_LOCATION}",
+    // "TF_BACKEND_STORAGE_ACCOUNT": "${containerEnv:TF_BACKEND_STORAGE_ACCOUNT}",
+    // "TF_BACKEND_CONTAINER": "${containerEnv:TF_BACKEND_CONTAINER}",
+    // "TF_BACKEND_KEY": "${containerEnv:TF_BACKEND_KEY}"
+    // Use 'TF_VAR' prefix to set input variables for terraform templates
+    // "TF_VAR_rg_name":  "${containerEnv:TF_VAR_RG_NAME}"
+  // },
+  // Configure tool-specific properties.
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      // Set *default* container specific settings.json values on container create.
+      "settings": {
+        "terraform": {
+          "languageServer.enable": true,
+          "referenceCount": true,
+          "validation.enableEnhancedValidation": true,
+          "experimentalFeatures.validateOnSave": true,
+          "experimentalFeatures.prefillRequiredFields": true
+        },
+        "workbench.iconTheme": "vscode-icons",
+        "azureTerraform.terminal": "integrated",
+        "terminal": {
+          "integrated": {
+            "fontFamily": "CaskaydiaCove NF, Consolas",
+            "defaultProfile.linux": "zsh",
+            "profiles.linux": {
+              "zsh": {
+                "path": "/usr/bin/zsh"
+              },
+              // "bash": {
+              //   "path": "bash",
+              //   "icon": "terminal-bash"
+              // },
+              "pwsh": {
+                "path": "/usr/local/bin/pwsh",
+                "icon": "terminal-powershell"
+              }
+            }
+          }
+        },
+        "editor": {
+          "fontFamily": "CaskaydiaCove NF, Consolas",
+          "renderWhitespace": "all",
+          "insertSpace": true
+        },
+        "extensions.ignoreRecommendations": true
+      },
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        // GitHub
+        "github.vscode-github-actions",
+        "GitHub.vscode-pull-request-github",
+        "GitHub.remotehub",
+
+        // Azure
+        "ms-vscode.azurecli",
+
+        // Collaboration
+        "vscode-icons-team.vscode-icons",
+        "EditorConfig.EditorConfig",
+        "ms-vsliveshare.vsliveshare",
+        "ionutvmi.path-autocomplete",
+        "eamodio.gitlens",
+
+        // Markdown
+        "yzhang.markdown-all-in-one",
+        "DavidAnson.vscode-markdownlint",
+
+        // Terraform
+        "hashicorp.terraform",
+        "azapi-vscode.azapi",
+        "ms-azuretools.vscode-azureterraform",
+
+        // Required
+        "ms-azuretools.vscode-docker",
+        "ms-vscode.PowerShell"
+      ]
+    }
+  },
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "/usr/bin/zsh ./.devcontainer/post-create.sh > ~/post-create.log",
+  // Set `remoteUser` to `root` to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+  "remoteUser": "vscode",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest",
+      "ppa": "false"
+    },
+    "ghcr.io/devcontainers/features/azure-cli:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers-contrib/features/pre-commit:2": {
+      "version": "latest"
+    },
+    // "ghcr.io/mickeahlinder/devcontainer-features/tfenv": {
+    //   "version": "3.0.0"
+    // },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "true",
+      "username": "vscode",
+      "userUid": "1000",
+      "userGid": "1000",
+      "upgradePackages": "true"
+    },
+    "ghcr.io/devcontainers/features/terraform": {
+      "installTerraformDocs": true,
+      "tflint": "0.48",
+      "version": "1.5.6",
+      "installSentinel": false,
+      "installTFsec": false
+    },
+    "ghcr.io/devcontainers-contrib/features/act": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/github-cli": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/powershell": {
+      "version": "latest",
+      "modules": "Terminal-Icons"
+    }
+  }
+}
