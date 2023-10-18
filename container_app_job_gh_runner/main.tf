@@ -12,9 +12,9 @@ resource "azurerm_resource_group" "runner_rg" {
 
 resource "azurerm_subnet" "runner_subnet" {
   name                 = "${local.name}-github-runner-snet"
-  resource_group_name  = var.network.rg_vnet
-  virtual_network_name = var.network.vnet
-  address_prefixes     = var.network.cidr_subnets
+  resource_group_name  = var.network.vnet_resource_group_name
+  virtual_network_name = var.network.vnet_name
+  address_prefixes     = ["${var.network.subnet_cidr_block}"]
   service_endpoints    = []
 }
 

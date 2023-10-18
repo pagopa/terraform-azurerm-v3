@@ -39,9 +39,9 @@ module "runner" {
 
   # creates a subnet in the specified existing vnet. Use a /23 CIDR block
   network = {
-    rg_vnet      = azurerm_virtual_network.vnet.resource_group_name
-    vnet         = azurerm_virtual_network.vnet.name
-    cidr_subnets = var.network.cidr_subnets
+    vnet_resource_group_name = azurerm_virtual_network.vnet.resource_group_name
+    vnet_name                = azurerm_virtual_network.vnet.name
+    subnet_cidr_block        = var.network.subnet_cidr_block
   }
 
   # set reference to the log analytics workspace you want to use for logging

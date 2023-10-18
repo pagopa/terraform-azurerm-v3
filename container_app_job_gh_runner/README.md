@@ -15,7 +15,6 @@ This module creates the infrastructure to host GitHub self hosted runners using 
   - [Inputs](#inputs)
   - [Outputs](#outputs)
 
-
 ## How to use it
 
 ### Requirements
@@ -111,7 +110,7 @@ No modules.
 | <a name="input_environment"></a> [environment](#input\_environment) | Container App Environment logging configuration (Log Analytics Workspace) | <pre>object({<br>    customerId = string<br>    sharedKey  = string<br>  })</pre> | n/a | yes |
 | <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Data of the KeyVault which stores PAT as secret | <pre>object({<br>    resource_group_name = string<br>    name                = string<br>    secret_name         = string<br>  })</pre> | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | Resource group and resources location | `string` | n/a | yes |
-| <a name="input_network"></a> [network](#input\_network) | Existing VNet information and subnet CIDR block to use (must be /23) | <pre>object({<br>    rg_vnet      = string<br>    vnet         = string<br>    cidr_subnets = list(string)<br>  })</pre> | n/a | yes |
+| <a name="input_network"></a> [network](#input\_network) | Existing VNet information and subnet CIDR block to use (must be /23) | <pre>object({<br>    vnet_resource_group_name = string<br>    vnet_name                = string<br>    subnet_cidr_block        = string<br>  })</pre> | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Project prefix | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags for new resources | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
 

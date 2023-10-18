@@ -37,17 +37,10 @@ variable "env_short" {
 
 variable "network" {
   type = object({
-    rg_vnet      = string
-    vnet         = string
-    cidr_subnets = list(string)
+    vnet_resource_group_name = string
+    vnet_name                = string
+    subnet_cidr_block        = string
   })
-
-  validation {
-    condition = (
-      length(var.network.cidr_subnets) >= 1
-    )
-    error_message = "CIDR block must be supplied"
-  }
 
   description = "Existing VNet information and subnet CIDR block to use (must be /23)"
 }
