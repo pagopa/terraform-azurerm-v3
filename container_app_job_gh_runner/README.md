@@ -1,29 +1,79 @@
 # Azure Container App Job as GitHub Runners
 
-This module creates the infrastructure to host GitHub self hosted runners using Azure Container Apps jobs.
+This module creates the infrastructure to host GitHub self hosted runners using Azure Container Apps jobs and can be used by repositories which need private resource access on Azure.
 
-## Included resources
-
-The following resources are created and managed by this module:
-
-- resource group
-- subnet
-- container app environment
-- container app job
+- [Azure Container App Job as GitHub Runners](#azure-container-app-job-as-github-runners)
+  - [How to use it](#how-to-use-it)
+    - [Requirements](#requirements)
+    - [What the module does](#what-the-module-does)
+    - [Example](#example)
+  - [Design](#design)
+    - [Notes](#notes)
+  - [Requirements](#requirements-1)
+  - [Modules](#modules)
+  - [Resources](#resources)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
 
 ## How to use it
 
-Give a try to the example saved in `terraform-azurerm-v3/container_app_job_gh_runner/tests` to see a working demo of this module
+### Requirements
 
-### Prerequisites
+Before using the module, developer needs the following existing resources:
 
-Before running the demo, you need to manually create:
+- a VNet
+- a KeyVault
+- a Log Analytics Workspace
+- a secret in the mentioned KeyVault containing a GitHub PAT with access to the desired repos
+  - PATs can be generated using [`bot` GitHub users](https://pagopa.atlassian.net/wiki/spaces/DEVOPS/pages/466716501/Github+-+bots+for+projects). An Admin must approve the request
+  - PATs have an expiration date
 
-- vnet
-- keyvault
-- a valid GitHub PAT stored as secret
+### What the module does
 
-Names of these resources are required as module input
+The module creates:
+
+- a subnet (/23)
+- a resource group
+- a Container App Environment
+- a Container App job
+- a role assignment to allow the container app job to read the secret (`Get` permission over KeyVault's secrets)
+
+### Example
+
+Give a try to the example saved in `terraform-azurerm-v3/container_app_job_gh_runner/tests` to see a working demo of this module.
+
+## Design
+
+A Container App job scales jobs based on event-driven rules (KEDA). To support GitHub Actions, you need to use [`github-runner` scale rule](https://keda.sh/docs/2.12/scalers/github-runner/) with these metadata:
+
+- owner: `pagopa`
+- runnerScope: `repo`
+  - most tighten
+- repos: *the repository* you want to support
+  - it supports multiple repositories but we need a 1:1 match between containers and repositories
+- targetWorkflowQueueLength: `1`
+  - indicates how many job requests are necessary to trigger the container
+- labels: the job name
+  - field is optional but allows us to set a 1:1 match between containers and repositories
+
+With the above settings, the app will be able to poll the GitHub repository (be careful to quota limits). When a job request is detected, it launches the job indicated in the `labels` metadata.
+
+On the other hand, containers needs these environment variables to connect to GitHub, [grab a registration token and register themself as runners](https://github.com/pagopa/github-self-hosted-runner-azure/blob/dockerfile-v2/github-runner-entrypoint.sh):
+
+- GITHUB_PAT: reference to the KeyVault secret (no Kubernetes secrets are used)
+- REPO_URL: GitHub repo URL
+- REGISTRATION_TOKEN_API_URL: [GitHub API](https://docs.github.com/en/rest/actions/self-hosted-runners?apiVersion=2022-11-28#create-a-registration-token-for-a-repository) to get the registration token
+
+### Notes
+
+`azapi_resource` is required by CAE because:
+
+- `zoneRedundant` property must be true but `azurerm` supports it since v3.50 (too recent for us?)
+
+`azapi_resource` is required by CA because:
+
+- `azurerm` doesn't support Container App *jobs* ([feature request](https://github.com/hashicorp/terraform-provider-azurerm/issues/23165))
+- KeyVault reference not supported by `azurerm` ([feature request](https://github.com/hashicorp/terraform-provider-azurerm/issues/21739))
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -55,12 +105,12 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_app"></a> [app](#input\_app) | n/a | <pre>object({<br>    repo_owner = optional(string, "pagopa")<br>    repos      = set(string)<br>    image      = optional(string, "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:ed51ac419d78b6410be96ecaa8aa8dbe645aa0309374132886412178e2739a47")<br>  })</pre> | n/a | yes |
+| <a name="input_app"></a> [app](#input\_app) | Container App job configuration | <pre>object({<br>    repo_owner = optional(string, "pagopa")<br>    repos      = set(string)<br>    image      = optional(string, "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:ed51ac419d78b6410be96ecaa8aa8dbe645aa0309374132886412178e2739a47")<br>  })</pre> | n/a | yes |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
-| <a name="input_environment"></a> [environment](#input\_environment) | n/a | <pre>object({<br>    workspace_id = string<br>    customerId   = string<br>    sharedKey    = string<br>  })</pre> | n/a | yes |
-| <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | n/a | <pre>object({<br>    resource_group_name = string<br>    name                = string<br>    secret_name         = string<br>  })</pre> | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | Container App Environment logging configuration (Log Analytics Workspace) | <pre>object({<br>    customerId = string<br>    sharedKey  = string<br>  })</pre> | n/a | yes |
+| <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Data of the KeyVault which stores PAT as secret | <pre>object({<br>    resource_group_name = string<br>    name                = string<br>    secret_name         = string<br>  })</pre> | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | Resource group and resources location | `string` | n/a | yes |
-| <a name="input_network"></a> [network](#input\_network) | n/a | <pre>object({<br>    rg_vnet      = string<br>    vnet         = string<br>    cidr_subnets = list(string)<br>  })</pre> | n/a | yes |
+| <a name="input_network"></a> [network](#input\_network) | Existing VNet information and subnet CIDR block to use (must be /23) | <pre>object({<br>    vnet_resource_group_name = string<br>    vnet_name                = string<br>    subnet_cidr_block        = string<br>  })</pre> | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Project prefix | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags for new resources | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
 

@@ -34,23 +34,22 @@ variable "key_vault" {
 
 variable "network" {
   type = object({
-    rg_vnet      = string
-    vnet         = string
-    cidr_subnets = list(string)
+    vnet_resource_group_name = string
+    vnet_name                = string
+    subnet_cidr_block        = string
   })
 
   default = {
-    rg_vnet      = "azrmtest-vnet-rg"
-    vnet         = "azrmtest-vnet"
-    cidr_subnets = ["10.0.2.0/23"]
+    vnet_resource_group_name = "azrmtest-vnet-rg"
+    vnet_name                = "azrmtest-vnet"
+    subnet_cidr_block        = "10.0.2.0/23"
   }
 }
 
 variable "environment" {
   type = object({
-    workspace_id = string
-    customerId   = string
-    sharedKey    = string
+    customerId = string
+    sharedKey  = string
   })
 }
 
