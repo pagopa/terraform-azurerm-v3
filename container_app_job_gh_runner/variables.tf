@@ -19,7 +19,7 @@ variable "prefix" {
     condition = (
       length(var.prefix) <= 6
     )
-    error_message = "Max length is 6 chars."
+    error_message = "Max length is 6 chars"
   }
 }
 
