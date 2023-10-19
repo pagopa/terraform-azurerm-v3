@@ -104,3 +104,10 @@ variable "admin_password" {
 variable "tags" {
   type = map(any)
 }
+
+
+variable "zones" {
+  type = list(string)
+  description = "(Optional) List of AZ on which the scale set will distribute its instances"
+  default = null
+}
