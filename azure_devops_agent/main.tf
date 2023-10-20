@@ -27,8 +27,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
   admin_username      = "adminuser"
   admin_password      = var.admin_password
 
-  zone_balance        = length(var.zones) > 0 ? true : false
-  zones               = length(var.zones) > 0 ? var.zones : null
+  zone_balance = var.zone_balance
+  zones        = var.zones != null ? var.zones : null
 
   # only one of source_image_id and source_image_reference is allowed
   source_image_id = var.image_type == "custom" ? local.source_image_id : null
