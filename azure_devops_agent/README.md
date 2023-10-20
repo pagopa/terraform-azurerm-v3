@@ -110,6 +110,8 @@ No modules.
 | <a name="input_subscription_name"></a> [subscription\_name](#input\_subscription\_name) | (Required) Azure subscription name | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
 | <a name="input_vm_sku"></a> [vm\_sku](#input\_vm\_sku) | (Optional) Size of VMs in the scale set. Default to Standard\_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info. | `string` | `"Standard_B1s"` | no |
+| <a name="input_zone_balance"></a> [zone\_balance](#input\_zone\_balance) | (Optional) If true forces the even distribution of instances across all the configured zones ('zones' variable) | `bool` | `false` | no |
+| <a name="input_zones"></a> [zones](#input\_zones) | (Optional) List of AZ on which the scale set will distribute its instances | `list(string)` | `null` | no |
 
 ## Outputs
 
