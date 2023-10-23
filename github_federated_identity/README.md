@@ -14,7 +14,7 @@ Ensure to create a resource group by using the naming convention `<prefix>-<shor
 
 ### RBAC roles
 
-You should create an identity for CI and another one for CD scenarios. By default, CI identites only have `Reader` access on the subscription, meanwhile CDs have `Contributor` role. This can be customized according to your needs by adding or removing roles with subscription or resource group scopes. However, the `minimum privilege principle` should be followed.
+You should create an identity for CI and another one for CD scenarios. By default, CI identites only have `Reader` access on the subscription, meanwhile CDs have `Contributor` role. This can be customized according to your needs by adding or removing roles with subscription or resource group scopes. However, the minimum privilege principle should be followed.
 
 ### Identity management
 
