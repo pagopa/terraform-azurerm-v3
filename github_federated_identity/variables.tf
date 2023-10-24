@@ -36,7 +36,7 @@ variable "domain" {
 
 variable "app_name" {
   type        = string
-  description = "App name"
+  description = "Application name"
 
   default = ""
 }
@@ -52,29 +52,21 @@ variable "identity_role" {
 }
 
 variable "github" {
-  type = object({
+  type = list(object({
     org               = optional(string, "pagopa")
     repository        = string
-    audience          = optional(list(string), ["api://AzureADTokenExchange"])
+    audience          = optional(set(string), ["api://AzureADTokenExchange"])
     issuer            = optional(string, "https://token.actions.githubusercontent.com")
     credentials_scope = optional(string, "environment")
     subject           = string
-  })
+  }))
   description = "GitHub Organization, repository name and scope permissions"
 
   validation {
-    condition     = contains(["environment", "ref", "pull_request"], var.github.credentials_scope)
+    condition = alltrue([
+      for g in var.github : contains(["environment", "ref", "pull_request"], g.credentials_scope)
+    ])
     error_message = "The credentials_scope value must be either 'environment', 'ref' or 'pull_request'"
-  }
-
-  validation {
-    condition     = var.github.repository != null
-    error_message = "The repository value cannot be null"
-  }
-
-  validation {
-    condition     = var.github.subject != null
-    error_message = "The subject value cannot be null"
   }
 }
 

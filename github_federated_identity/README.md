@@ -63,12 +63,12 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_app_name"></a> [app\_name](#input\_app\_name) | App name | `string` | `""` | no |
+| <a name="input_app_name"></a> [app\_name](#input\_app\_name) | Application name | `string` | `""` | no |
 | <a name="input_cd_rbac_roles"></a> [cd\_rbac\_roles](#input\_cd\_rbac\_roles) | n/a | <pre>object({<br>    subscription    = set(string)<br>    resource_groups = map(list(string))<br>  })</pre> | <pre>{<br>  "resource_groups": {},<br>  "subscription": [<br>    "Contributor"<br>  ]<br>}</pre> | no |
 | <a name="input_ci_rbac_roles"></a> [ci\_rbac\_roles](#input\_ci\_rbac\_roles) | n/a | <pre>object({<br>    subscription    = set(string)<br>    resource_groups = map(list(string))<br>  })</pre> | <pre>{<br>  "resource_groups": {},<br>  "subscription": [<br>    "Reader"<br>  ]<br>}</pre> | no |
 | <a name="input_domain"></a> [domain](#input\_domain) | App domain name | `string` | `""` | no |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
-| <a name="input_github"></a> [github](#input\_github) | GitHub Organization, repository name and scope permissions | <pre>object({<br>    org               = optional(string, "pagopa")<br>    repository        = string<br>    audience          = optional(list(string), ["api://AzureADTokenExchange"])<br>    issuer            = optional(string, "https://token.actions.githubusercontent.com")<br>    credentials_scope = optional(string, "environment")<br>    subject           = string<br>  })</pre> | n/a | yes |
+| <a name="input_github"></a> [github](#input\_github) | GitHub Organization, repository name and scope permissions | <pre>list(object({<br>    org               = optional(string, "pagopa")<br>    repository        = string<br>    audience          = optional(set(string), ["api://AzureADTokenExchange"])<br>    issuer            = optional(string, "https://token.actions.githubusercontent.com")<br>    credentials_scope = optional(string, "environment")<br>    subject           = string<br>  }))</pre> | n/a | yes |
 | <a name="input_identity_role"></a> [identity\_role](#input\_identity\_role) | Identity role should be either ci or cd | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Project prefix | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Identity tags | `map(any)` | n/a | yes |

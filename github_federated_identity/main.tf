@@ -42,10 +42,11 @@ resource "azurerm_role_assignment" "identity_rg_role_assignment" {
 }
 
 resource "azurerm_federated_identity_credential" "identity_credentials" {
+  for_each            = { for g in var.github : g.repository => g }
   resource_group_name = local.resource_group_name
-  name                = local.federated_identity_credential_name
-  audience            = var.github.audience
-  issuer              = var.github.issuer
+  name                = var.app_name == "" ? "${local.federation_prefix}-${each.value.repository}" : "${local.federation_prefix}-${each.value.repository}-${var.app_name}"
+  audience            = each.value.audience
+  issuer              = each.value.issuer
   parent_id           = azurerm_user_assigned_identity.identity.id
-  subject             = "repo:${var.github.org}/${var.github.repository}:${var.github.credentials_scope}:${var.github.subject}"
+  subject             = "repo:${each.value.org}/${each.value.repository}:${each.value.credentials_scope}:${each.value.subject}"
 }

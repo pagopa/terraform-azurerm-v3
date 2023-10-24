@@ -2,7 +2,7 @@
 
 # resource group name should follow the convention specified in README.md file
 resource "azurerm_resource_group" "identity_rg" {
-  name     = var.domain == "" ? "${var.prefix}-${local.env_short}-identity-rg" : "${var.prefix}-${local.env_short}-${var.domain}identity-rg"
+  name     = var.domain == "" ? "${var.prefix}-${local.env_short}-identity-rg" : "${var.prefix}-${local.env_short}-${var.domain}-identity-rg"
   location = var.location
 }
 
@@ -15,11 +15,13 @@ module "identity-ci" {
 
   identity_role = "ci" # possible values: `ci` and `cd`. Choose yours depending on the pipeline kind
 
-  github = {
-    repository        = var.repository # your repository name
-    credentials_scope = "environment"  # (optional) federation scope. Module's default is `environment`; other values are branch, pr and tag
-    subject           = var.prefix     # change me. value of the credential scope. If environment is used as scope, set your GitHub environment name
-  }
+  github = [
+    {
+      repository        = var.repository # your repository name
+      credentials_scope = "environment"  # (optional) federation scope. Module's default is `environment`; other values are branch, pr and tag
+      subject           = var.prefix     # change me. value of the credential scope. If environment is used as scope, set your GitHub environment name
+    }
+  ]
 
   tags = var.tags
 }
@@ -42,10 +44,12 @@ module "identity-cd" {
     }
   }
 
-  github = {
-    repository = var.repository
-    subject    = var.prefix
-  }
+  github = [
+    {
+      repository = var.repository
+      subject    = var.prefix
+    }
+  ]
 
   tags = var.tags
 }
