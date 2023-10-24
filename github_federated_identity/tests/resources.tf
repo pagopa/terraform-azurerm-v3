@@ -15,7 +15,7 @@ module "identity-ci" {
 
   identity_role = "ci" # possible values: `ci` and `cd`. Choose yours depending on the pipeline kind
 
-  github = [
+  github_federations = [
     {
       repository        = var.repository # your repository name
       credentials_scope = "environment"  # (optional) federation scope. Module's default is `environment`; other values are branch, pr and tag
@@ -44,7 +44,7 @@ module "identity-cd" {
     }
   }
 
-  github = [
+  github_federations = [
     {
       repository = var.repository
       subject    = var.prefix

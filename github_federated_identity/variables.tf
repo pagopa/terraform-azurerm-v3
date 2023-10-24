@@ -51,7 +51,7 @@ variable "identity_role" {
   }
 }
 
-variable "github" {
+variable "github_federations" {
   type = list(object({
     org               = optional(string, "pagopa")
     repository        = string
@@ -64,7 +64,7 @@ variable "github" {
 
   validation {
     condition = alltrue([
-      for g in var.github : contains(["environment", "ref", "pull_request"], g.credentials_scope)
+      for g in var.github_federations : contains(["environment", "ref", "pull_request"], g.credentials_scope)
     ])
     error_message = "The credentials_scope value must be either 'environment', 'ref' or 'pull_request'"
   }
