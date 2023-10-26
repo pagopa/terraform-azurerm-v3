@@ -31,7 +31,7 @@ Example:
 `app_name`: `messages`
 
 Resource group name: `azrmtest-9-identity-rg`
-Identity name: `azrmtest-9-github-identity-ci` and `azrmtest-9-github-identity-cd`
+Identity name: `azrmtest-9-github-ci-identity` and `azrmtest-9-github-cd-identity`
 Federated credential: `azrmtest-9-github-terraform-azurerm-v3-messages-ci` and `azrmtest-9-github-terraform-azurerm-v3-messages-cd`
 
 <!-- markdownlint-disable -->
