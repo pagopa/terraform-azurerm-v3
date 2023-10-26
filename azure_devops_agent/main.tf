@@ -14,7 +14,8 @@ resource "azurerm_ssh_public_key" "this_public_key" {
 
 #build the image id
 locals {
-  source_image_id = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/images/${var.source_image_name}"
+  image_rg        = coalesce(var.image_resource_group_name, var.resource_group_name)
+  source_image_id = "/subscriptions/${var.subscription_id}/resourceGroups/${local.image_rg}/providers/Microsoft.Compute/images/${var.source_image_name}"
 }
 
 # create scale set
