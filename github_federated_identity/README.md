@@ -20,7 +20,7 @@ You should create an identity for CI and another one for CD scenarios. By defaul
 
 Each domain should use a single resource group.
 Each domain should use a single pair of identity (CI+CD).
-Each identity should have a different federated credential for each repository.
+Each identity should have a different federated credential for each repository and environment.
 
 Example:
 `prefix`: `azrmtest`
@@ -29,10 +29,12 @@ Example:
 `identity_role`: `ci`
 `github.repository`: `terraform-azurerm-v3`
 `app_name`: `messages`
+`credentials_scope`: `environment`
+`subject`: `dev-ci`
 
 Resource group name: `azrmtest-9-identity-rg`
 Identity name: `azrmtest-9-github-ci-identity` and `azrmtest-9-github-cd-identity`
-Federated credential: `azrmtest-9-github-terraform-azurerm-v3-messages-ci` and `azrmtest-9-github-terraform-azurerm-v3-messages-cd`
+Federated credential: `azrmtest-9-messages-github-terraform-azurerm-v3-messages-environment-dev-ci`
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

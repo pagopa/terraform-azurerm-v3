@@ -3,5 +3,5 @@ locals {
 
   resource_group_name = "${local.name}-identity-rg"
   identity_name       = "${local.name}-github-${var.identity_role}-identity"
-  federation_prefix   = "${local.name}-github"
+  federation_prefix   = var.app_name == "" ? "${local.name}-github" : "${local.name}-${var.app_name}-github"
 }
