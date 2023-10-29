@@ -31,7 +31,3 @@ output "managed_resource_group_name" {
   description = " The auto-generated Resource Group which contains the resources for this Managed Kubernetes Cluster."
 }
 
-output "managed_resource_group_id" {
-  value       = azurerm_kubernetes_cluster.this.node_resource_group_id
-  description = "The ID of the Resource Group containing the resources for this Managed Kubernetes Cluster."
-}
