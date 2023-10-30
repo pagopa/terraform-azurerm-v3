@@ -149,6 +149,8 @@ resource "azurerm_monitor_metric_alert" "storage_account_low_availability" {
 
 resource "null_resource" "immutability" {
 
+  count = var.blob_storage_policy.enable_immutability_policy ? 1 : 0
+
   triggers = {
     immutability_policy : var.blob_storage_policy.enable_immutability_policy
     resouce_group_name : var.resource_group_name
