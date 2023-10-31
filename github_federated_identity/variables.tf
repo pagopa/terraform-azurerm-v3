@@ -9,7 +9,7 @@ variable "prefix" {
 
   validation {
     condition = (
-      length(var.prefix) <= 6
+      length(var.prefix) <= 12
     )
     error_message = "Max length is 6 chars."
   }
@@ -70,6 +70,20 @@ variable "github_federations" {
   }
 }
 
+#
+# ci_rbac_roles = {
+#   subscription = ["role1", "role2"]
+#   resource_groups = {
+#     "rg1" = [
+#       "role1",
+#       "role2"
+#     ],
+#     "rg2" = [
+#       "role3"
+#     ]
+#   }
+# }
+#
 variable "ci_rbac_roles" {
   type = object({
     subscription    = set(string)
@@ -80,8 +94,24 @@ variable "ci_rbac_roles" {
     subscription    = ["Reader"]
     resource_groups = {}
   }
+
+  description = "Set of CI identity roles for the current subscription and the specified resource groups"
 }
 
+#
+# cd_rbac_roles = {
+#   subscription = ["role1", "role2"]
+#   resource_groups = {
+#     "rg1" = [
+#       "role1",
+#       "role2"
+#     ],
+#     "rg2" = [
+#       "role3"
+#     ]
+#   }
+# }
+#
 variable "cd_rbac_roles" {
   type = object({
     subscription    = set(string)
@@ -92,4 +122,6 @@ variable "cd_rbac_roles" {
     subscription    = ["Contributor"]
     resource_groups = {}
   }
+
+  description = "Set of CD identity roles for the current subscription and the specified resource groups"
 }
