@@ -72,7 +72,7 @@ variable "github_federations" {
 
 #
 # ci_rbac_roles = {
-#   subscription = ["role1", "role2"]
+#   subscription_roles = ["role1", "role2"]
 #   resource_groups = {
 #     "rg1" = [
 #       "role1",
@@ -86,13 +86,13 @@ variable "github_federations" {
 #
 variable "ci_rbac_roles" {
   type = object({
-    subscription    = set(string)
-    resource_groups = map(list(string))
+    subscription_roles = set(string)
+    resource_groups    = map(list(string))
   })
 
   default = {
-    subscription    = ["Reader"]
-    resource_groups = {}
+    subscription_roles = ["Reader"]
+    resource_groups    = {}
   }
 
   description = "Set of CI identity roles for the current subscription and the specified resource groups"
@@ -100,7 +100,7 @@ variable "ci_rbac_roles" {
 
 #
 # cd_rbac_roles = {
-#   subscription = ["role1", "role2"]
+#   subscription_roles = ["role1", "role2"]
 #   resource_groups = {
 #     "rg1" = [
 #       "role1",
@@ -114,13 +114,13 @@ variable "ci_rbac_roles" {
 #
 variable "cd_rbac_roles" {
   type = object({
-    subscription    = set(string)
-    resource_groups = map(list(string))
+    subscription_roles = set(string)
+    resource_groups    = map(list(string))
   })
 
   default = {
-    subscription    = ["Contributor"]
-    resource_groups = {}
+    subscription_roles = ["Contributor"]
+    resource_groups    = {}
   }
 
   description = "Set of CD identity roles for the current subscription and the specified resource groups"

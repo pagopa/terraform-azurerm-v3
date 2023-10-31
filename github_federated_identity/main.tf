@@ -11,7 +11,7 @@ resource "azurerm_user_assigned_identity" "identity" {
 }
 
 resource "azurerm_role_assignment" "identity_subscription_role_assignment" {
-  for_each             = var.identity_role == "ci" ? var.ci_rbac_roles.subscription : var.cd_rbac_roles.subscription
+  for_each             = var.identity_role == "ci" ? var.ci_rbac_roles.subscription_roles : var.cd_rbac_roles.subscription_roles
   scope                = data.azurerm_subscription.current.id
   role_definition_name = each.value
   principal_id         = azurerm_user_assigned_identity.identity.principal_id
