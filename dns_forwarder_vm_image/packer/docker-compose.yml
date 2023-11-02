@@ -5,4 +5,5 @@ services:
     container_name: dns-forwarder
     restart: always
     ports:
-      - "53:53"
+      - "53:53/tcp"
+      - "53:53/udp"
