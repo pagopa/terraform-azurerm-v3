@@ -19,7 +19,7 @@ resource "azurerm_kubernetes_cluster" "this" {
   sku_tier            = var.sku_tier
 
   private_cluster_enabled = var.private_cluster_enabled
-
+  disk_encryption_set_id  = var.disk_encryption_set_id
   #
   # System node pool
   #

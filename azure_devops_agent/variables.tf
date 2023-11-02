@@ -24,6 +24,12 @@ variable "resource_group_name" {
   description = "(Required) The name of the Resource Group in which the Linux Virtual Machine Scale Set should be exist. Changing this forces a new resource to be created."
 }
 
+variable "image_resource_group_name" {
+  type        = string
+  default     = null
+  description = "(Optional) Resource group name where to find the vm image used for azdo vms. If not defined, 'resource_group_name' will be used"
+}
+
 variable "source_image_name" {
   type        = string
   description = "(Optional) The name of an Image which each Virtual Machine in this Scale Set should be based on. It must be stored in the same subscription & resource group of this resource"
@@ -104,3 +110,17 @@ variable "admin_password" {
 variable "tags" {
   type = map(any)
 }
+
+
+variable "zones" {
+  type        = list(string)
+  description = "(Optional) List of AZ on which the scale set will distribute its instances"
+  default     = null
+}
+
+variable "zone_balance" {
+  type        = bool
+  default     = false
+  description = "(Optional) If true forces the even distribution of instances across all the configured zones ('zones' variable)"
+}
+
