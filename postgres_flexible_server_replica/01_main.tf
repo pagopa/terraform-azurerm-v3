@@ -25,7 +25,6 @@ resource "azurerm_postgresql_flexible_server" "this" {
   private_dns_zone_id = var.private_endpoint_enabled ? var.private_dns_zone_id : null
 
 
-  log_analytics_workspace_id = var.log_analytics_workspace_id
 
   sku_name   = var.sku_name
 

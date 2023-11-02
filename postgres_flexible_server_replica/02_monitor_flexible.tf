@@ -31,32 +31,32 @@ resource "azurerm_monitor_metric_alert" "this" {
   }
 }
 
+##
+## Diagnostic settings
+##
+#resource "azurerm_monitor_diagnostic_setting" "this" {
+#  count                      = var.diagnostic_settings_enabled ? 1 : 0
+#  name                       = "LogSecurity"
+#  target_resource_id         = azurerm_postgresql_flexible_server.this.id
+#  log_analytics_workspace_id = var.log_analytics_workspace_id
+#  storage_account_id         = var.diagnostic_setting_destination_storage_id
 #
-# Diagnostic settings
+#  enabled_log {
+#    category = "PostgreSQLLogs"
 #
-resource "azurerm_monitor_diagnostic_setting" "this" {
-  count                      = var.diagnostic_settings_enabled ? 1 : 0
-  name                       = "LogSecurity"
-  target_resource_id         = azurerm_postgresql_flexible_server.this.id
-  log_analytics_workspace_id = var.log_analytics_workspace_id
-  storage_account_id         = var.diagnostic_setting_destination_storage_id
-
-  enabled_log {
-    category = "PostgreSQLLogs"
-
-    retention_policy {
-      days    = 365
-      enabled = true
-    }
-  }
-
-  metric {
-    category = "AllMetrics"
-    enabled  = false
-
-    retention_policy {
-      days    = 0
-      enabled = false
-    }
-  }
-}
+#    retention_policy {
+#      days    = 365
+#      enabled = true
+#    }
+#  }
+#
+#  metric {
+#    category = "AllMetrics"
+#    enabled  = false
+#
+#    retention_policy {
+#      days    = 0
+#      enabled = false
+#    }
+#  }
+#}
