@@ -233,6 +233,11 @@ variable "diagnostic_setting_destination_storage_id" {
   description = "(Optional) The ID of the Storage Account where logs should be sent. Changing this forces a new resource to be created."
 }
 
+variable "source_server_id" {
+  type = string
+  description = "(Required) Id of the source server to be replicated"
+}
+
 variable "tags" {
   type = map(any)
 }

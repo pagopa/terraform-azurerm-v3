@@ -26,6 +26,8 @@ resource "azurerm_postgresql_flexible_server" "this" {
 
   sku_name   = var.sku_name
 
+  source_server_id = var.source_server_id
+
   dynamic "high_availability" {
     for_each = var.high_availability_enabled && var.standby_availability_zone != null ? ["dummy"] : []
 
