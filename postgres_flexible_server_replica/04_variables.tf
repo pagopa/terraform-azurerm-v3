@@ -125,9 +125,9 @@ variable "replica_server_metric_alerts" {
       frequency        = "PT5M"
       window_size      = "PT30M"
       metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Total"
+      aggregation      = "Average"
       metric_name      = "physical_replication_delay_in_seconds"
-      operator         = "Average"
+      operator         = "GreaterThanOrEqual"
       threshold        = 240
       severity         = 2
     }
@@ -163,9 +163,9 @@ variable "main_server_additional_alerts" {
       frequency        = "PT5M"
       window_size      = "PT30M"
       metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Total"
+      aggregation      = "Average"
       metric_name      = "physical_replication_delay_in_bytes"
-      operator         = "Average"
+      operator         = "GreaterThanOrEqual"
       threshold        = 240
       severity         = 2
     }
