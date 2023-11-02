@@ -96,32 +96,8 @@ variable "pgbouncer_enabled" {
 #
 # Monitoring & Alert
 #
-variable "custom_metric_alerts" {
-  default = null
 
-  description = <<EOD
-  Map of name = criteria objects
-  EOD
-
-  type = map(object({
-    # criteria.*.aggregation to be one of [Average Count Minimum Maximum Total]
-    aggregation = string
-    metric_name = string
-    # "Insights.Container/pods" "Insights.Container/nodes"
-    metric_namespace = string
-    # criteria.0.operator to be one of [Equals NotEquals GreaterThan GreaterThanOrEqual LessThan LessThanOrEqual]
-    operator  = string
-    threshold = number
-    # Possible values are PT1M, PT5M, PT15M, PT30M and PT1H
-    frequency = string
-    # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.
-    window_size = string
-    # severity: The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4. Defaults to 3.
-    severity = number
-  }))
-}
-
-variable "default_metric_alerts" {
+variable "replica_server_metric_alerts" {
 
   description = <<EOD
   Map of name = criteria objects
@@ -145,54 +121,52 @@ variable "default_metric_alerts" {
   }))
 
   default = {
-    cpu_percent = {
-      frequency        = "PT5M"
-      window_size      = "PT30M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "cpu_percent"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity         = 2
-    },
-    memory_percent = {
-      frequency        = "PT5M"
-      window_size      = "PT30M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "memory_percent"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity         = 2
-    },
-    storage_percent = {
-      frequency        = "PT5M"
-      window_size      = "PT30M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "storage_percent"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity         = 2
-    },
-    active_connections = {
-      frequency        = "PT5M"
-      window_size      = "PT30M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "active_connections"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity         = 2
-    },
-    connections_failed = {
+    replica_lag = {
       frequency        = "PT5M"
       window_size      = "PT30M"
       metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
       aggregation      = "Total"
-      metric_name      = "connections_failed"
-      operator         = "GreaterThan"
-      threshold        = 80
+      metric_name      = "physical_replication_delay_in_seconds"
+      operator         = "Average"
+      threshold        = 240
+      severity         = 2
+    }
+  }
+}
+
+
+variable "main_server_additional_alerts" {
+
+  description = <<EOD
+  Map of name = criteria objects
+  EOD
+
+  type = map(object({
+    # criteria.*.aggregation to be one of [Average Count Minimum Maximum Total]
+    aggregation = string
+    metric_name = string
+    # "Insights.Container/pods" "Insights.Container/nodes"
+    metric_namespace = string
+    # criteria.0.operator to be one of [Equals NotEquals GreaterThan GreaterThanOrEqual LessThan LessThanOrEqual]
+    operator  = string
+    threshold = number
+    # Possible values are PT1M, PT5M, PT15M, PT30M and PT1H
+    frequency = string
+    # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.
+    window_size = string
+    # severity: The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4. Defaults to 3.
+    severity = number
+  }))
+
+  default = {
+    replication_delay_bytes = {
+      frequency        = "PT5M"
+      window_size      = "PT30M"
+      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
+      aggregation      = "Total"
+      metric_name      = "physical_replication_delay_in_bytes"
+      operator         = "Average"
+      threshold        = 240
       severity         = 2
     }
   }
@@ -242,6 +216,3 @@ variable "tags" {
   type = map(any)
 }
 
-locals {
-  metric_alerts = var.custom_metric_alerts != null ? var.custom_metric_alerts : var.default_metric_alerts
-}
