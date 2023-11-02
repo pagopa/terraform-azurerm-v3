@@ -14,7 +14,8 @@ resource "azurerm_ssh_public_key" "this_public_key" {
 
 #build the image id
 locals {
-  source_image_id = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/images/${var.source_image_name}"
+  image_rg        = coalesce(var.image_resource_group_name, var.resource_group_name)
+  source_image_id = "/subscriptions/${var.subscription_id}/resourceGroups/${local.image_rg}/providers/Microsoft.Compute/images/${var.source_image_name}"
 }
 
 # create scale set
@@ -27,6 +28,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
   admin_username      = "adminuser"
   admin_password      = var.admin_password
 
+  zone_balance = var.zone_balance
+  zones        = var.zones != null ? var.zones : null
 
   # only one of source_image_id and source_image_reference is allowed
   source_image_id = var.image_type == "custom" ? local.source_image_id : null

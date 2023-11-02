@@ -332,3 +332,9 @@ variable "sec_storage_id" {
 variable "tags" {
   type = map(any)
 }
+
+variable "disk_encryption_set_id" {
+  type        = string
+  default     = null
+  description = "ID of the disk EncryptionSet ."
+}
