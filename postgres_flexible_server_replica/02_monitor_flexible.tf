@@ -42,7 +42,6 @@ resource "azurerm_monitor_metric_alert" "main_server_alerts" {
   window_size         = each.value.window_size
   severity            = each.value.severity
 
-  tags = var.tags
 
   dynamic "action" {
     for_each = var.alert_action
@@ -73,7 +72,6 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
   log_analytics_workspace_id = var.log_analytics_workspace_id
   storage_account_id         = var.diagnostic_setting_destination_storage_id
 
-  tags = var.tags
 
   enabled_log {
     category = "PostgreSQLLogs"
