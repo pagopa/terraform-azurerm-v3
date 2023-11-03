@@ -57,6 +57,9 @@ cd /home/packer || exit
 docker compose up -d || exit
 
 nc -zv localhost 53
+echo "✅ TCP 53 ok!"
+nc -zvu localhost 53
+echo "✅ UDP 53 ok!"
 
 echo "✅ dns forwarder running"
 
