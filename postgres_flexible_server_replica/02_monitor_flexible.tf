@@ -1,8 +1,13 @@
 #
 # Monitor Metrics
 #
+locals {
+  replica_metrics = merge(local.default_replica_server_metrics, var.replica_server_metric_alerts)
+  main_metrics    = merge(local.default_main_server_metrics, var.main_server_additional_alerts)
+}
+
 resource "azurerm_monitor_metric_alert" "replica_alerts" {
-  for_each = var.replica_server_metric_alerts
+  for_each = var.replica_metrics
 
   enabled             = var.alerts_enabled
   name                = "${var.name}-${upper(each.key)}"
@@ -32,7 +37,7 @@ resource "azurerm_monitor_metric_alert" "replica_alerts" {
 }
 
 resource "azurerm_monitor_metric_alert" "main_server_alerts" {
-  for_each = var.main_server_additional_alerts
+  for_each = var.main_metrics
 
   enabled             = var.alerts_enabled
   name                = "${var.name}-${upper(each.key)}"

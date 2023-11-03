@@ -12,15 +12,15 @@ resource "azurerm_postgresql_flexible_server" "this" {
   location            = var.location
   resource_group_name = var.resource_group_name
 
-  create_mode                  = "Replica"
-  zone                         = var.zone
+  create_mode = "Replica"
+  zone        = var.zone
 
   # The provided subnet should not have any other resource deployed in it and this subnet will be delegated to the PostgreSQL Flexible Server, if not already delegated.
   delegated_subnet_id = var.private_endpoint_enabled ? var.delegated_subnet_id : null
   #  private_dns_zobe_id will be required when setting a delegated_subnet_id
   private_dns_zone_id = var.private_endpoint_enabled ? var.private_dns_zone_id : null
 
-  sku_name   = var.sku_name
+  sku_name = var.sku_name
 
   source_server_id = var.source_server_id
 

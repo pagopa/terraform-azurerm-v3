@@ -119,19 +119,8 @@ variable "replica_server_metric_alerts" {
     # severity: The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4. Defaults to 3.
     severity = number
   }))
+  default = {}
 
-  default = {
-    replica_lag = {
-      frequency        = "PT5M"
-      window_size      = "PT30M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "physical_replication_delay_in_seconds"
-      operator         = "GreaterThanOrEqual"
-      threshold        = 240
-      severity         = 2
-    }
-  }
 }
 
 
@@ -157,14 +146,29 @@ variable "main_server_additional_alerts" {
     # severity: The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4. Defaults to 3.
     severity = number
   }))
+  default = {}
+}
 
-  default = {
+locals {
+  default_main_server_metrics = {
     replication_delay_bytes = {
       frequency        = "PT5M"
       window_size      = "PT30M"
       metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
       aggregation      = "Average"
       metric_name      = "physical_replication_delay_in_bytes"
+      operator         = "GreaterThanOrEqual"
+      threshold        = 240
+      severity         = 2
+    }
+  }
+  default_replica_server_metrics = {
+    replica_lag = {
+      frequency        = "PT5M"
+      window_size      = "PT30M"
+      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
+      aggregation      = "Average"
+      metric_name      = "physical_replication_delay_in_seconds"
       operator         = "GreaterThanOrEqual"
       threshold        = 240
       severity         = 2
@@ -208,7 +212,7 @@ variable "diagnostic_setting_destination_storage_id" {
 }
 
 variable "source_server_id" {
-  type = string
+  type        = string
   description = "(Required) Id of the source server to be replicated"
 }
 
