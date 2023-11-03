@@ -7,7 +7,7 @@ locals {
 }
 
 resource "azurerm_monitor_metric_alert" "replica_alerts" {
-  for_each = var.replica_metrics
+  for_each = local.replica_metrics
 
   enabled             = var.alerts_enabled
   name                = "${var.name}-${upper(each.key)}"
@@ -37,7 +37,7 @@ resource "azurerm_monitor_metric_alert" "replica_alerts" {
 }
 
 resource "azurerm_monitor_metric_alert" "main_server_alerts" {
-  for_each = var.main_metrics
+  for_each = local.main_metrics
 
   enabled             = var.alerts_enabled
   name                = "${var.name}-${upper(each.key)}"
