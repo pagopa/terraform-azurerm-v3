@@ -293,26 +293,26 @@ variable "tags" {
 }
 
 variable "private_dns_registration" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "(Optional) If true, creates a cname record for the newly created postgreSQL db fqdn into the provided private dns zone"
 }
 
 variable "private_dns_zone_name" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "(Optional) if 'private_dns_registration' is true, defines the private dns zone name in which the server fqdn should be registered"
 }
 
 variable "private_dns_zone_rg_name" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "(Optional) if 'private_dns_registration' is true, defines the private dns zone resource group name of the dns zone in which the server fqdn should be registered"
 }
 
 variable "private_dns_cname" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "(Optional) if 'private_dns_registration' is true, defines the private dns CNAME used to register this server FQDN"
 }
 
