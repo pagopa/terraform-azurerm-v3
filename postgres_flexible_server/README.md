@@ -30,7 +30,7 @@ Please have a look at the example in the `tests` folder to understand how to pro
 
 By default the module has his own metrics, but if you want to override it you can use the parameter `custom_metric_alerts` with this example structure:
 
-```ts
+```hcl
 variable "pgflex_public_metric_alerts" {
   description = <<EOD
   Map of name = criteria objects
@@ -70,7 +70,7 @@ variable "pgflex_public_metric_alerts" {
 
 ## How to use it (Public mode & Private mode)
 
-```ts
+```hcl
   # KV secrets flex server
   data "azurerm_key_vault_secret" "pgres_flex_admin_login" {
     name         = "pgres-flex-admin-login"
@@ -230,6 +230,44 @@ variable "pgflex_public_metric_alerts" {
     diagnostic_setting_destination_storage_id = data.azurerm_storage_account.security_monitoring_storage.id
 
   }
+```
+
+It is also possible to register the newly created server into a private dn zone, so that your apps can connect to the database using a common name that will not change even in case of a disaster and the failover to a replica with a different FQDN
+in the example below all the core parameters for postgres are omitted for simplicity
+
+```hcl
+
+# somehere else in project files, probably in core module
+resource "azurerm_private_dns_zone" "private_db_dns_zone" {
+  count = var.geo_replica_enabled ? 1 : 0
+  name                = "${var.env_short}.internal.postgresql.pagopa.it"
+  resource_group_name = data.azurerm_resource_group.data_rg.name
+
+  tags = var.tags
+}
+ 
+############################
+
+module "postgres_flexible_server_private" {
+
+    count = var.pgflex_private_config.enabled ? 1 : 0
+
+    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//postgres_flexible_server?ref=v3.15.0"
+
+    name                = "${local.program}-private-pgflex"
+    location            = azurerm_resource_group.postgres_dbs.location
+    resource_group_name = azurerm_resource_group.postgres_dbs.name
+
+    [...]
+  
+    # private dns zone registration
+    private_dns_registration                  = true
+    private_dns_zone_name                     = "${var.env_short}.internal.postgresql.pagopa.it"
+    private_dns_zone_rg_name                  = data.azurerm_resource_group.data_rg.name
+
+  }
+
+
 ```
 
 ## Migration from v2

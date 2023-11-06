@@ -15,7 +15,7 @@ resource "azurerm_postgresql_flexible_server" "this" {
 
   #
   # Backup
-  # 
+  #
   backup_retention_days        = var.backup_retention_days
   geo_redundant_backup_enabled = var.geo_redundant_backup_enabled
   create_mode                  = var.create_mode
@@ -86,4 +86,14 @@ resource "azurerm_postgresql_flexible_server_configuration" "pgbouncer_enabled" 
   name      = "pgbouncer.enabled"
   server_id = azurerm_postgresql_flexible_server.this.id
   value     = "True"
+}
+
+
+resource "azurerm_private_dns_cname_record" "example" {
+  count               = var.private_dns_registration
+  name                = var.name
+  zone_name           = var.private_dns_zone_name
+  resource_group_name = var.private_dns_zone_rg_name
+  ttl                 = 300
+  record              = azurerm_postgresql_flexible_server.this.fqdn
 }
