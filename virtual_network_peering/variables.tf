@@ -1,7 +1,3 @@
-variable "location" {
-  type = string
-}
-
 variable "source_resource_group_name" {
   type        = string
   description = "The name of the resource group in which to start the virtual network peering"
