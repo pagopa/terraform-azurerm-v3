@@ -310,6 +310,12 @@ variable "private_dns_zone_rg_name" {
   description = "(Optional) if 'private_dns_registration' is true, defines the private dns zone resource group name of the dns zone in which the server fqdn should be registered"
 }
 
+variable "private_dns_cname" {
+  type = string
+  default = null
+  description = "(Optional) if 'private_dns_registration' is true, defines the private dns CNAME used to register this server FQDN"
+}
+
 locals {
   metric_alerts = var.custom_metric_alerts != null ? var.custom_metric_alerts : var.default_metric_alerts
 }
