@@ -316,6 +316,12 @@ variable "private_dns_cname" {
   description = "(Optional) if 'private_dns_registration' is true, defines the private dns CNAME used to register this server FQDN"
 }
 
+variable "private_dns_cname_record_ttl" {
+  type        = number
+  default     = 300
+  description = "(Optional) if 'private_dns_registration' is true, defines the record TTL"
+}
+
 locals {
   metric_alerts = var.custom_metric_alerts != null ? var.custom_metric_alerts : var.default_metric_alerts
 }

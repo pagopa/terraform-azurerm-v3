@@ -94,6 +94,6 @@ resource "azurerm_private_dns_cname_record" "cname_record" {
   name                = var.private_dns_cname
   zone_name           = var.private_dns_zone_name
   resource_group_name = var.private_dns_zone_rg_name
-  ttl                 = 300
+  ttl                 = var.private_dns_cname_record_ttl
   record              = azurerm_postgresql_flexible_server.this.fqdn
 }
