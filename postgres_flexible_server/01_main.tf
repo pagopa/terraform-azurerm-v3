@@ -89,7 +89,7 @@ resource "azurerm_postgresql_flexible_server_configuration" "pgbouncer_enabled" 
 }
 
 
-resource "azurerm_private_dns_cname_record" "example" {
+resource "azurerm_private_dns_cname_record" "cname_record" {
   count               = var.private_dns_registration ? 1 : 0
   name                = var.private_dns_cname
   zone_name           = var.private_dns_zone_name
