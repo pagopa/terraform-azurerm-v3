@@ -310,7 +310,7 @@ variable "private_dns_zone_rg_name" {
   description = "(Optional) if 'private_dns_registration' is true, defines the private dns zone resource group name of the dns zone in which the server fqdn should be registered"
 }
 
-variable "private_dns_cname" {
+variable "private_dns_record_cname" {
   type        = string
   default     = null
   description = "(Optional) if 'private_dns_registration' is true, defines the private dns CNAME used to register this server FQDN"

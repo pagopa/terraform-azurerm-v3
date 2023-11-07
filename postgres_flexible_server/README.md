@@ -264,7 +264,7 @@ module "postgres_flexible_server_private" {
     private_dns_registration                  = true
     private_dns_zone_name                     = "${var.env_short}.internal.postgresql.pagopa.it"
     private_dns_zone_rg_name                  = data.azurerm_resource_group.data_rg.name
-    private_dns_cname                         = "my-service-db"
+    private_dns_record_cname                  = "my-service-db"
 
   }
 
@@ -335,8 +335,8 @@ No modules.
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name which should be used for this PostgreSQL Flexible Server. Changing this forces a new PostgreSQL Flexible Server to be created. | `string` | n/a | yes |
 | <a name="input_pgbouncer_enabled"></a> [pgbouncer\_enabled](#input\_pgbouncer\_enabled) | Is PgBouncer enabled into configurations? | `bool` | `true` | no |
 | <a name="input_primary_user_assigned_identity_id"></a> [primary\_user\_assigned\_identity\_id](#input\_primary\_user\_assigned\_identity\_id) | Manages a User Assigned Identity | `string` | `null` | no |
-| <a name="input_private_dns_cname"></a> [private\_dns\_cname](#input\_private\_dns\_cname) | (Optional) if 'private\_dns\_registration' is true, defines the private dns CNAME used to register this server FQDN | `string` | `null` | no |
 | <a name="input_private_dns_cname_record_ttl"></a> [private\_dns\_cname\_record\_ttl](#input\_private\_dns\_cname\_record\_ttl) | (Optional) if 'private\_dns\_registration' is true, defines the record TTL | `number` | `300` | no |
+| <a name="input_private_dns_record_cname"></a> [private\_dns\_record\_cname](#input\_private\_dns\_record\_cname) | (Optional) if 'private\_dns\_registration' is true, defines the private dns CNAME used to register this server FQDN | `string` | `null` | no |
 | <a name="input_private_dns_registration"></a> [private\_dns\_registration](#input\_private\_dns\_registration) | (Optional) If true, creates a cname record for the newly created postgreSQL db fqdn into the provided private dns zone | `bool` | `false` | no |
 | <a name="input_private_dns_zone_id"></a> [private\_dns\_zone\_id](#input\_private\_dns\_zone\_id) | (Optional) The ID of the private dns zone to create the PostgreSQL Flexible Server. Changing this forces a new PostgreSQL Flexible Server to be created. | `string` | `null` | no |
 | <a name="input_private_dns_zone_name"></a> [private\_dns\_zone\_name](#input\_private\_dns\_zone\_name) | (Optional) if 'private\_dns\_registration' is true, defines the private dns zone name in which the server fqdn should be registered | `string` | `null` | no |
