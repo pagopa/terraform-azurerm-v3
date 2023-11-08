@@ -24,7 +24,7 @@ data "azurerm_resource_group" "resource_group_details" {
 }
 
 locals {
-  rg_roles = tolist(flatten([
+  rg_roles = toset(flatten([
     for rg in data.azurerm_resource_group.resource_group_details : [
       for role in var.identity_role == "ci" ? var.ci_rbac_roles.resource_groups[rg.name] : var.cd_rbac_roles.resource_groups[rg.name] : {
         resource_group_id = rg.id
@@ -35,9 +35,9 @@ locals {
 }
 
 resource "azurerm_role_assignment" "identity_rg_role_assignment" {
-  count                = length(local.rg_roles)
-  scope                = local.rg_roles[count.index].resource_group_id
-  role_definition_name = local.rg_roles[count.index].role_name
+  for_each             = { for r in local.rg_roles : "${r.resource_group_id}.${r.role_name}" => r } # key must be unique
+  scope                = each.value.resource_group_id
+  role_definition_name = each.value.role_name
   principal_id         = azurerm_user_assigned_identity.identity.principal_id
 }
 
