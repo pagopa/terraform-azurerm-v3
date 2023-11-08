@@ -26,8 +26,6 @@ module "identity-ci" {
   # ci/d_rbac_roles is optional. Default gives Reader (CI) and Contributor (CD) roles on current subscription
 
   tags = var.tags
-
-  depends_on = [azurerm_resource_group.identity_rg]
 }
 
 # everything as above, except for write roles
@@ -56,6 +54,4 @@ module "identity-cd" {
   ]
 
   tags = var.tags
-
-  depends_on = [azurerm_resource_group.identity_rg]
 }
