@@ -260,10 +260,12 @@ variable "network_profile" {
   type = object({
     network_plugin = string # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
     outbound_type  = string # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
+    network_plugin_mode = string
   })
   default = {
     network_plugin = "azure"
     outbound_type  = "userDefinedRouting"
+    network_plugin_mode = "Overlay"
   }
   description = "See variable description to understand how to use it, and see examples"
 }
