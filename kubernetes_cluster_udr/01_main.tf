@@ -63,7 +63,7 @@ resource "azurerm_kubernetes_cluster" "this" {
 
   # managed identity type: https://docs.microsoft.com/en-us/azure/aks/use-managed-identity
   identity {
-    type = "SystemAssigned"
+    type = "UserAssigned"
   }
 
   dynamic "network_profile" {
