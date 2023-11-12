@@ -72,6 +72,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     content {
       network_plugin = p.value.network_plugin
       outbound_type  = p.value.outbound_type
+      network_plugin = p.value.network_plugin_mode
     }
   }
 
