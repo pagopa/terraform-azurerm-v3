@@ -21,9 +21,11 @@ Module that allows the creation of a postgres flexible.
 ## Customer managed key
 
 It's now possible to use a `Customer managed key`. To achieve this result you need to set:
-```
+
+```yaml
 customer_managed_key_enabled      = true (default = false)
 ```
+
 Please have a look at the example in the `tests` folder to understand how to proceed and see a working example.
 
 ## Metrics

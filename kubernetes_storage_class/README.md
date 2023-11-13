@@ -2,17 +2,14 @@
 
 This module creates a series of storage class with ZRS redundancy to be used in place of the default ones provided by AKS
 
-
 ## How to use it
 
 ```hcl
 module "aks_storage_class" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_storage_class?ref=<version>"
   
-  aks_cluster_name = "my-cluster-name"
 }
 ```
-
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
