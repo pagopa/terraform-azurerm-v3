@@ -2,11 +2,9 @@
 
 This installs Prometheus into your AKS cluster, using the given namespace.
 
-**For production use**
+## 📌 For production use
 
 Change the `storage_class_name` varaible in order to use a Zone Redundant storage class (see `kubernetes_storage_class` module)
-
-
 
 ## How to use it
 
@@ -14,12 +12,10 @@ Change the `storage_class_name` varaible in order to use a Zone Redundant storag
 module "aks_prometheus_install" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_prometheus_install?ref=<version>"
   
-  aks_cluster_name = "my-cluster-name"
   prometheus_namespace = "monitoring"
   storage_class_name = "default-zrs" #example of ZRS storage class created by kubernetes_storage_class
 }
 ```
-
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
