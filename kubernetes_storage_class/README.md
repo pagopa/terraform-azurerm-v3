@@ -2,6 +2,18 @@
 
 This module creates a series of storage class with ZRS redundancy to be used in place of the default ones provided by AKS
 
+## List of storageclasses
+
+* "standard-hdd"
+* "azurefile-zrs"
+* "azurefile-csi-zrs"
+* "azurefile-csi-premium-zrs"
+* "azurefile-premium-zrs"
+* "default-zrs"
+* "managed-zrs"
+* "managed-csi-zrs"
+* "managed-csi-premium-zrs"
+
 ## How to use it
 
 ```hcl
