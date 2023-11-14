@@ -43,20 +43,10 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
 
   enabled_log {
     category = "PostgreSQLLogs"
-
-    retention_policy {
-      days    = 365
-      enabled = true
-    }
   }
 
   metric {
     category = "AllMetrics"
     enabled  = false
-
-    retention_policy {
-      days    = 0
-      enabled = false
-    }
   }
 }
