@@ -87,7 +87,7 @@ variable "storage_mb" {
 variable "customer_managed_key_enabled" {
   type        = bool
   description = "enable customer_managed_key"
-  default     = "false"
+  default     = false
 }
 
 variable "customer_managed_key_kv_key_id" {
