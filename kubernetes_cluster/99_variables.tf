@@ -237,6 +237,11 @@ variable "vnet_subnet_id" {
   description = "(Optional) The ID of a Subnet where the Kubernetes Node Pool should exist. Changing this forces a new resource to be created."
   default     = null
 }
+variable "vnet_user_subnet_id" {
+  type        = string
+  description = "(Optional) The ID of a Subnet where the Kubernetes User Node Pool should exist. Changing this forces a new resource to be created."
+  default     = null
+}
 
 variable "dns_prefix_private_cluster" {
   type        = string
