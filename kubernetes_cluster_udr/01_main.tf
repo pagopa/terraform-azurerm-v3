@@ -72,6 +72,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     content {
       network_plugin = p.value.network_plugin
       outbound_type  = p.value.outbound_type
+      network_plugin_mode = p.value.network_plugin_mode
     }
   }
 
@@ -170,7 +171,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
   node_taints = var.user_node_pool_node_taints
 
   ### networking
-  vnet_subnet_id        = var.vnet_subnet_id
+  vnet_subnet_id        = var.vnet_user_subnet_id
   enable_node_public_ip = false
 
   upgrade_settings {
