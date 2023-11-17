@@ -18,7 +18,6 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
     source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_cluster_velero?ref=<version>"
     
     # required
-    backup_storage_account_name = module.velero_storage_account.name
     backup_storage_container_name = "velero-backup"
     resource_group_name = azurerm_resource_group.rg_velero_backup.name
     subscription_id = data.azurerm_subscription.current.subscription_id
@@ -31,6 +30,10 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
     # optional
     plugin_version = "v1.7.1"
     use_storage_private_endpoint = true
+    
+    enable_sa_backup = var.velero_sa_backup_enabled
+    sa_backup_retention_days = var.velero_sa_backup_retention_days
+    
     
     # required if use_storage_private_endpoint = true
     storage_account_private_dns_zone_id = azurerm_private_dns_zone.storage_account.id
@@ -57,7 +60,7 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.2.0 |
+| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.24.0 |
 
 ## Resources
 
@@ -83,11 +86,13 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
 | <a name="input_aks_cluster_name"></a> [aks\_cluster\_name](#input\_aks\_cluster\_name) | (Required) Name of the aks cluster on which Velero will be installed | `string` | n/a | yes |
 | <a name="input_aks_cluster_rg"></a> [aks\_cluster\_rg](#input\_aks\_cluster\_rg) | (Required) AKS cluster resource group name | `string` | n/a | yes |
 | <a name="input_backup_storage_container_name"></a> [backup\_storage\_container\_name](#input\_backup\_storage\_container\_name) | (Required) Name of the storage container where Velero keeps the backups | `string` | n/a | yes |
+| <a name="input_enable_sa_backup"></a> [enable\_sa\_backup](#input\_enable\_sa\_backup) | (Optional) enables storage account point in time recovery | `bool` | `false` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Resource location | `string` | n/a | yes |
 | <a name="input_plugin_version"></a> [plugin\_version](#input\_plugin\_version) | (Optional) Version for the velero plugin | `string` | `"v1.7.1"` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | (Required) Prefix used in the Velero dedicated resource names | `string` | n/a | yes |
 | <a name="input_private_endpoint_subnet_id"></a> [private\_endpoint\_subnet\_id](#input\_private\_endpoint\_subnet\_id) | (Optional) Subnet id where to create the private endpoint for backups storage account | `string` | `null` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) Name of the resource group in which the backup storage account is located | `string` | n/a | yes |
+| <a name="input_sa_backup_retention_days"></a> [sa\_backup\_retention\_days](#input\_sa\_backup\_retention\_days) | (Optional) number of days for which the storage account is available for point in time recovery | `number` | `0` | no |
 | <a name="input_storage_account_kind"></a> [storage\_account\_kind](#input\_storage\_account\_kind) | (Optional) Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Defaults to StorageV2 | `string` | `"StorageV2"` | no |
 | <a name="input_storage_account_private_dns_zone_id"></a> [storage\_account\_private\_dns\_zone\_id](#input\_storage\_account\_private\_dns\_zone\_id) | (Optional) Storage account private dns zone id, used in the private endpoint creation | `string` | `null` | no |
 | <a name="input_storage_account_replication_type"></a> [storage\_account\_replication\_type](#input\_storage\_account\_replication\_type) | (Optional) Replication type used for the backup storage account | `string` | `"ZRS"` | no |
