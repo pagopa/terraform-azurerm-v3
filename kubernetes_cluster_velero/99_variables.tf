@@ -86,3 +86,15 @@ variable "storage_account_kind" {
   default     = "StorageV2"
   description = "(Optional) Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Defaults to StorageV2"
 }
+
+variable "sa_backup_retention_days" {
+  type = number
+  description = "(Optional) number of days for which the storage account is available for point in time recovery"
+  default = 7
+}
+
+variable "enable_sa_backup" {
+  type = bool
+  description = "(Optional) enables storage account point in time recovery"
+  default = false
+}
