@@ -90,7 +90,7 @@ variable "storage_account_kind" {
 variable "sa_backup_retention_days" {
   type = number
   description = "(Optional) number of days for which the storage account is available for point in time recovery"
-  default = 7
+  default = 0
 }
 
 variable "enable_sa_backup" {

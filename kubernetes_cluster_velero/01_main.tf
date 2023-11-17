@@ -23,16 +23,14 @@ module "velero_storage_account" {
   public_network_access_enabled   = var.use_storage_private_endpoint ? false : true
   tags                            = var.tags
 
-
-
-  blob_delete_retention_days           = var.enable_sa_backup ? var.sa_backup_retention_days : null
+  blob_delete_retention_days           = var.sa_backup_retention_days
   blob_change_feed_enabled             = var.enable_sa_backup
   blob_change_feed_retention_in_days   = var.enable_sa_backup ? var.sa_backup_retention_days : null
-  blob_container_delete_retention_days = var.enable_sa_backup ? var.sa_backup_retention_days : null
-  blob_storage_policy                  = var.enable_sa_backup ? {
+  blob_container_delete_retention_days = var.sa_backup_retention_days
+  blob_storage_policy                  = {
                                             enable_immutability_policy = false
                                             blob_restore_policy_days   = var.sa_backup_retention_days
-                                         } : null
+                                         }
 
 }
 
