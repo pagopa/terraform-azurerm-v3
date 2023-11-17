@@ -29,7 +29,7 @@ module "velero_storage_account" {
   blob_container_delete_retention_days = var.sa_backup_retention_days
   blob_storage_policy                  = {
                                             enable_immutability_policy = false
-                                            blob_restore_policy_days   = var.sa_backup_retention_days
+                                            blob_restore_policy_days   = "${var.sa_backup_retention_days + 1 }"
                                          }
 
 }
