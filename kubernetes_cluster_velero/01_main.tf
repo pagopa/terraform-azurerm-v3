@@ -24,14 +24,14 @@ module "velero_storage_account" {
   tags                            = var.tags
 
   # it needs to be higher than the other retention policies
-  blob_delete_retention_days           = "${var.sa_backup_retention_days + 1 }"
+  blob_delete_retention_days           = var.sa_backup_retention_days + 1
   blob_change_feed_enabled             = var.enable_sa_backup
   blob_change_feed_retention_in_days   = var.enable_sa_backup ? var.sa_backup_retention_days : null
   blob_container_delete_retention_days = var.sa_backup_retention_days
-  blob_storage_policy                  = {
-                                            enable_immutability_policy = false
-                                            blob_restore_policy_days   = var.sa_backup_retention_days
-                                         }
+  blob_storage_policy = {
+    enable_immutability_policy = false
+    blob_restore_policy_days   = var.sa_backup_retention_days
+  }
 
 }
 
