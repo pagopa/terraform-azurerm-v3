@@ -1,40 +1,62 @@
-# GitHub Federated Identity for Azure
+# GitHub Federated Identity for Azure Module
 
-This module allows the creation of a User Managed Identity federated with GitHub. Module is intended to be used against `infrastructure` repo.
+This module creates User Managed Identities federated with one or more GitHub repositories in order to use a passwordless authentication model between GitHub and Azure.
+This module should only be used in `<product>-infra` repositories.
 
-The module's output contains the identity data.
+> more info about this approach on [Confluence page](https://pagopa.atlassian.net/wiki/spaces/Technology/pages/734527975/GitHub+OIDC+OP)
+
+For debugging purposes, you might be useful module's output containing the brand new identities' data.
+
+## Glossary
+
+- `<prefix>`: product name, such as `io` or `selfc`
+- `<shortenv>`: environment name in short form, such as `d` or `p`
+- `<domain>`: optional, the product sub area, such as `sign`
+- `<idrole>`: the role of the identity, it can be either `ci` or `cd`
+- `<repo>`: the repository name, such as `io-infra`
+- `<scope>`: the federation type, such as `environment` or `branch` or `tag`
+- `<subject>`: the federation scope value, such as `dev` (for environments) or `v1.0` (for tags)
+
+## Design
+
+To avoid the creation of tons of similar identities, each subscription should have a single resource group which contains two user managed identities, one for Continuos Integration and the other for Continuos Delivery/Deployment workflows. Each user managed identity is federated with one or more repositories and with one or more GitHub environments.
+
+This module expects to find an existing resource group named `<prefix>-<shortenv>-<domain>-identity-rg`. Then, it creates a [user managed identity](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities?pivots=identity-mi-methods-azp) in it using the naming convention `<prefix>-<shortenv>-<domain>-github-<idrole>-identity`; the `idrole` value is obtained from the input variable `identity_role` and can be either `ci` or `cd`. Finally, the variable `github_federations` defines the list of the repositories and GitHub environments to create a federation with. The federation output name uses the form `<prefix>-<shortenv>-<domain>-${var.app_name}-github"-<repo>-<scope>-<subject>`.
+
+> Consume this module once for each identity. You are likely to invoke the module twice then, one time for CI identity and one time for CD identity.
+
+### The need of two identities
+
+Two scenarios have been identified. The first one is the Continuos Integration, where usually the agent performs a dry run over the current infrastructure. Since there is no write operation involved, the `ci` identity doesn't need privileged roles such as `Owner` or `Contributor` but some fine grained reader role depending on the kind of resources involved in the repository - reader role of KeyVault's in a particular subscription. For this reason, the module defaults on a generic subscription-wide `Reader` role. This setting can be however overridden.
+
+On the other hand, the `cd` identity actually needs to write things, so the module defaults on a subscription-wide `Contributor` role, but that can be overridden too.
+
+> This approach allows developers to match the minimum privilege principle.
+
+At this point, it might be thought that having a pair of identities for each repository would be a convenient approach, and in an ideal world it is; however, having plenty of identities is a risk for the governability of the cloud and the clearness of the code, which may cause reading and comprehension difficulties.
 
 ## How to use it
 
-Use the Terraform template in `./tests` as template for testing and getting advices.
+The Terraform template in `./tests` folder can be used as an example or a template. It contains some documentation and guidance about variables and values. It is a good starting point.
 
-### Before using it
+### Requirements
 
-Ensure to create a resource group by using the naming convention `<prefix>-<shortenv>-<domain>` (`domain` can be empty). Module search this resource group and if it is not found, a failure is thrown.
+As stated in the [Design](#design) section, you must define a new resource group before invoking this module. Look at the `./tests` to get an example. Remember: the resource group name should match the naming convention `<prefix>-<shortenv>-<domain>-identity-rg`, where `domain` can be empty.
+
+If the resource group is not found, an exception is thrown.
 
 ### RBAC roles
 
-You should create an identity for CI and another one for CD scenarios. By default, CI identites only have `Reader` access on the subscription, meanwhile CDs have `Contributor` role. This can be customized according to your needs by adding or removing roles with subscription or resource group scopes. However, the minimum privilege principle should be followed.
+As explained in the [Design](#design) section, you should invoke the module twice - once for the `ci` identity and another one for the `cd` identity.
 
-### Identity management
+You can customize identities' IAM roles both at subscription and resource group level using the variables `cX_rbac_roles`. In particular, the variable accepts:
 
-Each domain should use a single resource group.
-Each domain should use a single pair of identity (CI+CD).
-Each identity should have a different federated credential for each repository and environment.
+- a list of roles to assign to the _current_ subscription
+- a dictionary of resource group names and list of roles
 
-Example:
-`prefix`: `azrmtest`
-`env_short`: `9`
-`domain`: ``
-`identity_role`: `ci`
-`github.repository`: `terraform-azurerm-v3`
-`app_name`: `messages`
-`credentials_scope`: `environment`
-`subject`: `dev-ci`
+> probably, module can be improved by using a single variable for RBAC roles instead of having two identicals.
 
-Resource group name: `azrmtest-9-identity-rg`
-Identity name: `azrmtest-9-github-ci-identity` and `azrmtest-9-github-cd-identity`
-Federated credential: `azrmtest-9-messages-github-terraform-azurerm-v3-messages-environment-dev-ci`
+This granularity is useful in such scenario where is needed a writing-role on the Storage Account which contains Terraform state files but at the same time reading-only permissions on the others Storage Accounts.
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
