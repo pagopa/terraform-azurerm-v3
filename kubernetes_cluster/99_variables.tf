@@ -266,7 +266,7 @@ variable "network_profile" {
     dns_service_ip      = string # e.g. '10.2.0.10'. IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns)
     network_policy      = string # e.g. 'azure'. Sets up network policy to be used with Azure CNI. Currently supported values are calico and azure.
     network_plugin      = string # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
-    network_plugin_mode = string # e.g. 'azure'. Network plugin mode to use for networking. Currently supported value is Overlay
+    network_plugin_mode = string # e.g. 'azure'. Network plugin mode to use for networking. Currently supported value is overlay
     outbound_type       = string # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
     service_cidr        = string # e.g. '10.2.0.0/16'. The Network Range used by the Kubernetes service
   })
