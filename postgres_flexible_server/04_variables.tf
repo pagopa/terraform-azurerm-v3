@@ -87,7 +87,7 @@ variable "storage_mb" {
 variable "customer_managed_key_enabled" {
   type        = bool
   description = "enable customer_managed_key"
-  default     = "false"
+  default     = false
 }
 
 variable "customer_managed_key_kv_key_id" {
@@ -290,6 +290,36 @@ variable "diagnostic_setting_destination_storage_id" {
 
 variable "tags" {
   type = map(any)
+}
+
+variable "private_dns_registration" {
+  type        = bool
+  default     = false
+  description = "(Optional) If true, creates a cname record for the newly created postgreSQL db fqdn into the provided private dns zone"
+}
+
+variable "private_dns_zone_name" {
+  type        = string
+  default     = null
+  description = "(Optional) if 'private_dns_registration' is true, defines the private dns zone name in which the server fqdn should be registered"
+}
+
+variable "private_dns_zone_rg_name" {
+  type        = string
+  default     = null
+  description = "(Optional) if 'private_dns_registration' is true, defines the private dns zone resource group name of the dns zone in which the server fqdn should be registered"
+}
+
+variable "private_dns_record_cname" {
+  type        = string
+  default     = null
+  description = "(Optional) if 'private_dns_registration' is true, defines the private dns CNAME used to register this server FQDN"
+}
+
+variable "private_dns_cname_record_ttl" {
+  type        = number
+  default     = 300
+  description = "(Optional) if 'private_dns_registration' is true, defines the record TTL"
 }
 
 locals {

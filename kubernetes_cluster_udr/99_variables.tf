@@ -238,6 +238,12 @@ variable "vnet_subnet_id" {
   default     = null
 }
 
+variable "vnet_user_subnet_id" {
+  type        = string
+  description = "(Optional) The ID of a Subnet where the Kubernetes Node Pool should exist. Changing this forces a new resource to be created."
+  default     = null
+}
+
 variable "dns_prefix_private_cluster" {
   type        = string
   description = "Specifies the DNS prefix to use with private clusters. Changing this forces a new resource to be created."
@@ -258,12 +264,14 @@ variable "api_server_authorized_ip_ranges" {
 
 variable "network_profile" {
   type = object({
-    network_plugin = string # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
-    outbound_type  = string # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
+    network_plugin      = string # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
+    outbound_type       = string # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
+    network_plugin_mode = string
   })
   default = {
-    network_plugin = "azure"
-    outbound_type  = "userDefinedRouting"
+    network_plugin      = "azure"
+    outbound_type       = "userDefinedRouting"
+    network_plugin_mode = "Overlay"
   }
   description = "See variable description to understand how to use it, and see examples"
 }

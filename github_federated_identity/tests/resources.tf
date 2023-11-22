@@ -40,7 +40,7 @@ module "identity-cd" {
   cd_rbac_roles = {         # explicit definition, so default Contributor role is not assigned to the current subscription
     subscription_roles = [] # empty array means no permission over the current subscription
     resource_groups = {     # map of resource groups with list of roles to assign
-      "${var.prefix}-${local.env_short}-identity-rg" = [
+      "terraform-state-rg" = [
         "Contributor"
       ]
     }
