@@ -42,7 +42,8 @@ variable "location" {
 
 variable "resource_group_name" {
   type = string
-  description = "(Required) The name of the resource group in which to create the scheduled query rule instance. Changing this forces a new resource to be created."
+  description = "(Optional) Required if alerts enabled. The name of the resource group in which to create the scheduled query rule instance. Changing this forces a new resource to be created."
+  default = null
 }
 
 
