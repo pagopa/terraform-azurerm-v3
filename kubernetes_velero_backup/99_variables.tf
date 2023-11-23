@@ -37,7 +37,8 @@ variable "tags" {
 
 variable "location" {
   type        = string
-  description = " (Required) Specifies the Azure Region where the resource should exist. Changing this forces a new resource to be created."
+  description = " (Optional) Required if alerts enabled. Specifies the Azure Region where the resource should exist. Changing this forces a new resource to be created."
+  default = null
 }
 
 variable "resource_group_name" {
