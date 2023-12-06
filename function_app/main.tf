@@ -337,7 +337,10 @@ resource "azurerm_linux_function_app" "this" {
   lifecycle {
     ignore_changes = [
       virtual_network_subnet_id,
-      app_settings["WEBSITE_HEALTHCHECK_MAXPINGFAILURES"]
+      app_settings["WEBSITE_HEALTHCHECK_MAXPINGFAILURES"],
+      tags["hidden-link: /app-insights-conn-string"],
+      tags["hidden-link: /app-insights-instrumentation-key"],
+      tags["hidden-link: /app-insights-resource-id"]
     ]
   }
 
