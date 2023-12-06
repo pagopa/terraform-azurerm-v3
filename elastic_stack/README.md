@@ -16,7 +16,7 @@ TODO
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
-| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | 1.14.0 |
+| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | ~> 2.0 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | <= 2.17.0 |
 
 ## Modules
@@ -27,9 +27,9 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [kubectl_manifest.apm_manifest](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
-| [kubectl_manifest.elasticsearch_cluster](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
-| [kubectl_manifest.kibana_manifest](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
+| [kubectl_manifest.apm_manifest](https://registry.terraform.io/providers/alekc/kubectl/latest/docs/resources/manifest) | resource |
+| [kubectl_manifest.elasticsearch_cluster](https://registry.terraform.io/providers/alekc/kubectl/latest/docs/resources/manifest) | resource |
+| [kubectl_manifest.kibana_manifest](https://registry.terraform.io/providers/alekc/kubectl/latest/docs/resources/manifest) | resource |
 | [kubernetes_manifest.crd](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 | [kubernetes_manifest.elastic_agent](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 | [kubernetes_manifest.ingress_apm_manifest](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
