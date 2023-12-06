@@ -25,6 +25,12 @@ variable "storage_account_durable_name" {
   default     = null
 }
 
+variable "storage_durable_funcion_public_network_access_enabled" {
+  type        = bool
+  description = "Enable or disable pubblic network access to durable function storage account"
+  default     = false
+}
+
 variable "app_service_plan_name" {
   type        = string
   description = "Name of the app service plan. If null it will be 'computed'"
