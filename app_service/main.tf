@@ -41,9 +41,6 @@ resource "azurerm_linux_web_app" "this" {
     },
     var.app_settings,
   )
-
-
-
   site_config {
     always_on         = var.always_on
     use_32_bit_worker = var.use_32_bit_worker_process
@@ -104,6 +101,9 @@ resource "azurerm_linux_web_app" "this" {
       app_settings["DOCKER_CUSTOM_IMAGE_NAME"],
       virtual_network_subnet_id,
       app_settings["WEBSITE_HEALTHCHECK_MAXPINGFAILURES"],
+      tags["hidden-link: /app-insights-conn-string"],
+      tags["hidden-link: /app-insights-instrumentation-key"],
+      tags["hidden-link: /app-insights-resource-id"]
     ]
   }
 
