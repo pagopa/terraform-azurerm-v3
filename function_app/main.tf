@@ -28,19 +28,7 @@ module "storage_account_durable_function" {
   resource_group_name           = var.resource_group_name
   location                      = var.location
   advanced_threat_protection    = false
-  public_network_access_enabled = var.storage_durable_funcion_public_network_access_enabled
-  network_rules = {
-    default_action = "Deny"
-    ip_rules       = []
-    bypass = [
-      "Logging",
-      "Metrics",
-      "AzureServices",
-    ]
-    virtual_network_subnet_ids = [
-      var.subnet_id
-    ]
-  }
+  public_network_access_enabled = false
 
   tags = var.tags
 }
