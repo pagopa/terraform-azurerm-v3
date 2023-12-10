@@ -18,10 +18,10 @@ module "storage_account" {
   advanced_threat_protection      = true
   allow_nested_items_to_be_public = false
   public_network_access_enabled   = true
-  enable_low_availability_alert = false
+  enable_low_availability_alert   = false
 
-  blob_versioning_enabled              = true
-  blob_change_feed_enabled             = true
+  blob_versioning_enabled  = true
+  blob_change_feed_enabled = true
 
   tags = var.tags
 }
@@ -32,7 +32,7 @@ module "storage_account_management_policy_complete" {
   storage_account_id = module.storage_account.id
 
   rules = [{
-    name = "${local.project}policysapolicy-complete"
+    name    = "${local.project}policysapolicy-complete"
     enabled = true
     filters = {
       prefix_match = ["container2/prefix1", "container2/prefix2"]
@@ -47,7 +47,7 @@ module "storage_account_management_policy_complete" {
       snapshot = {
         change_tier_to_archive_after_days_since_creation = 1
         change_tier_to_cool_after_days_since_creation    = 2
-        delete_after_days_since_creation_greater_than = 20
+        delete_after_days_since_creation_greater_than    = 20
       }
       version = {
         change_tier_to_archive_after_days_since_creation = 1
@@ -64,7 +64,7 @@ module "storage_account_management_policy_base" {
   storage_account_id = module.storage_account.id
 
   rules = [{
-    name = "${local.project}policysapolicy-base"
+    name    = "${local.project}policysapolicy-base"
     enabled = true
     filters = {
       prefix_match = ["insights-logs-auditevent"]
@@ -74,7 +74,7 @@ module "storage_account_management_policy_base" {
       base_blob = {
         tier_to_cool_after_days_since_modification_greater_than    = 1
         tier_to_archive_after_days_since_modification_greater_than = 2
-        delete_after_days_since_modification_greater_than = 10
+        delete_after_days_since_modification_greater_than          = 10
       }
     }
   }]
