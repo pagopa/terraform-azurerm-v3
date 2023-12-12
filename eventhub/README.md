@@ -8,7 +8,7 @@ This module allow the creation of a EventHub
 
 ## How to use it
 
-```ts
+```hcl
 resource "azurerm_resource_group" "eventhub_rg" {
   name     = "${local.project}-eventhub-rg"
   location = var.location
