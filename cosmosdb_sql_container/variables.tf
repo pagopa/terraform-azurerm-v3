@@ -51,12 +51,6 @@ variable "conflict_resolution_policy" {
   default     = { mode = "LastWriterWins", path = "/id", procedure = null }
 }
 
-conflict_resolution_policy = object({
-  mode      = string
-  path      = string
-  procedure = string
-})
-
 variable "autoscale_settings" {
   type = object({
     max_throughput = number
