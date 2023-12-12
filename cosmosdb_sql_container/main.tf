@@ -21,4 +21,12 @@ resource "azurerm_cosmosdb_sql_container" "this" {
       max_throughput = autoscale_settings.value.max_throughput
     }
   }
+
+  # Confliction resolution policy
+  conflict_resolution_policy {
+    mode                          = var.conflict_resolution_policy.mode
+    conflict_resolution_path      = var.conflict_resolution_policy.mode == "LastWriterWins" ? var.conflict_resolution_policy.path : null
+    conflict_resolution_procedure = var.conflict_resolution_policy.mode == "Custom" ? var.conflict_resolution_policy.procedure : null
+  }
+
 }
