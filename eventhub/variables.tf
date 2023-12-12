@@ -32,16 +32,16 @@ variable "auto_inflate_enabled" {
 variable "eventhubs" {
   description = "A list of event hubs to add to namespace."
   type = list(object({
-    name              = string # (Required) Specifies the name of the EventHub resource. Changing this forces a new resource to be created.
-    partitions        = number # (Required) Specifies the current number of shards on the Event Hub.
-    message_retention = number # (Required) Specifies the number of days to retain the events for this Event Hub.
+    name              = string       # (Required) Specifies the name of the EventHub resource. Changing this forces a new resource to be created.
+    partitions        = number       # (Required) Specifies the current number of shards on the Event Hub.
+    message_retention = number       # (Required) Specifies the number of days to retain the events for this Event Hub.
     consumers         = list(string) # Manages a Event Hubs Consumer Group as a nested resource within an Event Hub.
     keys = list(object({
       name   = string # (Required) Specifies the name of the EventHub Authorization Rule resource. Changing this forces a new resource to be created.
-      listen = bool # (Optional) Does this Authorization Rule have permissions to Listen to the Event Hub? Defaults to false.
-      send   = bool # (Optional) Does this Authorization Rule have permissions to Send to the Event Hub? Defaults to false.
-      manage = bool # (Optional) Does this Authorization Rule have permissions to Manage to the Event Hub? When this property is true - both listen and send must be too. Defaults to false.
-    })) # Manages a Event Hubs authorization Rule within an Event Hub.
+      listen = bool   # (Optional) Does this Authorization Rule have permissions to Listen to the Event Hub? Defaults to false.
+      send   = bool   # (Optional) Does this Authorization Rule have permissions to Send to the Event Hub? Defaults to false.
+      manage = bool   # (Optional) Does this Authorization Rule have permissions to Manage to the Event Hub? When this property is true - both listen and send must be too. Defaults to false.
+    }))               # Manages a Event Hubs authorization Rule within an Event Hub.
   }))
   default = []
 }
@@ -68,7 +68,7 @@ variable "network_rulesets" {
     default_action = string #  (Required) The default action to take when a rule is not matched. Possible values are Allow and Deny.
     virtual_network_rule = list(object({
       subnet_id                                       = string # (Required) The id of the subnet to match on.
-      ignore_missing_virtual_network_service_endpoint = bool # (Optional) Are missing virtual network service endpoints ignored?
+      ignore_missing_virtual_network_service_endpoint = bool   # (Optional) Are missing virtual network service endpoints ignored?
     }))
     ip_rule = list(object({
       ip_mask = string # (Required) The IP mask to match on.

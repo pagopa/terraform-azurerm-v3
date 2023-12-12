@@ -28,12 +28,12 @@ resource "azurerm_resource_group" "rg_eventhub" {
 module "event_hub" {
   source = "../../eventhub"
 
-  name                     = "${local.project}-evh-ns"
-  location                 = var.location
-  resource_group_name      = azurerm_resource_group.rg_eventhub.name
-  auto_inflate_enabled     = false
-  sku                      = "Standard"
-  zone_redundant           = true
+  name                 = "${local.project}-evh-ns"
+  location             = var.location
+  resource_group_name  = azurerm_resource_group.rg_eventhub.name
+  auto_inflate_enabled = false
+  sku                  = "Standard"
+  zone_redundant       = true
 
   virtual_network_ids = [data.azurerm_virtual_network.vnet.id]
   subnet_id           = module.eventhub_snet.id
@@ -42,7 +42,7 @@ module "event_hub" {
     name              = "rtd-trx"
     partitions        = 1
     message_retention = 1
-    consumers         = [
+    consumers = [
       "bpd-payment-instrument",
       "rtd-trx-fa-comsumer-group",
       "idpay-consumer-group"
@@ -72,12 +72,12 @@ module "event_hub" {
 module "event_hub_core_only" {
   source = "../../eventhub"
 
-  name                     = "${local.project}-evh-core-ns"
-  location                 = var.location
-  resource_group_name      = azurerm_resource_group.rg_eventhub.name
-  auto_inflate_enabled     = false
-  sku                      = "Standard"
-  zone_redundant           = true
+  name                 = "${local.project}-evh-core-ns"
+  location             = var.location
+  resource_group_name  = azurerm_resource_group.rg_eventhub.name
+  auto_inflate_enabled = false
+  sku                  = "Standard"
+  zone_redundant       = true
 
   virtual_network_ids = [data.azurerm_virtual_network.vnet.id]
   subnet_id           = module.eventhub_snet.id
