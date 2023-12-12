@@ -48,7 +48,7 @@ variable "conflict_resolution_policy" {
     mode      = string
     path      = string
     procedure = string })
-  default     = { mode = "LastWriterWins", path = "/id", procedure = null }
+  default     = { mode = "LastWriterWins", path = "/_ts", procedure = null }
 }
 
 variable "autoscale_settings" {
