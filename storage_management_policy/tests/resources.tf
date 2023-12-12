@@ -55,19 +55,19 @@ module "storage_account_management_policy_example" {
         delete_after_days_since_creation                 = 30
       }
     }
-  },
-  # appendBlob only support delete policy
-  {
-    name    = "${local.project}policysapolicy-appendBlob"
-    enabled = true
-    filters = {
-      prefix_match = ["insights-logs-auditevent"]
-      blob_types   = ["appendBlob"]
-    }
-    actions = {
-      base_blob = {
-        delete_after_days_since_modification_greater_than          = 1
+    },
+    # appendBlob only support delete policy
+    {
+      name    = "${local.project}policysapolicy-appendBlob"
+      enabled = true
+      filters = {
+        prefix_match = ["insights-logs-auditevent"]
+        blob_types   = ["appendBlob"]
       }
-    }
+      actions = {
+        base_blob = {
+          delete_after_days_since_modification_greater_than = 1
+        }
+      }
   }]
 }
