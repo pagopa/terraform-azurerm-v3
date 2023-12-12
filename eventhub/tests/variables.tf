@@ -1,3 +1,7 @@
+locals {
+  project = "${var.prefix}${random_id.unique.hex}"
+}
+
 variable "prefix" {
   description = "Resorce prefix"
   type        = string

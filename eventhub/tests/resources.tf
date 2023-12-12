@@ -1,11 +1,17 @@
+data "azurerm_virtual_network" "vnet" {
+  name                = "dvopla-d-azdoa-rg-vnet"
+  resource_group_name = "dvopla-d-azdoa-rg"
+}
 
-
+data "azurerm_resource_group" "rg_vnet" {
+  name = "dvopla-d-azdoa-rg"
+}
 
 ## Eventhub subnet
 module "eventhub_snet" {
-  source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v3.15.0"
+  source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v7.29.0"
   name                                      = "${local.project}-eventhub-snet"
-  address_prefixes                          = var.cidr_subnet_eventhub
+  address_prefixes                          = ["10.3.200.0/24"]
   resource_group_name                       = data.azurerm_resource_group.rg_vnet.name
   virtual_network_name                      = data.azurerm_virtual_network.vnet.name
   service_endpoints                         = ["Microsoft.EventHub"]
@@ -20,33 +26,63 @@ resource "azurerm_resource_group" "rg_eventhub" {
 }
 
 module "event_hub" {
-  source                   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//eventhub?ref=v3.15.0"
+  source = "../../eventhub"
+
   name                     = "${local.project}-evh-ns"
   location                 = var.location
-  resource_group_name      = azurerm_resource_group.eventhub_rg.name
-  auto_inflate_enabled     = var.ehns_auto_inflate_enabled
-  sku                      = var.ehns_sku_name
-  capacity                 = var.ehns_capacity
-  maximum_throughput_units = var.ehns_maximum_throughput_units
-  zone_redundant           = var.ehns_zone_redundant
+  resource_group_name      = azurerm_resource_group.rg_eventhub.name
+  auto_inflate_enabled     = false
+  sku                      = "Standard"
+  zone_redundant           = true
 
   virtual_network_ids = [data.azurerm_virtual_network.vnet.id]
   subnet_id           = module.eventhub_snet.id
 
-  eventhubs = var.eventhubs
+  eventhubs = [{
+    name              = "rtd-trx"
+    partitions        = 1
+    message_retention = 1
+    consumers         = [
+      "bpd-payment-instrument",
+      "rtd-trx-fa-comsumer-group",
+      "idpay-consumer-group"
+    ]
+    keys = [
+      {
+        name   = "rtd-csv-connector"
+        listen = false
+        send   = true
+        manage = false
+      },
+      {
+        name   = "bpd-payment-instrument"
+        listen = true
+        send   = false
+        manage = false
+      },
+    ]
+  }]
 
   alerts_enabled = false
   # metric_alerts  = var.ehns_metric_alerts
-  action = [
-    {
-      action_group_id    = data.azurerm_monitor_action_group.slack.id
-      webhook_properties = null
-    },
-    {
-      action_group_id    = data.azurerm_monitor_action_group.email.id
-      webhook_properties = null
-    }
-  ]
+
+  tags = var.tags
+}
+
+module "event_hub_core_only" {
+  source = "../../eventhub"
+
+  name                     = "${local.project}-evh-core-ns"
+  location                 = var.location
+  resource_group_name      = azurerm_resource_group.rg_eventhub.name
+  auto_inflate_enabled     = false
+  sku                      = "Standard"
+  zone_redundant           = true
+
+  virtual_network_ids = [data.azurerm_virtual_network.vnet.id]
+  subnet_id           = module.eventhub_snet.id
+
+  alerts_enabled = false
 
   tags = var.tags
 }
