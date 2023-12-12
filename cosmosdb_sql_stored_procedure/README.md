@@ -1,48 +1,19 @@
-# Cosmos DB sql database
+# Cosmos DB sql Stored Procedure
 
-This module allow the setup of a cosmos db sql database
-
-## Architecture
-
-![This is an image](./docs/module-arch.drawio.png)
+This module allow the setup of a cosmos db sql container stored procedure
 
 ## How to use
 
-### CosmosDB database (MongoDB version)
-
 ```ts
-resource "azurerm_cosmosdb_mongo_database" "mongo_db" {
-  name                = "mongoDB"
-  resource_group_name = azurerm_resource_group.cosmos_mongo_rg[0].name
-  account_name        = module.cosmos_mongo.name
-
-  throughput = null
-
-  dynamic "autoscale_settings" {
-    for_each = []
-    content {
-      max_throughput = 100
-    }
-  }
-
-  lifecycle {
-    ignore_changes = [
-      autoscale_settings
-    ]
-  }
+resource "azurerm_cosmosdb_sql_stored_procedure" "stored_procedure" {
+  name                = var.name
+  resource_group_name = var.resource_group_name
+  account_name        = var.account_name
+  database_name       = var.database_name
+  container_name      = var.container_name
+  body = var.body
 }
-```
 
-### CosmosDB database (SQL version)
-
-```ts
-## Database
-module "core_cosmos_db" {
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_sql_database?ref=v3.15.0"
-  name                = "db"
-  resource_group_name = azurerm_resource_group.cosmos_rg[0].name
-  account_name        = module.cosmos_core.name
-}
 ```
 
 <!-- markdownlint-disable -->
@@ -62,7 +33,7 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [azurerm_cosmosdb_sql_database.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/cosmosdb_sql_database) | resource |
+| [azurerm_cosmosdb_sql_stored_procedure.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/cosmosdb_sql_stored_procedure) | resource |
 
 ## Inputs
 
@@ -71,7 +42,6 @@ No modules.
 | <a name="input_account_name"></a> [account\_name](#input\_account\_name) | The name of the Cosmos DB SQL Database to create the table within. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | The name of the Cosmos DB SQL Database | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | The name of the resource group in which the Cosmos DB SQL Database is created. | `string` | n/a | yes |
-| <a name="input_throughput"></a> [throughput](#input\_throughput) | The throughput of SQL database (RU/s). | `number` | `null` | no |
 
 ## Outputs
 
