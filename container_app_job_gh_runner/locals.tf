@@ -4,14 +4,14 @@ locals {
 
   rules = [for repo in var.app.repos :
     {
-      name = "github-runner-${repo}"
+      name = "github-runner-${var.env_short}-${repo}"
       type = "github-runner"
       metadata = {
         owner                     = var.app.repo_owner
         runnerScope               = "repo"
         repos                     = "${repo}"
         targetWorkflowQueueLength = "1"
-        labels                    = "github-runner-${repo}"
+        labels                    = "github-runner-${var.env_short}-${repo}"
       }
       auth = [
         {
@@ -39,7 +39,7 @@ locals {
         }
       ]
       image = var.app.image
-      name  = "github-runner-${repo}"
+      name  = "github-runner-${var.env_short}-${repo}"
       resources = {
         cpu    = 1.0
         memory = "2Gi"

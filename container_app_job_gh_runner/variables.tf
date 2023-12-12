@@ -58,7 +58,7 @@ variable "app" {
   type = object({
     repo_owner = optional(string, "pagopa")
     repos      = set(string)
-    image      = optional(string, "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:ed51ac419d78b6410be96ecaa8aa8dbe645aa0309374132886412178e2739a47")
+    image      = optional(string, "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:c7ebe4453578c9df426b793366b8498c030ec0f47f753ea2c685a3c0ec0bb646")
   })
 
   validation {

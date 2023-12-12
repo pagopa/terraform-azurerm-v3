@@ -21,16 +21,18 @@ Module that allows the creation of a postgres flexible.
 ## Customer managed key
 
 It's now possible to use a `Customer managed key`. To achieve this result you need to set:
-```
+
+```yaml
 customer_managed_key_enabled      = true (default = false)
 ```
+
 Please have a look at the example in the `tests` folder to understand how to proceed and see a working example.
 
 ## Metrics
 
 By default the module has his own metrics, but if you want to override it you can use the parameter `custom_metric_alerts` with this example structure:
 
-```ts
+```hcl
 variable "pgflex_public_metric_alerts" {
   description = <<EOD
   Map of name = criteria objects
@@ -70,7 +72,7 @@ variable "pgflex_public_metric_alerts" {
 
 ## How to use it (Public mode & Private mode)
 
-```ts
+```hcl
   # KV secrets flex server
   data "azurerm_key_vault_secret" "pgres_flex_admin_login" {
     name         = "pgres-flex-admin-login"
@@ -232,6 +234,45 @@ variable "pgflex_public_metric_alerts" {
   }
 ```
 
+It is also possible to register the newly created server into a private dn zone, so that your apps can connect to the database using a common name that will not change even in case of a disaster and the failover to a replica with a different FQDN
+in the example below all the core parameters for postgres are omitted for simplicity
+
+```hcl
+
+# somehere else in project files, probably in core module
+resource "azurerm_private_dns_zone" "private_db_dns_zone" {
+  count = var.geo_replica_enabled ? 1 : 0
+  name                = "${var.env_short}.internal.postgresql.pagopa.it"
+  resource_group_name = data.azurerm_resource_group.data_rg.name
+
+  tags = var.tags
+}
+ 
+############################
+
+module "postgres_flexible_server_private" {
+
+    count = var.pgflex_private_config.enabled ? 1 : 0
+
+    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//postgres_flexible_server?ref=v3.15.0"
+
+    name                = "${local.program}-private-pgflex"
+    location            = azurerm_resource_group.postgres_dbs.location
+    resource_group_name = azurerm_resource_group.postgres_dbs.name
+
+    [...]
+  
+    # private dns zone registration
+    private_dns_registration                  = true
+    private_dns_zone_name                     = "${var.env_short}.internal.postgresql.pagopa.it"
+    private_dns_zone_rg_name                  = data.azurerm_resource_group.data_rg.name
+    private_dns_record_cname                  = "my-service-db"
+
+  }
+
+
+```
+
 ## Migration from v2
 
 ### 🔥 re-import the resource azurerm_monitor_diagnostic_setting
@@ -266,6 +307,7 @@ No modules.
 | [azurerm_monitor_metric_alert.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_postgresql_flexible_server.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server) | resource |
 | [azurerm_postgresql_flexible_server_configuration.pgbouncer_enabled](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
+| [azurerm_private_dns_cname_record.cname_record](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_cname_record) | resource |
 | [null_resource.ha_sku_check](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.pgbouncer_check](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 
@@ -280,7 +322,7 @@ No modules.
 | <a name="input_backup_retention_days"></a> [backup\_retention\_days](#input\_backup\_retention\_days) | (Optional) The backup retention days for the PostgreSQL Flexible Server. Possible values are between 7 and 35 days. | `number` | `7` | no |
 | <a name="input_create_mode"></a> [create\_mode](#input\_create\_mode) | (Optional) The creation mode. Can be used to restore or replicate existing servers. Possible values are Default, Replica, GeoRestore, and PointInTimeRestore | `string` | `"Default"` | no |
 | <a name="input_custom_metric_alerts"></a> [custom\_metric\_alerts](#input\_custom\_metric\_alerts) | Map of name = criteria objects | <pre>map(object({<br>    # criteria.*.aggregation to be one of [Average Count Minimum Maximum Total]<br>    aggregation = string<br>    metric_name = string<br>    # "Insights.Container/pods" "Insights.Container/nodes"<br>    metric_namespace = string<br>    # criteria.0.operator to be one of [Equals NotEquals GreaterThan GreaterThanOrEqual LessThan LessThanOrEqual]<br>    operator  = string<br>    threshold = number<br>    # Possible values are PT1M, PT5M, PT15M, PT30M and PT1H<br>    frequency = string<br>    # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.<br>    window_size = string<br>    # severity: The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4. Defaults to 3.<br>    severity = number<br>  }))</pre> | `null` | no |
-| <a name="input_customer_managed_key_enabled"></a> [customer\_managed\_key\_enabled](#input\_customer\_managed\_key\_enabled) | enable customer\_managed\_key | `bool` | `"false"` | no |
+| <a name="input_customer_managed_key_enabled"></a> [customer\_managed\_key\_enabled](#input\_customer\_managed\_key\_enabled) | enable customer\_managed\_key | `bool` | `false` | no |
 | <a name="input_customer_managed_key_kv_key_id"></a> [customer\_managed\_key\_kv\_key\_id](#input\_customer\_managed\_key\_kv\_key\_id) | The ID of the Key Vault Key | `string` | `null` | no |
 | <a name="input_db_version"></a> [db\_version](#input\_db\_version) | (Required) The version of PostgreSQL Flexible Server to use. Possible values are 11,12 and 13. Required when create\_mode is Default | `number` | n/a | yes |
 | <a name="input_default_metric_alerts"></a> [default\_metric\_alerts](#input\_default\_metric\_alerts) | Map of name = criteria objects | <pre>map(object({<br>    # criteria.*.aggregation to be one of [Average Count Minimum Maximum Total]<br>    aggregation = string<br>    metric_name = string<br>    # "Insights.Container/pods" "Insights.Container/nodes"<br>    metric_namespace = string<br>    # criteria.0.operator to be one of [Equals NotEquals GreaterThan GreaterThanOrEqual LessThan LessThanOrEqual]<br>    operator  = string<br>    threshold = number<br>    # Possible values are PT1M, PT5M, PT15M, PT30M and PT1H<br>    frequency = string<br>    # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.<br>    window_size = string<br>    # severity: The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4. Defaults to 3.<br>    severity = number<br>  }))</pre> | <pre>{<br>  "active_connections": {<br>    "aggregation": "Average",<br>    "frequency": "PT5M",<br>    "metric_name": "active_connections",<br>    "metric_namespace": "Microsoft.DBforPostgreSQL/flexibleServers",<br>    "operator": "GreaterThan",<br>    "severity": 2,<br>    "threshold": 80,<br>    "window_size": "PT30M"<br>  },<br>  "connections_failed": {<br>    "aggregation": "Total",<br>    "frequency": "PT5M",<br>    "metric_name": "connections_failed",<br>    "metric_namespace": "Microsoft.DBforPostgreSQL/flexibleServers",<br>    "operator": "GreaterThan",<br>    "severity": 2,<br>    "threshold": 80,<br>    "window_size": "PT30M"<br>  },<br>  "cpu_percent": {<br>    "aggregation": "Average",<br>    "frequency": "PT5M",<br>    "metric_name": "cpu_percent",<br>    "metric_namespace": "Microsoft.DBforPostgreSQL/flexibleServers",<br>    "operator": "GreaterThan",<br>    "severity": 2,<br>    "threshold": 80,<br>    "window_size": "PT30M"<br>  },<br>  "memory_percent": {<br>    "aggregation": "Average",<br>    "frequency": "PT5M",<br>    "metric_name": "memory_percent",<br>    "metric_namespace": "Microsoft.DBforPostgreSQL/flexibleServers",<br>    "operator": "GreaterThan",<br>    "severity": 2,<br>    "threshold": 80,<br>    "window_size": "PT30M"<br>  },<br>  "storage_percent": {<br>    "aggregation": "Average",<br>    "frequency": "PT5M",<br>    "metric_name": "storage_percent",<br>    "metric_namespace": "Microsoft.DBforPostgreSQL/flexibleServers",<br>    "operator": "GreaterThan",<br>    "severity": 2,<br>    "threshold": 80,<br>    "window_size": "PT30M"<br>  }<br>}</pre> | no |
@@ -295,7 +337,12 @@ No modules.
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name which should be used for this PostgreSQL Flexible Server. Changing this forces a new PostgreSQL Flexible Server to be created. | `string` | n/a | yes |
 | <a name="input_pgbouncer_enabled"></a> [pgbouncer\_enabled](#input\_pgbouncer\_enabled) | Is PgBouncer enabled into configurations? | `bool` | `true` | no |
 | <a name="input_primary_user_assigned_identity_id"></a> [primary\_user\_assigned\_identity\_id](#input\_primary\_user\_assigned\_identity\_id) | Manages a User Assigned Identity | `string` | `null` | no |
+| <a name="input_private_dns_cname_record_ttl"></a> [private\_dns\_cname\_record\_ttl](#input\_private\_dns\_cname\_record\_ttl) | (Optional) if 'private\_dns\_registration' is true, defines the record TTL | `number` | `300` | no |
+| <a name="input_private_dns_record_cname"></a> [private\_dns\_record\_cname](#input\_private\_dns\_record\_cname) | (Optional) if 'private\_dns\_registration' is true, defines the private dns CNAME used to register this server FQDN | `string` | `null` | no |
+| <a name="input_private_dns_registration"></a> [private\_dns\_registration](#input\_private\_dns\_registration) | (Optional) If true, creates a cname record for the newly created postgreSQL db fqdn into the provided private dns zone | `bool` | `false` | no |
 | <a name="input_private_dns_zone_id"></a> [private\_dns\_zone\_id](#input\_private\_dns\_zone\_id) | (Optional) The ID of the private dns zone to create the PostgreSQL Flexible Server. Changing this forces a new PostgreSQL Flexible Server to be created. | `string` | `null` | no |
+| <a name="input_private_dns_zone_name"></a> [private\_dns\_zone\_name](#input\_private\_dns\_zone\_name) | (Optional) if 'private\_dns\_registration' is true, defines the private dns zone name in which the server fqdn should be registered | `string` | `null` | no |
+| <a name="input_private_dns_zone_rg_name"></a> [private\_dns\_zone\_rg\_name](#input\_private\_dns\_zone\_rg\_name) | (Optional) if 'private\_dns\_registration' is true, defines the private dns zone resource group name of the dns zone in which the server fqdn should be registered | `string` | `null` | no |
 | <a name="input_private_endpoint_enabled"></a> [private\_endpoint\_enabled](#input\_private\_endpoint\_enabled) | Is this instance private only? | `bool` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The name of the Resource Group where the PostgreSQL Flexible Server should exist. | `string` | n/a | yes |
 | <a name="input_sku_name"></a> [sku\_name](#input\_sku\_name) | The SKU Name for the PostgreSQL Flexible Server. The name of the SKU, follows the tier + name pattern (e.g. B\_Standard\_B1ms, GP\_Standard\_D2s\_v3, MO\_Standard\_E4s\_v3). | `string` | n/a | yes |

@@ -48,7 +48,6 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_location"></a> [location](#input\_location) | n/a | `string` | n/a | yes |
 | <a name="input_source_allow_forwarded_traffic"></a> [source\_allow\_forwarded\_traffic](#input\_source\_allow\_forwarded\_traffic) | Controls if forwarded traffic from VMs in the remote virtual network is allowed. | `bool` | `false` | no |
 | <a name="input_source_allow_gateway_transit"></a> [source\_allow\_gateway\_transit](#input\_source\_allow\_gateway\_transit) | Controls gatewayLinks can be used in the remote virtual network’s link to the local virtual network. | `bool` | `false` | no |
 | <a name="input_source_allow_virtual_network_access"></a> [source\_allow\_virtual\_network\_access](#input\_source\_allow\_virtual\_network\_access) | Controls if the VMs in the remote virtual network can access VMs in the local virtual network. | `bool` | `true` | no |

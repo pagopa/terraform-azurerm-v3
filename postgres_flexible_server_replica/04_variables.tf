@@ -13,10 +13,6 @@ variable "resource_group_name" {
   description = "(Required) The name of the Resource Group where the PostgreSQL Flexible Server should exist."
 }
 
-variable "db_version" {
-  type        = number
-  description = "(Required) The version of PostgreSQL Flexible Server to use. Possible values are 11,12 and 13. Required when create_mode is Default"
-}
 
 #
 # Network
@@ -78,55 +74,8 @@ variable "sku_name" {
   description = "The SKU Name for the PostgreSQL Flexible Server. The name of the SKU, follows the tier + name pattern (e.g. B_Standard_B1ms, GP_Standard_D2s_v3, MO_Standard_E4s_v3)."
 }
 
-variable "storage_mb" {
-  type        = number
-  description = "The max storage allowed for the PostgreSQL Flexible Server. Possible values are 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, and 33554432."
-  default     = null
-}
 
-variable "customer_managed_key_enabled" {
-  type        = bool
-  description = "enable customer_managed_key"
-  default     = false
-}
 
-variable "customer_managed_key_kv_key_id" {
-  type        = string
-  description = "The ID of the Key Vault Key"
-  default     = null
-}
-
-variable "administrator_login" {
-  type        = string
-  description = "Flexible PostgreSql server administrator_login"
-}
-
-variable "administrator_password" {
-  type        = string
-  description = "Flexible PostgreSql server administrator_password"
-}
-
-#
-# Backup
-#
-
-variable "backup_retention_days" {
-  type        = number
-  description = "(Optional) The backup retention days for the PostgreSQL Flexible Server. Possible values are between 7 and 35 days."
-  default     = 7
-}
-
-variable "geo_redundant_backup_enabled" {
-  type        = bool
-  description = "(Optional) Is Geo-Redundant backup enabled on the PostgreSQL Flexible Server. Defaults to false"
-  default     = false
-}
-
-variable "create_mode" {
-  type        = string
-  description = "(Optional) The creation mode. Can be used to restore or replicate existing servers. Possible values are Default, Replica, GeoRestore, and PointInTimeRestore"
-  default     = "Default"
-}
 
 variable "zone" {
   type        = number
@@ -134,11 +83,6 @@ variable "zone" {
   default     = null
 }
 
-variable "primary_user_assigned_identity_id" {
-  type        = string
-  description = "Manages a User Assigned Identity"
-  default     = null
-}
 #
 # DB Configurations
 #
@@ -148,11 +92,12 @@ variable "pgbouncer_enabled" {
   description = "Is PgBouncer enabled into configurations?"
 }
 
+
 #
 # Monitoring & Alert
 #
-variable "custom_metric_alerts" {
-  default = null
+
+variable "replica_server_metric_alerts" {
 
   description = <<EOD
   Map of name = criteria objects
@@ -174,9 +119,12 @@ variable "custom_metric_alerts" {
     # severity: The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4. Defaults to 3.
     severity = number
   }))
+  default = {}
+
 }
 
-variable "default_metric_alerts" {
+
+variable "main_server_additional_alerts" {
 
   description = <<EOD
   Map of name = criteria objects
@@ -198,56 +146,31 @@ variable "default_metric_alerts" {
     # severity: The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4. Defaults to 3.
     severity = number
   }))
+  default = {}
+}
 
-  default = {
-    cpu_percent = {
+locals {
+  default_main_server_metrics = {
+    replication_delay_bytes = {
       frequency        = "PT5M"
       window_size      = "PT30M"
       metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
       aggregation      = "Average"
-      metric_name      = "cpu_percent"
-      operator         = "GreaterThan"
-      threshold        = 80
+      metric_name      = "physical_replication_delay_in_bytes"
+      operator         = "GreaterThanOrEqual"
+      threshold        = 240
       severity         = 2
-    },
-    memory_percent = {
+    }
+  }
+  default_replica_server_metrics = {
+    replica_lag = {
       frequency        = "PT5M"
       window_size      = "PT30M"
       metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
       aggregation      = "Average"
-      metric_name      = "memory_percent"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity         = 2
-    },
-    storage_percent = {
-      frequency        = "PT5M"
-      window_size      = "PT30M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "storage_percent"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity         = 2
-    },
-    active_connections = {
-      frequency        = "PT5M"
-      window_size      = "PT30M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Average"
-      metric_name      = "active_connections"
-      operator         = "GreaterThan"
-      threshold        = 80
-      severity         = 2
-    },
-    connections_failed = {
-      frequency        = "PT5M"
-      window_size      = "PT30M"
-      metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-      aggregation      = "Total"
-      metric_name      = "connections_failed"
-      operator         = "GreaterThan"
-      threshold        = 80
+      metric_name      = "physical_replication_delay_in_seconds"
+      operator         = "GreaterThanOrEqual"
+      threshold        = 240
       severity         = 2
     }
   }
@@ -288,40 +211,12 @@ variable "diagnostic_setting_destination_storage_id" {
   description = "(Optional) The ID of the Storage Account where logs should be sent. Changing this forces a new resource to be created."
 }
 
+variable "source_server_id" {
+  type        = string
+  description = "(Required) Id of the source server to be replicated"
+}
+
 variable "tags" {
   type = map(any)
 }
 
-variable "private_dns_registration" {
-  type        = bool
-  default     = false
-  description = "(Optional) If true, creates a cname record for the newly created postgreSQL db fqdn into the provided private dns zone"
-}
-
-variable "private_dns_zone_name" {
-  type        = string
-  default     = null
-  description = "(Optional) if 'private_dns_registration' is true, defines the private dns zone name in which the server fqdn should be registered"
-}
-
-variable "private_dns_zone_rg_name" {
-  type        = string
-  default     = null
-  description = "(Optional) if 'private_dns_registration' is true, defines the private dns zone resource group name of the dns zone in which the server fqdn should be registered"
-}
-
-variable "private_dns_record_cname" {
-  type        = string
-  default     = null
-  description = "(Optional) if 'private_dns_registration' is true, defines the private dns CNAME used to register this server FQDN"
-}
-
-variable "private_dns_cname_record_ttl" {
-  type        = number
-  default     = 300
-  description = "(Optional) if 'private_dns_registration' is true, defines the record TTL"
-}
-
-locals {
-  metric_alerts = var.custom_metric_alerts != null ? var.custom_metric_alerts : var.default_metric_alerts
-}

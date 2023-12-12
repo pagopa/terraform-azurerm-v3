@@ -1,3 +1,6 @@
+#
+# HDD
+#
 resource "kubernetes_storage_class_v1" "standard_hdd" {
   metadata {
     name = "standard-hdd"
@@ -9,7 +12,9 @@ resource "kubernetes_storage_class_v1" "standard_hdd" {
   }
 }
 
-
+#
+# Azure Files
+#
 resource "kubernetes_storage_class_v1" "azurefile_zrs" {
   metadata {
     name = "azurefile-zrs"
@@ -83,6 +88,9 @@ resource "kubernetes_storage_class_v1" "azurefile_premium_zrs" {
   }
 }
 
+#
+# Default
+#
 resource "kubernetes_storage_class_v1" "default_zrs" {
   metadata {
     name = "default-zrs"
@@ -96,7 +104,9 @@ resource "kubernetes_storage_class_v1" "default_zrs" {
   }
 }
 
-
+#
+# Managed
+#
 resource "kubernetes_storage_class_v1" "managed_zrs" {
   metadata {
     name = "managed-zrs"

@@ -99,32 +99,33 @@ resource "azurerm_private_dns_zone" "storage_account" {
 
 🆕 To use this module you need to use change this variables/arguments:
 
-* `blob_properties_delete_retention_policy_days` -> `blob_delete_retention_days`
-* `allow_blob_public_access` -> `allow_nested_items_to_be_public`
-* `enable_versioning` -> `blob_versioning_enabled`
+- `blob_properties_delete_retention_policy_days` -> `blob_delete_retention_days`
+- `allow_blob_public_access` -> `allow_nested_items_to_be_public`
+- `enable_versioning` -> `blob_versioning_enabled`
 
 ❌ Don't use this variables:
 
-* `enable_https_traffic_only` -> don't use any more, now default is true and mandatory
-* `versioning_name`
+- `enable_https_traffic_only` -> don't use any more, now default is true and mandatory
+- `versioning_name`
 
 ❌ Don't use locks because are managed outside of the module:
 
-* `lock_enabled`
-* `lock_name`
-* `lock_level`  
-* `lock_notes`
+- `lock_enabled`
+- `lock_name`
+- `lock_level`  
+- `lock_notes`
 
 🔥 destroied resources
 
-* `module.<name>.azurerm_template_deployment.versioning[0]` is destroied becuase we use an internal variable and not more an arm.
+- `module.<name>.azurerm_template_deployment.versioning[0]` is destroied becuase we use an internal variable and not more an arm.
 
 ### Migration results
 
 During the apply there will be this result:
 
-* 1 changed (related to storage, that need to update one property `cross_tenant_replication_enabled`)
-* 1 destroy (related to storage, that need to destroy the old arm command for versioning `azurerm_template_deployment.versioning`)
+- 1 changed (related to storage, that need to update one property `cross_tenant_replication_enabled`)
+
+- 2 destroy (related to storage, that need to destroy the old arm command for versioning `azurerm_template_deployment.versioning`)
 
 like this:
 
