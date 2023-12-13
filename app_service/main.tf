@@ -63,7 +63,8 @@ resource "azurerm_linux_web_app" "this" {
     ftps_state             = var.ftps_state
     vnet_route_all_enabled = var.subnet_id == null ? false : true
 
-    health_check_path = var.health_check_path != null ? var.health_check_path : null
+    health_check_path                 = var.health_check_path != null ? var.health_check_path : null
+    health_check_eviction_time_in_min = var.health_check_path != null ? var.health_check_maxpingfailures : null
 
     http2_enabled = true
 
