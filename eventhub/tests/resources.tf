@@ -8,7 +8,7 @@ data "azurerm_resource_group" "rg_vnet" {
 }
 
 module "private_endpoint_snet" {
-  source = "../../subnet"
+  source                                    = "../../subnet"
   name                                      = "${local.project}-pe-snet"
   address_prefixes                          = ["10.3.200.0/27"]
   resource_group_name                       = data.azurerm_resource_group.rg_vnet.name
@@ -53,10 +53,10 @@ module "event_hub" {
 
   virtual_network_ids = [data.azurerm_virtual_network.vnet.id]
 
-  internal_private_dns_zone_created = true
+  internal_private_dns_zone_created             = true
   internal_private_dns_zone_resource_group_name = "dvopla-eventhub-private-dns-zone-rg"
 
-  private_endpoint_created = true
+  private_endpoint_created             = true
   private_endpoint_resource_group_name = "dvopla-d-azdoa-rg"
   # use a dedicated subnet for private endpoints, this is only for example
   private_endpoint_subnet_id = module.eventhub_snet.id
@@ -123,13 +123,13 @@ module "event_hub_core_network" {
 
   virtual_network_ids = [data.azurerm_virtual_network.vnet.id]
 
-  private_endpoint_created = true
-  private_endpoint_subnet_id = module.private_endpoint_snet.id
+  private_endpoint_created             = true
+  private_endpoint_subnet_id           = module.private_endpoint_snet.id
   private_endpoint_resource_group_name = data.azurerm_resource_group.rg_vnet.name
 
   private_dns_zones = {
-    id = [azurerm_private_dns_zone.external_zone.id]
-    name = [azurerm_private_dns_zone.external_zone.name]
+    id                  = [azurerm_private_dns_zone.external_zone.id]
+    name                = [azurerm_private_dns_zone.external_zone.name]
     resource_group_name = azurerm_private_dns_zone.external_zone.resource_group_name
   }
 

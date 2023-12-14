@@ -99,13 +99,13 @@ variable "public_network_access_enabled" {
 variable "private_dns_zones" {
   description = "Private DNS Zones where the private endpoint will be created"
   type = object({
-    id   = list(string)
-    name = list(string)
+    id                  = list(string)
+    name                = list(string)
     resource_group_name = string
   })
   default = {
-    id   = []
-    name = []
+    id                  = []
+    name                = []
     resource_group_name = ""
   }
 }
@@ -119,7 +119,7 @@ variable "private_dns_zone_record_A_name" {
 
 variable "private_endpoint_created" {
   description = "Choose to allow the creation of the private endpoint"
-  type = bool
+  type        = bool
 }
 
 variable "private_endpoint_resource_group_name" {
@@ -137,8 +137,8 @@ variable "private_endpoint_subnet_id" {
 
 variable "internal_private_dns_zone_created" {
   description = "(Deprecated: create a standalone dns zone) Choose to allow the creation of the dns zone"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "internal_private_dns_zone_resource_group_name" {

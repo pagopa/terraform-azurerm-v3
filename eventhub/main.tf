@@ -125,7 +125,7 @@ resource "azurerm_private_dns_a_record" "private_dns_a_record_eventhub" {
   zone_name           = length(var.private_dns_zones.id) > 0 ? var.private_dns_zones.name[0] : can(azurerm_private_dns_zone.eventhub[0].name)
   resource_group_name = length(var.private_dns_zones.id) > 0 ? var.private_dns_zones.resource_group_name : var.internal_private_dns_zone_resource_group_name
   ttl                 = 300
-  records             = can(azurerm_private_endpoint.eventhub[0].private_service_connection[*].private_ip_address) ? azurerm_private_endpoint.eventhub[0].private_service_connection[*].private_ip_address  : null
+  records             = can(azurerm_private_endpoint.eventhub[0].private_service_connection[*].private_ip_address) ? azurerm_private_endpoint.eventhub[0].private_service_connection[*].private_ip_address : null
 }
 
 #

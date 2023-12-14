@@ -8,7 +8,7 @@ data "azurerm_resource_group" "rg_vnet" {
 }
 
 module "private_endpoint_snet" {
-  source = "../../subnet"
+  source                                    = "../../subnet"
   name                                      = "${local.project}-pe-snet"
   address_prefixes                          = ["10.3.200.0/27"]
   resource_group_name                       = data.azurerm_resource_group.rg_vnet.name
@@ -62,12 +62,12 @@ module "event_hub_core_only" {
 
 module "event_hub_core_only_configuration" {
 
-    source = "../../eventhub_configuration"
+  source = "../../eventhub_configuration"
 
-    event_hub_namespace_name = "${local.project}-evh-core-ns"
-    event_hub_namespace_resource_group_name = azurerm_resource_group.rg_eventhub.name
+  event_hub_namespace_name                = "${local.project}-evh-core-ns"
+  event_hub_namespace_resource_group_name = azurerm_resource_group.rg_eventhub.name
 
-    eventhubs = [{
+  eventhubs = [{
     name              = "rtd-trx"
     partitions        = 1
     message_retention = 1
@@ -107,13 +107,13 @@ module "event_hub_core_network" {
 
   virtual_network_ids = [data.azurerm_virtual_network.vnet.id]
 
-  private_endpoint_created = true
-  private_endpoint_subnet_id = module.private_endpoint_snet.id
+  private_endpoint_created             = true
+  private_endpoint_subnet_id           = module.private_endpoint_snet.id
   private_endpoint_resource_group_name = data.azurerm_resource_group.rg_vnet.name
 
   private_dns_zones = {
-    id = [azurerm_private_dns_zone.external_zone.id]
-    name = [azurerm_private_dns_zone.external_zone.name]
+    id                  = [azurerm_private_dns_zone.external_zone.id]
+    name                = [azurerm_private_dns_zone.external_zone.name]
     resource_group_name = azurerm_private_dns_zone.external_zone.resource_group_name
   }
 
@@ -124,12 +124,12 @@ module "event_hub_core_network" {
 
 module "event_hub_core_network_configuration" {
 
-    source = "../../eventhub_configuration"
+  source = "../../eventhub_configuration"
 
-    event_hub_namespace_name = "${local.project}-evh-with-network-ns"
-    event_hub_namespace_resource_group_name = azurerm_resource_group.rg_eventhub.name
+  event_hub_namespace_name                = "${local.project}-evh-with-network-ns"
+  event_hub_namespace_resource_group_name = azurerm_resource_group.rg_eventhub.name
 
-    eventhubs = [{
+  eventhubs = [{
     name              = "rtd-trx"
     partitions        = 1
     message_retention = 1

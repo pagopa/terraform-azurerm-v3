@@ -1,11 +1,11 @@
 // Resource Group
 variable "event_hub_namespace_resource_group_name" {
-  type = string
+  type        = string
   description = "EventHub namespace resource group name"
 }
 
 variable "event_hub_namespace_name" {
-  type = string
+  type        = string
   description = "EventHub namespace name"
 }
 
