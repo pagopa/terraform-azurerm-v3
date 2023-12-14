@@ -7,6 +7,15 @@ data "azurerm_resource_group" "rg_vnet" {
   name = "dvopla-d-azdoa-rg"
 }
 
+module "private_endpoint_snet" {
+  source = "../../subnet"
+  name                                      = "${local.project}-pe-snet"
+  address_prefixes                          = ["10.3.200.0/27"]
+  resource_group_name                       = data.azurerm_resource_group.rg_vnet.name
+  virtual_network_name                      = data.azurerm_virtual_network.vnet.name
+  private_endpoint_network_policies_enabled = true
+}
+
 ## Eventhub subnet
 module "eventhub_snet" {
   source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v7.29.0"
@@ -17,6 +26,13 @@ module "eventhub_snet" {
   service_endpoints                         = ["Microsoft.EventHub"]
   private_endpoint_network_policies_enabled = true
 }
+
+resource "azurerm_private_dns_zone" "external_zone" {
+  name                = "${local.project}-private-dns-zone"
+  resource_group_name = data.azurerm_resource_group.rg_vnet.name
+}
+
+#--------------------------------------------------------------------------------------
 
 resource "azurerm_resource_group" "rg_eventhub" {
   name     = "${local.project}-eventhub-rg"
@@ -37,6 +53,14 @@ module "event_hub" {
 
   virtual_network_ids = [data.azurerm_virtual_network.vnet.id]
   subnet_id           = module.eventhub_snet.id
+
+  internal_private_dns_zone_created = true
+  internal_private_dns_zone_resource_group_name = "dvopla-eventhub-private-dns-zone-rg"
+
+  private_endpoint_created = true
+  private_endpoint_resource_group_name = "dvopla-d-azdoa-rg"
+  # use a dedicated subnet for private endpoints, this is only for example
+  private_endpoint_subnet_id = module.eventhub_snet.id
 
   eventhubs = [{
     name              = "rtd-trx"
@@ -81,6 +105,36 @@ module "event_hub_core_only" {
 
   virtual_network_ids = [data.azurerm_virtual_network.vnet.id]
   subnet_id           = module.eventhub_snet.id
+
+  private_endpoint_created = false
+
+  alerts_enabled = false
+
+  tags = var.tags
+}
+
+module "event_hub_core_network" {
+  source = "../../eventhub"
+
+  name                 = "${local.project}-evh-with-network-ns"
+  location             = var.location
+  resource_group_name  = azurerm_resource_group.rg_eventhub.name
+  auto_inflate_enabled = false
+  sku                  = "Standard"
+  zone_redundant       = true
+
+  virtual_network_ids = [data.azurerm_virtual_network.vnet.id]
+  subnet_id           = module.eventhub_snet.id
+
+  private_endpoint_created = true
+  private_endpoint_subnet_id = module.private_endpoint_snet.id
+  private_endpoint_resource_group_name = data.azurerm_resource_group.rg_vnet.name
+
+  private_dns_zones = {
+    id = [azurerm_private_dns_zone.external_zone.id]
+    name = [azurerm_private_dns_zone.external_zone.name]
+    resource_group_name = azurerm_private_dns_zone.external_zone.resource_group_name
+  }
 
   alerts_enabled = false
 
