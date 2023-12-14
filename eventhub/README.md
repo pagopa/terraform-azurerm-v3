@@ -15,9 +15,14 @@ see folder ../test for more info
 ### Parameters
 
 * `var.resource_group_name`: is used only for eventhub
-* `var.private_endpoint_subnet_id`: subnet id for the private endpoint, and not var.subnet_id
-* private endpoint: now use `var.private_endpoint_resource_group_name` and not var.resource_group_name
-* private dns zone: now use `var.private_dns_zone_resource_group_name` and not var.resource_group_name
+** now every resource has it's own resource group variable
+
+* `var.private_endpoint_created` is now mandatory to allow the creation of the private endpoint
+* `var.private_endpoint_subnet_id`: subnet id for the private endpoint, and not `var.subnet_id` that is dropped
+* private endpoint: now use `var.private_endpoint_resource_group_name` and not `var.resource_group_name``
+
+* `var.internal_private_dns_zone_created`: allows the creation of private dns zone, default is FALSE
+* private dns zone: now use `var.internal_private_dns_zone_resource_group_name` and not `var.resource_group_name``
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
