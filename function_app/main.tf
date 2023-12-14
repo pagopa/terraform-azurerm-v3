@@ -231,15 +231,16 @@ resource "azurerm_linux_function_app" "this" {
   client_certificate_mode    = var.client_certificate_mode
 
   site_config {
-    minimum_tls_version       = "1.2"
-    ftps_state                = "Disabled"
-    http2_enabled             = true
-    always_on                 = var.always_on
-    pre_warmed_instance_count = var.pre_warmed_instance_count
-    vnet_route_all_enabled    = var.subnet_id == null ? false : true
-    use_32_bit_worker         = var.use_32_bit_worker_process
-    application_insights_key  = var.application_insights_instrumentation_key
-    health_check_path         = var.health_check_path
+    minimum_tls_version               = "1.2"
+    ftps_state                        = "Disabled"
+    http2_enabled                     = true
+    always_on                         = var.always_on
+    pre_warmed_instance_count         = var.pre_warmed_instance_count
+    vnet_route_all_enabled            = var.subnet_id == null ? false : true
+    use_32_bit_worker                 = var.use_32_bit_worker_process
+    application_insights_key          = var.application_insights_instrumentation_key
+    health_check_path                 = var.health_check_path
+    health_check_eviction_time_in_min = var.health_check_path != null ? var.health_check_maxpingfailures : null
 
     dynamic "app_service_logs" {
       for_each = var.app_service_logs != null ? [var.app_service_logs] : []
@@ -298,8 +299,6 @@ resource "azurerm_linux_function_app" "this" {
     {
       # No downtime on slots swap
       WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG = 1
-      # default value for health_check_path, override it in var.app_settings if needed
-      WEBSITE_HEALTHCHECK_MAXPINGFAILURES = var.health_check_path != null ? var.health_check_maxpingfailures : null
       # https://docs.microsoft.com/en-us/samples/azure-samples/azure-functions-private-endpoints/connect-to-private-endpoints-with-azure-functions/
       SLOT_TASK_HUBNAME        = "ProductionTaskHub"
       WEBSITE_RUN_FROM_PACKAGE = 1
