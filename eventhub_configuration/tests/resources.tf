@@ -60,6 +60,41 @@ module "event_hub_core_only" {
   tags = var.tags
 }
 
+module "event_hub_core_only_configuration" {
+
+    source = "../../eventhub_configuration"
+
+    event_hub_namespace_name = "${local.project}-evh-core-ns"
+    event_hub_namespace_resource_group_name = azurerm_resource_group.rg_eventhub.name
+
+    eventhubs = [{
+    name              = "rtd-trx"
+    partitions        = 1
+    message_retention = 1
+    consumers = [
+      "bpd-payment-instrument",
+      "rtd-trx-fa-comsumer-group",
+      "idpay-consumer-group"
+    ]
+    keys = [
+      {
+        name   = "rtd-csv-connector"
+        listen = false
+        send   = true
+        manage = false
+      },
+      {
+        name   = "bpd-payment-instrument"
+        listen = true
+        send   = false
+        manage = false
+      },
+    ]
+  }]
+
+}
+
+
 module "event_hub_core_network" {
   source = "../../eventhub"
 
@@ -85,4 +120,38 @@ module "event_hub_core_network" {
   alerts_enabled = false
 
   tags = var.tags
+}
+
+module "event_hub_core_network_configuration" {
+
+    source = "../../eventhub_configuration"
+
+    event_hub_namespace_name = "${local.project}-evh-with-network-ns"
+    event_hub_namespace_resource_group_name = azurerm_resource_group.rg_eventhub.name
+
+    eventhubs = [{
+    name              = "rtd-trx"
+    partitions        = 1
+    message_retention = 1
+    consumers = [
+      "bpd-payment-instrument",
+      "rtd-trx-fa-comsumer-group",
+      "idpay-consumer-group"
+    ]
+    keys = [
+      {
+        name   = "rtd-csv-connector"
+        listen = false
+        send   = true
+        manage = false
+      },
+      {
+        name   = "bpd-payment-instrument"
+        listen = true
+        send   = false
+        manage = false
+      },
+    ]
+  }]
+
 }
