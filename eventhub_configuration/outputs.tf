@@ -1,8 +1,3 @@
-output "namespace_id" {
-  description = "Id of Event Hub Namespace."
-  value       = azurerm_eventhub_namespace.this.id
-}
-
 output "hub_ids" {
   description = "Map of hubs and their ids."
   value       = { for k, v in azurerm_eventhub.events : k => v.id }
@@ -22,13 +17,5 @@ output "keys" {
     secondary_key               = h.secondary_key
     secondary_connection_string = h.secondary_connection_string
     }
-  }
-}
-
-output "private_dns_zone" {
-  description = "ID of the private DNS zone which resolves the name of the Private Endpoint used to connect to EventHub"
-  value = {
-    id   = azurerm_private_dns_zone.eventhub.*.id
-    name = azurerm_private_dns_zone.eventhub.*.name
   }
 }
