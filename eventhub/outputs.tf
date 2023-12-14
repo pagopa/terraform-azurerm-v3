@@ -28,7 +28,7 @@ output "keys" {
 output "private_dns_zone" {
   description = "ID of the private DNS zone which resolves the name of the Private Endpoint used to connect to EventHub"
   value = {
-    id   = azurerm_private_dns_zone.eventhub.*.id
-    name = azurerm_private_dns_zone.eventhub.*.name
+    id   = azurerm_private_dns_zone.eventhub[*].id
+    name = azurerm_private_dns_zone.eventhub[*].name
   }
 }

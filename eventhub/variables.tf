@@ -17,12 +17,6 @@ variable "virtual_network_ids" {
   description = "The IDs of the Virtual Network that should be linked to the DNS Zone."
 }
 
-variable "subnet_id" {
-  type        = string
-  default     = null
-  description = "The id of the subnet that will be used for the eventhub."
-}
-
 variable "auto_inflate_enabled" {
   type        = bool
   description = "Is Auto Inflate enabled for the EventHub Namespace?"
@@ -107,10 +101,12 @@ variable "private_dns_zones" {
   type = object({
     id   = list(string)
     name = list(string)
+    resource_group_name = string
   })
   default = {
     id   = []
     name = []
+    resource_group_name = ""
   }
 }
 
@@ -121,8 +117,32 @@ variable "private_dns_zone_record_A_name" {
 
 }
 
-variable "private_dns_zone_resource_group" {
-  description = "Name of the resource group record in the private dns zone"
+variable "private_endpoint_created" {
+  description = "Choose to allow the creation of the private endpoint"
+  type = bool
+}
+
+variable "private_endpoint_resource_group_name" {
+  description = "Name of the resource group where the private endpoint will be created"
+  type        = string
+  default     = null
+}
+
+variable "private_endpoint_subnet_id" {
+  type        = string
+  default     = null
+  description = "The id of the subnet that will be used for the private endpoint."
+}
+
+
+variable "internal_private_dns_zone_created" {
+  description = "(Deprecated: create a standalone dns zone) Choose to allow the creation of the dns zone"
+  type = bool
+  default = false
+}
+
+variable "internal_private_dns_zone_resource_group_name" {
+  description = "(Deprecated: create a standalone dns zone) Name of the resource group record in the private dns zone"
   type        = string
   default     = null
 }
