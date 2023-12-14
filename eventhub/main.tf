@@ -52,6 +52,9 @@ resource "azurerm_eventhub_namespace" "this" {
   tags = var.tags
 }
 
+#
+# Eventhub configuration
+#
 resource "azurerm_eventhub" "events" {
   for_each = local.hubs
 
@@ -89,37 +92,22 @@ resource "azurerm_eventhub_authorization_rule" "events" {
   depends_on = [azurerm_eventhub.events]
 }
 
-# Create a Private DNS zone only if one isn't provided as input
-resource "azurerm_private_dns_zone" "eventhub" {
-  count = (var.sku != "Basic" && length(var.private_dns_zones.id) == 0) ? 1 : 0
-
-  name                = "privatelink.servicebus.windows.net"
-  resource_group_name = var.resource_group_name
-}
-
-resource "azurerm_private_dns_zone_virtual_network_link" "eventhub" {
-  count = (var.sku != "Basic" && length(var.private_dns_zones.id) == 0) ? length(var.virtual_network_ids) : 0
-
-  name                  = format("%s-private-dns-zone-link-%02d", var.name, count.index + 1)
-  resource_group_name   = var.resource_group_name
-  private_dns_zone_name = azurerm_private_dns_zone.eventhub[0].name
-  virtual_network_id    = var.virtual_network_ids[count.index]
-
-  tags = var.tags
-}
+#
+# Network
+#
 
 resource "azurerm_private_endpoint" "eventhub" {
-  count = var.sku != "Basic" ? 1 : 0
+  count = (var.sku != "Basic" && var.private_endpoint_created) ? 1 : 0
 
   name                = "${var.name}-private-endpoint"
   location            = var.location
-  resource_group_name = var.resource_group_name
-  subnet_id           = var.subnet_id
+  resource_group_name = var.private_endpoint_resource_group_name
+  subnet_id           = var.private_endpoint_subnet_id
 
   private_dns_zone_group {
     name = "${var.name}-private-dns-zone-group"
     # One of the concatenated arrays is empty
-    private_dns_zone_ids = concat(var.private_dns_zones.id, azurerm_private_dns_zone.eventhub.*.id)
+    private_dns_zone_ids = concat(var.private_dns_zones.id, azurerm_private_dns_zone.eventhub[*].id)
   }
 
   private_service_connection {
@@ -131,14 +119,40 @@ resource "azurerm_private_endpoint" "eventhub" {
 }
 
 resource "azurerm_private_dns_a_record" "private_dns_a_record_eventhub" {
-  count = (var.sku != "Basic" && var.private_dns_zone_record_A_name != null) ? 1 : 0
+  count = (var.sku != "Basic" && var.private_dns_zone_record_A_name != null && var.private_endpoint_created) ? 1 : 0
 
   name                = var.private_dns_zone_record_A_name
-  zone_name           = length(var.private_dns_zones.id) > 0 ? var.private_dns_zones.name[0] : azurerm_private_dns_zone.eventhub[0].name
-  resource_group_name = var.private_dns_zone_resource_group != null ? var.private_dns_zone_resource_group : var.resource_group_name
+  zone_name           = length(var.private_dns_zones.id) > 0 ? var.private_dns_zones.name[0] : can(azurerm_private_dns_zone.eventhub[0].name)
+  resource_group_name = length(var.private_dns_zones.id) > 0 ? var.private_dns_zones.resource_group_name : var.internal_private_dns_zone_resource_group_name
   ttl                 = 300
-  records             = azurerm_private_endpoint.eventhub[0].private_service_connection.*.private_ip_address
+  records             = can(azurerm_private_endpoint.eventhub[0].private_service_connection[*].private_ip_address) ? azurerm_private_endpoint.eventhub[0].private_service_connection[*].private_ip_address  : null
 }
+
+#
+# Private dns zone
+#
+# Create a Private DNS zone only if one isn't provided as input
+resource "azurerm_private_dns_zone" "eventhub" {
+  count = (var.sku != "Basic" && length(var.private_dns_zones.id) == 0 && var.internal_private_dns_zone_created) ? 1 : 0
+
+  name                = "privatelink.servicebus.windows.net"
+  resource_group_name = var.internal_private_dns_zone_resource_group_name
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "eventhub" {
+  count = (var.sku != "Basic" && length(var.private_dns_zones.id) == 0 && var.internal_private_dns_zone_created) ? length(var.virtual_network_ids) : 0
+
+  name                  = format("%s-private-dns-zone-link-%02d", var.name, count.index + 1)
+  resource_group_name   = var.resource_group_name
+  private_dns_zone_name = azurerm_private_dns_zone.eventhub[0].name
+  virtual_network_id    = var.virtual_network_ids[count.index]
+
+  tags = var.tags
+}
+
+#
+# Alert
+#
 
 resource "azurerm_monitor_metric_alert" "this" {
   for_each = var.metric_alerts
