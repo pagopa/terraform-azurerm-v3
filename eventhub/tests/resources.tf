@@ -52,7 +52,6 @@ module "event_hub" {
   zone_redundant       = true
 
   virtual_network_ids = [data.azurerm_virtual_network.vnet.id]
-  subnet_id           = module.eventhub_snet.id
 
   internal_private_dns_zone_created = true
   internal_private_dns_zone_resource_group_name = "dvopla-eventhub-private-dns-zone-rg"
@@ -104,7 +103,6 @@ module "event_hub_core_only" {
   zone_redundant       = true
 
   virtual_network_ids = [data.azurerm_virtual_network.vnet.id]
-  subnet_id           = module.eventhub_snet.id
 
   private_endpoint_created = false
 
@@ -124,7 +122,6 @@ module "event_hub_core_network" {
   zone_redundant       = true
 
   virtual_network_ids = [data.azurerm_virtual_network.vnet.id]
-  subnet_id           = module.eventhub_snet.id
 
   private_endpoint_created = true
   private_endpoint_subnet_id = module.private_endpoint_snet.id
