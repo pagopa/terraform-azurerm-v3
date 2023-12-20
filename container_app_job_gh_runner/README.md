@@ -82,8 +82,8 @@ On the other hand, containers needs these environment variables to connect to Gi
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | <= 1.9.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.44.0, <= 3.76.0 |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | <= 1.11.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.44.0, <= 3.85.0 |
 
 ## Modules
 
@@ -93,12 +93,13 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [azapi_resource.runner_environment](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
 | [azapi_resource.runner_job](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
+| [azurerm_container_app_environment.container_app_environment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_environment) | resource |
 | [azurerm_key_vault_access_policy.keyvault_containerapp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_access_policy) | resource |
-| [azurerm_resource_group.runner_rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_subnet.runner_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
 | [azurerm_key_vault.key_vault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/key_vault) | data source |
+| [azurerm_log_analytics_workspace.law](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/log_analytics_workspace) | data source |
+| [azurerm_resource_group.runner_rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
 | [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 
 ## Inputs
@@ -107,20 +108,22 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_app"></a> [app](#input\_app) | Container App job configuration | <pre>object({<br>    repo_owner = optional(string, "pagopa")<br>    repos      = set(string)<br>    image      = optional(string, "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:c7ebe4453578c9df426b793366b8498c030ec0f47f753ea2c685a3c0ec0bb646")<br>  })</pre> | n/a | yes |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
-| <a name="input_environment"></a> [environment](#input\_environment) | Container App Environment logging configuration (Log Analytics Workspace) | <pre>object({<br>    customerId = string<br>    sharedKey  = string<br>  })</pre> | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | Container App Environment configuration (Log Analytics Workspace) | <pre>object({<br>    law_name                = string<br>    law_resource_group_name = string<br>  })</pre> | n/a | yes |
 | <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Data of the KeyVault which stores PAT as secret | <pre>object({<br>    resource_group_name = string<br>    name                = string<br>    secret_name         = string<br>  })</pre> | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | Resource group and resources location | `string` | n/a | yes |
-| <a name="input_network"></a> [network](#input\_network) | Existing VNet information and subnet CIDR block to use (must be /23) | <pre>object({<br>    vnet_resource_group_name = string<br>    vnet_name                = string<br>    subnet_cidr_block        = string<br>  })</pre> | n/a | yes |
+| <a name="input_network"></a> [network](#input\_network) | Existing VNet information and subnet CIDR block to use (must be /23). Optionally specify the subnet name | <pre>object({<br>    vnet_resource_group_name = string<br>    vnet_name                = string<br>    subnet_name              = optional(string)<br>    subnet_cidr_block        = string<br>  })</pre> | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Project prefix | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags for new resources | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
+| <a name="input_vm_size"></a> [vm\_size](#input\_vm\_size) | Job VM size | <pre>object({<br>    cpu    = number<br>    memory = string<br>  })</pre> | <pre>{<br>  "cpu": 1,<br>  "memory": "2Gi"<br>}</pre> | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
+| <a name="output_ca_id"></a> [ca\_id](#output\_ca\_id) | Container App job id |
 | <a name="output_ca_name"></a> [ca\_name](#output\_ca\_name) | Container App job name |
+| <a name="output_cae_id"></a> [cae\_id](#output\_cae\_id) | Container App Environment id |
 | <a name="output_cae_name"></a> [cae\_name](#output\_cae\_name) | Container App Environment name |
-| <a name="output_resource_group"></a> [resource\_group](#output\_resource\_group) | Resource group name |
 | <a name="output_subnet_cidr"></a> [subnet\_cidr](#output\_subnet\_cidr) | Subnet CIDR blocks |
 | <a name="output_subnet_name"></a> [subnet\_name](#output\_subnet\_name) | Subnet name |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
