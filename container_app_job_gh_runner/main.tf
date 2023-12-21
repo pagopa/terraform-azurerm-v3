@@ -55,6 +55,7 @@ resource "azurerm_container_app_environment" "container_app_environment" {
 
   infrastructure_subnet_id       = azurerm_subnet.runner_subnet.id
   internal_load_balancer_enabled = true
+  zone_redundancy_enabled        = true
 
   tags = var.tags
 }
