@@ -39,7 +39,7 @@ variable "network" {
   type = object({
     vnet_resource_group_name = string
     vnet_name                = string
-    subnet_name              = optional(string)
+    subnet_name              = optional(string, null)
     subnet_cidr_block        = string
   })
 
