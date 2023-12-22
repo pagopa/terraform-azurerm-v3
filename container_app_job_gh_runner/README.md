@@ -80,7 +80,7 @@ Containers needs these environment variables to connect to GitHub, [grab a regis
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | <= 1.11.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.44.0, <= 3.85.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.50.0, <= 3.85.0 |
 
 ## Modules
 
