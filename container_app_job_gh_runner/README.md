@@ -1,6 +1,6 @@
 # Azure Container App Job as GitHub Runners
 
-This module creates the infrastructure to host GitHub self hosted runners using Azure Container Apps jobs and can be used by repositories which need private resource access on Azure.
+This module creates the infrastructure to host GitHub self hosted runners using Azure Container Apps jobs and can be used by GitHub repositories which need access to private resources on Azure.
 
 - [Azure Container App Job as GitHub Runners](#azure-container-app-job-as-github-runners)
   - [How to use it](#how-to-use-it)
@@ -21,6 +21,7 @@ This module creates the infrastructure to host GitHub self hosted runners using 
 
 Before using the module, developer needs the following existing resources:
 
+- a resource group for the Container App Environment named `<prefix>-<short_env>-github-runner-rg`
 - a VNet
 - a KeyVault
 - a Log Analytics Workspace
@@ -32,11 +33,10 @@ Before using the module, developer needs the following existing resources:
 
 The module creates:
 
-- a subnet (/23)
-- a resource group
-- a Container App Environment
-- a Container App job
-- a role assignment to allow the container app job to read the secret (`Get` permission over KeyVault's secrets)
+- a subnet (`/23`) in the specified VNet
+- a Container App Environment in that subnet with the name `<prefix>-<short_env>-github-runner-snet` (name is overridable)
+- a Container App job with the name `<prefix>-<short_env>-github-runner-job`
+- a role assignment to allow the Container App Job to read secrets from the existing KeyVault (`Get` permission over KeyVault's secrets access policies)
 
 ### Example
 
@@ -44,31 +44,28 @@ Give a try to the example saved in `terraform-azurerm-v3/container_app_job_gh_ru
 
 ## Design
 
-A Container App job scales jobs based on event-driven rules (KEDA). To support GitHub Actions, you need to use [`github-runner` scale rule](https://keda.sh/docs/2.12/scalers/github-runner/) with these metadata:
+A Container App Job scales containers (jobs) based on event-driven rules (KEDA). A Container App Job might have multiple containers, each of them with different properties (VM size, secrets, images, volumes, etc.).
+To support GitHub Actions, you need to use `github-runner` [scale rule](https://keda.sh/docs/2.12/scalers/github-runner/) with these metadata:
 
 - owner: `pagopa`
 - runnerScope: `repo`
   - most tighten
 - repos: *the repository* you want to support
-  - it supports multiple repositories but we need a 1:1 match between containers and repositories
+  - it supports multiple repositories but this module is designed to have a 1:1 match between containers and repositories
 - targetWorkflowQueueLength: `1`
   - indicates how many job requests are necessary to trigger the container
 - labels: the job name
-  - field is optional but allows us to set a 1:1 match between containers and repositories
+  - field is optional but useful to apply the event-driven rule to a single container and not to the entire Container App Job
 
-With the above settings, the app will be able to poll the GitHub repository (be careful to quota limits). When a job request is detected, it launches the job indicated in the `labels` metadata.
+With the above settings, the scale rules start to poll the GitHub repositories (be careful to quota limits). When a job request is detected, it launches the container indicated in the `labels` metadata.
 
-On the other hand, containers needs these environment variables to connect to GitHub, [grab a registration token and register themself as runners](https://github.com/pagopa/github-self-hosted-runner-azure/blob/dockerfile-v2/github-runner-entrypoint.sh):
+Containers needs these environment variables to connect to GitHub, [grab a registration token and register themself as runners](https://github.com/pagopa/github-self-hosted-runner-azure/blob/dockerfile-v2/github-runner-entrypoint.sh):
 
 - GITHUB_PAT: reference to the KeyVault secret (no Kubernetes secrets are used)
 - REPO_URL: GitHub repo URL
 - REGISTRATION_TOKEN_API_URL: [GitHub API](https://docs.github.com/en/rest/actions/self-hosted-runners?apiVersion=2022-11-28#create-a-registration-token-for-a-repository) to get the registration token
 
 ### Notes
-
-`azapi_resource` is required by CAE because:
-
-- `zoneRedundant` property must be true but `azurerm` supports it since v3.50 (too recent for us?)
 
 `azapi_resource` is required by CA because:
 

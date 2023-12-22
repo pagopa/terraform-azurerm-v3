@@ -22,32 +22,6 @@ resource "azurerm_subnet" "runner_subnet" {
   ]
 }
 
-# resource "azapi_resource" "runner_environment" {
-#   type      = "Microsoft.App/managedEnvironments@2023-05-01"
-#   name      = "${local.name}-github-runner-cae"
-#   location  = data.azurerm_resource_group.runner_rg.location
-#   parent_id = data.azurerm_resource_group.runner_rg.id
-
-#   tags = var.tags
-
-#   body = jsonencode({
-#     properties = {
-#       appLogsConfiguration = {
-#         destination = "log-analytics"
-#         logAnalyticsConfiguration = {
-#           customerId = var.environment.customerId
-#           sharedKey  = var.environment.sharedKey
-#         }
-#       }
-#       zoneRedundant = true
-#       vnetConfiguration = {
-#         infrastructureSubnetId = azurerm_subnet.runner_subnet.id
-#         internal               = true
-#       }
-#     }
-#   })
-# }
-
 resource "azurerm_container_app_environment" "container_app_environment" {
   name                = "${local.name}-github-runner-cae"
   location            = data.azurerm_resource_group.runner_rg.location
