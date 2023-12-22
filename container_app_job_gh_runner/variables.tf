@@ -39,19 +39,20 @@ variable "network" {
   type = object({
     vnet_resource_group_name = string
     vnet_name                = string
+    subnet_name              = optional(string, "")
     subnet_cidr_block        = string
   })
 
-  description = "Existing VNet information and subnet CIDR block to use (must be /23)"
+  description = "Existing VNet information and subnet CIDR block to use (must be /23). Optionally specify the subnet name"
 }
 
 variable "environment" {
   type = object({
-    customerId = string
-    sharedKey  = string
+    law_name                = string
+    law_resource_group_name = string
   })
 
-  description = "Container App Environment logging configuration (Log Analytics Workspace)"
+  description = "Container App Environment configuration (Log Analytics Workspace)"
 }
 
 variable "app" {
@@ -69,6 +70,20 @@ variable "app" {
   }
 
   description = "Container App job configuration"
+}
+
+variable "vm_size" {
+  type = object({
+    cpu    = number
+    memory = string
+  })
+
+  default = {
+    cpu    = 1.0
+    memory = "2Gi"
+  }
+
+  description = "Job VM size"
 }
 
 variable "key_vault" {
