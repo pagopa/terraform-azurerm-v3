@@ -17,7 +17,9 @@ resource "azurerm_subnet" "runner_subnet" {
   resource_group_name  = var.network.vnet_resource_group_name
   virtual_network_name = var.network.vnet_name
   address_prefixes     = ["${var.network.subnet_cidr_block}"]
-  service_endpoints    = []
+  service_endpoints = [
+    "Microsoft.Web"
+  ]
 }
 
 # resource "azapi_resource" "runner_environment" {
