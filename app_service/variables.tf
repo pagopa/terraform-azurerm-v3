@@ -126,6 +126,17 @@ variable "health_check_path" {
   default     = null
 }
 
+variable "health_check_maxpingfailures" {
+  type        = number
+  description = "Max ping failures allowed"
+  default     = null
+
+  validation {
+    condition     = var.health_check_maxpingfailures == null ? true : (var.health_check_maxpingfailures >= 2 && var.health_check_maxpingfailures <= 10)
+    error_message = "Possible values are null or a number between 2 and 10"
+  }
+}
+
 variable "allowed_subnets" {
   type        = list(string)
   description = "(Optional) List of subnet allowed to call the appserver endpoint."

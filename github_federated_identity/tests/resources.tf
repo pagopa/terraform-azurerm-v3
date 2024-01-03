@@ -2,7 +2,7 @@
 
 # resource group name should follow the convention specified in README.md file
 resource "azurerm_resource_group" "identity_rg" {
-  name     = var.domain == "" ? "${var.prefix}-${local.env_short}-identity-rg" : "${var.prefix}-${local.env_short}-${var.domain}-identity-rg"
+  name     = "${var.prefix}-${local.env_short}-identity-rg"
   location = var.location
 }
 

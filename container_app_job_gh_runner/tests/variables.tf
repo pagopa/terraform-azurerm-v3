@@ -48,8 +48,8 @@ variable "network" {
 
 variable "environment" {
   type = object({
-    customerId = string
-    sharedKey  = string
+    law_name                = string
+    law_resource_group_name = string
   })
 }
 

@@ -1,8 +1,3 @@
-output "resource_group" {
-  value       = azurerm_resource_group.runner_rg.name
-  description = "Resource group name"
-}
-
 output "subnet_name" {
   value       = azurerm_subnet.runner_subnet.name
   description = "Subnet name"
@@ -13,9 +8,19 @@ output "subnet_cidr" {
   description = "Subnet CIDR blocks"
 }
 
+output "cae_id" {
+  value       = azurerm_container_app_environment.container_app_environment.id
+  description = "Container App Environment id"
+}
+
 output "cae_name" {
-  value       = azapi_resource.runner_environment.name
+  value       = azurerm_container_app_environment.container_app_environment.name
   description = "Container App Environment name"
+}
+
+output "ca_id" {
+  value       = azapi_resource.runner_job.id
+  description = "Container App job id"
 }
 
 output "ca_name" {

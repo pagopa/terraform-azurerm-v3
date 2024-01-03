@@ -2,11 +2,6 @@ output "random_id" {
   value = random_id.unique.hex
 }
 
-output "resource_group" {
-  value       = module.runner.resource_group
-  description = "Resource group name"
-}
-
 output "subnet_name" {
   value       = module.runner.subnet_name
   description = "Subnet name"

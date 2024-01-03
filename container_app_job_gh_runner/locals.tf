@@ -41,8 +41,8 @@ locals {
       image = var.app.image
       name  = "github-runner-${var.env_short}-${repo}"
       resources = {
-        cpu    = 1.0
-        memory = "2Gi"
+        cpu    = var.vm_size.cpu
+        memory = var.vm_size.memory
       }
     }
   ]

@@ -3,6 +3,11 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
+resource "azurerm_resource_group" "rg_runner" {
+  name     = "${var.prefix}-${local.env_short}-github-runner-rg"
+  location = var.location
+}
+
 #tfsec:ignore:azure-keyvault-specify-network-acl
 #tfsec:ignore:azure-keyvault-no-purge
 resource "azurerm_key_vault" "key_vault" {
@@ -30,7 +35,7 @@ module "runner" {
   prefix    = var.prefix
   env_short = local.env_short # change me with your env
 
-  # set reference to the secret which holds the GitHub PAT with access to your repos
+  # sets reference to the secret which holds the GitHub PAT with access to your repos
   key_vault = {
     resource_group_name = azurerm_key_vault.key_vault.resource_group_name
     name                = azurerm_key_vault.key_vault.name
@@ -44,13 +49,13 @@ module "runner" {
     subnet_cidr_block        = var.network.subnet_cidr_block
   }
 
-  # set reference to the log analytics workspace you want to use for logging
+  # sets reference to the log analytics workspace you want to use for logging
   environment = {
-    customerId = var.environment.customerId
-    sharedKey  = var.environment.sharedKey
+    law_name                = var.environment.law_name
+    law_resource_group_name = var.environment.law_resource_group_name
   }
 
-  # set app properties - especially the list of repos to support
+  # sets app properties - especially the list of repos to support
   app = {
     repos      = var.app.repos
     repo_owner = var.app.repo_owner
