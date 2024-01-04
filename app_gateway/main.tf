@@ -26,9 +26,9 @@ resource "azurerm_application_gateway" "this" {
   }
 
   frontend_ip_configuration {
-    count                         = var.private_ip_address != "" ? 1 : 0
-    name                          = "${var.name}-private-ip-conf"
-    private_ip_address            = var.private_ip_address
+    for_each = var.private_ip_address
+    name                 = "${var.name}-private-ip-conf"
+    private_ip_address   = each.value
     private_ip_address_allocation = "Static"
   }
 
