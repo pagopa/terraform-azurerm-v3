@@ -295,3 +295,9 @@ EOD
 variable "tags" {
   type = map(any)
 }
+
+variable "private_ip_address" {
+  type = string
+  description = "Private frontend ip"
+  default = ""
+}
