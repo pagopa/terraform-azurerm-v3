@@ -58,32 +58,22 @@ variable "environment" {
 variable "app" {
   type = object({
     repo_owner = optional(string, "pagopa")
-    repos      = set(string)
-    image      = optional(string, "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:c7ebe4453578c9df426b793366b8498c030ec0f47f753ea2c685a3c0ec0bb646")
+    containers = set(object({
+      repo   = string
+      cpu    = optional(number, 1.0)
+      memory = optional(string, "2Gi")
+    }))
+    image = optional(string, "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:c7ebe4453578c9df426b793366b8498c030ec0f47f753ea2c685a3c0ec0bb646")
   })
 
   validation {
     condition = (
-      var.app.repos != null && length(var.app.repos) >= 1
+      var.app.containers != null && length(var.app.containers) >= 1
     )
     error_message = "List of repos must supplied"
   }
 
   description = "Container App job configuration"
-}
-
-variable "vm_size" {
-  type = object({
-    cpu    = number
-    memory = string
-  })
-
-  default = {
-    cpu    = 1.0
-    memory = "2Gi"
-  }
-
-  description = "Job VM size"
 }
 
 variable "key_vault" {
