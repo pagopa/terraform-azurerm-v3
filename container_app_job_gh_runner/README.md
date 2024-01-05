@@ -103,7 +103,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_app"></a> [app](#input\_app) | Container App job configuration | <pre>object({<br>    repo_owner = optional(string, "pagopa")<br>    repos      = set(string)<br>    image      = optional(string, "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:c7ebe4453578c9df426b793366b8498c030ec0f47f753ea2c685a3c0ec0bb646")<br>  })</pre> | n/a | yes |
+| <a name="input_app"></a> [app](#input\_app) | Container App job configuration | <pre>object({<br>    repo_owner = optional(string, "pagopa")<br>    containers = set(object({<br>      repo   = string<br>      cpu    = optional(number, 1.0)<br>      memory = optional(string, "2Gi")<br>    }))<br>    image = optional(string, "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:c7ebe4453578c9df426b793366b8498c030ec0f47f753ea2c685a3c0ec0bb646")<br>  })</pre> | n/a | yes |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Container App Environment configuration (Log Analytics Workspace) | <pre>object({<br>    law_name                = string<br>    law_resource_group_name = string<br>  })</pre> | n/a | yes |
 | <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Data of the KeyVault which stores PAT as secret | <pre>object({<br>    resource_group_name = string<br>    name                = string<br>    secret_name         = string<br>  })</pre> | n/a | yes |
@@ -111,7 +111,6 @@ No modules.
 | <a name="input_network"></a> [network](#input\_network) | Existing VNet information and subnet CIDR block to use (must be /23). Optionally specify the subnet name | <pre>object({<br>    vnet_resource_group_name = string<br>    vnet_name                = string<br>    subnet_name              = optional(string, "")<br>    subnet_cidr_block        = string<br>  })</pre> | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Project prefix | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags for new resources | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
-| <a name="input_vm_size"></a> [vm\_size](#input\_vm\_size) | Job VM size | <pre>object({<br>    cpu    = number<br>    memory = string<br>  })</pre> | <pre>{<br>  "cpu": 1,<br>  "memory": "2Gi"<br>}</pre> | no |
 
 ## Outputs
 

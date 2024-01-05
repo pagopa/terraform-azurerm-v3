@@ -55,14 +55,22 @@ variable "environment" {
 
 variable "app" {
   type = object({
-    repos      = optional(set(string))
+    containers = optional(set(object({
+      repo   = string
+      cpu    = number
+      memory = string
+    })))
     repo_owner = string
   })
 
   default = {
     repo_owner = "pagopa"
-    repos = [
-      "terraform-azurerm-v3"
+    containers = [
+      {
+        repo   = "terraform-azurerm-v3"
+        cpu    = 0.25
+        memory = "0.5Gi"
+      }
     ]
   }
 }

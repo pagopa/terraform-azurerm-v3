@@ -57,7 +57,7 @@ module "runner" {
 
   # sets app properties - especially the list of repos to support
   app = {
-    repos      = var.app.repos
+    containers = var.app.containers
     repo_owner = var.app.repo_owner
   }
 
