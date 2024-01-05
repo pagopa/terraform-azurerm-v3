@@ -29,7 +29,7 @@ resource "azurerm_application_gateway" "this" {
     for_each = var.private_ip_address
     iterator = private
     content {
-      name                 = "${var.name}-private-ip-conf"
+      name                 = "${var.name}-private-ip-conf-${private.key}"
       private_ip_address   = private.value
       private_ip_address_allocation = "Static"
     }
