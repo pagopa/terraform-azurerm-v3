@@ -25,6 +25,16 @@ resource "azurerm_application_gateway" "this" {
     public_ip_address_id = var.public_ip_id
   }
 
+  dynamic "frontend_ip_configuration" {
+    for_each = var.private_ip_address
+    iterator = private
+    content {
+      name                 = "${var.name}-private-ip-conf-${private.key}"
+      private_ip_address   = private.value
+      private_ip_address_allocation = "Static"
+    }
+  }
+
   dynamic "backend_address_pool" {
     for_each = var.backends
     iterator = backend
