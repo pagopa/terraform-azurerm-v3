@@ -69,3 +69,19 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
   }
 }
 
+resource "azurerm_monitor_autoscale_setting" "this" {
+  name                = "${var.name}-autoscale"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  target_resource_id  = azurerm_linux_virtual_machine_scale_set.this.id
+
+  profile {
+    name = "${var.name}-autoscale-count"
+
+    capacity {
+      default = var.capacity_default_count
+      maximum = var.capacity_maximum_count
+      minimum = var.capacity_minimum_count
+    }
+  }
+}
