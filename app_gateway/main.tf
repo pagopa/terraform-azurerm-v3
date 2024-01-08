@@ -136,7 +136,7 @@ resource "azurerm_application_gateway" "this" {
 
     content {
       name                           = "${listener.key}-listener"
-      frontend_ip_configuration_name = "${var.name}-ip-conf"
+      frontend_ip_configuration_name = listener.private == true ? "${var.name}-ip-conf-private" : "${var.name}-ip-conf"
       frontend_port_name             = "${var.name}-${listener.value.port}-port"
       protocol                       = "Https"
       ssl_certificate_name           = listener.value.certificate.name
