@@ -297,7 +297,7 @@ variable "tags" {
 }
 
 variable "private_ip_address" {
-  type = list(string)
+  type = string
   description = "Private frontend ip"
-  default = []
+  default = ""
 }
