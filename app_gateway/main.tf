@@ -29,9 +29,10 @@ resource "azurerm_application_gateway" "this" {
     for_each = var.private_ip_address
     iterator = private
     content {
-      name                          = "${var.name}-private-ip-conf-${private.key}"
-      private_ip_address            = private.value
+      name                 = "${var.name}-private-ip-conf"
+      private_ip_address   = private.value
       private_ip_address_allocation = "Static"
+      subnet_id = var.subnet_id
     }
   }
 
@@ -135,7 +136,7 @@ resource "azurerm_application_gateway" "this" {
 
     content {
       name                           = "${listener.key}-listener"
-      frontend_ip_configuration_name = "${var.name}-ip-conf"
+      frontend_ip_configuration_name = listener.value.type == "Private" ? "${var.name}-private-ip-conf" : "${var.name}-ip-conf"
       frontend_port_name             = "${var.name}-${listener.value.port}-port"
       protocol                       = "Https"
       ssl_certificate_name           = listener.value.certificate.name

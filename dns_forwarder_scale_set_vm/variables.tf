@@ -90,6 +90,24 @@ variable "admin_password" {
   default     = null
 }
 
+variable "capacity_default_count" {
+  type        = number
+  description = "(Required) The number of instances that are available for scaling if metrics are not available for evaluation. The default is only used if the current instance count is lower than the default. Valid values are between 0 and 1000"
+  default     = 1
+}
+
+variable "capacity_maximum_count" {
+  type        = number
+  description = "(Required) The maximum number of instances for this resource. Valid values are between 0 and 1000"
+  default     = 1
+}
+
+variable "capacity_minimum_count" {
+  type        = number
+  description = "(Required) The minimum number of instances for this resource. Valid values are between 0 and 1000"
+  default     = 1
+}
+
 variable "tags" {
   type = map(any)
 }
