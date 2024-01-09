@@ -303,6 +303,6 @@ variable "private_ip_address" {
   default = []
   validation {
       condition = length(var.private_ip_address) <= 1
-      error_message = "Privete IP address must contain at most one element"
+      error_message = "Private IP address must contain at most one element"
   }
 }
