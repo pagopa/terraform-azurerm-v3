@@ -21,10 +21,10 @@ module "storage_account_durable_function" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.4.0"
 
   name                          = coalesce(var.storage_account_durable_name, format("%ssdt", replace(var.name, "-", "")))
-  account_kind                  = var.internal_storage_account_info ? var.internal_storage_account_info.account_kind : var.storage_account_info.account_kind
-  account_tier                  = var.internal_storage_account_info ? var.internal_storage_account_info.account_tier : var.storage_account_info.account_tier
-  account_replication_type      = var.internal_storage_account_info ? var.internal_storage_account_info.account_replication_type : var.storage_account_info.account_replication_type
-  access_tier                   = var.internal_storage_account_info ? var.internal_storage_account_info.account_kind != "Storage" ? var.internal_storage_account_info.access_tier : null : var.storage_account_info.account_kind != "Storage" ? var.storage_account_info.access_tier : null
+  account_kind                  = var.internal_storage_account_info != null ? var.internal_storage_account_info.account_kind : var.storage_account_info.account_kind
+  account_tier                  = var.internal_storage_account_info != null ? var.internal_storage_account_info.account_tier : var.storage_account_info.account_tier
+  account_replication_type      = var.internal_storage_account_info != null ? var.internal_storage_account_info.account_replication_type : var.storage_account_info.account_replication_type
+  access_tier                   = var.internal_storage_account_info != null ? var.internal_storage_account_info.account_kind != "Storage" ? var.internal_storage_account_info.access_tier : null : var.storage_account_info.account_kind != "Storage" ? var.storage_account_info.access_tier : null
   resource_group_name           = var.resource_group_name
   location                      = var.location
   advanced_threat_protection    = false
