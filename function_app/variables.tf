@@ -59,7 +59,7 @@ variable "storage_account_info" {
   }
 }
 
-variable "durable_storage_account_info" {
+variable "internal_storage_account_info" {
   type = object({
     account_kind                      = string # Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Changing this forces a new resource to be created. Defaults to Storage.
     account_tier                      = string # Defines the Tier to use for this storage account. Valid options are Standard and Premium. For BlockBlobStorage and FileStorage accounts only Premium is valid.
