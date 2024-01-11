@@ -1,27 +1,13 @@
-locals {
-  template_content = templatefile("${path.module}/template.json", {
-    location                  = var.location
-    name                      = var.name
-    sku_name                  = var.sku_name
-    vnet_internal             = var.vnet_internal
-    subnet_id                 = var.subnet_id
-    outbound_type             = var.outbound_type
-    log_destination           = var.log_destination
-    log_analytics_customer_id = var.log_analytics_customer_id
-    log_analytics_shared_key  = var.log_analytics_shared_key
-    zone_redundant            = var.zone_redundant
-  })
-}
-
-resource "azurerm_resource_group_template_deployment" "this" {
+resource "azurerm_container_app_environment" "container_app_environment" {
   name                = var.name
+  location            = var.location
   resource_group_name = var.resource_group_name
 
-  template_content         = local.template_content
-  template_spec_version_id = null
-  debug_level              = var.debug_level
+  log_analytics_workspace_id = var.log_analytics_workspace_id
 
-  deployment_mode = "Incremental"
+  infrastructure_subnet_id       = var.subnet_id == null ? null : var.subnet_id
+  zone_redundancy_enabled        = var.subnet_id == null ? null : var.zone_redundant
+  internal_load_balancer_enabled = var.subnet_id == null ? null : var.internal_load_balancer
 
   tags = var.tags
 }

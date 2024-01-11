@@ -13,53 +13,28 @@ variable "location" {
   description = "Resource location."
 }
 
-variable "sku_name" {
-  type        = string
-  description = "Sku type, at the moment only allowed value is Consumption"
-  default     = "Consumption"
-}
-
-variable "vnet_internal" {
-  type        = bool
-  description = "Virtual network integration"
-}
-
 variable "subnet_id" {
   type        = string
-  description = "Subnet id if container environment is in a virtual network"
-}
+  description = "(Optional) Subnet id if the environment is in a custom virtual network"
 
-variable "outbound_type" {
-  type        = string
-  description = "Outbound connectivity type, at the moment only allowed value is LoadBalancer"
-  default     = "LoadBalancer"
-}
-
-variable "log_destination" {
-  type        = string
-  description = "How to send container environment logs"
-  # default = "log-analytics"
-}
-
-variable "log_analytics_customer_id" {
-  type        = string
-  description = "Workspace ID if log_destination is log-analytics type"
-}
-
-variable "log_analytics_shared_key" {
-  type        = string
-  description = "Workspace ID if log_destination is log-analytics type"
+  default = null
 }
 
 variable "zone_redundant" {
   type        = bool
-  description = "Deploy multi zone container environment"
+  description = "Deploy multi zone environment. Can be true only if a subnet_id is provided"
+  default     = false
 }
 
-variable "debug_level" {
+variable "internal_load_balancer" {
+  type        = bool
+  description = "Internal Load Balancing Mode. Can be true only if a subnet_id is provided"
+  default     = false
+}
+
+variable "log_analytics_workspace_id" {
   type        = string
-  description = "(Optional) The Debug Level which should be used for this Resource Group Template Deployment. Possible values are none, requestContent, responseContent and requestContent, responseContent."
-  default     = null
+  description = "Log Analytics Workspace resource id"
 }
 
 variable "tags" {
