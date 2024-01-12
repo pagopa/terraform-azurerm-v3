@@ -5,7 +5,6 @@ set -e
 action=$1
 shift 1
 other=$@
-
 subscription="MOCK_VALUE"
 
 case $action in
