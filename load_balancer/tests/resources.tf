@@ -103,6 +103,7 @@ module "lb_private" {
       ips = [
         {
           ip      = "10.0.0.11"
+          type    = "vmss"
           vnet_id = azurerm_virtual_network.this.id
         }
       ]

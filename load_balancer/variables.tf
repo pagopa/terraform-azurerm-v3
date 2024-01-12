@@ -100,6 +100,7 @@ variable "lb_backend_pools" {
       ips = list(object(
         {
           ip      = string
+          type    = optional(string)
           vnet_id = string
       }))
   }))
