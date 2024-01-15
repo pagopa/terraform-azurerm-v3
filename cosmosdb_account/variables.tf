@@ -140,15 +140,33 @@ variable "private_endpoint_sql_name" {
   default     = null
 }
 
+variable "private_service_connection_sql_name" {
+  type        = string
+  description = "Private service connection name. If null, it will assume the cosmos db account name"
+  default     = null
+}
+
 variable "private_endpoint_mongo_name" {
   type        = string
   description = "Private endpoint name. If null it will assume the cosmosdb account name."
   default     = null
 }
 
+variable "private_service_connection_mongo_name" {
+  type        = string
+  description = "Private service connection name. If null, it will assume the cosmos db account name"
+  default     = null
+}
+
 variable "private_endpoint_cassandra_name" {
   type        = string
   description = "Private endpoint name. If null it will assume the cosmosdb account name."
+  default     = null
+}
+
+variable "private_service_connection_cassandra_name" {
+  type        = string
+  description = "Private service connection name. If null, it will assume the cosmos db account name"
   default     = null
 }
 
