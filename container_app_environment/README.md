@@ -1,4 +1,6 @@
-# Container app environment
+# Container app environment (deprecated)
+
+**This module has been deprecated. Please, use `container_app_environment_v2`**
 
 This resource allow the creation of a Container app environment
 
