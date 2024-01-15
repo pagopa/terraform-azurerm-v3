@@ -94,7 +94,7 @@ resource "azurerm_private_endpoint" "sql" {
   subnet_id           = var.subnet_id
 
   private_service_connection {
-    name                           = coalesce(var.private_endpoint_sql_name, format("%s-private-endpoint-sql", var.name))
+    name                           = coalesce(var.private_service_connection_sql_name, format("%s-private-endpoint-sql", var.name))
     private_connection_resource_id = azurerm_cosmosdb_account.this.id
     is_manual_connection           = false
     subresource_names              = ["Sql"]
@@ -118,7 +118,7 @@ resource "azurerm_private_endpoint" "mongo" {
   subnet_id           = var.subnet_id
 
   private_service_connection {
-    name                           = coalesce(var.private_endpoint_mongo_name, format("%s-private-endpoint-mongo", var.name))
+    name                           = coalesce(var.private_service_connection_mongo_name, format("%s-private-endpoint-mongo", var.name))
     private_connection_resource_id = azurerm_cosmosdb_account.this.id
     is_manual_connection           = false
     subresource_names              = ["MongoDB"]
@@ -142,7 +142,7 @@ resource "azurerm_private_endpoint" "cassandra" {
   subnet_id           = var.subnet_id
 
   private_service_connection {
-    name                           = coalesce(var.private_endpoint_cassandra_name, format("%s-private-endpoint-cassandra", var.name))
+    name                           = coalesce(var.private_service_connection_cassandra_name, format("%s-private-endpoint-cassandra", var.name))
     private_connection_resource_id = azurerm_cosmosdb_account.this.id
     is_manual_connection           = false
     subresource_names              = ["Cassandra"]
