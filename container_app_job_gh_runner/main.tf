@@ -1,46 +1,8 @@
-data "azurerm_resource_group" "runner_rg" {
-  name = local.resource_group_name
-}
-
-data "azurerm_key_vault" "key_vault" {
-  resource_group_name = var.key_vault.resource_group_name
-  name                = var.key_vault.name
-}
-
-data "azurerm_log_analytics_workspace" "law" {
-  name                = var.environment.law_name
-  resource_group_name = var.environment.law_resource_group_name
-}
-
-resource "azurerm_subnet" "runner_subnet" {
-  name                 = var.network.subnet_name == "" ? "${local.name}-github-runner-snet" : var.network.subnet_name
-  resource_group_name  = var.network.vnet_resource_group_name
-  virtual_network_name = var.network.vnet_name
-  address_prefixes     = ["${var.network.subnet_cidr_block}"]
-  service_endpoints = [
-    "Microsoft.Web"
-  ]
-}
-
-resource "azurerm_container_app_environment" "container_app_environment" {
-  name                = "${local.name}-github-runner-cae"
-  location            = data.azurerm_resource_group.runner_rg.location
-  resource_group_name = data.azurerm_resource_group.runner_rg.name
-
-  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.law.id
-
-  infrastructure_subnet_id       = azurerm_subnet.runner_subnet.id
-  internal_load_balancer_enabled = true
-  zone_redundancy_enabled        = true
-
-  tags = var.tags
-}
-
-resource "azapi_resource" "runner_job" {
+resource "azapi_resource" "container_app_job" {
   type      = "Microsoft.App/jobs@2023-05-01"
-  name      = "${local.name}-github-runner-job"
-  location  = data.azurerm_resource_group.runner_rg.location
-  parent_id = data.azurerm_resource_group.runner_rg.id
+  name      = "${local.project}-${var.job.name}-ca-job"
+  location  = data.azurerm_container_app_environment.container_app_environment.location
+  parent_id = data.azurerm_resource_group.rg_runner.id
 
   tags = var.tags
 
@@ -50,7 +12,7 @@ resource "azapi_resource" "runner_job" {
 
   body = jsonencode({
     properties = {
-      environmentId = azurerm_container_app_environment.container_app_environment.id
+      environmentId = data.azurerm_container_app_environment.container_app_environment.id
       configuration = {
         replicaRetryLimit = 1
         replicaTimeout    = 1800
@@ -58,10 +20,10 @@ resource "azapi_resource" "runner_job" {
           parallelism            = 1
           replicaCompletionCount = 1
           scale = {
-            maxExecutions   = 10
+            maxExecutions   = var.job.scale_max_executions
             minExecutions   = 0
-            pollingInterval = 20
-            rules           = local.rules
+            pollingInterval = var.job.polling_interval
+            rules           = [local.rule]
           }
         }
         secrets = [{
@@ -72,7 +34,7 @@ resource "azapi_resource" "runner_job" {
         triggerType = "Event"
       }
       template = {
-        containers = local.containers
+        containers = [local.container]
       }
     }
   })
@@ -80,10 +42,10 @@ resource "azapi_resource" "runner_job" {
 
 resource "azurerm_key_vault_access_policy" "keyvault_containerapp" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
-  tenant_id    = azapi_resource.runner_job.identity[0].tenant_id
-  object_id    = azapi_resource.runner_job.identity[0].principal_id
+  tenant_id    = azapi_resource.container_app_job.identity[0].tenant_id
+  object_id    = azapi_resource.container_app_job.identity[0].principal_id
 
   secret_permissions = [
-    "Get"
+    "Get",
   ]
 }
