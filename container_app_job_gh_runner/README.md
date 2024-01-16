@@ -1,6 +1,6 @@
 # Azure Container App Job as GitHub Runners
 
-This module creates the infrastructure to host GitHub self hosted runners using Azure Container Apps jobs and can be used by GitHub repositories which need access to private resources on Azure.
+This module creates the infrastructure to host GitHub self hosted runners using Azure Container Apps Jobs and can be used by GitHub repositories which need access to private resources on Azure.
 
 - [Azure Container App Job as GitHub Runners](#azure-container-app-job-as-github-runners)
   - [How to use it](#how-to-use-it)
@@ -19,22 +19,16 @@ This module creates the infrastructure to host GitHub self hosted runners using 
 
 ### Requirements
 
-Before using the module, developer needs the following existing resources:
+Before using this module, ensure the following resources exist:
 
-- a resource group for the Container App Environment named `<prefix>-<short_env>-github-runner-rg`
-- a VNet
 - a KeyVault
-- a Log Analytics Workspace
-- a secret in the mentioned KeyVault containing a GitHub PAT with access to the desired repos
-  - PATs can be generated using [`bot` GitHub users](https://pagopa.atlassian.net/wiki/spaces/DEVOPS/pages/466716501/Github+-+bots+for+projects). An Admin must approve the request
-  - PATs have an expiration date
+  - with a secret `github-runner-pat` containing a GitHub PAT with access to the desired repos. PATs can be generated using [`bot` GitHub users](https://pagopa.atlassian.net/wiki/spaces/DEVOPS/pages/466716501/Github+-+bots+for+projects). An Admin must approve the request
+- a Container App Environment
 
 ### What the module does
 
 The module creates:
 
-- a subnet (`/23`) in the specified VNet
-- a Container App Environment in that subnet with the name `<prefix>-<short_env>-github-runner-snet` (name is overridable)
 - a Container App job with the name `<prefix>-<short_env>-github-runner-job`
 - a role assignment to allow the Container App Job to read secrets from the existing KeyVault (`Get` permission over KeyVault's secrets access policies)
 
@@ -45,25 +39,27 @@ Give a try to the example saved in `terraform-azurerm-v3/container_app_job_gh_ru
 ## Design
 
 A Container App Job scales containers (jobs) based on event-driven rules (KEDA). A Container App Job might have multiple containers, each of them with different properties (VM size, secrets, images, volumes, etc.).
-To support GitHub Actions, you need to use `github-runner` [scale rule](https://keda.sh/docs/2.12/scalers/github-runner/) with these metadata:
+To watch out for GitHub Actions, you need to use `github-runner` [scale rule](https://keda.sh/docs/2.12/scalers/github-runner/) with these metadata:
 
 - owner: `pagopa`
 - runnerScope: `repo`
-  - most tighten
+  - it's the most tighten scope
 - repos: *the repository* you want to support
-  - it supports multiple repositories but this module is designed to have a 1:1 match between containers and repositories
+  - it supports multiple repositories but this module is designed to have a 1:1 match between jobs and repositories
 - targetWorkflowQueueLength: `1`
   - indicates how many job requests are necessary to trigger the container
-- labels: the job name
-  - field is optional but useful to apply the event-driven rule to a single container and not to the entire Container App Job
 
-With the above settings, the scale rules start to poll the GitHub repositories (be careful to quota limits). When a job request is detected, it launches the container indicated in the `labels` metadata.
+With the above settings, the scale rules start to poll the GitHub repositories (be careful to quota limits). When a job request is detected, it starts the container.
 
-Containers needs these environment variables to connect to GitHub, [grab a registration token and register themself as runners](https://github.com/pagopa/github-self-hosted-runner-azure/blob/dockerfile-v2/github-runner-entrypoint.sh):
+During the startup, the container [grabs a registration token and registers itself as runners](https://github.com/pagopa/github-self-hosted-runner-azure/blob/dockerfile-v2/github-runner-entrypoint.sh) in the target repo. In order to complete these actions, it needs these environment variables:
 
 - GITHUB_PAT: reference to the KeyVault secret (no Kubernetes secrets are used)
 - REPO_URL: GitHub repo URL
 - REGISTRATION_TOKEN_API_URL: [GitHub API](https://docs.github.com/en/rest/actions/self-hosted-runners?apiVersion=2022-11-28#create-a-registration-token-for-a-repository) to get the registration token
+
+These variables are set by the module.
+
+Bear in mind you need to create a Container App Job for each repository you want to support.
 
 ### Notes
 
