@@ -153,8 +153,8 @@ variable "rewrite_rule_sets" {
       }))
 
       url = optional(object({
-        path         = string # The URL path to rewrite.
-        query_string = string # The query string to rewrite.
+        path         = optional(string) # The URL path to rewrite.
+        query_string = optional(string) # The query string to rewrite.
       }))
 
     }))
