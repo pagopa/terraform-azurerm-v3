@@ -131,7 +131,7 @@ resource "azurerm_application_gateway" "this" {
   }
 
   dynamic "http_listener" {
-    for_each = var.listeners
+    for_each = { for key, listener in var.listeners : key => listener }
     iterator = listener
 
     content {
