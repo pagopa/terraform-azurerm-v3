@@ -58,6 +58,12 @@ variable "authentication_type" {
   default     = "SSH"
 }
 
+variable "load_balancer_backend_address_pool_ids" {
+  type        = list(string)
+  description = "(Optional) A list of Backend Address Pools ID's from a Load Balancer which this Virtual Machine Scale Set should be connected to."
+  default     = null
+}
+
 variable "capacity_default_count" {
   type        = number
   description = "(Optional) The number of instances that are available for scaling if metrics are not available for evaluation. The default is only used if the current instance count is lower than the default. Valid values are between 0 and 1000"

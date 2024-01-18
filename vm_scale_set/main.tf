@@ -71,9 +71,10 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
     primary = true
 
     ip_configuration {
-      name      = "${var.name}-IPc"
-      primary   = true
-      subnet_id = var.subnet_id
+      name                                   = "${var.name}-IPc"
+      primary                                = true
+      subnet_id                              = var.subnet_id
+      load_balancer_backend_address_pool_ids = var.load_balancer_backend_address_pool_ids
     }
   }
   platform_fault_domain_count = 1

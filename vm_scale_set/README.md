@@ -54,6 +54,7 @@ No modules.
 | <a name="input_capacity_maximum_count"></a> [capacity\_maximum\_count](#input\_capacity\_maximum\_count) | (Optional) The maximum number of instances for this resource. Valid values are between 0 and 1000 | `number` | `1` | no |
 | <a name="input_capacity_minimum_count"></a> [capacity\_minimum\_count](#input\_capacity\_minimum\_count) | (Optional) The minimum number of instances for this resource. Valid values are between 0 and 1000 | `number` | `1` | no |
 | <a name="input_encryption_set_id"></a> [encryption\_set\_id](#input\_encryption\_set\_id) | (Optional) An existing encryption set | `string` | `null` | no |
+| <a name="input_load_balancer_backend_address_pool_ids"></a> [load\_balancer\_backend\_address\_pool\_ids](#input\_load\_balancer\_backend\_address\_pool\_ids) | (Optional) A list of Backend Address Pools ID's from a Load Balancer which this Virtual Machine Scale Set should be connected to. | `list(string)` | `null` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the Virtual Machine Scale Set. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The name of the Resource Group in which the resources should be exist. | `string` | n/a | yes |
