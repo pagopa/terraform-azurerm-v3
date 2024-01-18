@@ -152,10 +152,10 @@ variable "rewrite_rule_sets" {
         header_value = string # Header value of the header configuration. To delete a response header set this property to an empty string.
       }))
 
-      url = object({
+      url = optional(object({
         path         = string # The URL path to rewrite.
         query_string = string # The query string to rewrite.
-      })
+      }))
 
     }))
   }))
