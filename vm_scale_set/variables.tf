@@ -54,8 +54,8 @@ variable "encryption_set_id" {
 
 variable "authentication_type" {
   type        = string
-  description = "(Optional) Type of authentication to use with the VM. Defaults to password for Windows and SSH public key for Linux. all enables both ssh and password authentication."
-  default     = null
+  description = "(Optional) Type of authentication to use with the VM."
+  default     = "SSH"
 }
 
 variable "capacity_default_count" {

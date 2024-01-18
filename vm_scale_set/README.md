@@ -14,7 +14,6 @@ module "vmss" {
   name                = var.name
   resource_group_name = data.azurerm_resource_group.rg_vnet_core.name
   subnet_id           = var.subnet_id
-  subscription_name   = data.azurerm_subscription.current.display_name
   subscription_id     = data.azurerm_subscription.current.subscription_id
   location            = var.location
   source_image_name   = "${local.product}-ubuntu2204-image-v4"
@@ -50,7 +49,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_admin_password"></a> [admin\_password](#input\_admin\_password) | (Optional) The Password which should be used for the local-administrator on this Virtual Machine. Changing this forces a new resource to be created. will be stored in the raw state as plain-text | `string` | `null` | no |
-| <a name="input_authentication_type"></a> [authentication\_type](#input\_authentication\_type) | (Optional) Type of authentication to use with the VM. Defaults to password for Windows and SSH public key for Linux. all enables both ssh and password authentication. | `string` | `null` | no |
+| <a name="input_authentication_type"></a> [authentication\_type](#input\_authentication\_type) | (Optional) Type of authentication to use with the VM. | `string` | `"SSH"` | no |
 | <a name="input_capacity_default_count"></a> [capacity\_default\_count](#input\_capacity\_default\_count) | (Optional) The number of instances that are available for scaling if metrics are not available for evaluation. The default is only used if the current instance count is lower than the default. Valid values are between 0 and 1000 | `number` | `1` | no |
 | <a name="input_capacity_maximum_count"></a> [capacity\_maximum\_count](#input\_capacity\_maximum\_count) | (Optional) The maximum number of instances for this resource. Valid values are between 0 and 1000 | `number` | `1` | no |
 | <a name="input_capacity_minimum_count"></a> [capacity\_minimum\_count](#input\_capacity\_minimum\_count) | (Optional) The minimum number of instances for this resource. Valid values are between 0 and 1000 | `number` | `1` | no |
