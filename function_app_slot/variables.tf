@@ -125,8 +125,14 @@ variable "health_check_path" {
 }
 
 variable "health_check_maxpingfailures" {
-  type    = number
-  default = 10
+  type        = number
+  description = "Max ping failures allowed"
+  default     = 10
+
+  validation {
+    condition     = var.health_check_maxpingfailures == null ? true : (var.health_check_maxpingfailures >= 2 && var.health_check_maxpingfailures <= 10)
+    error_message = "Possible values are null or a number between 2 and 10"
+  }
 }
 
 variable "export_keys" {
