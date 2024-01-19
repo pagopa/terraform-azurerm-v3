@@ -148,7 +148,7 @@ resource "azurerm_application_gateway" "this" {
   }
 
   dynamic "request_routing_rule" {
-    for_each = { for key, route in var.listeners : key => route }
+    for_each = { for key, route in var.routes : key => route }
     iterator = route
 
     content {
@@ -186,7 +186,7 @@ resource "azurerm_application_gateway" "this" {
   }
 
   dynamic "request_routing_rule" {
-    for_each = { for key, route in var.listeners : key => route }
+    for_each = { for key, route in var.routes : key => route }
     iterator = route
 
     content {
@@ -202,7 +202,7 @@ resource "azurerm_application_gateway" "this" {
   }
 
   dynamic "rewrite_rule_set" {
-    for_each = { for key, rule_set in var.listeners : key => rule_set }
+    for_each = { for key, rule_set in var.rewrite_rule_sets : key => rule_set }
     iterator = rule_set
     content {
       name = rule_set.value.name
