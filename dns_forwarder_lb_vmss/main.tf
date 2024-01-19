@@ -153,6 +153,8 @@ module "vmss" {
   load_balancer_backend_address_pool_ids = module.lb.azurerm_lb_backend_address_pool_id
   authentication_type                    = "PASSWORD"
   admin_password                         = random_password.psw.result
+  vm_sku                                 = var.vm_sku
+  storage_sku                            = var.storage_sku
   tags                                   = var.tags
 }
 

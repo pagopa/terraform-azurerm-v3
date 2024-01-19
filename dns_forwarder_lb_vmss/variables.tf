@@ -81,44 +81,6 @@ variable "storage_sku" {
   default     = "StandardSSD_LRS"
 }
 
-variable "encryption_set_id" {
-  type        = string
-  description = "(Optional) An existing encryption set"
-  default     = null
-}
-
-variable "authentication_type" {
-  type        = string
-  description = "(Required) Type of authentication to use with the VM. Defaults to password for Windows and SSH public key for Linux. all enables both ssh and password authentication."
-  default     = "SSH"
-  validation {
-    condition = (
-      var.authentication_type == "SSH" ||
-      var.authentication_type == "PASSWORD" ||
-      var.authentication_type == "ALL"
-    )
-    error_message = "Error: authentication_type can be SSH, PASSWORD or ALL."
-  }
-}
-
-variable "capacity_default_count" {
-  type        = number
-  description = "(Optional) The number of instances that are available for scaling if metrics are not available for evaluation. The default is only used if the current instance count is lower than the default. Valid values are between 0 and 1000"
-  default     = 1
-}
-
-variable "capacity_maximum_count" {
-  type        = number
-  description = "(Optional) The maximum number of instances for this resource. Valid values are between 0 and 1000"
-  default     = 1
-}
-
-variable "capacity_minimum_count" {
-  type        = number
-  description = "(Optional) The minimum number of instances for this resource. Valid values are between 0 and 1000"
-  default     = 1
-}
-
 variable "tags" {
   description = "(Required) Tags of all resources."
   type        = map(any)
