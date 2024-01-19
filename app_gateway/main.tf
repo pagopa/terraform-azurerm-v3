@@ -148,7 +148,7 @@ resource "azurerm_application_gateway" "this" {
   }
 
   dynamic "request_routing_rule" {
-    for_each = { for key, route in var.routes : key => route }
+    for_each = { for key, route in var.routes_path_based : key => route }
     iterator = route
 
     content {
