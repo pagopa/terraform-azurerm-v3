@@ -44,7 +44,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
   admin_password      = var.admin_password
   tags                = var.tags
 
-
   # only one of source_image_id and source_image_reference is allowed
   source_image_id = local.source_image_id
 
