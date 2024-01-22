@@ -61,10 +61,11 @@ module "dns_forwarder" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_address_prefixes_lb"></a> [address\_prefixes\_lb](#input\_address\_prefixes\_lb) | (Optional) The address prefixes to use for load balancer subnet. | `string` | `"10.1.200.0/29"` | no |
-| <a name="input_address_prefixes_vmss"></a> [address\_prefixes\_vmss](#input\_address\_prefixes\_vmss) | (Optional) The address prefixes to use for the virtual machine scale set subnet. | `string` | `"10.1.200.9/29"` | no |
+| <a name="input_address_prefixes_vmss"></a> [address\_prefixes\_vmss](#input\_address\_prefixes\_vmss) | (Optional) The address prefixes to use for the virtual machine scale set subnet. | `string` | `"10.1.200.8/29"` | no |
 | <a name="input_admin_password"></a> [admin\_password](#input\_admin\_password) | (Optional) The Password which should be used for the local-administrator on this Virtual Machine. Changing this forces a new resource to be created. will be stored in the raw state as plain-text | `string` | `null` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the Virtual Machine Scale Set, Load Balancer. Changing this forces a new resource to be created. | `string` | n/a | yes |
+| <a name="input_object_id_group_ad"></a> [object\_id\_group\_ad](#input\_object\_id\_group\_ad) | (Optional) The ID of the group object that can read/write access to the kv. | `string` | `null` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The name of the Resource Group in which the resources should be exist. | `string` | n/a | yes |
 | <a name="input_source_image_name"></a> [source\_image\_name](#input\_source\_image\_name) | (Required) The name of an Image which each Virtual Machine in this Scale Set should be based on. It must be stored in the same subscription & resource group of this resource | `string` | n/a | yes |
 | <a name="input_static_address_lb"></a> [static\_address\_lb](#input\_static\_address\_lb) | (Optional) The static address of load balancer. | `string` | `null` | no |

@@ -33,7 +33,7 @@ variable "subnet_lb_id" {
 variable "address_prefixes_vmss" {
   type        = string
   description = "(Optional) The address prefixes to use for the virtual machine scale set subnet."
-  default     = "10.1.200.9/29"
+  default     = "10.1.200.8/29"
 }
 
 variable "address_prefixes_lb" {
@@ -72,6 +72,12 @@ variable "vm_sku" {
 variable "admin_password" {
   type        = string
   description = "(Optional) The Password which should be used for the local-administrator on this Virtual Machine. Changing this forces a new resource to be created. will be stored in the raw state as plain-text"
+  default     = null
+}
+
+variable "object_id_group_ad" {
+  type        = string
+  description = "(Optional) The ID of the group object that can read/write access to the kv."
   default     = null
 }
 

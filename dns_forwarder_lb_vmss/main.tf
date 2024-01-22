@@ -60,7 +60,7 @@ resource "azurerm_network_security_group" "vmss" {
     source_port_range          = "53"
     destination_port_range     = "53"
     source_address_prefix      = "VirtualNetwork"
-    destination_address_prefix = "168.63.129.16"
+    destination_address_prefix = "168.63.129.16" # https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16
   }
 
   security_rule {
@@ -72,7 +72,7 @@ resource "azurerm_network_security_group" "vmss" {
     source_port_range          = "53"
     destination_port_range     = "53"
     source_address_prefix      = "VirtualNetwork"
-    destination_address_prefix = "168.63.129.16"
+    destination_address_prefix = "168.63.129.16" # https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16
   }
 
   security_rule {
@@ -165,11 +165,12 @@ module "vmss" {
 module "key_vault" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//key_vault?ref=v7.47.0"
 
-  name                = local.prefix
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  tenant_id           = var.tenant_id
-  tags                = var.tags
+  name                      = local.prefix
+  resource_group_name       = var.resource_group_name
+  location                  = var.location
+  tenant_id                 = var.tenant_id
+  terraform_cloud_object_id = var.object_id_group_ad
+  tags                      = var.tags
 }
 
 resource "random_password" "psw" {
@@ -184,4 +185,6 @@ resource "azurerm_key_vault_secret" "psw_vmss" {
   value        = random_password.psw.result
   content_type = "text/plain"
   key_vault_id = module.key_vault.id
+
+  depends_on = [module.key_vault]
 }
