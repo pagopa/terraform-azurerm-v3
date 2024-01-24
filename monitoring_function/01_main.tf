@@ -42,6 +42,24 @@ resource "azurerm_storage_table" "table_storage" {
 }
 
 
+resource "azurerm_storage_table_entity" "monitoring_configuration" {
+  storage_account_name = module.synthetic_monitoring_storage_account.name
+  table_name           = azurerm_storage_table.table_storage.name
+
+  partition_key = "microservice"
+  row_key       = "aks_ingress"
+  entity = {
+        "url"  =  "https://dev01.blueprint.internal.devopslab.pagopa.it/blueprint/v5-java-helm-complete-test/",
+        "type" = "private",
+        "checkCertificate" ? true,
+        "method" = "GET",
+        "expectedCodes": ["200-299", "303"],
+        "tags" = {
+            "description": "AKS ingress tested from internal network"
+        }
+  }
+}
+
 resource "azurerm_private_endpoint" "synthetic_monitoring_storage_private_endpoint" {
   count = var.use_storage_private_endpoint ? 1 : 0
 
