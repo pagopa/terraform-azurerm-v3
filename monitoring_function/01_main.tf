@@ -43,21 +43,21 @@ resource "azurerm_storage_table" "table_storage" {
 
 
 resource "azurerm_storage_table_entity" "monitoring_configuration" {
-  for_each = var.monitoring_configuration
+  count = length(var.monitoring_configuration)
   storage_account_name = module.synthetic_monitoring_storage_account.name
   table_name           = azurerm_storage_table.table_storage.name
 
-  partition_key = each.value.appName
-  row_key       = each.value.apiName
+  partition_key = var.monitoring_configuration[count.index].appName
+  row_key       = var.monitoring_configuration[count.index].apiName
   entity = {
-        "url"  =  each.value.url,
-        "type" = each.value.type,
-        "checkCertificate" = each.value.checkCertificate,
-        "method" = each.value.method,
-        "expectedCodes" = jsonencode(each.value.expectedCodes),
-        "headers" = jsonencode(each.value.headers),
-        "body"   = each.value.body
-        "tags" = jsonencode(each.value.tags)
+        "url"  =  var.monitoring_configuration[count.index].url,
+        "type" = var.monitoring_configuration[count.index].type,
+        "checkCertificate" = var.monitoring_configuration[count.index].checkCertificate,
+        "method" = var.monitoring_configuration[count.index].method,
+        "expectedCodes" = jsonencode(var.monitoring_configuration[count.index].expectedCodes),
+        "headers" = jsonencode(var.monitoring_configuration[count.index].headers),
+        "body"   = var.monitoring_configuration[count.index].body
+        "tags" = jsonencode(var.monitoring_configuration[count.index].tags)
 
   }
 }
