@@ -117,7 +117,20 @@ resource "azapi_resource" "monitoring_app_job" {
               {
                 name  = "APP_INSIGHT_CONNECTION_STRING"
                 value = var.app_insight_connection_string
+              },
+              {
+                name  = "STORAGE_ACCOUNT_NAME"
+                value = module.synthetic_monitoring_storage_account.name
+              },
+              {
+                name  = "STORAGE_ACCOUNT_KEY"
+                value = module.synthetic_monitoring_storage_account.primary_access_key
+              },
+              {
+                name  = "STORAGE_ACCOUNT_TABLE_NAME"
+                value = azurerm_storage_table.table_storage.name
               }
+
             ]
             image = "${var.registry_url}/${var.monitoring_image_name}:${var.monitoring_image_tag}"
             name  = "synthetic-monitoring"
