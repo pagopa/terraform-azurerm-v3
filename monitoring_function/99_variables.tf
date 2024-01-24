@@ -125,3 +125,19 @@ variable "container_app_environment_id" {
 }
 
 
+variable "monitoring_configuration" {
+  type = set(object({
+    appName = string
+    apiName = string
+    url = string
+    type = string
+    checkCertificate = bool
+    method = string
+    expectedCodes = list(string)
+    tags = object({})
+    headers = optional(object({}), null)
+    body = optional(string, null)
+
+  }))
+}
+
