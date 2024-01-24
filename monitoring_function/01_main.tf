@@ -51,7 +51,7 @@ resource "azurerm_storage_table_entity" "monitoring_configuration" {
   entity = {
         "url"  =  "https://dev01.blueprint.internal.devopslab.pagopa.it/blueprint/v5-java-helm-complete-test/",
         "type" = "private",
-        "checkCertificate" ? true,
+        "checkCertificate" = true,
         "method" = "GET",
         "expectedCodes": ["200-299", "303"],
         "tags" = {
