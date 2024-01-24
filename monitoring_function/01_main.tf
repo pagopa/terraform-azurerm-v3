@@ -56,7 +56,7 @@ resource "azurerm_storage_table_entity" "monitoring_configuration" {
         "method" = var.monitoring_configuration[count.index].method,
         "expectedCodes" = jsonencode(var.monitoring_configuration[count.index].expectedCodes),
         "headers" = jsonencode(var.monitoring_configuration[count.index].headers),
-        "body"   = var.monitoring_configuration[count.index].body
+        "body"   = var.monitoring_configuration[count.index].body_object != null ? var.monitoring_configuration[count.index].body_object : var.monitoring_configuration[count.index].body_string
         "tags" = jsonencode(var.monitoring_configuration[count.index].tags)
 
   }

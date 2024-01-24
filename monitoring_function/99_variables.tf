@@ -136,7 +136,8 @@ variable "monitoring_configuration" {
     expectedCodes = list(string)
     tags = object({})
     headers = optional(object({}), {})
-    body = optional(string, "")
+    body_object = optional(object({}), null)
+    body_string = optional(string, null)
 
   }))
 }
