@@ -135,8 +135,8 @@ variable "monitoring_configuration" {
     method = string
     expectedCodes = list(string)
     tags = object({})
-    headers = optional(object({}), null)
-    body = optional(string, null)
+    headers = optional(object({}), {})
+    body = optional(string, "")
 
   }))
 }
