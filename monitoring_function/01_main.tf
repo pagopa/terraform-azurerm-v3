@@ -53,10 +53,10 @@ resource "azurerm_storage_table_entity" "monitoring_configuration" {
         "type" = "private",
         "checkCertificate" = true,
         "method" = "GET",
-        "expectedCodes": ["200-299", "303"],
-        "tags" = {
+        "expectedCodes" = jsonencode(["200-299", "303"]),
+        "tags" = jsonencode({
             "description": "AKS ingress tested from internal network"
-        }
+        })
   }
 }
 
