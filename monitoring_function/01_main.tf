@@ -36,6 +36,12 @@ module "synthetic_monitoring_storage_account" {
 }
 
 
+resource "azurerm_storage_table" "table_storage" {
+  name                 = "monitoringconfiguration"
+  storage_account_name = module.synthetic_monitoring_storage_account.name
+}
+
+
 resource "azurerm_private_endpoint" "synthetic_monitoring_storage_private_endpoint" {
   count = var.use_storage_private_endpoint ? 1 : 0
 
