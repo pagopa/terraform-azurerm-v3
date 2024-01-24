@@ -101,7 +101,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_container"></a> [container](#input\_container) | Job Container configuration | <pre>object({<br>    cpu    = number<br>    memory = string<br>    image  = string<br>  })</pre> | <pre>{<br>  "cpu": 0.5,<br>  "image": "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:a4ddc89b5a65c367442b024c4ac0edbfdcb363a731727b88853b3df0dcd2a711",<br>  "memory": "1Gi"<br>}</pre> | no |
+| <a name="input_container"></a> [container](#input\_container) | Job Container configuration | <pre>object({<br>    cpu    = number<br>    memory = string<br>    image  = string<br>  })</pre> | <pre>{<br>  "cpu": 0.5,<br>  "image": "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:8834704c1697dd26c1a1f867626b2d5206c8787dcbb1ffd25c9de77f21c101b2",<br>  "memory": "1Gi"<br>}</pre> | no |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Container App Environment configuration (Log Analytics Workspace) | <pre>object({<br>    name                = string<br>    resource_group_name = string<br>  })</pre> | n/a | yes |
 | <a name="input_job"></a> [job](#input\_job) | Container App job configuration | <pre>object({<br>    name                 = string<br>    repo_owner           = optional(string, "pagopa")<br>    repo                 = string<br>    polling_interval     = optional(number, 30)<br>    scale_max_executions = optional(number, 5)<br>  })</pre> | n/a | yes |
