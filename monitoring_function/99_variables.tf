@@ -125,8 +125,12 @@ variable "container_app_environment_id" {
 }
 
 
-variable "monitoring_configuration" {
-  type = set(object({
+
+
+variable "monitoring_configuration_encoded" {
+  type = string
+  description = "(Required) monitoring configuration provided in JSON string format"
+  list(object({
     appName = string
     apiName = string
     url = string
@@ -134,8 +138,8 @@ variable "monitoring_configuration" {
     checkCertificate = bool
     method = string
     expectedCodes = list(string)
-    tags = object({})
-    headers = optional(object({}), {})
+    tags = object({}, {})
+    headers = optional(object({}), null)
     bodyObject = optional(object({}), null)
     bodyString = optional(string, null)
 

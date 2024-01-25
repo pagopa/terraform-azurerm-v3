@@ -41,23 +41,27 @@ resource "azurerm_storage_table" "table_storage" {
   storage_account_name = module.synthetic_monitoring_storage_account.name
 }
 
+locals {
+  decoded_configuration = jsondecode(var.monitoring_configuration_encoded)
+}
 
 resource "azurerm_storage_table_entity" "monitoring_configuration" {
-  count = length(var.monitoring_configuration)
+  count = length(local.decoded_configuration)
   storage_account_name = module.synthetic_monitoring_storage_account.name
   table_name           = azurerm_storage_table.table_storage.name
 
-  partition_key = var.monitoring_configuration[count.index].appName
-  row_key       = var.monitoring_configuration[count.index].apiName
+  partition_key = local.decoded_configuration[count.index].appName
+  row_key       = local.decoded_configuration[count.index].apiName
   entity = {
-        "url"  =  var.monitoring_configuration[count.index].url,
-        "type" = var.monitoring_configuration[count.index].type,
-        "checkCertificate" = var.monitoring_configuration[count.index].checkCertificate,
-        "method" = var.monitoring_configuration[count.index].method,
-        "expectedCodes" = jsonencode(var.monitoring_configuration[count.index].expectedCodes),
-        "headers" = jsonencode(var.monitoring_configuration[count.index].headers),
-        "body"   = var.monitoring_configuration[count.index].body_object != null ? jsonencode(var.monitoring_configuration[count.index].bodyObject) : jsonencode(var.monitoring_configuration[count.index].bodyString)
-        "tags" = jsonencode(var.monitoring_configuration[count.index].tags)
+        "type" = type(local.decoded_configuration[count.index].bodyObject)
+        "url"  =  local.decoded_configuration[count.index].url,
+        "type" = local.decoded_configuration[count.index].type,
+        "checkCertificate" = local.decoded_configuration[count.index].checkCertificate,
+        "method" = local.decoded_configuration[count.index].method,
+        "expectedCodes" = jsonencode(local.decoded_configuration[count.index].expectedCodes),
+        "headers" = local.decoded_configuration[count.index].headers != null ? jsonencode(local.decoded_configuration[count.index].headers) : null,
+        "body"   = local.decoded_configuration[count.index].bodyObject != null ? jsonencode(local.decoded_configuration[count.index].bodyObject) : jsonencode(local.decoded_configuration[count.index].bodyString)
+        "tags" = local.decoded_configuration[count.index].tags != null ? jsonencode(local.decoded_configuration[count.index].tags) : null
 
   }
 }
@@ -79,7 +83,7 @@ resource "azurerm_private_endpoint" "synthetic_monitoring_storage_private_endpoi
     name                           = "${var.prefix}-synthetic-monitoring-private-service-connection"
     private_connection_resource_id = module.synthetic_monitoring_storage_account.id
     is_manual_connection           = false
-    subresource_names              = ["blob"]
+    subresource_names              = ["blob"] #fixme table
   }
 
   tags = var.tags
