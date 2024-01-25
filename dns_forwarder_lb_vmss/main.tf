@@ -7,8 +7,7 @@ locals {
   frontend_private_ip_address_lb = var.static_address_lb != null ? var.static_address_lb : cidrhost(var.address_prefixes_lb, 4)
 
   subnet_vmss_id = var.subnet_vmss_id != null ? var.subnet_vmss_id : module.subnet_vmss[0].id
-  subnet_lb_id   = var.subnet_lb_id != null ? var.subnet_lb_id : module.subnet_lb[0].id
-
+  subnet_lb_id   = var.subnet_lb_id != null ? var.subnet_lb_id : module.subnet_load_balancer[0].id
 }
 
 #
@@ -29,7 +28,7 @@ module "subnet_vmss" {
 # Subnet load balancer
 #
 
-module "subnet_lb" {
+module "subnet_load_balancer" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v7.47.0"
   count  = var.subnet_lb_id != null ? 0 : 1
 
@@ -44,35 +43,36 @@ module "subnet_lb" {
 #
 
 resource "azurerm_network_security_group" "vmss" {
-  count = var.subnet_vmss_id != null ? 0 : 1
+  count = var.create_vmss_nsg ? 1 : 0
 
   name                = "${local.prefix}-vmss-nsg"
   location            = var.location
   resource_group_name = var.resource_group_name
+  tags                = var.tags
 
   # Inbound rule
   security_rule {
-    name                       = "${local.prefix}-vmss-dns-tcp-rule"
+    name                       = "${local.prefix}-vmss-dns-load-balancer-rule"
     priority                   = 200
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "53"
     destination_port_range     = "53"
-    source_address_prefix      = "VirtualNetwork"
+    source_address_prefix      = "AzureLoadBalancer"
     destination_address_prefix = "168.63.129.16" # https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16
   }
 
   security_rule {
-    name                       = "${local.prefix}-vmss-dns-udp-rule"
+    name                       = "${local.prefix}-vmss-virtual-network-dns-rule"
     priority                   = 210
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "Udp"
-    source_port_range          = "53"
-    destination_port_range     = "53"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
     source_address_prefix      = "VirtualNetwork"
-    destination_address_prefix = "168.63.129.16" # https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16
+    destination_address_prefix = "*"
   }
 
   security_rule {
@@ -88,11 +88,18 @@ resource "azurerm_network_security_group" "vmss" {
   }
 }
 
+resource "azurerm_subnet_network_security_group_association" "vmss" {
+  count = var.create_vmss_nsg ? 1 : 0
+
+  subnet_id                 = local.subnet_vmss_id
+  network_security_group_id = azurerm_network_security_group.vmss[0].id
+}
+
 #
 # Load balancer
 #
 
-module "lb" {
+module "load_balancer" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//load_balancer?ref=v7.47.0"
 
   name                = "${local.prefix}-internal"
@@ -100,6 +107,7 @@ module "lb" {
   location            = var.location
   lb_sku              = "Standard"
   type                = "private"
+  tags                = var.tags
 
   frontend_name                          = "${local.prefix}-ip-private"
   frontend_private_ip_address_allocation = "Static"
@@ -150,7 +158,7 @@ module "vmss" {
   subscription_id                        = var.subscription_id
   location                               = var.location
   source_image_name                      = var.source_image_name
-  load_balancer_backend_address_pool_ids = module.lb.azurerm_lb_backend_address_pool_id
+  load_balancer_backend_address_pool_ids = module.load_balancer.azurerm_lb_backend_address_pool_id
   authentication_type                    = "PASSWORD"
   admin_password                         = random_password.psw.result
   vm_sku                                 = var.vm_sku
@@ -162,17 +170,6 @@ module "vmss" {
 # Key vault - Password scale set
 #
 
-module "key_vault" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//key_vault?ref=v7.47.0"
-
-  name                      = local.prefix
-  resource_group_name       = var.resource_group_name
-  location                  = var.location
-  tenant_id                 = var.tenant_id
-  terraform_cloud_object_id = var.object_id_group_ad
-  tags                      = var.tags
-}
-
 resource "random_password" "psw" {
   length           = 20
   special          = true
@@ -180,11 +177,19 @@ resource "random_password" "psw" {
 }
 
 #tfsec:ignore:azure-keyvault-ensure-secret-expiry
-resource "azurerm_key_vault_secret" "psw_vmss" {
-  name         = local.prefix
+resource "azurerm_key_vault_secret" "dns_forwarder_vmss_administrator_password" {
+  name         = "${local.prefix}-vmss-administrator-password"
   value        = random_password.psw.result
   content_type = "text/plain"
-  key_vault_id = module.key_vault.id
+  key_vault_id = var.key_vault_id
+  tags         = var.tags
+}
 
-  depends_on = [module.key_vault]
+#tfsec:ignore:azure-keyvault-ensure-secret-expiry
+resource "azurerm_key_vault_secret" "dns_forwarder_vmss_administrator_username" {
+  name         = "${local.prefix}-vmss-administrator-username"
+  value        = "adminuser"
+  content_type = "text/plain"
+  key_vault_id = var.key_vault_id
+  tags         = var.tags
 }

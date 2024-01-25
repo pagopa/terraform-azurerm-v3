@@ -84,7 +84,18 @@ variable "object_id_group_ad" {
 variable "storage_sku" {
   type        = string
   description = "(Optional) The SKU of the storage account with which to persist VM. Use a singular sku that would be applied across all disks, or specify individual disks. Usage: [--storage-sku SKU | --storage-sku ID=SKU ID=SKU ID=SKU...], where each ID is os or a 0-indexed lun. Allowed values: Standard_LRS, Premium_LRS, StandardSSD_LRS, UltraSSD_LRS, Premium_ZRS, StandardSSD_ZRS."
-  default     = "StandardSSD_LRS"
+  default     = "StandardSSD_ZRS"
+}
+
+variable "key_vault_id" {
+  type        = string
+  description = "(Required) The ID of the Key Vault where the Secret should be created."
+}
+
+variable "create_vmss_nsg" {
+  type        = bool
+  description = "(Optional) Boolean flag to create the network security group to virtual machine scale set."
+  default     = true
 }
 
 variable "tags" {

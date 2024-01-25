@@ -7,7 +7,7 @@ output "subnet_lb_id" {
 }
 
 output "lb_id" {
-  value = module.lb.azurerm_lb_id
+  value = module.load_balancer.azurerm_lb_id
 }
 
 output "vmss_id" {
