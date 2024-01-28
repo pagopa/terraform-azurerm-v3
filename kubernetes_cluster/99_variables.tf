@@ -176,12 +176,6 @@ variable "user_node_pool_enable_host_encryption" {
   default     = false
 }
 
-variable "user_node_pool_only_critical_addons_enabled" {
-  type        = bool
-  description = "(Optional) Enabling this option will taint default node pool with CriticalAddonsOnly=true:NoSchedule taint. Changing this forces a new resource to be created."
-  default     = true
-}
-
 variable "user_node_pool_ultra_ssd_enabled" {
   type        = bool
   description = "(Optional) Used to specify whether the UltraSSD is enabled in the Default Node Pool. Defaults to false."
@@ -243,12 +237,6 @@ variable "vnet_user_subnet_id" {
   default     = null
 }
 
-variable "dns_prefix_private_cluster" {
-  type        = string
-  description = "Specifies the DNS prefix to use with private clusters. Changing this forces a new resource to be created."
-  default     = null
-}
-
 variable "automatic_channel_upgrade" {
   type        = string
   description = "(Optional) The upgrade channel for this Kubernetes Cluster. Possible values are patch, rapid, node-image and stable. Omitting this field sets this value to none."
@@ -299,13 +287,6 @@ variable "addon_azure_pod_identity_enabled" {
   type        = bool
   description = "Should the AAD pod-managed identities be enabled for this Node Pool? "
   default     = false
-}
-
-# Kubernetes RBAC
-variable "rbac_enabled" {
-  type        = bool
-  description = "Is Role Based Access Control Enabled?"
-  default     = true
 }
 
 #
