@@ -245,19 +245,19 @@ variable "automatic_channel_upgrade" {
 
 variable "network_profile" {
   type = object({
-    dns_service_ip      = optional(string, "10.2.0.10") # e.g. '10.2.0.10'. IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns)
-    network_policy      = optional(string, "azure") # e.g. 'azure'. Sets up network policy to be used with Azure CNI. Currently supported values are calico and azure.
-    network_plugin      = optional(string, "azure") # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
-    network_plugin_mode = optional(string, null) # e.g. 'azure'. Network plugin mode to use for networking. Currently supported value is overlay
+    dns_service_ip      = optional(string, "10.2.0.10")    # e.g. '10.2.0.10'. IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns)
+    network_policy      = optional(string, "azure")        # e.g. 'azure'. Sets up network policy to be used with Azure CNI. Currently supported values are calico and azure.
+    network_plugin      = optional(string, "azure")        # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
+    network_plugin_mode = optional(string, null)           # e.g. 'azure'. Network plugin mode to use for networking. Currently supported value is overlay
     outbound_type       = optional(string, "loadBalancer") # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
-    service_cidr        = optional(string, "10.2.0.0/16") # e.g. '10.2.0.0/16'. The Network Range used by the Kubernetes service
+    service_cidr        = optional(string, "10.2.0.0/16")  # e.g. '10.2.0.0/16'. The Network Range used by the Kubernetes service
   })
   default = {
-    dns_service_ip      = "10.2.0.10"
-    network_policy      = "azure"
-    network_plugin      = "azure"
-    outbound_type       = "loadBalancer"
-    service_cidr        = "10.2.0.0/16"
+    dns_service_ip = "10.2.0.10"
+    network_policy = "azure"
+    network_plugin = "azure"
+    outbound_type  = "loadBalancer"
+    service_cidr   = "10.2.0.0/16"
   }
   description = "See variable description to understand how to use it, and see examples"
 }
