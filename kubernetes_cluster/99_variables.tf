@@ -255,12 +255,6 @@ variable "automatic_channel_upgrade" {
   default     = null
 }
 
-variable "api_server_authorized_ip_ranges" {
-  type        = list(string)
-  description = "The IP ranges to whitelist for incoming traffic to the masters."
-  default     = []
-}
-
 variable "network_profile" {
   type = object({
     dns_service_ip      = optional(string, "10.2.0.10") # e.g. '10.2.0.10'. IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns)
