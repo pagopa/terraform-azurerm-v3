@@ -321,13 +321,13 @@ variable "tags" {
 }
 
 variable "workload_identity_enabled" {
-type = bool
-description = "(Optional) Specifies whether Azure AD Workload Identity should be enabled for the Cluster. Defaults to false."
-default = false
+  type        = bool
+  description = "(Optional) Specifies whether Azure AD Workload Identity should be enabled for the Cluster. Defaults to false."
+  default     = false
 }
 
 variable "oidc_issuer_enabled" {
-type = bool
-description = "(Optional) Enable or Disable the OIDC issuer URL"
-default = false
+  type        = bool
+  description = "(Optional) Enable or Disable the OIDC issuer URL"
+  default     = false
 }

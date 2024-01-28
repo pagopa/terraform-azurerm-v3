@@ -69,7 +69,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     type = "SystemAssigned"
   }
   workload_identity_enabled = var.workload_identity_enabled
-  oidc_issuer_enabled = local.oidc_issuer_enabled
+  oidc_issuer_enabled       = local.oidc_issuer_enabled
 
   dynamic "network_profile" {
     for_each = var.network_profile != null ? [var.network_profile] : []
