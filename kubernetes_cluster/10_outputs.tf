@@ -17,12 +17,12 @@ output "private_fqdn" {
 }
 
 output "kubelet_identity_id" {
-  value       = azurerm_kubernetes_cluster.this.kubelet_identity.0.object_id
+  value       = azurerm_kubernetes_cluster.this.kubelet_identity[0].object_id
   description = "The Object ID of the user-defined Managed Identity assigned to the Kubelets.If not specified a Managed Identity is created automatically. Changing this forces a new resource to be created."
 }
 
 output "identity_principal_id" {
-  value       = azurerm_kubernetes_cluster.this.identity.0.principal_id
+  value       = azurerm_kubernetes_cluster.this.identity[0].principal_id
   description = "The Principal ID associated with this Managed Service Identity."
 }
 

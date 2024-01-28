@@ -57,8 +57,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     tags = merge(var.tags, var.system_node_pool_tags)
   }
 
-  automatic_channel_upgrade       = var.automatic_channel_upgrade
-  api_server_authorized_ip_ranges = var.api_server_authorized_ip_ranges #tfsec:ignore:AZU008
+  automatic_channel_upgrade = var.automatic_channel_upgrade
 
   # managed identity type: https://docs.microsoft.com/en-us/azure/aks/use-managed-identity
   identity {
