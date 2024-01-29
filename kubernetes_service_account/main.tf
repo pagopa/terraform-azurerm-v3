@@ -9,7 +9,7 @@ resource "kubernetes_service_account" "azure_devops" {
 resource "kubernetes_secret_v1" "azure_devops_service_account_default_secret" {
   metadata {
     name      = local.service_account_default_secret_name
-    namespace = kubernetes_namespace.system_domain_namespace.metadata[0].name
+    namespace = var.namespace
     annotations = {
       "kubernetes.io/service-account.name" = var.name
     }
