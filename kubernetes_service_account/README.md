@@ -1,25 +1,16 @@
-# kubernetes storage class
+# kubernetes service account
 
-This module creates a series of storage class with ZRS redundancy to be used in place of the default ones provided by AKS
+This module creates a service account and its related secrets
 
-## List of storageclasses
 
-* "standard-hdd"
-* "azurefile-zrs"
-* "azurefile-csi-zrs"
-* "azurefile-csi-premium-zrs"
-* "azurefile-premium-zrs"
-* "default-zrs"
-* "managed-zrs"
-* "managed-csi-zrs"
-* "managed-csi-premium-zrs"
 
 ## How to use it
 
 ```hcl
-module "aks_storage_class" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_storage_class?ref=<version>"
-  
+module "kubernetes_service_account" {
+  source  = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_service_account?ref=<version>"
+  name = "azure-devops"
+  namespace = local.system_domain_namespace
 }
 ```
 
@@ -40,31 +31,22 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [kubernetes_storage_class_v1.azurefile_csi_premium_zrs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
-| [kubernetes_storage_class_v1.azurefile_csi_zrs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
-| [kubernetes_storage_class_v1.azurefile_premium_zrs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
-| [kubernetes_storage_class_v1.azurefile_zrs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
-| [kubernetes_storage_class_v1.default_zrs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
-| [kubernetes_storage_class_v1.managed_csi_premium_zrs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
-| [kubernetes_storage_class_v1.managed_csi_zrs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
-| [kubernetes_storage_class_v1.managed_zrs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
-| [kubernetes_storage_class_v1.standard_hdd](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
+| [kubernetes_secret_v1.azure_devops_service_account_default_secret](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret_v1) | resource |
+| [kubernetes_service_account.azure_devops](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account) | resource |
+| [kubernetes_secret.azure_devops_secret](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/data-sources/secret) | data source |
 
 ## Inputs
 
-No inputs.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_custom_service_account_default_secret_name"></a> [custom\_service\_account\_default\_secret\_name](#input\_custom\_service\_account\_default\_secret\_name) | Service account custom secret name | `string` | `""` | no |
+| <a name="input_name"></a> [name](#input\_name) | Service account name | `string` | n/a | yes |
+| <a name="input_namespace"></a> [namespace](#input\_namespace) | Service account namespace | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_azurefile_csi_premium_zrs"></a> [azurefile\_csi\_premium\_zrs](#output\_azurefile\_csi\_premium\_zrs) | Azurefile CSI premium disk with ZRS storage class name |
-| <a name="output_azurefile_csi_zrs"></a> [azurefile\_csi\_zrs](#output\_azurefile\_csi\_zrs) | Azurefile CSI with ZRS storage class name |
-| <a name="output_azurefile_premium_zrs"></a> [azurefile\_premium\_zrs](#output\_azurefile\_premium\_zrs) | Azurefile premium with ZRS storage class name |
-| <a name="output_azurefile_zrs"></a> [azurefile\_zrs](#output\_azurefile\_zrs) | Azurefile with ZRS storage class name |
-| <a name="output_default_zrs"></a> [default\_zrs](#output\_default\_zrs) | Default with ZRS storage class name |
-| <a name="output_managed_csi_premium_zrs"></a> [managed\_csi\_premium\_zrs](#output\_managed\_csi\_premium\_zrs) | Managed CSI  premium with ZRS storage class name |
-| <a name="output_managed_csi_zrs"></a> [managed\_csi\_zrs](#output\_managed\_csi\_zrs) | Managed CSI with ZRS storage class name |
-| <a name="output_managed_zrs"></a> [managed\_zrs](#output\_managed\_zrs) | Managed with ZRS storage class name |
-| <a name="output_standard_hdd"></a> [standard\_hdd](#output\_standard\_hdd) | Standard HDD storage class name |
+| <a name="output_sa_ca_cert"></a> [sa\_ca\_cert](#output\_sa\_ca\_cert) | n/a |
+| <a name="output_sa_token"></a> [sa\_token](#output\_sa\_token) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
