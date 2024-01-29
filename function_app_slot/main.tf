@@ -60,16 +60,15 @@ resource "azurerm_linux_function_app_slot" "this" {
       }
     }
 
-    auto_swap_slot_name = var.auto_swap_slot_name
-    health_check_path   = var.health_check_path
+    auto_swap_slot_name               = var.auto_swap_slot_name
+    health_check_path                 = var.health_check_path
+    health_check_eviction_time_in_min = var.health_check_path != null ? var.health_check_maxpingfailures : null
   }
 
   app_settings = merge(
     {
       # No downtime on slots swap
       WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG = 1
-      # default value for health_check_path, override it in var.app_settings if needed
-      WEBSITE_HEALTHCHECK_MAXPINGFAILURES = var.health_check_path != null ? var.health_check_maxpingfailures : null
       # https://docs.microsoft.com/en-us/samples/azure-samples/azure-functions-private-endpoints/connect-to-private-endpoints-with-azure-functions/
       SLOT_TASK_HUBNAME        = format("%sTaskHub", title(var.name))
       WEBSITE_RUN_FROM_PACKAGE = 1

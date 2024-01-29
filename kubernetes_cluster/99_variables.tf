@@ -176,12 +176,6 @@ variable "user_node_pool_enable_host_encryption" {
   default     = false
 }
 
-variable "user_node_pool_only_critical_addons_enabled" {
-  type        = bool
-  description = "(Optional) Enabling this option will taint default node pool with CriticalAddonsOnly=true:NoSchedule taint. Changing this forces a new resource to be created."
-  default     = true
-}
-
 variable "user_node_pool_ultra_ssd_enabled" {
   type        = bool
   description = "(Optional) Used to specify whether the UltraSSD is enabled in the Default Node Pool. Defaults to false."
@@ -243,40 +237,27 @@ variable "vnet_user_subnet_id" {
   default     = null
 }
 
-variable "dns_prefix_private_cluster" {
-  type        = string
-  description = "Specifies the DNS prefix to use with private clusters. Changing this forces a new resource to be created."
-  default     = null
-}
-
 variable "automatic_channel_upgrade" {
   type        = string
   description = "(Optional) The upgrade channel for this Kubernetes Cluster. Possible values are patch, rapid, node-image and stable. Omitting this field sets this value to none."
   default     = null
 }
 
-variable "api_server_authorized_ip_ranges" {
-  type        = list(string)
-  description = "The IP ranges to whitelist for incoming traffic to the masters."
-  default     = []
-}
-
 variable "network_profile" {
   type = object({
-    dns_service_ip      = string # e.g. '10.2.0.10'. IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns)
-    network_policy      = string # e.g. 'azure'. Sets up network policy to be used with Azure CNI. Currently supported values are calico and azure.
-    network_plugin      = string # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
-    network_plugin_mode = string # e.g. 'azure'. Network plugin mode to use for networking. Currently supported value is overlay
-    outbound_type       = string # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
-    service_cidr        = string # e.g. '10.2.0.0/16'. The Network Range used by the Kubernetes service
+    dns_service_ip      = optional(string, "10.2.0.10")    # e.g. '10.2.0.10'. IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns)
+    network_policy      = optional(string, "azure")        # e.g. 'azure'. Sets up network policy to be used with Azure CNI. Currently supported values are calico and azure.
+    network_plugin      = optional(string, "azure")        # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
+    network_plugin_mode = optional(string, null)           # e.g. 'azure'. Network plugin mode to use for networking. Currently supported value is overlay
+    outbound_type       = optional(string, "loadBalancer") # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
+    service_cidr        = optional(string, "10.2.0.0/16")  # e.g. '10.2.0.0/16'. The Network Range used by the Kubernetes service
   })
   default = {
-    dns_service_ip      = "10.2.0.10"
-    network_policy      = "azure"
-    network_plugin      = "azure"
-    network_plugin_mode = ""
-    outbound_type       = "loadBalancer"
-    service_cidr        = "10.2.0.0/16"
+    dns_service_ip = "10.2.0.10"
+    network_policy = "azure"
+    network_plugin = "azure"
+    outbound_type  = "loadBalancer"
+    service_cidr   = "10.2.0.0/16"
   }
   description = "See variable description to understand how to use it, and see examples"
 }
@@ -306,13 +287,6 @@ variable "addon_azure_pod_identity_enabled" {
   type        = bool
   description = "Should the AAD pod-managed identities be enabled for this Node Pool? "
   default     = false
-}
-
-# Kubernetes RBAC
-variable "rbac_enabled" {
-  type        = bool
-  description = "Is Role Based Access Control Enabled?"
-  default     = true
 }
 
 #

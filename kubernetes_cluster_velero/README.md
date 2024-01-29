@@ -60,7 +60,7 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.24.0 |
+| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.47.2 |
 
 ## Resources
 

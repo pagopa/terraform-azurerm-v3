@@ -4,7 +4,6 @@ Module that allows the scheduling of velero backups for specific namespaces
 Note that this module selects the correct cluster to work on using the command `kubectl config use-context "<cluster_name>"`, so you should have that context available in your `.kube` folder.
 This is achievable using the utility script `k8setup.sh` included in the aks-setup folder of your IaC project
 
-
 ## How to use it
 
 This module requires Velero to be installed; check module `kubernetes_cluster_velero` for details on the installation
@@ -27,7 +26,7 @@ module "aks_namespace_backup" {
 }
 ```
 
-You can declare which namespace to backup, and you can also use the keyword `ALL` to trigger an all-namespaces backup. It can be used alongside the other namespace names 
+You can declare which namespace to backup, and you can also use the keyword `ALL` to trigger an all-namespaces backup. It can be used alongside the other namespace names
 
 The final backup name will be: `backup_name`-`namespace_name`-`datetime`
 
