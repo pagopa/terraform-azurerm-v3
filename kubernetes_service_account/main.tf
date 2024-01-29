@@ -15,6 +15,8 @@ resource "kubernetes_secret_v1" "azure_devops_service_account_default_secret" {
     }
   }
 
+  depends_on = [kubernetes_service_account.azure_devops]
+
   type = "kubernetes.io/service-account-token"
 }
 
