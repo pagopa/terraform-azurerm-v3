@@ -52,16 +52,15 @@ resource "azurerm_storage_table_entity" "monitoring_configuration" {
 
   partition_key = local.decoded_configuration[count.index].appName
   row_key       = local.decoded_configuration[count.index].apiName
-  entity = {
-        "type" = type(local.decoded_configuration[count.index].bodyObject)
+   entity = {
         "url"  =  local.decoded_configuration[count.index].url,
         "type" = local.decoded_configuration[count.index].type,
         "checkCertificate" = local.decoded_configuration[count.index].checkCertificate,
         "method" = local.decoded_configuration[count.index].method,
         "expectedCodes" = jsonencode(local.decoded_configuration[count.index].expectedCodes),
-        "headers" = local.decoded_configuration[count.index].headers != null ? jsonencode(local.decoded_configuration[count.index].headers) : null,
-        "body"   = local.decoded_configuration[count.index].bodyObject != null ? jsonencode(local.decoded_configuration[count.index].bodyObject) : jsonencode(local.decoded_configuration[count.index].bodyString)
-        "tags" = local.decoded_configuration[count.index].tags != null ? jsonencode(local.decoded_configuration[count.index].tags) : null
+        "headers" = lookup(local.decoded_configuration[count.index], "headers", null) != null ? jsonencode(local.decoded_configuration[count.index].headers) : null,
+        "body"   = lookup(local.decoded_configuration[count.index], "body", null)  != null ? jsonencode(local.decoded_configuration[count.index].body) : null
+        "tags" = lookup(local.decoded_configuration[count.index], "tags", null)   != null ? jsonencode(local.decoded_configuration[count.index].tags) : null
 
   }
 }

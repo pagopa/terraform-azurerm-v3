@@ -124,25 +124,8 @@ variable "container_app_environment_id" {
   default     = null
 }
 
-
-
-
 variable "monitoring_configuration_encoded" {
   type = string
-  description = "(Required) monitoring configuration provided in JSON string format"
-  list(object({
-    appName = string
-    apiName = string
-    url = string
-    type = string
-    checkCertificate = bool
-    method = string
-    expectedCodes = list(string)
-    tags = object({}, {})
-    headers = optional(object({}), null)
-    bodyObject = optional(object({}), null)
-    bodyString = optional(string, null)
-
-  }))
+  description = "(Required) monitoring configuration provided in JSON string format (use jsonencode)"
 }
 
