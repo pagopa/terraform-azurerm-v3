@@ -49,6 +49,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_cert_allowed_uses"></a> [cert\_allowed\_uses](#input\_cert\_allowed\_uses) | List of key usages allowed for the issued certificate: https://datatracker.ietf.org/doc/html/rfc5280 | `list(string)` | <pre>[<br>  "digital_signature"<br>]</pre> | no |
 | <a name="input_cert_common_name"></a> [cert\_common\_name](#input\_cert\_common\_name) | cert info | `string` | n/a | yes |
 | <a name="input_cert_country"></a> [cert\_country](#input\_cert\_country) | n/a | `string` | `""` | no |
 | <a name="input_cert_locality"></a> [cert\_locality](#input\_cert\_locality) | n/a | `string` | `""` | no |
