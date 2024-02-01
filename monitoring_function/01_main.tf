@@ -58,6 +58,7 @@ resource "azurerm_storage_table_entity" "monitoring_configuration" {
         "checkCertificate" = local.decoded_configuration[count.index].checkCertificate,
         "method" = local.decoded_configuration[count.index].method,
         "expectedCodes" = jsonencode(local.decoded_configuration[count.index].expectedCodes),
+        "durationLimit" = local.decoded_configuration[count.index].durationLimit,
         "headers" = lookup(local.decoded_configuration[count.index], "headers", null) != null ? jsonencode(local.decoded_configuration[count.index].headers) : null,
         "body"   = lookup(local.decoded_configuration[count.index], "body", null)  != null ? jsonencode(local.decoded_configuration[count.index].body) : null
         "tags" = lookup(local.decoded_configuration[count.index], "tags", null)   != null ? jsonencode(local.decoded_configuration[count.index].tags) : null
@@ -174,11 +175,24 @@ resource "azurerm_monitor_metric_alert" "alert" {
   auto_mitigate       = false
   enabled             = true
 
-  application_insights_web_test_location_availability_criteria {
-      web_test_id = "${var.availability_prefix}-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"
-      component_id = var.application_insights_id
-      failed_location_count = 1
+  criteria {
+    aggregation      = "Average"
+    metric_name      = "availabilityResults/availabilityPercentage"
+    metric_namespace = "microsoft.insights/components"
+    operator         = "LessThan"
+    threshold        = 100
+    dimension {
+      name     = "availabilityResult/name"
+      operator = "Include"
+      values   = ["${var.availability_prefix}-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"]
+    }
+    dimension {
+      name     = "availabilityResult/location"
+      operator = "Include"
+      values   = [local.decoded_configuration[count.index].type]
+    }
   }
+
 
   dynamic "action" {
     for_each = var.application_insights_action_group_ids
