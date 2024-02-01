@@ -19,12 +19,12 @@ variable "location" {
 
 variable "storage_account_settings" {
   type = object({
-    tier                     = string #(Optional) Tier used for the backup storage account
-    replication_type         = string #(Optional) Replication type used for the backup storage account
-    kind                     = string #(Optional) Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Defaults to StorageV2
-    backup_retention_days    = number #(Optional) number of days for which the storage account is available for point in time recovery
-    backup_enabled           = bool   # (Optional) enables storage account point in time recovery
-    private_endpoint_enabled = bool   #(Optional) enables the creation and usage of private endpoint
+    tier                     = optional(string, "Standard" ) #(Optional) Tier used for the backup storage account
+    replication_type         = optional(string, "ZRS" ) #(Optional) Replication type used for the backup storage account
+    kind                     = optional(string, "StorageV2" ) #(Optional) Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Defaults to StorageV2
+    backup_retention_days    = optional(number, 0 ) #(Optional) number of days for which the storage account is available for point in time recovery
+    backup_enabled           = optional(bool,   false )   # (Optional) enables storage account point in time recovery
+    private_endpoint_enabled = optional(bool,   false )   #(Optional) enables the creation and usage of private endpoint
     private_dns_zone_id      = string # (Optional) table storage private dns zone id
   })
   default = {
@@ -40,13 +40,13 @@ variable "storage_account_settings" {
 
 variable "job_settings" {
   type = object({
-    execution_timeout_seconds    = number #(Optional) Job execution timeout, in seconds
-    cron_scheduling              = string #(Optional) Cron expression defining the execution scheduling of the monitoring function
-    cpu_requirement              = number #(Optional) Decimal; cpu requirement
-    memory_requirement           = string #(Optional) Memory requirement
-    http_client_timeout          = number #(Optional) Default http client timeout, in milliseconds
-    default_duration_limit       = number #(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds
-    availability_prefix          = string #(Optional) Prefix used for prefixing availability test names
+    execution_timeout_seconds    = optional(number, 300) #(Optional) Job execution timeout, in seconds
+    cron_scheduling              = optional(string, "* * * * *") #(Optional) Cron expression defining the execution scheduling of the monitoring function
+    cpu_requirement              = optional(number, 0.25) #(Optional) Decimal; cpu requirement
+    memory_requirement           = optional(string, "0.5Gi") #(Optional) Memory requirement
+    http_client_timeout          = optional(number, 0) #(Optional) Default http client timeout, in milliseconds
+    default_duration_limit       = optional(number, 10000) #(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds
+    availability_prefix          = optional(string, "synthetic") #(Optional) Prefix used for prefixing availability test names
     container_app_environment_id = string #(Required) If defined, the id of the container app environment tu be used to run the monitoring job. If provided, skips the creation of a dedicated subnet
   })
   default = {
@@ -67,9 +67,9 @@ variable "job_settings" {
 
 variable "docker_settings" {
   type = object({
-    registry_url = string #(Optional) Docker container registry url where to find the monitoring image
+    registry_url = optional(string,"ghcr.io")  #(Optional) Docker container registry url where to find the monitoring image
     image_tag    = string #(Optional) Docker image tag
-    image_name   = string #(Optional) Docker image name
+    image_name   = optional(string, "pagopa/azure-synthetic-monitoring") #(Optional) Docker image name
   })
   default = {
     registry_url = "ghcr.io"
