@@ -17,49 +17,65 @@ variable "location" {
   description = "(Required) Resource location"
 }
 
-
-variable "storage_account_tier" {
-  type        = string
-  description = "(Optional) Tier used for the backup storage account"
-  default     = "Standard"
+variable "storage_account_settings" {
+  type = object({
+    tier                     = string #(Optional) Tier used for the backup storage account
+    replication_type         = string #(Optional) Replication type used for the backup storage account
+    kind                     = string #(Optional) Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Defaults to StorageV2
+    backup_retention_days    = number #(Optional) number of days for which the storage account is available for point in time recovery
+    backup_enabled           = bool   # (Optional) enables storage account point in time recovery
+    private_endpoint_enabled = bool   #(Optional) enables the creation and usage of private endpoint
+    private_dns_zone_id      = string # (Optional) table storage private dns zone id
+  })
+  default = {
+    tier                     = "Standard"
+    replication_type         = "ZRS"
+    kind                     = "StorageV2"
+    backup_retention_days    = 0
+    backup_enabled           = false
+    private_endpoint_enabled = false
+    private_dns_zone_id      = null
+  }
 }
 
-variable "storage_account_replication_type" {
-  type        = string
-  description = "(Optional) Replication type used for the backup storage account"
-  default     = "ZRS"
+variable "job_settings" {
+  type = object({
+    execution_timeout_seconds    = number #(Optional) Job execution timeout, in seconds
+    cron_scheduling              = string #(Optional) Cron expression defining the execution scheduling of the monitoring function
+    cpu_requirement              = number #(Optional) Decimal; cpu requirement
+    memory_requirement           = string #(Optional) Memory requirement
+    http_client_timeout          = number #(Optional) Default http client timeout, in milliseconds
+    default_duration_limit       = number #(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds
+    availability_prefix          = string #(Optional) Prefix used for prefixing availability test names
+    container_app_environment_id = string #(Required) If defined, the id of the container app environment tu be used to run the monitoring job. If provided, skips the creation of a dedicated subnet
+  })
+  default = {
+    execution_timeout_seconds    = 300
+    cron_scheduling              = "* * * * *"
+    cpu_requirement              = 0.25
+    memory_requirement           = "0.5Gi"
+    http_client_timeout          = 0
+    default_duration_limit       = 10000
+    availability_prefix          = "synthetic"
+    container_app_environment_id = null
+  }
+  validation {
+    condition     = length(var.job_settings.availability_prefix) > 0
+    error_message = "availability_prefix must not be empty"
+  }
 }
 
-variable "storage_account_kind" {
-  type        = string
-  default     = "StorageV2"
-  description = "(Optional) Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Defaults to StorageV2"
-}
-
-variable "sa_backup_retention_days" {
-  type        = number
-  description = "(Optional) number of days for which the storage account is available for point in time recovery"
-  default     = 0
-}
-
-variable "enable_sa_backup" {
-  type        = bool
-  description = "(Optional) enables storage account point in time recovery"
-  default     = false
-}
-
-
-variable "execution_timeout_seconds" {
-  type        = number
-  default     = 300
-  description = "(Optional) Job execution timeout, in seconds"
-}
-
-
-variable "use_storage_private_endpoint" {
-  type        = bool
-  description = "(Optional) Whether to make the storage account private and use a private endpoint to connect"
-  default     = true
+variable "docker_settings" {
+  type = object({
+    registry_url = string #(Optional) Docker container registry url where to find the monitoring image
+    image_tag    = string #(Optional) Docker image tag
+    image_name   = string #(Optional) Docker image name
+  })
+  default = {
+    registry_url = "ghcr.io"
+    image_tag    = "1.0.0"
+    image_name   = "pagopa/azure-synthetic-monitoring"
+  }
 }
 
 variable "private_endpoint_subnet_id" {
@@ -68,98 +84,22 @@ variable "private_endpoint_subnet_id" {
   default     = null
 }
 
-variable "storage_account_private_dns_zone_id" {
+variable "application_insight_name" {
   type        = string
-  description = "(Optional) Storage account private dns zone id, used in the private endpoint creation"
-  default     = null
+  description = "(Required) name of the application insight instance where to publish metrics"
 }
 
-variable "registry_url" {
+variable "application_insight_rg_name" {
   type        = string
-  description = "(Optional) Docker container registry url where to find the monitoring image"
-  default     = "ghcr.io"
+  description = "(Required) name of the application insight instance resource group where to publish metrics"
 }
-
-variable "monitoring_image_tag" {
-  type        = string
-  description = "(Optional) Docker image tag"
-  default     = "1.0.0"
-}
-
-variable "monitoring_image_name" {
-  type        = string
-  description = "(Optional) Docker image name"
-  default     = "pagopa/azure-synthetic-monitoring"
-}
-
-
-variable "app_insight_connection_string" {
-  type        = string
-  description = "(Required) App insight connection string where metrics will be published"
-}
-
-
-variable "cron_scheduling" {
-  type        = string
-  default     = "* * * * *"
-  description = "(Optional) Cron expression defining the execution scheduling of the monitoring function"
-}
-
-variable "cpu_requirement" {
-  type        = number
-  default     = 0.25
-  description = "(Optional) Decimal; cpu requirement"
-}
-
-variable "memory_requirement" {
-  type        = string
-  description = "(Optional) Memory requirement"
-  default     = "0.5Gi"
-}
-
-
-variable "container_app_environment_id" {
-  type        = string
-  description = "(Optional) If defined, the id of the container app environment tu be used to run the monitoring job. If provided, skips the creation of a dedicated subnet"
-  default     = null
-}
-
-variable "monitoring_configuration_encoded" {
-  type = string
-  description = "(Required) monitoring configuration provided in JSON string format (use jsonencode)"
-}
-
-
-variable "application_insights_id" {
-  type = string
-  description = "(Required) Application insight id where to apply the alerts"
-}
-
 
 variable "application_insights_action_group_ids" {
   type        = list(string)
   description = "(Required) Application insights action group ids"
 }
 
-variable "availability_prefix"{
-  type = string
-  description = "(Optional) Prefix used for prefixing availability test names"
-  default = "synthetic"
-  validation {
-    condition = length(var.availability_prefix) > 0
-    error_message = "availability_prefix must not be empty"
-  }
-}
-
-
-variable "default_duration_limit" {
-  type = number
-  description = "(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds"
-  default = 10000
-}
-
-variable "http_client_timeout" {
-  type = number
-  description = "(Optional) Default http client timeout, in milliseconds"
-  default = 0
+variable "monitoring_configuration_encoded" {
+  type        = string
+  description = "(Required) monitoring configuration provided in JSON string format (use jsonencode)"
 }
