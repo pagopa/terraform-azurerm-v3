@@ -58,7 +58,7 @@ resource "azurerm_storage_table_entity" "monitoring_configuration" {
         "checkCertificate" = local.decoded_configuration[count.index].checkCertificate,
         "method" = local.decoded_configuration[count.index].method,
         "expectedCodes" = jsonencode(local.decoded_configuration[count.index].expectedCodes),
-        "durationLimit" = local.decoded_configuration[count.index].durationLimit,
+        "durationLimit" = lookup(local.decoded_configuration[count.index], "durationLimit", null) != null ? local.decoded_configuration[count.index].durationLimit : var.default_duration_limit,
         "headers" = lookup(local.decoded_configuration[count.index], "headers", null) != null ? jsonencode(local.decoded_configuration[count.index].headers) : null,
         "body"   = lookup(local.decoded_configuration[count.index], "body", null)  != null ? jsonencode(local.decoded_configuration[count.index].body) : null
         "tags" = lookup(local.decoded_configuration[count.index], "tags", null)   != null ? jsonencode(local.decoded_configuration[count.index].tags) : null

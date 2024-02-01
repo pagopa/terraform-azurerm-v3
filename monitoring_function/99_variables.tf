@@ -150,3 +150,10 @@ variable "availability_prefix"{
     error_message = "availability_prefix must not be empty"
   }
 }
+
+
+variable "default_duration_limit" {
+  type = number
+  description = "(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds"
+  default = 10000
+}
