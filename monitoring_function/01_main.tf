@@ -83,7 +83,7 @@ resource "azurerm_private_endpoint" "synthetic_monitoring_storage_private_endpoi
     name                           = "${var.prefix}-synthetic-monitoring-private-service-connection"
     private_connection_resource_id = module.synthetic_monitoring_storage_account.id
     is_manual_connection           = false
-    subresource_names              = ["blob"] #fixme table
+    subresource_names              = ["table"]
   }
 
   tags = var.tags
