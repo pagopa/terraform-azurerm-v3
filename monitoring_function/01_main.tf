@@ -163,19 +163,19 @@ resource "azapi_resource" "monitoring_app_job" {
 
 
 resource "azurerm_monitor_metric_alert" "alert" {
-  for_each = local.decoded_configuration
+  count = length(local.decoded_configuration)
 
-  name                = "availability-${each.value.appName}-${each.value.apiName}"
+  name                = "availability-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"
   resource_group_name = var.resource_group_name
   scopes              = [var.application_insights_id]
-  description         = "Monitors the availability of ${each.value.appName} ${each.value.apiName} from ${each.value.type}"
+  description         = "Monitors the availability of ${local.decoded_configuration[count.index].appName} ${local.decoded_configuration[count.index].apiName} from ${local.decoded_configuration[count.index].type}"
   severity            = 0
   frequency           = "PT1M"
   auto_mitigate       = false
   enabled             = true
 
   application_insights_web_test_location_availability_criteria {
-      web_test_id = "${var.availability_prefix}-${each.value.appName}-${each.value.apiName}"
+      web_test_id = "${var.availability_prefix}-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"
       component_id = var.application_insights_id
       failed_location_count = 1
   }
