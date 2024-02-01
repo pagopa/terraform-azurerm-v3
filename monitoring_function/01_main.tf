@@ -163,24 +163,21 @@ resource "azapi_resource" "monitoring_app_job" {
 
 
 resource "azurerm_monitor_metric_alert" "alert" {
-  name                = "prova-alert"
+  for_each = local.decoded_configuration
+
+  name                = "availability-${each.value.appName}-${each.value.apiName}"
   resource_group_name = var.resource_group_name
   scopes              = [var.application_insights_id]
-  description         = "test description"
+  description         = "Monitors the availability of ${each.value.appName} ${each.value.apiName} from ${each.value.type}"
   severity            = 0
   frequency           = "PT1M"
   auto_mitigate       = false
   enabled             = true
 
-  dynamic "application_insights_web_test_location_availability_criteria" {
-    for_each = local.decoded_configuration
-    iterator = each
-    content {
+  application_insights_web_test_location_availability_criteria {
       web_test_id = "${var.availability_prefix}-${each.value.appName}-${each.value.apiName}"
       component_id = var.application_insights_id
       failed_location_count = 1
-    }
-
   }
 
   dynamic "action" {
