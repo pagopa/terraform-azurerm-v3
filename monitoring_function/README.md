@@ -6,6 +6,12 @@ details on the function can be found [here](https://github.com/pagopa/azure-synt
 
 ## How to use it
 
+This is the minimum configuration required to use the monitoring function
+
+Field `monitoring_configuration_encoded` is required to be passed using `jsonencode()` function
+details on its content can be found [here](https://github.com/pagopa/azure-synthetic-monitoring)
+
+This module creates a table storage to save the provided monitoring configuration; if the private endpoint is enabled it requires the `table` private dns zone group
 
 ```hcl
 
@@ -39,18 +45,43 @@ resource "azurerm_container_app_environment" "container_app_environment" {
 }
 
 module "monitoring_function" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//monitoring_function?ref=<version>"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//monitoring_function?ref=5cdc24a"
 
   location = "northeurope"
   prefix = "dvopla-d"
-
   resource_group_name = azurerm_resource_group.monitor_rg.name
 
-  use_storage_private_endpoint = false
+  application_insight_name = azurerm_application_insights.application_insights.name
+  application_insight_rg_name = azurerm_application_insights.application_insights.resource_group_name
+  application_insights_action_group_ids = [azurerm_monitor_action_group.slack.id]
 
-  monitoring_image_tag = "<tag>"
-  container_app_environment_id = azurerm_container_app_environment.monitoring_container_app_environment.id
-  app_insight_connection_string = azurerm_application_insights.application_insights.connection_string
+  docker_settings = {
+    image_tag    = "beta-poc"
+  }
+
+  job_settings = {
+    cron_scheduling              = "* * * 8 *"
+    container_app_environment_id = azurerm_container_app_environment.monitoring_container_app_environment.id
+  }
+
+  storage_account_settings = {
+    private_endpoint_enabled = false
+    private_dns_zone_id      = null
+  }
+  
+  monitoring_configuration_encoded = jsonencode( [{
+        "apiName" : "aks_ingress",
+        "appName": "microservice",
+        "url": "https://dev01.blueprint.internal.devopslab.pagopa.it/blueprint/v5-java-helm-complete-test/",
+        "type": "private",
+        "checkCertificate": true,
+        "method": "GET",
+        "expectedCodes": ["200-299", "303"],
+        "tags": {
+            "description": "AKS ingress tested from internal network"
+        },
+        "durationLimit": 1000
+    }] )
 
   tags = var.tags
 }

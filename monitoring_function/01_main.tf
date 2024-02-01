@@ -80,7 +80,7 @@ resource "azurerm_private_endpoint" "synthetic_monitoring_storage_private_endpoi
 
   private_dns_zone_group {
     name                 = "${var.prefix}-synthetic-monitoring-private-dns-zone-group"
-    private_dns_zone_ids = [var.storage_account_settings.private_dns_zone_id]
+    private_dns_zone_ids = [var.storage_account_settings.table_private_dns_zone_id]
   }
 
   private_service_connection {
@@ -146,7 +146,7 @@ resource "azapi_resource" "monitoring_app_job" {
               },
               {
                 name  = "HTTP_CLIENT_TIMEOUT"
-                value = var.job_settings.http_client_timeout
+                value = tostring(var.job_settings.http_client_timeout)
               }
 
             ]
