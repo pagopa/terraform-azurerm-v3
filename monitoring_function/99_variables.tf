@@ -157,3 +157,9 @@ variable "default_duration_limit" {
   description = "(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds"
   default = 10000
 }
+
+variable "http_client_timeout" {
+  type = number
+  description = "(Optional) Default http client timeout, in milliseconds"
+  default = 0
+}

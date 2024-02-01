@@ -139,6 +139,10 @@ resource "azapi_resource" "monitoring_app_job" {
               {
                 name  = "AVAILABILITY_PREFIX"
                 value = var.availability_prefix
+              },
+              {
+                name  = "HTTP_CLIENT_TIMEOUT"
+                value = var.http_client_timeout
               }
 
             ]
