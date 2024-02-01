@@ -134,6 +134,10 @@ resource "azapi_resource" "monitoring_app_job" {
               {
                 name  = "STORAGE_ACCOUNT_TABLE_NAME"
                 value = azurerm_storage_table.table_storage.name
+              },
+              {
+                name  = "AVAILABILITY_PREFIX"
+                value = var.availability_prefix
               }
 
             ]
@@ -155,4 +159,37 @@ resource "azapi_resource" "monitoring_app_job" {
   })
 }
 
+
+
+
+resource "azurerm_monitor_metric_alert" "alert" {
+  name                = "prova-alert"
+  resource_group_name = var.resource_group_name
+  scopes              = [var.application_insights_id]
+  description         = "test description"
+  severity            = 0
+  frequency           = "PT1M"
+  auto_mitigate       = false
+  enabled             = true
+
+  dynamic "application_insights_web_test_location_availability_criteria" {
+    for_each = local.decoded_configuration
+    iterator = each
+    content {
+      web_test_id = "${var.availability_prefix}-${each.value.appName}-${each.value.apiName}"
+      component_id = var.application_insights_id
+      failed_location_count = 1
+    }
+
+  }
+
+  dynamic "action" {
+    for_each = var.application_insights_action_group_ids
+
+    content {
+      action_group_id = action.value
+    }
+  }
+
+}
 

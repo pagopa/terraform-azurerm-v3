@@ -129,3 +129,24 @@ variable "monitoring_configuration_encoded" {
   description = "(Required) monitoring configuration provided in JSON string format (use jsonencode)"
 }
 
+
+variable "application_insights_id" {
+  type = string
+  description = "(Required) Application insight id where to apply the alerts"
+}
+
+
+variable "application_insights_action_group_ids" {
+  type        = list(string)
+  description = "(Required) Application insights action group ids"
+}
+
+variable "availability_prefix"{
+  type = string
+  description = "(Optional) Prefix used for prefixing availability test names"
+  default = "synthetic"
+  validation {
+    condition = length(var.availability_prefix) > 0
+    error_message = "availability_prefix must not be empty"
+  }
+}
