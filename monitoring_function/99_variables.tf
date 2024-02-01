@@ -19,35 +19,35 @@ variable "location" {
 
 variable "storage_account_settings" {
   type = object({
-    tier                     = optional(string, "Standard" ) #(Optional) Tier used for the backup storage account
-    replication_type         = optional(string, "ZRS" ) #(Optional) Replication type used for the backup storage account
-    kind                     = optional(string, "StorageV2" ) #(Optional) Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Defaults to StorageV2
-    backup_retention_days    = optional(number, 0 ) #(Optional) number of days for which the storage account is available for point in time recovery
-    backup_enabled           = optional(bool,   false )   # (Optional) enables storage account point in time recovery
-    private_endpoint_enabled = optional(bool,   false )   #(Optional) enables the creation and usage of private endpoint
-    table_private_dns_zone_id      = string # (Optional) table storage private dns zone id
+    tier                      = optional(string, "Standard")  #(Optional) Tier used for the backup storage account
+    replication_type          = optional(string, "ZRS")       #(Optional) Replication type used for the backup storage account
+    kind                      = optional(string, "StorageV2") #(Optional) Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Defaults to StorageV2
+    backup_retention_days     = optional(number, 0)           #(Optional) number of days for which the storage account is available for point in time recovery
+    backup_enabled            = optional(bool, false)         # (Optional) enables storage account point in time recovery
+    private_endpoint_enabled  = optional(bool, false)         #(Optional) enables the creation and usage of private endpoint
+    table_private_dns_zone_id = string                        # (Optional) table storage private dns zone id
   })
   default = {
-    tier                     = "Standard"
-    replication_type         = "ZRS"
-    kind                     = "StorageV2"
-    backup_retention_days    = 0
-    backup_enabled           = false
-    private_endpoint_enabled = false
-    table_private_dns_zone_id      = null
+    tier                      = "Standard"
+    replication_type          = "ZRS"
+    kind                      = "StorageV2"
+    backup_retention_days     = 0
+    backup_enabled            = false
+    private_endpoint_enabled  = false
+    table_private_dns_zone_id = null
   }
 }
 
 variable "job_settings" {
   type = object({
-    execution_timeout_seconds    = optional(number, 300) #(Optional) Job execution timeout, in seconds
+    execution_timeout_seconds    = optional(number, 300)         #(Optional) Job execution timeout, in seconds
     cron_scheduling              = optional(string, "* * * * *") #(Optional) Cron expression defining the execution scheduling of the monitoring function
-    cpu_requirement              = optional(number, 0.25) #(Optional) Decimal; cpu requirement
-    memory_requirement           = optional(string, "0.5Gi") #(Optional) Memory requirement
-    http_client_timeout          = optional(number, 0) #(Optional) Default http client timeout, in milliseconds
-    default_duration_limit       = optional(number, 10000) #(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds
+    cpu_requirement              = optional(number, 0.25)        #(Optional) Decimal; cpu requirement
+    memory_requirement           = optional(string, "0.5Gi")     #(Optional) Memory requirement
+    http_client_timeout          = optional(number, 0)           #(Optional) Default http client timeout, in milliseconds
+    default_duration_limit       = optional(number, 10000)       #(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds
     availability_prefix          = optional(string, "synthetic") #(Optional) Prefix used for prefixing availability test names
-    container_app_environment_id = string #(Required) If defined, the id of the container app environment tu be used to run the monitoring job. If provided, skips the creation of a dedicated subnet
+    container_app_environment_id = string                        #(Required) If defined, the id of the container app environment tu be used to run the monitoring job. If provided, skips the creation of a dedicated subnet
   })
   default = {
     execution_timeout_seconds    = 300
@@ -67,8 +67,8 @@ variable "job_settings" {
 
 variable "docker_settings" {
   type = object({
-    registry_url = optional(string,"ghcr.io")  #(Optional) Docker container registry url where to find the monitoring image
-    image_tag    = string #(Optional) Docker image tag
+    registry_url = optional(string, "ghcr.io")                           #(Optional) Docker container registry url where to find the monitoring image
+    image_tag    = string                                                #(Optional) Docker image tag
     image_name   = optional(string, "pagopa/azure-synthetic-monitoring") #(Optional) Docker image name
   })
   default = {

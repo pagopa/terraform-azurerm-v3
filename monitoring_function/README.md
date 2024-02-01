@@ -44,6 +44,7 @@ resource "azurerm_container_app_environment" "container_app_environment" {
   tags = var.tags
 }
 
+# basic
 module "monitoring_function" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//monitoring_function?ref=5cdc24a"
 
@@ -68,6 +69,51 @@ module "monitoring_function" {
     private_endpoint_enabled = false
     private_dns_zone_id      = null
   }
+  
+  monitoring_configuration_encoded = jsonencode( [{
+        "apiName" : "aks_ingress",
+        "appName": "microservice",
+        "url": "https://dev01.blueprint.internal.devopslab.pagopa.it/blueprint/v5-java-helm-complete-test/",
+        "type": "private",
+        "checkCertificate": true,
+        "method": "GET",
+        "expectedCodes": ["200-299", "303"],
+        "tags": {
+            "description": "AKS ingress tested from internal network"
+        },
+        "durationLimit": 1000
+    }] )
+
+  tags = var.tags
+}
+
+# with private endpoint
+module "monitoring_function" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//monitoring_function?ref=5cdc24a"
+
+  location = "northeurope"
+  prefix = "dvopla-d"
+  resource_group_name = azurerm_resource_group.monitor_rg.name
+
+  application_insight_name = azurerm_application_insights.application_insights.name
+  application_insight_rg_name = azurerm_application_insights.application_insights.resource_group_name
+  application_insights_action_group_ids = [azurerm_monitor_action_group.slack.id]
+
+  docker_settings = {
+    image_tag    = "beta-poc"
+  }
+
+  job_settings = {
+    cron_scheduling              = "* * * 8 *"
+    container_app_environment_id = azurerm_container_app_environment.monitoring_container_app_environment.id
+  }
+
+  storage_account_settings = {
+    private_endpoint_enabled = true
+    private_dns_zone_id      = azurerm_private_dns_zone.storage_account_table.id
+  }
+  
+  private_endpoint_subnet_id = module.private_endpoints_snet.id
   
   monitoring_configuration_encoded = jsonencode( [{
         "apiName" : "aks_ingress",
@@ -124,14 +170,14 @@ module "monitoring_function" {
 | <a name="input_application_insight_name"></a> [application\_insight\_name](#input\_application\_insight\_name) | (Required) name of the application insight instance where to publish metrics | `string` | n/a | yes |
 | <a name="input_application_insight_rg_name"></a> [application\_insight\_rg\_name](#input\_application\_insight\_rg\_name) | (Required) name of the application insight instance resource group where to publish metrics | `string` | n/a | yes |
 | <a name="input_application_insights_action_group_ids"></a> [application\_insights\_action\_group\_ids](#input\_application\_insights\_action\_group\_ids) | (Required) Application insights action group ids | `list(string)` | n/a | yes |
-| <a name="input_docker_settings"></a> [docker\_settings](#input\_docker\_settings) | n/a | <pre>object({<br>    registry_url = string #(Optional) Docker container registry url where to find the monitoring image<br>    image_tag    = string #(Optional) Docker image tag<br>    image_name   = string #(Optional) Docker image name<br>  })</pre> | <pre>{<br>  "image_name": "pagopa/azure-synthetic-monitoring",<br>  "image_tag": "1.0.0",<br>  "registry_url": "ghcr.io"<br>}</pre> | no |
-| <a name="input_job_settings"></a> [job\_settings](#input\_job\_settings) | n/a | <pre>object({<br>    execution_timeout_seconds    = number #(Optional) Job execution timeout, in seconds<br>    cron_scheduling              = string #(Optional) Cron expression defining the execution scheduling of the monitoring function<br>    cpu_requirement              = number #(Optional) Decimal; cpu requirement<br>    memory_requirement           = string #(Optional) Memory requirement<br>    http_client_timeout          = number #(Optional) Default http client timeout, in milliseconds<br>    default_duration_limit       = number #(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds<br>    availability_prefix          = string #(Optional) Prefix used for prefixing availability test names<br>    container_app_environment_id = string #(Required) If defined, the id of the container app environment tu be used to run the monitoring job. If provided, skips the creation of a dedicated subnet<br>  })</pre> | <pre>{<br>  "availability_prefix": "synthetic",<br>  "container_app_environment_id": null,<br>  "cpu_requirement": 0.25,<br>  "cron_scheduling": "* * * * *",<br>  "default_duration_limit": 10000,<br>  "execution_timeout_seconds": 300,<br>  "http_client_timeout": 0,<br>  "memory_requirement": "0.5Gi"<br>}</pre> | no |
+| <a name="input_docker_settings"></a> [docker\_settings](#input\_docker\_settings) | n/a | <pre>object({<br>    registry_url = optional(string, "ghcr.io")                           #(Optional) Docker container registry url where to find the monitoring image<br>    image_tag    = string                                                #(Optional) Docker image tag<br>    image_name   = optional(string, "pagopa/azure-synthetic-monitoring") #(Optional) Docker image name<br>  })</pre> | <pre>{<br>  "image_name": "pagopa/azure-synthetic-monitoring",<br>  "image_tag": "1.0.0",<br>  "registry_url": "ghcr.io"<br>}</pre> | no |
+| <a name="input_job_settings"></a> [job\_settings](#input\_job\_settings) | n/a | <pre>object({<br>    execution_timeout_seconds    = optional(number, 300)         #(Optional) Job execution timeout, in seconds<br>    cron_scheduling              = optional(string, "* * * * *") #(Optional) Cron expression defining the execution scheduling of the monitoring function<br>    cpu_requirement              = optional(number, 0.25)        #(Optional) Decimal; cpu requirement<br>    memory_requirement           = optional(string, "0.5Gi")     #(Optional) Memory requirement<br>    http_client_timeout          = optional(number, 0)           #(Optional) Default http client timeout, in milliseconds<br>    default_duration_limit       = optional(number, 10000)       #(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds<br>    availability_prefix          = optional(string, "synthetic") #(Optional) Prefix used for prefixing availability test names<br>    container_app_environment_id = string                        #(Required) If defined, the id of the container app environment tu be used to run the monitoring job. If provided, skips the creation of a dedicated subnet<br>  })</pre> | <pre>{<br>  "availability_prefix": "synthetic",<br>  "container_app_environment_id": null,<br>  "cpu_requirement": 0.25,<br>  "cron_scheduling": "* * * * *",<br>  "default_duration_limit": 10000,<br>  "execution_timeout_seconds": 300,<br>  "http_client_timeout": 0,<br>  "memory_requirement": "0.5Gi"<br>}</pre> | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Resource location | `string` | n/a | yes |
 | <a name="input_monitoring_configuration_encoded"></a> [monitoring\_configuration\_encoded](#input\_monitoring\_configuration\_encoded) | (Required) monitoring configuration provided in JSON string format (use jsonencode) | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | (Required) Prefix used in the Velero dedicated resource names | `string` | n/a | yes |
 | <a name="input_private_endpoint_subnet_id"></a> [private\_endpoint\_subnet\_id](#input\_private\_endpoint\_subnet\_id) | (Optional) Subnet id where to create the private endpoint for backups storage account | `string` | `null` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) Name of the resource group in which the function and its related components are created | `string` | n/a | yes |
-| <a name="input_storage_account_settings"></a> [storage\_account\_settings](#input\_storage\_account\_settings) | n/a | <pre>object({<br>    tier                     = string #(Optional) Tier used for the backup storage account<br>    replication_type         = string #(Optional) Replication type used for the backup storage account<br>    kind                     = string #(Optional) Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Defaults to StorageV2<br>    backup_retention_days    = number #(Optional) number of days for which the storage account is available for point in time recovery<br>    backup_enabled           = bool   # (Optional) enables storage account point in time recovery<br>    private_endpoint_enabled = bool   #(Optional) enables the creation and usage of private endpoint<br>    private_dns_zone_id      = string # (Optional) table storage private dns zone id<br>  })</pre> | <pre>{<br>  "backup_enabled": false,<br>  "backup_retention_days": 0,<br>  "kind": "StorageV2",<br>  "private_dns_zone_id": null,<br>  "private_endpoint_enabled": false,<br>  "replication_type": "ZRS",<br>  "tier": "Standard"<br>}</pre> | no |
+| <a name="input_storage_account_settings"></a> [storage\_account\_settings](#input\_storage\_account\_settings) | n/a | <pre>object({<br>    tier                      = optional(string, "Standard")  #(Optional) Tier used for the backup storage account<br>    replication_type          = optional(string, "ZRS")       #(Optional) Replication type used for the backup storage account<br>    kind                      = optional(string, "StorageV2") #(Optional) Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Defaults to StorageV2<br>    backup_retention_days     = optional(number, 0)           #(Optional) number of days for which the storage account is available for point in time recovery<br>    backup_enabled            = optional(bool, false)         # (Optional) enables storage account point in time recovery<br>    private_endpoint_enabled  = optional(bool, false)         #(Optional) enables the creation and usage of private endpoint<br>    table_private_dns_zone_id = string                        # (Optional) table storage private dns zone id<br>  })</pre> | <pre>{<br>  "backup_enabled": false,<br>  "backup_retention_days": 0,<br>  "kind": "StorageV2",<br>  "private_endpoint_enabled": false,<br>  "replication_type": "ZRS",<br>  "table_private_dns_zone_id": null,<br>  "tier": "Standard"<br>}</pre> | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
 
 ## Outputs
