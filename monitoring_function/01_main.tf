@@ -147,6 +147,10 @@ resource "azapi_resource" "monitoring_app_job" {
               {
                 name  = "HTTP_CLIENT_TIMEOUT"
                 value = tostring(var.job_settings.http_client_timeout)
+              },
+              {
+                name  = "LOCATION"
+                value = var.location
               }
 
             ]
