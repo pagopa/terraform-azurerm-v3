@@ -216,3 +216,45 @@ resource "azurerm_monitor_metric_alert" "alert" {
 
 }
 
+
+
+resource "azurerm_monitor_metric_alert" "self_alert" {
+
+  name                = "availability-synthetic-monitoring-function"
+  resource_group_name = var.resource_group_name
+  scopes              = [data.azurerm_application_insights.app_insight.id]
+  description         = "Monitors the availability of the synthetic monitoring function"
+  severity            = 0
+  frequency           = "PT1M"
+  auto_mitigate       = false
+  enabled             = true
+
+  criteria {
+    aggregation      = "Average"
+    metric_name      = "availabilityResults/availabilityPercentage"
+    metric_namespace = "microsoft.insights/components"
+    operator         = "LessThan"
+    threshold        = 100
+    dimension {
+      name     = "availabilityResult/name"
+      operator = "Include"
+      values   = ["${var.job_settings.availability_prefix}-monitoring-function"]
+    }
+    dimension {
+      name     = "availabilityResult/location"
+      operator = "Include"
+      values   = [var.location]
+    }
+  }
+
+
+  dynamic "action" {
+    for_each = var.application_insights_action_group_ids
+
+    content {
+      action_group_id = action.value
+    }
+  }
+
+}
+
