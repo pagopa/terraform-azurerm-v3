@@ -103,3 +103,9 @@ variable "monitoring_configuration_encoded" {
   type        = string
   description = "(Required) monitoring configuration provided in JSON string format (use jsonencode)"
 }
+
+variable "self_alert_enabled" {
+  type = bool
+  description = "(Optional) if true, enables the alert on the self monitoring availability metric"
+  default = true
+}

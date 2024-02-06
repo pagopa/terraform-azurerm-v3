@@ -185,7 +185,7 @@ resource "azurerm_monitor_metric_alert" "alert" {
   severity            = 0
   frequency           = "PT1M"
   auto_mitigate       = false
-  enabled             = true
+  enabled             = lookup(local.decoded_configuration[count.index], "alertEnabled", true)
 
   criteria {
     aggregation      = "Average"
@@ -219,7 +219,7 @@ resource "azurerm_monitor_metric_alert" "alert" {
 
 
 resource "azurerm_monitor_metric_alert" "self_alert" {
-
+  count               = var.self_alert_enabled ? 1 : 0
   name                = "availability-synthetic-monitoring-function"
   resource_group_name = var.resource_group_name
   scopes              = [data.azurerm_application_insights.app_insight.id]

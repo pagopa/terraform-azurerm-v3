@@ -11,6 +11,8 @@ This is the minimum configuration required to use the monitoring function
 Field `monitoring_configuration_encoded` is required to be passed using `jsonencode()` function
 details on its content can be found [here](https://github.com/pagopa/azure-synthetic-monitoring)
 
+**NB**: In addition to the properties defined above, `alertEnabled` can be specified to disable the alert on the specific monitoring configuration. See the example below for more details
+
 This module creates a table storage to save the provided monitoring configuration; if the private endpoint is enabled it requires the `table` private dns zone group
 
 ```hcl
@@ -69,7 +71,7 @@ module "monitoring_function" {
     private_endpoint_enabled = false
     private_dns_zone_id      = null
   }
-  
+
   monitoring_configuration_encoded = jsonencode( [{
         "apiName" : "aks_ingress",
         "appName": "microservice",
@@ -81,7 +83,8 @@ module "monitoring_function" {
         "tags": {
             "description": "AKS ingress tested from internal network"
         },
-        "durationLimit": 1000
+        "durationLimit": 1000,
+        "alertEnabled": false
     }] )
 
   tags = var.tags
@@ -126,8 +129,12 @@ module "monitoring_function" {
         "tags": {
             "description": "AKS ingress tested from internal network"
         },
-        "durationLimit": 1000
+        "durationLimit": 1000,
+        "alertEnabled": false
     }] )
+  
+    # disables the alert on the availability metric monitoring this job itself
+    self_alert_enabled = false
 
   tags = var.tags
 }
