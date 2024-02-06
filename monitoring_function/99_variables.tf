@@ -44,7 +44,7 @@ variable "job_settings" {
     cron_scheduling              = optional(string, "* * * * *") #(Optional) Cron expression defining the execution scheduling of the monitoring function
     cpu_requirement              = optional(number, 0.25)        #(Optional) Decimal; cpu requirement
     memory_requirement           = optional(string, "0.5Gi")     #(Optional) Memory requirement
-    http_client_timeout          = optional(number, 30000)           #(Optional) Default http client timeout, in milliseconds
+    http_client_timeout          = optional(number, 30000)       #(Optional) Default http client timeout, in milliseconds
     default_duration_limit       = optional(number, 10000)       #(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds
     availability_prefix          = optional(string, "synthetic") #(Optional) Prefix used for prefixing availability test names
     container_app_environment_id = string                        #(Required) If defined, the id of the container app environment tu be used to run the monitoring job. If provided, skips the creation of a dedicated subnet
@@ -105,7 +105,7 @@ variable "monitoring_configuration_encoded" {
 }
 
 variable "self_alert_enabled" {
-  type = bool
+  type        = bool
   description = "(Optional) if true, enables the alert on the self monitoring availability metric"
-  default = true
+  default     = true
 }
