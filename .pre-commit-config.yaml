@@ -2,11 +2,11 @@ repos:
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.86.0
     hooks:
-      # - id: terraform_fmt
-      # - id: terraform_docs
-      #   args:
-      #     - --args=--hide providers
-      # - id: terraform_tfsec
+      - id: terraform_fmt
+      - id: terraform_docs
+        args:
+          - --args=--hide providers
+      - id: terraform_tfsec
       - id: terraform_validate
         exclude: '(.*\/tests|.utils)'
         args:
