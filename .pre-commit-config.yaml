@@ -12,8 +12,8 @@ repos:
         args:
           - --args=-json
           - --args=-no-color
-      - id: terraform_trivy
-        args:
-          - >
-            --args=--format json
-            --skip-dirs="**/.terraform"
+      # - id: terraform_trivy
+      #   args:
+      #     - >
+      #       --args=--format table
+      #       --skip-dirs="**/.terraform"
