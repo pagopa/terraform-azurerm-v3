@@ -69,7 +69,6 @@ module "dns_forwarder" {
 | <a name="input_key_vault_id"></a> [key\_vault\_id](#input\_key\_vault\_id) | (Required) The ID of the Key Vault where the Secret should be created. | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the Virtual Machine Scale Set, Load Balancer. Changing this forces a new resource to be created. | `string` | n/a | yes |
-| <a name="input_object_id_group_ad"></a> [object\_id\_group\_ad](#input\_object\_id\_group\_ad) | (Optional) The ID of the group object that can read/write access to the kv. | `string` | `null` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The name of the Resource Group in which the resources should be exist. | `string` | n/a | yes |
 | <a name="input_source_image_name"></a> [source\_image\_name](#input\_source\_image\_name) | (Required) The name of an Image which each Virtual Machine in this Scale Set should be based on. It must be stored in the same subscription & resource group of this resource | `string` | n/a | yes |
 | <a name="input_static_address_lb"></a> [static\_address\_lb](#input\_static\_address\_lb) | (Optional) The static address of load balancer. | `string` | `null` | no |
