@@ -6,9 +6,14 @@ repos:
       - id: terraform_docs
         args:
           - --args=--hide providers
-      - id: terraform_tfsec
+      #validate will exclude folders that contains xyz/test... and .utils that contains only scripts stuffs
       - id: terraform_validate
         exclude: '(.*\/tests|.utils)'
         args:
           - --args=-json
           - --args=-no-color
+      - id: terraform_trivy
+        args:
+          - >
+            --args=--format json
+            --skip-dirs="**/.terraform"
