@@ -6,9 +6,13 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.30.0, <= 3.85.0"
     }
-    helm = {
-      source  = "hashicorp/helm"
-      version = "<= 2.12.1"
+    null = {
+      source  = "hashicorp/null"
+      version = "<= 3.2.1"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "<= 3.6.0"
     }
   }
 }

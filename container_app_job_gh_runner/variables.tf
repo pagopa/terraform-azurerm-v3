@@ -54,7 +54,7 @@ variable "container" {
   default = {
     cpu    = 0.5
     memory = "1Gi"
-    image  = "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:a4ddc89b5a65c367442b024c4ac0edbfdcb363a731727b88853b3df0dcd2a711"
+    image  = "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:8834704c1697dd26c1a1f867626b2d5206c8787dcbb1ffd25c9de77f21c101b2"
   }
 
   description = "Job Container configuration"
