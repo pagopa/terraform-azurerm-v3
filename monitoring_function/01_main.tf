@@ -172,7 +172,16 @@ resource "azapi_resource" "monitoring_app_job" {
   })
 }
 
-
+locals {
+  default_alert_configuration = {
+    enabled     = true,
+    severity    = 0,
+    frequency   = "PT1M"
+    threshold   = 100
+    operator    = "LessThan"
+    aggregation = "Average"
+  }
+}
 
 
 resource "azurerm_monitor_metric_alert" "alert" {
@@ -182,17 +191,17 @@ resource "azurerm_monitor_metric_alert" "alert" {
   resource_group_name = var.resource_group_name
   scopes              = [data.azurerm_application_insights.app_insight.id]
   description         = "Monitors the availability of ${local.decoded_configuration[count.index].appName} ${local.decoded_configuration[count.index].apiName} from ${local.decoded_configuration[count.index].type}"
-  severity            = 0
-  frequency           = "PT1M"
+  severity            = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "severity", local.default_alert_configuration.severity)
+  frequency           = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "frequency", local.default_alert_configuration.frequency)
   auto_mitigate       = false
-  enabled             = lookup(local.decoded_configuration[count.index], "alertEnabled", true)
+  enabled             = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "enabled", local.default_alert_configuration.enabled)
 
   criteria {
-    aggregation      = "Average"
+    aggregation      = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "aggregation", local.default_alert_configuration.aggregation)
     metric_name      = "availabilityResults/availabilityPercentage"
     metric_namespace = "microsoft.insights/components"
-    operator         = "LessThan"
-    threshold        = 100
+    operator         = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "operator", local.default_alert_configuration.operator)
+    threshold        = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "threshold", local.default_alert_configuration.threshold)
     dimension {
       name     = "availabilityResult/name"
       operator = "Include"
@@ -223,17 +232,17 @@ resource "azurerm_monitor_metric_alert" "self_alert" {
   resource_group_name = var.resource_group_name
   scopes              = [data.azurerm_application_insights.app_insight.id]
   description         = "Monitors the availability of the synthetic monitoring function"
-  severity            = 0
-  frequency           = "PT1M"
+  severity            = var.self_alert_configuration.severity
+  frequency           = var.self_alert_configuration.frequency
   auto_mitigate       = false
-  enabled             = var.self_alert_enabled
+  enabled             = var.self_alert_configuration.enabled
 
   criteria {
-    aggregation      = "Average"
+    aggregation      = var.self_alert_configuration.aggregation
     metric_name      = "availabilityResults/availabilityPercentage"
     metric_namespace = "microsoft.insights/components"
-    operator         = "LessThan"
-    threshold        = 100
+    operator         = var.self_alert_configuration.operator
+    threshold        = var.self_alert_configuration.threshold
     dimension {
       name     = "availabilityResult/name"
       operator = "Include"

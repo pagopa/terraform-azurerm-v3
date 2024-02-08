@@ -104,8 +104,24 @@ variable "monitoring_configuration_encoded" {
   description = "(Required) monitoring configuration provided in JSON string format (use jsonencode)"
 }
 
-variable "self_alert_enabled" {
-  type        = bool
-  description = "(Optional) if true, enables the alert on the self monitoring availability metric"
-  default     = true
+
+variable "self_alert_configuration" {
+  type = object({
+    enabled     = optional(bool, true)         # "(Optional) if true, enables the alert on the self monitoring availability metric"
+    frequency   = optional(string, "PT1M")     # (Optional) The evaluation frequency of this Metric Alert, represented in ISO 8601 duration format. Possible values are PT1M, PT5M, PT15M, PT30M and PT1H
+    severity    = optional(number, 0)          # (Optional) The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4
+    threshold   = optional(number, 100)        # (Optional) The criteria threshold value that activates the alert
+    operator    = optional(string, "LessThan") # (Optional) The criteria operator. Possible values are Equals, GreaterThan, GreaterThanOrEqual, LessThan and LessThanOrEqual
+    aggregation = optional(string, "Average")  # (Required) The statistic that runs over the metric values. Possible values are Average, Count, Minimum, Maximum and Total.
+  })
+  description = "Configuration for the alert on the job itself"
+  default = {
+    enabled     = true
+    frequency   = "PT1M"
+    severity    = 0
+    threshold   = 100
+    operator    = "LessThan"
+    aggregation = "Average"
+  }
 }
+
