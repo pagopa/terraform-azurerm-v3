@@ -18,11 +18,12 @@ In addition to the properties defined above, `alertConfiguration` can be specifi
 That's an example of the properties that can be specified, containing the default values that will be used if not specified
 ```json
 {
-    "enabled" : true,
-    "severity" : 0,
-    "frequency" : "PT1M",
-    "threshold" : 100,
-    "operator" : "LessThan"
+    "enabled" : true, # (Optional) enables the alert
+    "severity" : 0,   # (Optional) The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4
+    "frequency" : "PT1M", # (Optional) The evaluation frequency of this Metric Alert, represented in ISO 8601 duration format. Possible values are PT1M, PT5M, PT15M, PT30M and PT1H
+    "threshold" : 100, # (Optional) The criteria threshold value that activates the alert
+    "operator" : "LessThan" # (Optional) The criteria operator. Possible values are Equals, GreaterThan, GreaterThanOrEqual, LessThan and LessThanOrEqual
+    "aggregation": "Average" # (Required) The statistic that runs over the metric values. Possible values are Average, Count, Minimum, Maximum and Total.
 }
 ```
 
@@ -150,7 +151,9 @@ module "monitoring_function" {
     }] )
   
     # disables the alert on the availability metric monitoring this job itself
-    self_alert_enabled = false
+    self_alert_configuration = {
+      enabled = false
+    }
 
   tags = var.tags
 }
@@ -201,7 +204,7 @@ module "monitoring_function" {
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | (Required) Prefix used in the Velero dedicated resource names | `string` | n/a | yes |
 | <a name="input_private_endpoint_subnet_id"></a> [private\_endpoint\_subnet\_id](#input\_private\_endpoint\_subnet\_id) | (Optional) Subnet id where to create the private endpoint for backups storage account | `string` | `null` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) Name of the resource group in which the function and its related components are created | `string` | n/a | yes |
-| <a name="input_self_alert_enabled"></a> [self\_alert\_enabled](#input\_self\_alert\_enabled) | (Optional) if true, enables the alert on the self monitoring availability metric | `bool` | `true` | no |
+| <a name="input_self_alert_configuration"></a> [self\_alert\_configuration](#input\_self\_alert\_configuration) | Configuration for the alert on the job itself | <pre>object({<br>    enabled     = optional(bool, true)         # "(Optional) if true, enables the alert on the self monitoring availability metric"<br>    frequency   = optional(string, "PT1M")     # (Optional) The evaluation frequency of this Metric Alert, represented in ISO 8601 duration format. Possible values are PT1M, PT5M, PT15M, PT30M and PT1H<br>    severity    = optional(number, 0)          # (Optional) The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4<br>    threshold   = optional(number, 100)        # (Optional) The criteria threshold value that activates the alert<br>    operator    = optional(string, "LessThan") # (Optional) The criteria operator. Possible values are Equals, GreaterThan, GreaterThanOrEqual, LessThan and LessThanOrEqual<br>    aggregation = optional(string, "Average")  # (Required) The statistic that runs over the metric values. Possible values are Average, Count, Minimum, Maximum and Total.<br>  })</pre> | <pre>{<br>  "aggregation": "Average",<br>  "enabled": true,<br>  "frequency": "PT1M",<br>  "operator": "LessThan",<br>  "severity": 0,<br>  "threshold": 100<br>}</pre> | no |
 | <a name="input_storage_account_settings"></a> [storage\_account\_settings](#input\_storage\_account\_settings) | n/a | <pre>object({<br>    tier                      = optional(string, "Standard")  #(Optional) Tier used for the backup storage account<br>    replication_type          = optional(string, "ZRS")       #(Optional) Replication type used for the backup storage account<br>    kind                      = optional(string, "StorageV2") #(Optional) Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Defaults to StorageV2<br>    backup_retention_days     = optional(number, 0)           #(Optional) number of days for which the storage account is available for point in time recovery<br>    backup_enabled            = optional(bool, false)         # (Optional) enables storage account point in time recovery<br>    private_endpoint_enabled  = optional(bool, false)         #(Optional) enables the creation and usage of private endpoint<br>    table_private_dns_zone_id = string                        # (Optional) table storage private dns zone id<br>  })</pre> | <pre>{<br>  "backup_enabled": false,<br>  "backup_retention_days": 0,<br>  "kind": "StorageV2",<br>  "private_endpoint_enabled": false,<br>  "replication_type": "ZRS",<br>  "table_private_dns_zone_id": null,<br>  "tier": "Standard"<br>}</pre> | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
 
