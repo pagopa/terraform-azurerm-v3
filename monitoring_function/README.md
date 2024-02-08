@@ -11,7 +11,20 @@ This is the minimum configuration required to use the monitoring function
 Field `monitoring_configuration_encoded` is required to be passed using `jsonencode()` function
 details on its content can be found [here](https://github.com/pagopa/azure-synthetic-monitoring)
 
-**NB**: In addition to the properties defined above, `alertEnabled` can be specified to disable the alert on the specific monitoring configuration. See the example below for more details
+### Alert configuration
+
+In addition to the properties defined above, `alertConfiguration` can be specified to customize the alert associated to the monitored api
+
+That's an example of the properties that can be specified, containing the default values that will be used if not specified
+```json
+{
+    "enabled" : true,
+    "severity" : 0,
+    "frequency" : "PT1M",
+    "threshold" : 100,
+    "operator" : "LessThan"
+}
+```
 
 This module creates a table storage to save the provided monitoring configuration; if the private endpoint is enabled it requires the `table` private dns zone group
 
@@ -83,14 +96,13 @@ module "monitoring_function" {
         "tags": {
             "description": "AKS ingress tested from internal network"
         },
-        "durationLimit": 1000,
-        "alertEnabled": false
+        "durationLimit": 1000
     }] )
 
   tags = var.tags
 }
 
-# with private endpoint
+# with private endpoint and custom alert configuration
 module "monitoring_function" {
   source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//monitoring_function?ref=5cdc24a"
 
@@ -130,7 +142,11 @@ module "monitoring_function" {
             "description": "AKS ingress tested from internal network"
         },
         "durationLimit": 1000,
-        "alertEnabled": false
+        # partial override of alert configuration
+        "alertConfiguration": {
+          "enabled" : false,
+          "severity": 0
+        }
     }] )
   
     # disables the alert on the availability metric monitoring this job itself
