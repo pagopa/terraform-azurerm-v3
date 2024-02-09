@@ -48,6 +48,7 @@ variable "job_settings" {
     default_duration_limit       = optional(number, 10000)       #(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds
     availability_prefix          = optional(string, "synthetic") #(Optional) Prefix used for prefixing availability test names
     container_app_environment_id = string                        #(Required) If defined, the id of the container app environment tu be used to run the monitoring job. If provided, skips the creation of a dedicated subnet
+    cert_validity_range_days     = optional(number, 7)           #(Optional) Number of days before the expiration date of a certificate over which the check is considered success
   })
   default = {
     execution_timeout_seconds    = 300
@@ -58,6 +59,7 @@ variable "job_settings" {
     default_duration_limit       = 10000
     availability_prefix          = "synthetic"
     container_app_environment_id = null
+    cert_validity_range_days     = 7
   }
   validation {
     condition     = length(var.job_settings.availability_prefix) > 0

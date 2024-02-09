@@ -151,6 +151,10 @@ resource "azapi_resource" "monitoring_app_job" {
               {
                 name  = "LOCATION"
                 value = var.location
+              },
+              {
+                name  = "CERT_VALIDITY_RANGE_DAYS"
+                value = tostring(var.job_settings.cert_validity_range_days)
               }
 
             ]
