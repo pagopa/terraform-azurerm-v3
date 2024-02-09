@@ -66,6 +66,8 @@ resource "azurerm_storage_table_entity" "monitoring_configuration" {
     "headers"          = lookup(local.decoded_configuration[count.index], "headers", null) != null ? jsonencode(local.decoded_configuration[count.index].headers) : null,
     "body"             = lookup(local.decoded_configuration[count.index], "body", null) != null ? jsonencode(local.decoded_configuration[count.index].body) : null
     "tags"             = lookup(local.decoded_configuration[count.index], "tags", null) != null ? jsonencode(local.decoded_configuration[count.index].tags) : null
+    "bodyCompareStrategy" = lookup(local.decoded_configuration[count.index], "bodyCompareStrategy", null) != null ? jsonencode(local.decoded_configuration[count.index].bodyCompareStrategy) : null
+    "expectedBody"        = lookup(local.decoded_configuration[count.index], "expectedBody", null) != null ? jsonencode(local.decoded_configuration[count.index].expectedBody) : null
 
   }
 }
