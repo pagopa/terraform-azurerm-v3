@@ -66,6 +66,8 @@ resource "azurerm_storage_table_entity" "monitoring_configuration" {
     "headers"          = lookup(local.decoded_configuration[count.index], "headers", null) != null ? jsonencode(local.decoded_configuration[count.index].headers) : null,
     "body"             = lookup(local.decoded_configuration[count.index], "body", null) != null ? jsonencode(local.decoded_configuration[count.index].body) : null
     "tags"             = lookup(local.decoded_configuration[count.index], "tags", null) != null ? jsonencode(local.decoded_configuration[count.index].tags) : null
+    "bodyCompareStrategy" = lookup(local.decoded_configuration[count.index], "bodyCompareStrategy", null) != null ? jsonencode(local.decoded_configuration[count.index].bodyCompareStrategy) : null
+    "expectedBody"        = lookup(local.decoded_configuration[count.index], "expectedBody", null) != null ? jsonencode(local.decoded_configuration[count.index].expectedBody) : null
 
   }
 }
@@ -151,6 +153,10 @@ resource "azapi_resource" "monitoring_app_job" {
               {
                 name  = "LOCATION"
                 value = var.location
+              },
+              {
+                name  = "CERT_VALIDITY_RANGE_DAYS"
+                value = tostring(var.job_settings.cert_validity_range_days)
               }
 
             ]
