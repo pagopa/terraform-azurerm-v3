@@ -8,7 +8,7 @@ details on the function can be found [here](https://github.com/pagopa/azure-synt
 
 This is the minimum configuration required to use the monitoring function
 
-Field `monitoring_configuration_encoded` is required to be passed using `jsonencode()` function
+Field `monitoring_configuration_encoded` is required to be passed as a string, using  `jsonencode(<json content>)` function or `file(<json_file_path>)` function
 details on its content can be found [here](https://github.com/pagopa/azure-synthetic-monitoring)
 
 ### Alert configuration
