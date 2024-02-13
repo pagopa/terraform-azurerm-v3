@@ -87,8 +87,8 @@ module "monitoring_function" {
   }
 
   monitoring_configuration_encoded = jsonencode( [{
-        "apiName" : "aks_ingress",
-        "appName": "microservice",
+        "apiName" : "getSomething",
+        "appName": "myService",
         "url": "https://dev01.blueprint.internal.devopslab.pagopa.it/blueprint/v5-java-helm-complete-test/",
         "type": "private",
         "checkCertificate": true,
@@ -132,8 +132,8 @@ module "monitoring_function" {
   private_endpoint_subnet_id = module.private_endpoints_snet.id
   
   monitoring_configuration_encoded = jsonencode( [{
-        "apiName" : "aks_ingress",
-        "appName": "microservice",
+        "apiName" : "getSomething",
+        "appName": "myService",
         "url": "https://dev01.blueprint.internal.devopslab.pagopa.it/blueprint/v5-java-helm-complete-test/",
         "type": "private",
         "checkCertificate": true,
