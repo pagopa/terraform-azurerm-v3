@@ -193,7 +193,7 @@ locals {
 resource "azurerm_monitor_metric_alert" "alert" {
   count = length(local.decoded_configuration)
 
-  name                = "availability-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"
+  name                = "availability-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}-${local.decoded_configuration[count.index].type}"
   resource_group_name = var.resource_group_name
   scopes              = [data.azurerm_application_insights.app_insight.id]
   description         = "Monitors the availability of ${local.decoded_configuration[count.index].appName} ${local.decoded_configuration[count.index].apiName} from ${local.decoded_configuration[count.index].type}"
