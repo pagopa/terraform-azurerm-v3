@@ -9,6 +9,12 @@ data "azurerm_resource_group" "target_resource_group" {
   name = var.resource_group_name
 }
 
+data "azurerm_virtual_network" "build_vnet" {
+  name                = var.build_vnet_name
+  resource_group_name = var.build_vnet_rg_name
+}
+
+
 resource "random_id" "rg_randomizer" {
   keepers = {
     image_name    = var.image_name
@@ -60,6 +66,12 @@ resource "azurerm_role_assignment" "packer_sp_build_rg_role" {
   principal_id         = azuread_service_principal.packer_sp.object_id
 }
 
+resource "azurerm_role_assignment" "packer_sp_build_vnet_role" {
+  scope                = data.azurerm_virtual_network.build_vnet.id
+  role_definition_name = "Network Contributor"
+  principal_id         = azuread_service_principal.packer_sp.object_id
+}
+
 
 resource "null_resource" "build_packer_image" {
 
@@ -106,6 +118,9 @@ resource "null_resource" "build_packer_image" {
     -var "client_id=${azuread_application.packer_application.application_id}" \
     -var "client_secret=${azuread_application_password.velero_application_password.value}" \
     -var "build_rg_name=${azurerm_resource_group.build_rg.name}" \
+    -var "build_vnet_name=${var.build_vnet_name}" \
+    -var "build_vnet_subnet_name=${var.build_subnet_name}" \
+    -var "build_vnet_rg_name=${var.build_vnet_rg_name}" \
     .
     EOT
   }

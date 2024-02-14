@@ -73,3 +73,18 @@ variable "build_rg_name" {
   description = "(Optional) Packer build temporary resource group name"
   default     = "tmp-packer-build"
 }
+
+variable "build_vnet_name" {
+  type        = string
+  description = "(Required) Packer build vnet name"
+}
+
+variable "build_subnet_name" {
+  type        = string
+  description = "(Required) Packer build subnet name"
+}
+
+variable "build_vnet_rg_name" {
+  type        = string
+  description = "(Required) Packer build vnet rg name"
+}
