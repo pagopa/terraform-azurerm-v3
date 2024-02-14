@@ -37,6 +37,12 @@ module "azdoa_custom_image" {
   subscription_id     = data.azurerm_subscription.current.subscription_id
   prefix              = "devopla"
   
+  build_vnet_name     = "my-vnet-name" 
+  build_subnet_name   = "my-subnet-name"  
+  build_vnet_rg_name  = "vnet-rg-name"
+  admin_group_name    = "admin-group-name"
+
+  
   tags = var.tags
 }
 
