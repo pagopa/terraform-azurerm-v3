@@ -40,7 +40,6 @@ module "azdoa_custom_image" {
   build_vnet_name     = "my-vnet-name" 
   build_subnet_name   = "my-subnet-name"  
   build_vnet_rg_name  = "vnet-rg-name"
-  admin_group_name    = "admin-group-name"
 
   
   tags = var.tags
@@ -71,12 +70,14 @@ No modules.
 | [azuread_service_principal_password.packer_principal_password](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal_password) | resource |
 | [azurerm_resource_group.build_rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_role_assignment.packer_sp_build_rg_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_role_assignment.packer_sp_build_vnet_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.packer_sp_rg_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.packer_sp_sub_reader_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [null_resource.build_packer_image](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [random_id.rg_randomizer](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
 | [azurerm_resource_group.target_resource_group](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
+| [azurerm_virtual_network.build_vnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_network) | data source |
 
 ## Inputs
 
@@ -87,6 +88,9 @@ No modules.
 | <a name="input_base_image_sku"></a> [base\_image\_sku](#input\_base\_image\_sku) | (Optional) - https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine_scale_set#source_image_reference | `string` | `"22_04-lts-gen2"` | no |
 | <a name="input_base_image_version"></a> [base\_image\_version](#input\_base\_image\_version) | (Optional) - https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine_scale_set#source_image_reference | `string` | `"latest"` | no |
 | <a name="input_build_rg_name"></a> [build\_rg\_name](#input\_build\_rg\_name) | (Optional) Packer build temporary resource group name | `string` | `"tmp-packer-build"` | no |
+| <a name="input_build_subnet_name"></a> [build\_subnet\_name](#input\_build\_subnet\_name) | (Required) Packer build subnet name | `string` | n/a | yes |
+| <a name="input_build_vnet_name"></a> [build\_vnet\_name](#input\_build\_vnet\_name) | (Required) Packer build vnet name | `string` | n/a | yes |
+| <a name="input_build_vnet_rg_name"></a> [build\_vnet\_rg\_name](#input\_build\_vnet\_rg\_name) | (Required) Packer build vnet rg name | `string` | n/a | yes |
 | <a name="input_force_replacement"></a> [force\_replacement](#input\_force\_replacement) | (Optional) Wheather if the image should be deleted and recreated even if already existing | `bool` | `false` | no |
 | <a name="input_image_name"></a> [image\_name](#input\_image\_name) | (Required) name assigned to the generated image. Note that the pair <image\_name, image\_version> must be unique and not already existing | `string` | n/a | yes |
 | <a name="input_image_version"></a> [image\_version](#input\_image\_version) | (Required) Version assigned to the generated image. Note that the pair <image\_name, image\_version> must be unique and not already existing | `string` | n/a | yes |
