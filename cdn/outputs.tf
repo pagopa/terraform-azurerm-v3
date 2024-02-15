@@ -1,5 +1,14 @@
-output "id" {
+output "endpoint_id" {
   value = azurerm_cdn_endpoint.this.id
+}
+
+output "id" {
+  value       = azurerm_cdn_endpoint.this.id
+  description = "Deprecated, use endpoint_id instead."
+}
+
+output "profile_id" {
+  value = azurerm_cdn_profile.this.id
 }
 
 locals {

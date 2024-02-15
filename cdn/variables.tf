@@ -340,3 +340,8 @@ variable "storage_account_nested_items_public" {
   default     = true
   description = "(Optional) reflects to property 'allow_nested_items_to_be_public' on storage account module"
 }
+
+variable "log_analytics_workspace_id" {
+  type        = string
+  description = "Log Analytics Workspace id to send logs to"
+}

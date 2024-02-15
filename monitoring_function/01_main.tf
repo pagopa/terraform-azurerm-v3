@@ -57,15 +57,15 @@ resource "azurerm_storage_table_entity" "monitoring_configuration" {
   partition_key = "${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"
   row_key       = local.decoded_configuration[count.index].type
   entity = {
-    "url"              = local.decoded_configuration[count.index].url,
-    "type"             = local.decoded_configuration[count.index].type,
-    "checkCertificate" = local.decoded_configuration[count.index].checkCertificate,
-    "method"           = local.decoded_configuration[count.index].method,
-    "expectedCodes"    = jsonencode(local.decoded_configuration[count.index].expectedCodes),
-    "durationLimit"    = lookup(local.decoded_configuration[count.index], "durationLimit", null) != null ? local.decoded_configuration[count.index].durationLimit : var.job_settings.default_duration_limit,
-    "headers"          = lookup(local.decoded_configuration[count.index], "headers", null) != null ? jsonencode(local.decoded_configuration[count.index].headers) : null,
-    "body"             = lookup(local.decoded_configuration[count.index], "body", null) != null ? jsonencode(local.decoded_configuration[count.index].body) : null
-    "tags"             = lookup(local.decoded_configuration[count.index], "tags", null) != null ? jsonencode(local.decoded_configuration[count.index].tags) : null
+    "url"                 = local.decoded_configuration[count.index].url,
+    "type"                = local.decoded_configuration[count.index].type,
+    "checkCertificate"    = local.decoded_configuration[count.index].checkCertificate,
+    "method"              = local.decoded_configuration[count.index].method,
+    "expectedCodes"       = jsonencode(local.decoded_configuration[count.index].expectedCodes),
+    "durationLimit"       = lookup(local.decoded_configuration[count.index], "durationLimit", null) != null ? local.decoded_configuration[count.index].durationLimit : var.job_settings.default_duration_limit,
+    "headers"             = lookup(local.decoded_configuration[count.index], "headers", null) != null ? jsonencode(local.decoded_configuration[count.index].headers) : null,
+    "body"                = lookup(local.decoded_configuration[count.index], "body", null) != null ? jsonencode(local.decoded_configuration[count.index].body) : null
+    "tags"                = lookup(local.decoded_configuration[count.index], "tags", null) != null ? jsonencode(local.decoded_configuration[count.index].tags) : null
     "bodyCompareStrategy" = lookup(local.decoded_configuration[count.index], "bodyCompareStrategy", null) != null ? local.decoded_configuration[count.index].bodyCompareStrategy : null
     "expectedBody"        = lookup(local.decoded_configuration[count.index], "expectedBody", null) != null ? jsonencode(local.decoded_configuration[count.index].expectedBody) : null
 
