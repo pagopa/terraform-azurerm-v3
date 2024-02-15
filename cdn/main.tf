@@ -632,3 +632,17 @@ resource "azurerm_dns_cname_record" "hostname" {
 
   tags = var.tags
 }
+
+resource "azurerm_monitor_diagnostic_setting" "diagnostic_settings_cdn_profile" {
+  name                       = "${var.prefix}-${var.name}-cdn-profile-diagnostic-settings"
+  target_resource_id         = azurerm_cdn_profile.this.id
+  log_analytics_workspace_id = var.log_analytics_workspace_id
+
+  enabled_log {
+    category_group = "allLogs"
+  }
+
+  metric {
+    category = "AllMetrics"
+  }
+}
