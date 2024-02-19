@@ -129,12 +129,6 @@ variable "network_rules" {
   default = null
 }
 
-variable "advanced_threat_protection" {
-  type        = string
-  default     = false
-  description = "Should Advanced Threat Protection be enabled on this resource?"
-}
-
 variable "tags" {
   type = map(any)
 }
@@ -223,4 +217,20 @@ variable "action" {
     }
   ))
   default = []
+}
+
+# -------------------
+# Threat Protection
+# -------------------
+
+variable "advanced_threat_protection" {
+  type        = bool
+  default     = false
+  description = "Should Advanced Threat Protection be enabled on this resource?"
+}
+
+variable "use_legacy_defender_version" {
+  type        = bool
+  description = "(Optional) If true, applies the old pricing model. Very important - check the pricing model that is more convenient for your kind of usage"
+  default     = true
 }
