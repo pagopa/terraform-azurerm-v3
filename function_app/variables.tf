@@ -48,6 +48,7 @@ variable "storage_account_info" {
     account_replication_type          = string # Defines the type of replication to use for this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS.
     access_tier                       = string # Defines the access tier for BlobStorage, FileStorage and StorageV2 accounts. Valid options are Hot and Cool, defaults to Hot.
     advanced_threat_protection_enable = bool
+    use_legacy_defender_version       = bool
   })
 
   default = {
@@ -56,6 +57,7 @@ variable "storage_account_info" {
     account_replication_type          = "ZRS"
     access_tier                       = "Hot"
     advanced_threat_protection_enable = true
+    use_legacy_defender_version       = true
   }
 }
 
