@@ -21,22 +21,28 @@ This module creates the infrastructure to host GitHub self hosted runners using 
 
 Before using the module, developer needs the following existing resources:
 
-- a resource group for the Container App Environment named `<prefix>-<short_env>-github-runner-rg`
+- a Container App Environment provisioned in a resource group named `<prefix>-<short_env>-github-runner-rg`
 - a VNet
 - a KeyVault
 - a Log Analytics Workspace
 - a secret in the mentioned KeyVault containing a GitHub PAT with access to the desired repos
   - PATs can be generated using [`bot` GitHub users](https://pagopa.atlassian.net/wiki/spaces/DEVOPS/pages/466716501/Github+-+bots+for+projects). An Admin must approve the request
   - PATs have an expiration date
+  - PAT must have [these permissions](https://keda.sh/docs/2.12/scalers/github-runner/#setting-up-the-github-app) on selected repositories
 
 ### What the module does
 
 The module creates:
 
 - a subnet (`/23`) in the specified VNet
-- a Container App Environment in that subnet with the name `<prefix>-<short_env>-github-runner-snet` (name is overridable)
-- a Container App job with the name `<prefix>-<short_env>-github-runner-job`
+- a Container App job with the name `<prefix>-<short_env>-github-runner-job` on the specified Container App Environment
 - a role assignment to allow the Container App Job to read secrets from the existing KeyVault (`Get` permission over KeyVault's secrets access policies)
+
+### Input variables
+
+Use `environment` and `key_vault` to specify name and resource group name of the Container App Environment and the KeyVault to use.
+`container` variable is optional but useful to customize the container properties such as CPU and memory limits and the container's image.
+Use `job` variable to specify target repository and optionally customize scaling rules.
 
 ### Example
 
@@ -54,12 +60,10 @@ To support GitHub Actions, you need to use `github-runner` [scale rule](https://
   - it supports multiple repositories but this module is designed to have a 1:1 match between containers and repositories
 - targetWorkflowQueueLength: `1`
   - indicates how many job requests are necessary to trigger the container
-- labels: the job name
-  - field is optional but useful to apply the event-driven rule to a single container and not to the entire Container App Job
 
-With the above settings, the scale rules start to poll the GitHub repositories (be careful to quota limits). When a job request is detected, it launches the container indicated in the `labels` metadata.
+With the above settings, the scale rules start to poll the GitHub repositories (be careful to quota limits). You can reduce the polling interval by using `polling_interval` module's variable. It defaults to 30 seconds.
 
-Containers needs these environment variables to connect to GitHub, [grab a registration token and register themself as runners](https://github.com/pagopa/github-self-hosted-runner-azure/blob/dockerfile-v2/github-runner-entrypoint.sh):
+Containers needs these environment variables to connect to GitHub, [grab a registration token and register themself as runners](https://github.com/pagopa/github-self-hosted-runner-azure/blob/main/github-runner-entrypoint.sh):
 
 - GITHUB_PAT: reference to the KeyVault secret (no Kubernetes secrets are used)
 - REPO_URL: GitHub repo URL
