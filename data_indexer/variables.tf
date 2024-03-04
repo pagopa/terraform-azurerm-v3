@@ -9,6 +9,51 @@ variable "resource_group_name" {
   description = "(Required) The name of the resource group in which to create the App Service and App Service Plan."
 }
 
+## Internal Storage
+
+variable "internal_storage" {
+  type = object({
+    private_endpoint_subnet_id = string
+    private_dns_zone_blob_ids  = list(string)
+    private_dns_zone_queue_ids = list(string)
+    private_dns_zone_table_ids = list(string)
+    queues                     = list(string) # Queues names
+    containers                 = list(string) # Containers names
+    blobs_retention_days       = number
+  })
+
+  default = {
+    enable                     = false
+    private_endpoint_subnet_id = "dummy"
+    private_dns_zone_blob_ids  = []
+    private_dns_zone_queue_ids = []
+    private_dns_zone_table_ids = []
+    queues                     = []
+    containers                 = []
+    blobs_retention_days       = 1
+  }
+}
+
+variable "storage_account_info" {
+  type = object({
+    account_kind                      = string # Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Changing this forces a new resource to be created. Defaults to Storage.
+    account_tier                      = string # Defines the Tier to use for this storage account. Valid options are Standard and Premium. For BlockBlobStorage and FileStorage accounts only Premium is valid.
+    account_replication_type          = string # Defines the type of replication to use for this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS.
+    access_tier                       = string # Defines the access tier for BlobStorage, FileStorage and StorageV2 accounts. Valid options are Hot and Cool, defaults to Hot.
+    advanced_threat_protection_enable = bool
+    use_legacy_defender_version       = bool
+  })
+
+  default = {
+    account_kind                      = "StorageV2"
+    account_tier                      = "Standard"
+    account_replication_type          = "GZRS"
+    access_tier                       = "Hot"
+    advanced_threat_protection_enable = true
+    use_legacy_defender_version       = true
+  }
+}
+
 ## App service plan
 
 variable "plan_type" {
