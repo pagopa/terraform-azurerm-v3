@@ -23,7 +23,7 @@ variable "aad_admin_group_ids" {
 }
 
 #
-# Default node pool
+# 🤖 System node pool
 #
 
 variable "system_node_pool_name" {
@@ -107,7 +107,7 @@ variable "system_node_pool_tags" {
 ### END SYSTEM NODE POOL
 
 #
-# User node pool
+# 👤 User node pool
 #
 variable "user_node_pool_enabled" {
   type        = bool
@@ -213,7 +213,7 @@ variable "kubernetes_version" {
 }
 
 #
-# Network
+# ☁️ Network
 #
 variable "private_cluster_enabled" {
   type        = bool
@@ -256,6 +256,7 @@ variable "network_profile" {
     dns_service_ip = "10.2.0.10"
     network_policy = "azure"
     network_plugin = "azure"
+    network_plugin_mode = null
     outbound_type  = "loadBalancer"
     service_cidr   = "10.2.0.0/16"
   }
@@ -290,7 +291,7 @@ variable "addon_azure_pod_identity_enabled" {
 }
 
 #
-# Logs
+# 📄 Logs
 #
 variable "log_analytics_workspace_id" {
   type        = string
@@ -304,6 +305,9 @@ variable "microsoft_defender_log_analytics_workspace_id" {
   default     = null
 }
 
+#
+# 🚓 Security
+#
 variable "sec_log_analytics_workspace_id" {
   type        = string
   default     = null
@@ -314,6 +318,21 @@ variable "sec_storage_id" {
   type        = string
   default     = null
   description = "Storage Account security (it should be in a different subscription)."
+}
+
+#
+# Autoscale
+#
+variable "keda_enabled" {
+  type = bool
+  description = "(Optional) Specifies whether KEDA Autoscaler can be used for workloads."
+  default = false
+}
+
+variable "vertical_pod_autoscaler_enabled" {
+  type = bool
+  description = "(Optional) Specifies whether Vertical Pod Autoscaler should be enabled."
+  default = false
 }
 
 variable "tags" {

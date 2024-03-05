@@ -138,6 +138,11 @@ resource "azurerm_kubernetes_cluster" "this" {
     }
   }
 
+  workload_autoscaler_profile {
+    keda_enabled = var.keda_enabled
+    vertical_pod_autoscaler_enabled = var.vertical_pod_autoscaler_enabled
+  }
+
   lifecycle {
     ignore_changes = [
       default_node_pool[0].node_count,
