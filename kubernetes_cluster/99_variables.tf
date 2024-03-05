@@ -253,12 +253,12 @@ variable "network_profile" {
     service_cidr        = optional(string, "10.2.0.0/16")  # e.g. '10.2.0.0/16'. The Network Range used by the Kubernetes service
   })
   default = {
-    dns_service_ip = "10.2.0.10"
-    network_policy = "azure"
-    network_plugin = "azure"
+    dns_service_ip      = "10.2.0.10"
+    network_policy      = "azure"
+    network_plugin      = "azure"
     network_plugin_mode = null
-    outbound_type  = "loadBalancer"
-    service_cidr   = "10.2.0.0/16"
+    outbound_type       = "loadBalancer"
+    service_cidr        = "10.2.0.0/16"
   }
   description = "See variable description to understand how to use it, and see examples"
 }
@@ -324,15 +324,15 @@ variable "sec_storage_id" {
 # Autoscale
 #
 variable "keda_enabled" {
-  type = bool
+  type        = bool
   description = "(Optional) Specifies whether KEDA Autoscaler can be used for workloads."
-  default = false
+  default     = false
 }
 
 variable "vertical_pod_autoscaler_enabled" {
-  type = bool
+  type        = bool
   description = "(Optional) Specifies whether Vertical Pod Autoscaler should be enabled."
-  default = false
+  default     = false
 }
 
 variable "tags" {
