@@ -4,7 +4,7 @@ resource "null_resource" "b_series_not_ephemeral_system_check" {
 }
 
 resource "null_resource" "b_series_not_ephemeral_user_check" {
-  count = length(regexall("Standard_B", var.user_node_pool_vm_size)) > 0 && var.user_node_pool_os_disk_type == "Ephemeral" ? "ERROR: Burstable(B) series don't allow Ephemeral disks" : 0
+  count = length(regexall("Standard_B", var.user_node_pool_vm_size)) > 0 && var.user_node_pool_os_disk_type == "Ephemeral" && var.user_node_pool_enabled ? "ERROR: Burstable(B) series don't allow Ephemeral disks" : 0
 }
 
 #tfsec:ignore:AZU008
