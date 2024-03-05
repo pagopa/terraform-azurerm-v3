@@ -130,7 +130,7 @@ variable "user_node_pool_name" {
 variable "user_node_pool_vm_size" {
   type        = string
   description = "(Required) The size of the Virtual Machine, such as Standard_B4ms or Standard_D4s_vX. See https://pagopa.atlassian.net/wiki/spaces/DEVOPS/pages/134840344/Best+practice+su+prodotti"
-  default = null
+  default = ""
 }
 
 variable "user_node_pool_os_disk_type" {
