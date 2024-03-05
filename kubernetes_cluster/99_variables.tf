@@ -124,7 +124,7 @@ variable "user_node_pool_name" {
     )
     error_message = "Max length is 12 chars."
   }
-  default = null
+  default = ""
 }
 
 variable "user_node_pool_vm_size" {
