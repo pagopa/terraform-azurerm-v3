@@ -175,7 +175,7 @@ module "monitoring_function" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_synthetic_monitoring_storage_account"></a> [synthetic\_monitoring\_storage\_account](#module\_synthetic\_monitoring\_storage\_account) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.39.0 |
+| <a name="module_synthetic_monitoring_storage_account"></a> [synthetic\_monitoring\_storage\_account](#module\_synthetic\_monitoring\_storage\_account) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.64.0 |
 
 ## Resources
 
