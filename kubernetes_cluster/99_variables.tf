@@ -325,21 +325,6 @@ variable "sec_storage_id" {
   description = "Storage Account security (it should be in a different subscription)."
 }
 
-#
-# Autoscale
-#
-variable "keda_enabled" {
-  type        = bool
-  description = "(Optional) Specifies whether KEDA Autoscaler can be used for workloads."
-  default     = false
-}
-
-variable "vertical_pod_autoscaler_enabled" {
-  type        = bool
-  description = "(Optional) Specifies whether Vertical Pod Autoscaler should be enabled."
-  default     = false
-}
-
 variable "tags" {
   type = map(any)
 }
