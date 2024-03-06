@@ -1,0 +1,79 @@
+
+module "internal_storage_account" {
+  source = "../storage_account"
+
+  name                          = format("%ssit", replace(var.name, "-", ""))
+  account_kind                  = var.internal_storage_account_info.account_kind
+  account_tier                  = var.internal_storage_account_info.account_tier
+  account_replication_type      = var.internal_storage_account_info.account_replication_type
+  access_tier                   = var.internal_storage_account_info.access_tier
+  resource_group_name           = var.resource_group_name
+  location                      = var.location
+  advanced_threat_protection    = false
+  public_network_access_enabled = false
+
+  tags = var.tags
+}
+
+resource "azurerm_private_endpoint" "blob" {
+  name                = format("%s-blob-endpoint", module.internal_storage_account.name)
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = var.internal_storage.private_endpoint_subnet_id
+
+  private_service_connection {
+    name                           = format("%s-blob", module.internal_storage_account.name)
+    private_connection_resource_id = module.internal_storage_account.id
+    is_manual_connection           = false
+    subresource_names              = ["blob"]
+  }
+
+  private_dns_zone_group {
+      name                 = "private-dns-zone-group"
+      private_dns_zone_ids = var.internal_storage.private_dns_zone_blob_ids
+    }
+
+  tags = var.tags
+}
+
+resource "azurerm_private_endpoint" "queue" {
+  name                = format("%s-queue-endpoint", module.internal_storage_account[0].name)
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = var.internal_storage.private_endpoint_subnet_id
+
+  private_service_connection {
+    name                           = format("%s-queue", module.internal_storage_account[0].name)
+    private_connection_resource_id = module.internal_storage_account[0].id
+    is_manual_connection           = false
+    subresource_names              = ["queue"]
+  }
+
+  private_dns_zone_group {
+    name                 = "private-dns-zone-group"
+    private_dns_zone_ids = var.internal_storage.private_dns_zone_queue_ids
+  }
+
+  tags = var.tags
+}
+
+resource "azurerm_private_endpoint" "table" {
+  name                = format("%s-table-endpoint", module.internal_storage_account[0].name)
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = var.internal_storage.private_endpoint_subnet_id
+
+  private_service_connection {
+    name                           = format("%s-table", module.internal_storage_account[0].name)
+    private_connection_resource_id = module.internal_storage_account[0].id
+    is_manual_connection           = false
+    subresource_names              = ["table"]
+  }
+
+  private_dns_zone_group {
+    name                 = "private-dns-zone-group"
+    private_dns_zone_ids = var.internal_storage.private_dns_zone_table_ids
+  }
+
+  tags = var.tags
+}

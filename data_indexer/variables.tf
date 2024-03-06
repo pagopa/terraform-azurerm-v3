@@ -118,51 +118,9 @@ variable "name" {
   description = "(Required) Specifies the name of the App Service. Changing this forces a new resource to be created."
 }
 
-variable "https_only" {
-  type        = bool
-  description = "(Optional) Can the App Service only be accessed via HTTPS? Defaults to true."
-  default     = true
-}
-
-variable "use_32_bit_worker_process" {
-  type        = bool
-  description = "(Optional) Should the Function App run in 32 bit mode, rather than 64 bit mode? Defaults to false."
-  default     = false
-}
-
-variable "client_affinity_enabled" {
-  type        = bool
-  description = "(Optional) Should the App Service send session affinity cookies, which route client requests in the same session to the same instance? Defaults to false."
-  default     = false
-}
-
-variable "client_cert_enabled" {
-  type        = bool
-  description = "(Optional) Does the App Service require client certificates for incoming requests? Defaults to false."
-  default     = false
-}
-
 variable "app_settings" {
   type    = map(string)
   default = {}
-}
-
-variable "always_on" {
-  type        = bool
-  description = "(Optional) Should the app be loaded at all times? Defaults to false."
-  default     = false
-}
-
-variable "app_command_line" {
-  type        = string
-  description = "(Optional) App command line to launch, e.g. /sbin/myserver -b 0.0.0.0."
-  default     = null
-}
-
-variable "ftps_state" {
-  type        = string
-  description = "(Optional) Enable FTPS connection ( Default: Disabled )"
-  default     = "Disabled"
 }
 
 variable "health_check_path" {
@@ -226,34 +184,17 @@ variable "address_prefixes" {
   default     = []
 }
 
-variable "delegation" {
-  type = object({
-    name = string #(Required) A name for this delegation.
-    service_delegation = object({
-      name    = string       #(Required) The name of service to delegate to. Possible values are https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet#service_delegation
-      actions = list(string) #(Optional) A list of Actions which should be delegated. Here the list: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet#actions
-    })
-  })
-
-  default = null
-}
-
 variable "service_endpoints" {
   type        = list(string)
-  default     = []
+  default     = [
+    "Microsoft.Web",
+    "Microsoft.AzureCosmosDB",
+    "Microsoft.Storage.Global",
+    "Microsoft.Storage",
+    "Microsoft.Sql",
+    "Microsoft.EventHub"
+  ]
   description = "(Optional) The list of Service endpoints to associate with the subnet. Possible values include: Microsoft.AzureActiveDirectory, Microsoft.AzureCosmosDB, Microsoft.ContainerRegistry, Microsoft.EventHub, Microsoft.KeyVault, Microsoft.ServiceBus, Microsoft.Sql, Microsoft.Storage and Microsoft.Web."
-}
-
-variable "private_endpoint_network_policies_enabled" {
-  type        = bool
-  description = "(Optional) Enable or Disable network policies for the private endpoint on the subnet. Setting this to true will Enable the policy and setting this to false will Disable the policy. Defaults to true."
-  default     = false
-}
-
-variable "private_link_service_network_policies_enabled" {
-  type        = bool
-  description = "(Optional) Enable or Disable network policies for the private link service on the subnet. Setting this to true will Enable the policy and setting this to false will Disable the policy. Defaults to true."
-  default     = true
 }
 ##########
 
@@ -281,45 +222,22 @@ variable "data_ti_docker_image_tag" {
   default = null
 }
 
-variable "node_version" {
-  type    = string
-  default = null
-}
-
 # Scaling rules
 
-variable "cdc_autoscale_minimum" {
+variable "autoscale_minimum" {
   type        = number
   description = "The minimum number of instances for this resource."
-  default     = 2
+  default     = 1
 }
 
-variable "cdc_autoscale_maximum" {
+variable "autoscale_maximum" {
   type        = number
   description = "The maximum number of instances for this resource."
   default     = 20
 }
 
-variable "cdc_autoscale_default" {
+variable "autoscale_default" {
   type        = number
   description = "The number of instances that are available for scaling if metrics are not available for evaluation."
-  default     = 10
-}
-
-variable "data_ti_autoscale_minimum" {
-  type        = number
-  description = "The minimum number of instances for this resource."
-  default     = 2
-}
-
-variable "data_ti_autoscale_maximum" {
-  type        = number
-  description = "The maximum number of instances for this resource."
-  default     = 20
-}
-
-variable "data_ti_autoscale_default" {
-  type        = number
-  description = "The number of instances that are available for scaling if metrics are not available for evaluation."
-  default     = 10
+  default     = 5
 }
