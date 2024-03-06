@@ -37,14 +37,14 @@ resource "azurerm_private_endpoint" "blob" {
 }
 
 resource "azurerm_private_endpoint" "queue" {
-  name                = format("%s-queue-endpoint", module.internal_storage_account[0].name)
+  name                = format("%s-queue-endpoint", module.internal_storage_account.name)
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.internal_storage.private_endpoint_subnet_id
 
   private_service_connection {
-    name                           = format("%s-queue", module.internal_storage_account[0].name)
-    private_connection_resource_id = module.internal_storage_account[0].id
+    name                           = format("%s-queue", module.internal_storage_account.name)
+    private_connection_resource_id = module.internal_storage_account.id
     is_manual_connection           = false
     subresource_names              = ["queue"]
   }
@@ -58,14 +58,14 @@ resource "azurerm_private_endpoint" "queue" {
 }
 
 resource "azurerm_private_endpoint" "table" {
-  name                = format("%s-table-endpoint", module.internal_storage_account[0].name)
+  name                = format("%s-table-endpoint", module.internal_storage_account.name)
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.internal_storage.private_endpoint_subnet_id
 
   private_service_connection {
-    name                           = format("%s-table", module.internal_storage_account[0].name)
-    private_connection_resource_id = module.internal_storage_account[0].id
+    name                           = format("%s-table", module.internal_storage_account.name)
+    private_connection_resource_id = module.internal_storage_account.id
     is_manual_connection           = false
     subresource_names              = ["table"]
   }
