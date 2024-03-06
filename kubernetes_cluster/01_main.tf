@@ -7,6 +7,15 @@ resource "null_resource" "b_series_not_ephemeral_user_check" {
   count = length(regexall("Standard_B", var.user_node_pool_vm_size)) > 0 && var.user_node_pool_os_disk_type == "Ephemeral" && var.user_node_pool_enabled ? "ERROR: Burstable(B) series don't allow Ephemeral disks" : 0
 }
 
+resource "null_resource" "workload_identity_oidc_issuer_enabled_check" {
+  count = var.workload_identity_enabled == true && var.oidc_issuer_enabled == false ? "OIDC Issuer must be enabled, in order to use Workload identity" : 0
+}
+
+locals {
+  # for workload identity is mandatory to hava a oidc issuer enabled
+  oidc_issuer_enabled = var.workload_identity_enabled ? true : var.oidc_issuer_enabled
+}
+
 #tfsec:ignore:AZU008
 #tfsec:ignore:azure-container-logging addon_profile is deprecated, false positive
 resource "azurerm_kubernetes_cluster" "this" {
@@ -63,6 +72,9 @@ resource "azurerm_kubernetes_cluster" "this" {
   identity {
     type = "SystemAssigned"
   }
+  
+  workload_identity_enabled = var.workload_identity_enabled
+  oidc_issuer_enabled       = local.oidc_issuer_enabled
 
   dynamic "network_profile" {
     for_each = var.network_profile != null ? [var.network_profile] : []
