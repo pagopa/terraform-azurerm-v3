@@ -130,7 +130,7 @@ variable "user_node_pool_name" {
 variable "user_node_pool_vm_size" {
   type        = string
   description = "(Optional) The size of the Virtual Machine, such as Standard_B4ms or Standard_D4s_vX. See https://pagopa.atlassian.net/wiki/spaces/DEVOPS/pages/134840344/Best+practice+su+prodotti"
-  default = null
+  default     = null
 }
 
 variable "user_node_pool_os_disk_type" {
@@ -142,19 +142,19 @@ variable "user_node_pool_os_disk_type" {
 variable "user_node_pool_os_disk_size_gb" {
   type        = number
   description = "(Optional) The size of the OS Disk which should be used for each agent in the Node Pool. Changing this forces a new resource to be created."
-  default = 0
+  default     = 0
 }
 
 variable "user_node_pool_node_count_min" {
   type        = number
   description = "(Optional) The minimum number of nodes which should exist in this Node Pool. If specified this must be between 1 and 1000."
-  default = 0
+  default     = 0
 }
 
 variable "user_node_pool_node_count_max" {
   type        = number
   description = "(Optinal) The maximum number of nodes which should exist in this Node Pool. If specified this must be between 1 and 1000."
-  default = 0
+  default     = 0
 }
 
 variable "user_node_pool_max_pods" {
