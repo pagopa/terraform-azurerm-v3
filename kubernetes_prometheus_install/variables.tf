@@ -37,32 +37,34 @@ variable "prometheus_helm" {
       image_tag  = optional(string, "v1.7.0"),
     }),
   })
+
   description = "Prometheus helm chart configuration"
-  #  default = {
-  #    chart_version = "25.16.0"
-  #    alertmanager = {
-  #      image_name = "quay.io/prometheus/alertmanager"
-  #      image_tag  = "v0.27.0",
-  #    }
-  #    configmap_reload_prometheus = {
-  #      image_name = "jimmidyson/configmap-reload"
-  #      image_tag  = "v0.12.0"
-  #    }
-  #    configmap_reload_alertmanager = {
-  #      image_name = "jimmidyson/configmap-reload"
-  #      image_tag  = "v0.12.0"
-  #    }
-  #    node_exporter = {
-  #      image_name = "quay.io/prometheus/node-exporter"
-  #      image_tag  = "v1.7.0"
-  #    }
-  #    server = {
-  #      image_name = "quay.io/prometheus/prometheus"
-  #      image_tag  = "v2.50.1",
-  #    }
-  #    pushgateway = {
-  #      image_name = "prom/pushgateway"
-  #      image_tag  = "v1.7.0"
-  #    }
-  #  }
+
+  default = {
+    chart_version = "25.16.0"
+    alertmanager = {
+      image_name = "quay.io/prometheus/alertmanager"
+      image_tag  = "v0.27.0",
+    }
+    configmap_reload_prometheus = {
+      image_name = "jimmidyson/configmap-reload"
+      image_tag  = "v0.12.0"
+    }
+    configmap_reload_alertmanager = {
+      image_name = "jimmidyson/configmap-reload"
+      image_tag  = "v0.12.0"
+    }
+    node_exporter = {
+      image_name = "quay.io/prometheus/node-exporter"
+      image_tag  = "v1.7.0"
+    }
+    server = {
+      image_name = "quay.io/prometheus/prometheus"
+      image_tag  = "v2.50.1",
+    }
+    pushgateway = {
+      image_name = "prom/pushgateway"
+      image_tag  = "v1.7.0"
+    }
+  }
 }
