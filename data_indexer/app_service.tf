@@ -73,6 +73,13 @@ resource "azurerm_app_service_virtual_network_swift_connection" "cdc" {
   subnet_id      = azurerm_subnet.this.id
 }
 
+resource "azurerm_role_assignment" "evh_sender" {
+  for_each = data.azurerm_eventhub.evh
+  scope                = each.value.id
+  role_definition_name = "Azure Event Hubs Data Sender"
+  principal_id         = azurerm_linux_web_app.cdc.id
+}
+
 ################################################################################################
 
 # Data Transformer App Service #################################################################
@@ -134,6 +141,13 @@ resource "azurerm_linux_web_app" "data_ti" {
 resource "azurerm_app_service_virtual_network_swift_connection" "data_ti" {
   app_service_id = azurerm_linux_web_app.data_ti.id
   subnet_id      = azurerm_subnet.this.id
+}
+
+resource "azurerm_role_assignment" "evh_listener" {
+  for_each = data.azurerm_eventhub.evh
+  scope                = each.value.id
+  role_definition_name = "Azure Event Hubs Data Receiver"
+  principal_id         = azurerm_linux_web_app.data_ti.id
 }
 
 # Plan Autoscale settings #######################################################
