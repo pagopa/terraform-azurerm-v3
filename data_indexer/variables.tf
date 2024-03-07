@@ -251,3 +251,10 @@ variable "evh_config" {
   })
   description = "The Internal Event Hubs (topics) configuration"
 }
+
+# App service JSON CONFIG
+
+variable "json_config_path" {
+  type = string
+  description = "The Internal JSON configuration file path"
+}

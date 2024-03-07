@@ -32,6 +32,8 @@ resource "azurerm_linux_web_app" "cdc" {
       WEBSITE_DNS_SERVER = "168.63.129.16"
       # https://docs.microsoft.com/en-us/azure/azure-monitor/app/sampling
       APPINSIGHTS_SAMPLING_PERCENTAGE = 5
+      
+      CONFIGURATION = file(var.json_config_path)
     },
     var.app_settings,
   )
@@ -100,7 +102,9 @@ resource "azurerm_linux_web_app" "data_ti" {
       # https://docs.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16
       WEBSITE_DNS_SERVER = "168.63.129.16"
       # https://docs.microsoft.com/en-us/azure/azure-monitor/app/sampling
-      APPINSIGHTS_SAMPLING_PERCENTAGE = 5
+      APPINSIGHTS_SAMPLING_PERCENTAGE = 5,
+
+      CONFIGURATION = file(var.json_config_path)
     },
     var.app_settings,
   )
