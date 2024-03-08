@@ -277,13 +277,13 @@ variable "action" {
 
 variable "redis_connection_string" {
   type        = string
-  description = "Connection string for redis external cache. Set `use_redis_cache` = true tuse this value"
+  description = "Connection string for redis external cache. Set `redis_cache_enabled` = true tuse this value"
   default     = null
 }
 
 variable "redis_cache_id" {
   type        = string
-  description = "The resource ID of the Cache for Redis. Set `use_redis_cache` = true tuse this value"
+  description = "The resource ID of the Cache for Redis. Set `redis_cache_enabled` = true tuse this value"
 }
 
 variable "alerts_enabled" {
@@ -356,7 +356,7 @@ variable "public_ip_address_id" {
   description = "A Public Ip resource ID"
 }
 
-variable "use_redis_cache" {
+variable "redis_cache_enabled" {
   type        = bool
   description = "(Optional) if true, enables redis caching"
   default     = false
