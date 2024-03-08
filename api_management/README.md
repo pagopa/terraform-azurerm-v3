@@ -177,8 +177,8 @@ No modules.
 | <a name="input_public_ip_address_id"></a> [public\_ip\_address\_id](#input\_public\_ip\_address\_id) | A Public Ip resource ID | `string` | `null` | no |
 | <a name="input_publisher_email"></a> [publisher\_email](#input\_publisher\_email) | The email of publisher/company. | `string` | n/a | yes |
 | <a name="input_publisher_name"></a> [publisher\_name](#input\_publisher\_name) | The name of publisher/company. | `string` | n/a | yes |
-| <a name="input_redis_cache_id"></a> [redis\_cache\_id](#input\_redis\_cache\_id) | The resource ID of the Cache for Redis. | `string` | n/a | yes |
-| <a name="input_redis_connection_string"></a> [redis\_connection\_string](#input\_redis\_connection\_string) | Connection string for redis external cache | `string` | `null` | no |
+| <a name="input_redis_cache_id"></a> [redis\_cache\_id](#input\_redis\_cache\_id) | The resource ID of the Cache for Redis. Set `use_redis_cache` = true tuse this value | `string` | n/a | yes |
+| <a name="input_redis_connection_string"></a> [redis\_connection\_string](#input\_redis\_connection\_string) | Connection string for redis external cache. Set `use_redis_cache` = true tuse this value | `string` | `null` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | n/a | `string` | n/a | yes |
 | <a name="input_sec_log_analytics_workspace_id"></a> [sec\_log\_analytics\_workspace\_id](#input\_sec\_log\_analytics\_workspace\_id) | Log analytics workspace security (it should be in a different subscription). | `string` | `null` | no |
 | <a name="input_sec_storage_id"></a> [sec\_storage\_id](#input\_sec\_storage\_id) | Storage Account security (it should be in a different subscription). | `string` | `null` | no |
@@ -187,6 +187,7 @@ No modules.
 | <a name="input_sku_name"></a> [sku\_name](#input\_sku\_name) | A string consisting of two parts separated by an underscore(\_). The first part is the name, valid values include: Consumption, Developer, Basic, Standard and Premium. The second part is the capacity (e.g. the number of deployed units of the sku), which must be a positive integer (e.g. Developer\_1). | `string` | n/a | yes |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | The id of the subnet that will be used for the API Management. | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
+| <a name="input_use_redis_cache"></a> [use\_redis\_cache](#input\_use\_redis\_cache) | (Optional) if true, enables redis caching | `bool` | `false` | no |
 | <a name="input_virtual_network_type"></a> [virtual\_network\_type](#input\_virtual\_network\_type) | The type of virtual network you want to use, valid values include: None, External, Internal | `string` | `null` | no |
 | <a name="input_xml_content"></a> [xml\_content](#input\_xml\_content) | Xml content for all api policy | `string` | `null` | no |
 | <a name="input_zones"></a> [zones](#input\_zones) | List of availability zones | `list(string)` | `[]` | no |
