@@ -25,3 +25,34 @@ resource "null_resource" "schedule_backup" {
     EOT
   }
 }
+
+
+resource "azurerm_monitor_scheduled_query_rules_alert" "example" {
+  for_each = toset(var.namespaces)
+  name                = "query-alert-backup-${each.value}"
+  location            = var.location
+  resource_group_name = var.rg_name
+
+  action {
+    action_group           = var.action_group_ids
+  }
+  data_source_id = var.data_source_id
+  description    = "Alert when no backup performed"
+  enabled        = true
+  # Count all requests with server error result code grouped into 5-minute bins
+  query       = <<-QUERY
+  ContainerLog
+  | where LogEntry contains "Backup completed"
+  | where LogEntry contains "daily-backup-${lower(each.value)}"
+  QUERY
+  severity    = 1
+  frequency   = 5
+  time_window = 30
+  trigger {
+    operator  = "LowerThan"
+    threshold = 1
+  }
+  tags = {
+    foo = "bar"
+  }
+}

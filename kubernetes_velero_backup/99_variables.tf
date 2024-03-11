@@ -30,3 +30,18 @@ variable "aks_cluster_name" {
   type        = string
   description = "(Required) Name of the aks cluster on which Velero will be installed"
 }
+
+
+variable "data_source_id" {
+  type = string
+}
+variable "action_group_ids" {
+  type = list(string)
+  default = []
+}
+variable "rg_name" {
+  type = string
+}
+variable "location" {
+  type = string
+}
