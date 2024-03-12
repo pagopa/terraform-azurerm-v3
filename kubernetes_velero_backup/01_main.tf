@@ -27,6 +27,7 @@ resource "null_resource" "schedule_backup" {
 }
 
 
+
 resource "azurerm_monitor_scheduled_query_rules_alert" "example" {
   for_each = toset(var.namespaces)
   name                = "query-alert-backup-${each.value}"
@@ -44,15 +45,14 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "example" {
   ContainerLog
   | where LogEntry contains "Backup completed"
   | where LogEntry contains "daily-backup-${lower(each.value)}"
+  | summarize AggregatedValue = count()
   QUERY
   severity    = 1
-  frequency   = 5
-  time_window = 30
+  frequency   = 60
+  time_window = 1440 #24 hours
   trigger {
     operator  = "LessThan"
     threshold = 1
   }
-  tags = {
-    foo = "bar"
-  }
+  tags = var.tags
 }
