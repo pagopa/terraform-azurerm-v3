@@ -49,7 +49,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "example" {
   frequency   = 5
   time_window = 30
   trigger {
-    operator  = "LowerThan"
+    operator  = "LessThan"
     threshold = 1
   }
   tags = {
