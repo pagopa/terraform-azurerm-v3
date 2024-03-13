@@ -26,7 +26,7 @@ module "aks_namespace_backup" {
   volume_snapshot = false
   
   alert_enabled = true
-  
+  prefix = "myprefix-${var.env_short}-${var.location_short}"
   cluster_id = module.aks[count.index].id
   location = azurerm_resource_group.rg_aks_backup.location
   rg_name = azurerm_resource_group.rg_aks_backup.name
