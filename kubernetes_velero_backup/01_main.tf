@@ -27,7 +27,8 @@ resource "null_resource" "schedule_backup" {
 }
 
 
-resource "azurerm_monitor_scheduled_query_rules_alert" "example" {
+
+resource "azurerm_monitor_scheduled_query_rules_alert" "backup_alert" {
   for_each = toset(var.namespaces)
 
   name                = "${var.prefix}-velero-backup-${each.value}"
@@ -38,21 +39,20 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "example" {
     action_group = var.action_group_ids
   }
   data_source_id = var.cluster_id
-  description    = "Alert when no backup for namespace '${each.value}' performed in the last ${var.alert_time_window} minutes"
+  description    = "Alert when no backup '${var.backup_name}-${lower(each.value)}' performed in the last ${var.alert_time_window} minutes"
   enabled        = var.alert_enabled
-  # Count all requests with server error result code grouped into 5-minute bins
-  query       = <<-QUERY
+  query          = <<-QUERY
   ContainerLog
   | where LogEntry contains "Backup completed"
-  | where LogEntry contains "daily-backup-${lower(each.value)}"
+  | where LogEntry contains "${var.backup_name}-${lower(each.value)}"
   | summarize AggregatedValue = count()
   QUERY
-  severity    = var.alert_severity
-  frequency   = var.alert_frequency
-  time_window = var.alert_time_window
+  severity       = var.alert_severity
+  frequency      = var.alert_frequency
+  time_window    = var.alert_time_window
   trigger {
     operator  = "LessThan"
-    threshold = 1
+    threshold = var.alert_threshold
   }
   tags = var.tags
 }

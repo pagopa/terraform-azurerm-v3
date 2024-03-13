@@ -74,13 +74,21 @@ variable "alert_frequency" {
   description = "(Optional) Frequency (in minutes) at which alert rule condition should be evaluated. Values must be between 5 and 1440 (inclusive)."
   default     = 60
 }
+
 variable "alert_time_window" {
   type        = number
   description = "(Optional) Time window for which data needs to be fetched for query (must be greater than or equal to frequency). Values must be between 5 and 2880 (inclusive)."
   default     = 1440 #24 hours
 }
+
 variable "alert_severity" {
   type        = number
   description = "(Optional) Severity of the alert. Possible values include: 0, 1, 2, 3, or 4."
+  default     = 1
+}
+
+variable "alert_threshold" {
+  type        = number
+  description = "(Optional) threshold (query result count) under which the alert should be fired"
   default     = 1
 }

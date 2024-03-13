@@ -35,6 +35,7 @@ module "aks_namespace_backup" {
   alert_frequency = 60
   alert_time_window = 1440
   alert_severity = 1
+  alert_threshold = 1
     
   tags = var.tags
 }
@@ -61,7 +62,7 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [azurerm_monitor_scheduled_query_rules_alert.example](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_scheduled_query_rules_alert) | resource |
+| [azurerm_monitor_scheduled_query_rules_alert.backup_alert](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_scheduled_query_rules_alert) | resource |
 | [null_resource.schedule_backup](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 
 ## Inputs
@@ -73,6 +74,7 @@ No modules.
 | <a name="input_alert_enabled"></a> [alert\_enabled](#input\_alert\_enabled) | (Optional) If true, creates a scheduled query alert for each backup execution | `bool` | `true` | no |
 | <a name="input_alert_frequency"></a> [alert\_frequency](#input\_alert\_frequency) | (Optional) Frequency (in minutes) at which alert rule condition should be evaluated. Values must be between 5 and 1440 (inclusive). | `number` | `60` | no |
 | <a name="input_alert_severity"></a> [alert\_severity](#input\_alert\_severity) | (Optional) Severity of the alert. Possible values include: 0, 1, 2, 3, or 4. | `number` | `1` | no |
+| <a name="input_alert_threshold"></a> [alert\_threshold](#input\_alert\_threshold) | (Optional) threshold (query result count) under which the alert should be fired | `number` | `1` | no |
 | <a name="input_alert_time_window"></a> [alert\_time\_window](#input\_alert\_time\_window) | (Optional) Time window for which data needs to be fetched for query (must be greater than or equal to frequency). Values must be between 5 and 2880 (inclusive). | `number` | `1440` | no |
 | <a name="input_backup_name"></a> [backup\_name](#input\_backup\_name) | (Required) Name assigned to the backup, used as prefix for the namespace name | `string` | n/a | yes |
 | <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | (Required) cluster id that must be backed up and monitored | `string` | n/a | yes |
