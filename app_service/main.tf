@@ -16,7 +16,7 @@ resource "azurerm_service_plan" "this" {
   os_type  = "Linux"
 
   maximum_elastic_worker_count = var.plan_maximum_elastic_worker_count
-  per_site_scaling_enabled     = var.plan_per_site_scaling
+  per_site_scaling_enabled     = var.plan_per_site_scalingq
 
   zone_balancing_enabled = var.zone_balancing_enabled
 

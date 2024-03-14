@@ -29,6 +29,7 @@ removed:
 - app_service_plan_info/sku_tier
 - linux_fx_version
 - app_service_plan_id
+- plan_kind
 
 replaced:
 - min_tls_version -> minimum_tls_version
@@ -97,7 +98,6 @@ No modules.
 | <a name="input_node_version"></a> [node\_version](#input\_node\_version) | n/a | `string` | `null` | no |
 | <a name="input_php_version"></a> [php\_version](#input\_php\_version) | n/a | `string` | `null` | no |
 | <a name="input_plan_id"></a> [plan\_id](#input\_plan\_id) | (Optional only if plan\_type=internal) Specifies the external app service plan id. | `string` | `null` | no |
-| <a name="input_plan_kind"></a> [plan\_kind](#input\_plan\_kind) | (Optional) The kind of the App Service Plan to create. Possible values are Windows (also available as App), Linux, elastic (for Premium Consumption) and FunctionApp (for a Consumption Plan). Changing this forces a new resource to be created. | `string` | `null` | no |
 | <a name="input_plan_maximum_elastic_worker_count"></a> [plan\_maximum\_elastic\_worker\_count](#input\_plan\_maximum\_elastic\_worker\_count) | (Optional) The maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan. | `number` | `null` | no |
 | <a name="input_plan_name"></a> [plan\_name](#input\_plan\_name) | (Optional) Specifies the name of the App Service Plan component. Changing this forces a new resource to be created. | `string` | `null` | no |
 | <a name="input_plan_per_site_scaling"></a> [plan\_per\_site\_scaling](#input\_plan\_per\_site\_scaling) | (Optional) Can Apps assigned to this App Service Plan be scaled independently? If set to false apps assigned to this plan will scale to all instances of the plan. Defaults to false. | `bool` | `false` | no |
@@ -111,6 +111,7 @@ No modules.
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
 | <a name="input_use_32_bit_worker_process"></a> [use\_32\_bit\_worker\_process](#input\_use\_32\_bit\_worker\_process) | (Optional) Should the Function App run in 32 bit mode, rather than 64 bit mode? Defaults to false. | `bool` | `false` | no |
 | <a name="input_vnet_integration"></a> [vnet\_integration](#input\_vnet\_integration) | (optional) enable vnet integration. Wheter it's true the subnet\_id should not be null. | `bool` | `false` | no |
+| <a name="input_zone_balancing_enabled"></a> [zone\_balancing\_enabled](#input\_zone\_balancing\_enabled) | (Optional) Should the Service Plan balance across Availability Zones in the region. Changing this forces a new resource to be created. If this setting is set to true and the worker\_count value is specified, it should be set to a multiple of the number of availability zones in the region. Please see the Azure documentation for the number of Availability Zones in your region. | `bool` | `false` | no |
 
 ## Outputs
 
