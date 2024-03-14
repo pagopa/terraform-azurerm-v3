@@ -36,11 +36,6 @@ variable "plan_name" {
   default     = null
 }
 
-variable "plan_kind" {
-  type        = string
-  description = "(Optional) The kind of the App Service Plan to create. Possible values are Windows (also available as App), Linux, elastic (for Premium Consumption) and FunctionApp (for a Consumption Plan). Changing this forces a new resource to be created."
-  default     = null
-}
 
 variable "sku_name" {
   type        = string
@@ -158,6 +153,12 @@ variable "vnet_integration" {
 variable "subnet_id" {
   type        = string
   description = "(Optional) Subnet id wether you want to integrate the app service to a subnet."
+  default     = null
+}
+
+variable "zone_balancing_enabled" {
+  type        = bool
+  description = "(Optional) Should the Service Plan balance across Availability Zones in the region. Changing this forces a new resource to be created. If this setting is set to true and the worker_count value is specified, it should be set to a multiple of the number of availability zones in the region. Please see the Azure documentation for the number of Availability Zones in your region."
   default     = null
 }
 
