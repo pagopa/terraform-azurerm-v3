@@ -24,6 +24,10 @@ resource "random_id" "unique" {
   byte_length = 3
 }
 
+data "azurerm_subscription" "current" {}
+
+data "azurerm_client_config" "current" {}
+
 locals {
   project = "${var.prefix}${random_id.unique.hex}"
 }

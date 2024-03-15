@@ -1,6 +1,6 @@
 variable "location" {
   type    = string
-  default = "westeurope"
+  default = "italynorth"
 }
 
 variable "prefix" {
@@ -11,10 +11,11 @@ variable "prefix" {
 
 variable "tags" {
   type        = map(string)
-  description = "App_service example"
+  description = "Data Indexer example"
   default = {
     CreatedBy = "Terraform"
     Source    = "https://github.com/pagopa/terraform-azurerm-v3"
+    Test      = "data-indexer"
   }
 }
 
@@ -28,4 +29,14 @@ variable "vnet_address_space" {
 variable "subnet_cidr" {
   type    = list(string)
   default = ["10.0.1.0/26"]
+}
+
+variable "cidr_subnet_eventhub" {
+  type    = list(string)
+  default = ["10.0.2.0/26"]
+}
+
+variable "cidr_subnet_pendpoints" {
+  type    = list(string)
+  default = ["10.0.3.0/26"]
 }

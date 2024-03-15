@@ -1,24 +1,18 @@
-resource "azurerm_container_registry" "reg" {
-  name                = "${local.project}registry"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  sku                 = "Premium"
-  admin_enabled       = false
-}
-
-resource "azurerm_application_insights" "ai" {
-  name                = "${local.project}-ai"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  application_type    = "other"
+resource "azurerm_resource_group" "rg" {
+  name     = "rg-data-indexer"
+  location = var.location
 
   tags = var.tags
 }
 
-resource "azurerm_resource_group" "rg" {
-  name     = "${local.project}-rg"
-  location = var.location
-
+module "key_vault" {
+  source                     = "../../key_vault"
+  name                       = format("%s-kv", local.project)
+  location                   = var.location
+  resource_group_name        = azurerm_resource_group.rg.name
+  soft_delete_retention_days = 15
+  lock_enable                = false
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
   tags = var.tags
 }
 
@@ -31,42 +25,163 @@ resource "azurerm_virtual_network" "vnet" {
   tags = var.tags
 }
 
-# Subnet to host the api config
-resource "azurerm_subnet" "arm_subnet" {
-  name                 = "${local.project}-subnet"
-  resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = var.subnet_cidr
-
-  delegation {
-    name = "${local.project}-delegation"
-
-    service_delegation {
-      name    = "Microsoft.Web/serverFarms"
-      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
-    }
-  }
-}
-
-resource "azurerm_service_plan" "app_docker" {
-
-  name                = "${local.project}-plan-app-service-docker"
-  location            = var.location
+resource "azurerm_private_dns_zone" "privatelink_servicebus" {
+  name                = "privatelink.servicebus.windows.net"
   resource_group_name = azurerm_resource_group.rg.name
-
-  os_type  = "Linux"
-  sku_name = "P1v2"
 
   tags = var.tags
 }
 
-#
-# Role assignments
-#
-# resource "azurerm_role_assignment" "webapp_docker_to_acr" {
-#   count = var.is_web_app_service_docker_enabled ? 1 : 0
+resource "azurerm_private_dns_zone_virtual_network_link" "servicebus_private_vnet" {
+  name                  = azurerm_virtual_network.vnet.name
+  resource_group_name   = azurerm_resource_group.rg.name
+  private_dns_zone_name = azurerm_private_dns_zone.privatelink_servicebus.name
+  virtual_network_id    = azurerm_virtual_network.vnet.id
+  registration_enabled  = false
 
-#   scope                = data.azurerm_container_registry.acr.id
-#   role_definition_name = "AcrPull"
-#   principal_id         = module.web_app_service_docker[0].principal_id
-# }
+  tags = var.tags
+}
+
+module "pendpoints_snet" {
+  source                                    = "../../subnet"
+  name                                      = format("%s-pendpoints-snet", local.project)
+  address_prefixes                          = var.cidr_subnet_pendpoints
+  resource_group_name                       = azurerm_resource_group.rg.name
+  virtual_network_name                      = azurerm_virtual_network.vnet.name
+  service_endpoints                         = ["Microsoft.EventHub"]
+  private_endpoint_network_policies_enabled = false
+}
+
+resource "azurerm_private_dns_zone" "privatelink_blob_core" {
+  name                = "privatelink.blob.core.windows.net"
+  resource_group_name = azurerm_resource_group.rg.name
+
+  tags = var.tags
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "blob_core_private_vnet_in_common" {
+  name                  = azurerm_virtual_network.vnet.name
+  resource_group_name   = azurerm_resource_group.rg.name
+  private_dns_zone_name = azurerm_private_dns_zone.privatelink_blob_core.name
+  virtual_network_id    = azurerm_virtual_network.vnet.id
+  registration_enabled  = false
+
+  tags = var.tags
+}
+
+module "eventhub_snet" {
+  source                                    = "../../subnet"
+  name                                      = format("%s-eventhub-snet", local.project)
+  address_prefixes                          = var.cidr_subnet_eventhub
+  resource_group_name                       = azurerm_resource_group.rg.name
+  virtual_network_name                      = azurerm_virtual_network.vnet.name
+  service_endpoints                         = ["Microsoft.EventHub"]
+  private_endpoint_network_policies_enabled = false
+}
+
+module "event_hub" {
+  source                   = "../../eventhub"
+  name                     = format("%s-evh-ns", local.project)
+  location                 = var.location
+  resource_group_name      = azurerm_resource_group.rg.name
+  sku                      = "Basic"
+  zone_redundant           = true
+  virtual_network_ids = [azurerm_virtual_network.vnet.id]
+  subnet_id           = module.eventhub_snet.id
+  private_dns_zones = {
+    id   = [azurerm_private_dns_zone.privatelink_servicebus.id]
+    name = [azurerm_private_dns_zone.privatelink_servicebus.name]
+  }
+
+  eventhubs = [
+  {
+    name              = "test"
+    partitions        = 5
+    message_retention = 1
+    consumers         = []
+    keys = [
+      {
+        name   = "sender"
+        listen = false
+        send   = true
+        manage = false
+      },
+      {
+        name   = "receiver"
+        listen = true
+        send   = false
+        manage = false
+      }
+    ]
+  }
+]
+
+  public_network_access_enabled = true
+  network_rulesets = []
+
+  alerts_enabled = false
+  action = []
+
+  tags = var.tags
+}
+
+locals {
+  event_hub = {
+    connection = "${format("%s-evh-ns", local.project)}.servicebus.windows.net:9093"
+  }
+}
+
+#tfsec:ignore:AZU023
+resource "azurerm_key_vault_secret" "event_hub_keys" {
+  for_each = module.event_hub.key_ids
+
+  name         = format("evh-%s-%s", replace(each.key, ".", "-"), "key")
+  value        = module.event_hub.keys[each.key].primary_key
+  content_type = "text/plain"
+
+  key_vault_id = module.key_vault.id
+}
+
+module "data_indexer" {
+  source = "../../data_indexer"
+  
+  location = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  name = format("%s-ti", local.project)
+
+  plan_name = format("%s-plan-dataindexer", local.project)
+
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  subnet_name = format("%s-snet", local.project)
+  address_prefixes = var.subnet_cidr
+
+  cdc_docker_image = "pagopa/change-data-capturer-ms"
+  cdc_docker_image_tag = "0.0.7"
+
+  data_ti_docker_image = "pagopa/data-ti-ms"
+  data_ti_docker_image_tag = "0.0.1"
+
+  json_config_path = "./config.json"
+
+  private_endpoint_subnet_id = module.pendpoints_snet.id
+
+  internal_storage_account_info = {
+    account_kind                      = "StorageV2"
+    account_tier                      = "Standard"
+    account_replication_type          = "ZRS"
+    access_tier                       = "Hot"
+  }
+
+  internal_storage = {
+    private_dns_zone_blob_ids = [azurerm_private_dns_zone.privatelink_blob_core.id]
+    private_dns_zone_queue_ids = []
+    private_dns_zone_table_ids = []
+  }
+  evh_config = {
+    name = format("%s-evh-ns", local.project)
+    resource_group_name = azurerm_resource_group.rg.name
+    topics = ["test"]
+  }
+  depends_on = [ module.event_hub ]
+  tags = var.tags
+}

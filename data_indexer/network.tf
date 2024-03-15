@@ -6,4 +6,11 @@ resource "azurerm_subnet" "this" {
   service_endpoints = var.service_endpoints
   private_link_service_network_policies_enabled = true
   private_endpoint_network_policies_enabled     = true
+  delegation {
+    name = "default"
+    service_delegation {
+      name    = "Microsoft.Web/serverFarms"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
 }

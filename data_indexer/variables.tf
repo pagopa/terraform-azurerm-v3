@@ -11,26 +11,22 @@ variable "resource_group_name" {
 
 ## Internal Storage
 
+variable "private_endpoint_subnet_id" {
+  type = string
+  description = "(Required) The ID of the private endpoints subnet to use"
+}
 variable "internal_storage" {
   type = object({
-    private_endpoint_subnet_id = string
     private_dns_zone_blob_ids  = list(string)
     private_dns_zone_queue_ids = list(string)
     private_dns_zone_table_ids = list(string)
-    queues                     = list(string) # Queues names
-    containers                 = list(string) # Containers names
-    blobs_retention_days       = number
+    
   })
 
   default = {
-    enable                     = false
-    private_endpoint_subnet_id = "dummy"
     private_dns_zone_blob_ids  = []
     private_dns_zone_queue_ids = []
     private_dns_zone_table_ids = []
-    queues                     = []
-    containers                 = []
-    blobs_retention_days       = 1
   }
 }
 
@@ -40,8 +36,6 @@ variable "internal_storage_account_info" {
     account_tier                      = string # Defines the Tier to use for this storage account. Valid options are Standard and Premium. For BlockBlobStorage and FileStorage accounts only Premium is valid.
     account_replication_type          = string # Defines the type of replication to use for this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS.
     access_tier                       = string # Defines the access tier for BlobStorage, FileStorage and StorageV2 accounts. Valid options are Hot and Cool, defaults to Hot.
-    advanced_threat_protection_enable = bool
-    use_legacy_defender_version       = bool
   })
 
   default = {
@@ -49,8 +43,6 @@ variable "internal_storage_account_info" {
     account_tier                      = "Standard"
     account_replication_type          = "GZRS"
     access_tier                       = "Hot"
-    advanced_threat_protection_enable = true
-    use_legacy_defender_version       = true
   }
 }
 
@@ -189,7 +181,6 @@ variable "service_endpoints" {
   default     = [
     "Microsoft.Web",
     "Microsoft.AzureCosmosDB",
-    "Microsoft.Storage.Global",
     "Microsoft.Storage",
     "Microsoft.Sql",
     "Microsoft.EventHub"
@@ -202,7 +193,7 @@ variable "service_endpoints" {
 
 variable "docker_registry_url" {
   type    = string
-  default = "ghcr.io"
+  default = "http://ghcr.io/"
 }
 variable "cdc_docker_image" {
   type    = string
@@ -247,7 +238,7 @@ variable "evh_config" {
   type        = object({
     name = string
     resource_group_name = string
-    topics = list(string)
+    topics = set(string)
   })
   description = "The Internal Event Hubs (topics) configuration"
 }

@@ -79,7 +79,7 @@ resource "azurerm_role_assignment" "evh_sender" {
   for_each = data.azurerm_eventhub.evh
   scope                = each.value.id
   role_definition_name = "Azure Event Hubs Data Sender"
-  principal_id         = azurerm_linux_web_app.cdc.id
+  principal_id         = azurerm_linux_web_app.cdc.identity[0].principal_id
 }
 
 ################################################################################################
@@ -151,7 +151,7 @@ resource "azurerm_role_assignment" "evh_listener" {
   for_each = data.azurerm_eventhub.evh
   scope                = each.value.id
   role_definition_name = "Azure Event Hubs Data Receiver"
-  principal_id         = azurerm_linux_web_app.data_ti.id
+  principal_id         = azurerm_linux_web_app.data_ti.identity[0].principal_id
 }
 
 # Plan Autoscale settings #######################################################
