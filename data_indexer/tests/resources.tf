@@ -13,7 +13,7 @@ module "key_vault" {
   soft_delete_retention_days = 15
   lock_enable                = false
   tenant_id                  = data.azurerm_client_config.current.tenant_id
-  tags = var.tags
+  tags                       = var.tags
 }
 
 resource "azurerm_virtual_network" "vnet" {
@@ -80,12 +80,12 @@ module "eventhub_snet" {
 }
 
 module "event_hub" {
-  source                   = "../../eventhub"
-  name                     = format("%s-evh-ns", local.project)
-  location                 = var.location
-  resource_group_name      = azurerm_resource_group.rg.name
-  sku                      = "Basic"
-  zone_redundant           = true
+  source              = "../../eventhub"
+  name                = format("%s-evh-ns", local.project)
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku                 = "Basic"
+  zone_redundant      = true
   virtual_network_ids = [azurerm_virtual_network.vnet.id]
   subnet_id           = module.eventhub_snet.id
   private_dns_zones = {
@@ -94,33 +94,33 @@ module "event_hub" {
   }
 
   eventhubs = [
-  {
-    name              = "test"
-    partitions        = 5
-    message_retention = 1
-    consumers         = []
-    keys = [
-      {
-        name   = "sender"
-        listen = false
-        send   = true
-        manage = false
-      },
-      {
-        name   = "receiver"
-        listen = true
-        send   = false
-        manage = false
-      }
-    ]
-  }
-]
+    {
+      name              = "test"
+      partitions        = 5
+      message_retention = 1
+      consumers         = []
+      keys = [
+        {
+          name   = "sender"
+          listen = false
+          send   = true
+          manage = false
+        },
+        {
+          name   = "receiver"
+          listen = true
+          send   = false
+          manage = false
+        }
+      ]
+    }
+  ]
 
   public_network_access_enabled = true
-  network_rulesets = []
+  network_rulesets              = []
 
   alerts_enabled = false
-  action = []
+  action         = []
 
   tags = var.tags
 }
@@ -144,21 +144,21 @@ resource "azurerm_key_vault_secret" "event_hub_keys" {
 
 module "data_indexer" {
   source = "../../data_indexer"
-  
-  location = var.location
+
+  location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  name = format("%s-ti", local.project)
+  name                = format("%s-ti", local.project)
 
   plan_name = format("%s-plan-dataindexer", local.project)
 
   virtual_network_name = azurerm_virtual_network.vnet.name
-  subnet_name = format("%s-snet", local.project)
-  address_prefixes = var.subnet_cidr
+  subnet_name          = format("%s-snet", local.project)
+  address_prefixes     = var.subnet_cidr
 
-  cdc_docker_image = "pagopa/change-data-capturer-ms"
+  cdc_docker_image     = "pagopa/change-data-capturer-ms"
   cdc_docker_image_tag = "0.0.7"
 
-  data_ti_docker_image = "pagopa/data-ti-ms"
+  data_ti_docker_image     = "pagopa/data-ti-ms"
   data_ti_docker_image_tag = "0.0.1"
 
   json_config_path = "./config.json"
@@ -166,22 +166,22 @@ module "data_indexer" {
   private_endpoint_subnet_id = module.pendpoints_snet.id
 
   internal_storage_account_info = {
-    account_kind                      = "StorageV2"
-    account_tier                      = "Standard"
-    account_replication_type          = "ZRS"
-    access_tier                       = "Hot"
+    account_kind             = "StorageV2"
+    account_tier             = "Standard"
+    account_replication_type = "ZRS"
+    access_tier              = "Hot"
   }
 
   internal_storage = {
-    private_dns_zone_blob_ids = [azurerm_private_dns_zone.privatelink_blob_core.id]
+    private_dns_zone_blob_ids  = [azurerm_private_dns_zone.privatelink_blob_core.id]
     private_dns_zone_queue_ids = []
     private_dns_zone_table_ids = []
   }
   evh_config = {
-    name = format("%s-evh-ns", local.project)
+    name                = format("%s-evh-ns", local.project)
     resource_group_name = azurerm_resource_group.rg.name
-    topics = ["test"]
+    topics              = ["test"]
   }
-  depends_on = [ module.event_hub ]
-  tags = var.tags
+  depends_on = [module.event_hub]
+  tags       = var.tags
 }

@@ -12,7 +12,7 @@ variable "resource_group_name" {
 ## Internal Storage
 
 variable "private_endpoint_subnet_id" {
-  type = string
+  type        = string
   description = "(Required) The ID of the private endpoints subnet to use"
 }
 variable "internal_storage" {
@@ -20,7 +20,7 @@ variable "internal_storage" {
     private_dns_zone_blob_ids  = list(string)
     private_dns_zone_queue_ids = list(string)
     private_dns_zone_table_ids = list(string)
-    
+
   })
 
   default = {
@@ -32,17 +32,17 @@ variable "internal_storage" {
 
 variable "internal_storage_account_info" {
   type = object({
-    account_kind                      = string # Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Changing this forces a new resource to be created. Defaults to Storage.
-    account_tier                      = string # Defines the Tier to use for this storage account. Valid options are Standard and Premium. For BlockBlobStorage and FileStorage accounts only Premium is valid.
-    account_replication_type          = string # Defines the type of replication to use for this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS.
-    access_tier                       = string # Defines the access tier for BlobStorage, FileStorage and StorageV2 accounts. Valid options are Hot and Cool, defaults to Hot.
+    account_kind             = string # Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Changing this forces a new resource to be created. Defaults to Storage.
+    account_tier             = string # Defines the Tier to use for this storage account. Valid options are Standard and Premium. For BlockBlobStorage and FileStorage accounts only Premium is valid.
+    account_replication_type = string # Defines the type of replication to use for this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS.
+    access_tier              = string # Defines the access tier for BlobStorage, FileStorage and StorageV2 accounts. Valid options are Hot and Cool, defaults to Hot.
   })
 
   default = {
-    account_kind                      = "StorageV2"
-    account_tier                      = "Standard"
-    account_replication_type          = "GZRS"
-    access_tier                       = "Hot"
+    account_kind             = "StorageV2"
+    account_tier             = "Standard"
+    account_replication_type = "GZRS"
+    access_tier              = "Hot"
   }
 }
 
@@ -177,8 +177,8 @@ variable "address_prefixes" {
 }
 
 variable "service_endpoints" {
-  type        = list(string)
-  default     = [
+  type = list(string)
+  default = [
     "Microsoft.Web",
     "Microsoft.AzureCosmosDB",
     "Microsoft.Storage",
@@ -235,10 +235,10 @@ variable "autoscale_default" {
 
 # Event Hub
 variable "evh_config" {
-  type        = object({
-    name = string
+  type = object({
+    name                = string
     resource_group_name = string
-    topics = set(string)
+    topics              = set(string)
   })
   description = "The Internal Event Hubs (topics) configuration"
 }
@@ -246,6 +246,6 @@ variable "evh_config" {
 # App service JSON CONFIG
 
 variable "json_config_path" {
-  type = string
+  type        = string
   description = "The Internal JSON configuration file path"
 }

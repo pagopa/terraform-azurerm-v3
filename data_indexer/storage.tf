@@ -29,9 +29,9 @@ resource "azurerm_private_endpoint" "blob" {
   }
 
   private_dns_zone_group {
-      name                 = "private-dns-zone-group"
-      private_dns_zone_ids = var.internal_storage.private_dns_zone_blob_ids
-    }
+    name                 = "private-dns-zone-group"
+    private_dns_zone_ids = var.internal_storage.private_dns_zone_blob_ids
+  }
 
   tags = var.tags
 }

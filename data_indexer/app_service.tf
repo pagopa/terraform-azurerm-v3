@@ -32,7 +32,7 @@ resource "azurerm_linux_web_app" "cdc" {
       WEBSITE_DNS_SERVER = "168.63.129.16"
       # https://docs.microsoft.com/en-us/azure/azure-monitor/app/sampling
       APPINSIGHTS_SAMPLING_PERCENTAGE = 5
-      
+
       CONFIGURATION = file(var.json_config_path)
     },
     var.app_settings,
@@ -41,17 +41,17 @@ resource "azurerm_linux_web_app" "cdc" {
     always_on         = true
     use_32_bit_worker = false
     application_stack {
-      docker_image_name     = "${var.cdc_docker_image}:${var.cdc_docker_image_tag}"
+      docker_image_name   = "${var.cdc_docker_image}:${var.cdc_docker_image_tag}"
       docker_registry_url = var.docker_registry_url
     }
-    
+
     minimum_tls_version    = "1.2"
     ftps_state             = "Disabled"
     vnet_route_all_enabled = true
 
     health_check_path                 = "/info"
     health_check_eviction_time_in_min = 5
-    http2_enabled = true
+    http2_enabled                     = true
   }
 
   # Managed identity
@@ -76,7 +76,7 @@ resource "azurerm_app_service_virtual_network_swift_connection" "cdc" {
 }
 
 resource "azurerm_role_assignment" "evh_sender" {
-  for_each = data.azurerm_eventhub.evh
+  for_each             = data.azurerm_eventhub.evh
   scope                = each.value.id
   role_definition_name = "Azure Event Hubs Data Sender"
   principal_id         = azurerm_linux_web_app.cdc.identity[0].principal_id
@@ -122,7 +122,7 @@ resource "azurerm_linux_web_app" "data_ti" {
 
     health_check_path                 = "/info"
     health_check_eviction_time_in_min = 5
-    http2_enabled = true
+    http2_enabled                     = true
 
   }
 
@@ -148,7 +148,7 @@ resource "azurerm_app_service_virtual_network_swift_connection" "data_ti" {
 }
 
 resource "azurerm_role_assignment" "evh_listener" {
-  for_each = data.azurerm_eventhub.evh
+  for_each             = data.azurerm_eventhub.evh
   scope                = each.value.id
   role_definition_name = "Azure Event Hubs Data Receiver"
   principal_id         = azurerm_linux_web_app.data_ti.identity[0].principal_id
