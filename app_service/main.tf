@@ -4,6 +4,7 @@ locals {
   ip_restrictions = concat(local.allowed_subnets, local.allowed_ips)
 }
 
+
 resource "azurerm_service_plan" "this" {
   count = var.plan_type == "internal" ? 1 : 0
 
@@ -16,6 +17,8 @@ resource "azurerm_service_plan" "this" {
 
   maximum_elastic_worker_count = var.plan_maximum_elastic_worker_count
   per_site_scaling_enabled     = var.plan_per_site_scaling
+
+  zone_balancing_enabled = var.zone_balancing_enabled
 
   tags = var.tags
 }

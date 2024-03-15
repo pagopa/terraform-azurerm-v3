@@ -15,7 +15,7 @@ locals {
 #
 
 module "subnet_vmss" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v7.50.1"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v7.64.0"
   count  = var.subnet_vmss_id != null ? 0 : 1
 
   name                 = "${local.prefix}-vmss-snet"
@@ -29,7 +29,7 @@ module "subnet_vmss" {
 #
 
 module "subnet_load_balancer" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v7.50.1"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v7.64.0"
   count  = var.subnet_lb_id != null ? 0 : 1
 
   name                 = "${local.prefix}-lb-snet"
@@ -100,7 +100,7 @@ resource "azurerm_subnet_network_security_group_association" "vmss" {
 #
 
 module "load_balancer" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//load_balancer?ref=v7.50.1"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//load_balancer?ref=v7.64.0"
 
   name                = "${local.prefix}-internal"
   resource_group_name = var.resource_group_name
@@ -150,7 +150,7 @@ module "load_balancer" {
 #
 
 module "vmss" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//vm_scale_set?ref=v7.50.1"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//vm_scale_set?ref=v7.64.0"
 
   name                                   = local.prefix
   resource_group_name                    = var.resource_group_name

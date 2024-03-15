@@ -23,7 +23,7 @@ variable "aad_admin_group_ids" {
 }
 
 #
-# Default node pool
+# 🤖 System node pool
 #
 
 variable "system_node_pool_name" {
@@ -107,7 +107,7 @@ variable "system_node_pool_tags" {
 ### END SYSTEM NODE POOL
 
 #
-# User node pool
+# 👤 User node pool
 #
 variable "user_node_pool_enabled" {
   type        = bool
@@ -124,11 +124,13 @@ variable "user_node_pool_name" {
     )
     error_message = "Max length is 12 chars."
   }
+  default = ""
 }
 
 variable "user_node_pool_vm_size" {
   type        = string
   description = "(Required) The size of the Virtual Machine, such as Standard_B4ms or Standard_D4s_vX. See https://pagopa.atlassian.net/wiki/spaces/DEVOPS/pages/134840344/Best+practice+su+prodotti"
+  default     = ""
 }
 
 variable "user_node_pool_os_disk_type" {
@@ -140,16 +142,19 @@ variable "user_node_pool_os_disk_type" {
 variable "user_node_pool_os_disk_size_gb" {
   type        = number
   description = "(Optional) The size of the OS Disk which should be used for each agent in the Node Pool. Changing this forces a new resource to be created."
+  default     = 0
 }
 
 variable "user_node_pool_node_count_min" {
   type        = number
   description = "(Required) The minimum number of nodes which should exist in this Node Pool. If specified this must be between 1 and 1000."
+  default     = 0
 }
 
 variable "user_node_pool_node_count_max" {
   type        = number
   description = "(Required) The maximum number of nodes which should exist in this Node Pool. If specified this must be between 1 and 1000."
+  default     = 0
 }
 
 variable "user_node_pool_max_pods" {
@@ -213,7 +218,7 @@ variable "kubernetes_version" {
 }
 
 #
-# Network
+# ☁️ Network
 #
 variable "private_cluster_enabled" {
   type        = bool
@@ -253,11 +258,12 @@ variable "network_profile" {
     service_cidr        = optional(string, "10.2.0.0/16")  # e.g. '10.2.0.0/16'. The Network Range used by the Kubernetes service
   })
   default = {
-    dns_service_ip = "10.2.0.10"
-    network_policy = "azure"
-    network_plugin = "azure"
-    outbound_type  = "loadBalancer"
-    service_cidr   = "10.2.0.0/16"
+    dns_service_ip      = "10.2.0.10"
+    network_policy      = "azure"
+    network_plugin      = "azure"
+    network_plugin_mode = null
+    outbound_type       = "loadBalancer"
+    service_cidr        = "10.2.0.0/16"
   }
   description = "See variable description to understand how to use it, and see examples"
 }
@@ -290,7 +296,7 @@ variable "addon_azure_pod_identity_enabled" {
 }
 
 #
-# Logs
+# 📄 Logs
 #
 variable "log_analytics_workspace_id" {
   type        = string
@@ -304,6 +310,9 @@ variable "microsoft_defender_log_analytics_workspace_id" {
   default     = null
 }
 
+#
+# 🚓 Security
+#
 variable "sec_log_analytics_workspace_id" {
   type        = string
   default     = null
@@ -320,3 +329,14 @@ variable "tags" {
   type = map(any)
 }
 
+variable "workload_identity_enabled" {
+  type        = bool
+  description = "(Optional) Specifies whether Azure AD Workload Identity should be enabled for the Cluster. Defaults to false."
+  default     = false
+}
+
+variable "oidc_issuer_enabled" {
+  type        = bool
+  description = "(Optional) Enable or Disable the OIDC issuer URL"
+  default     = false
+}
