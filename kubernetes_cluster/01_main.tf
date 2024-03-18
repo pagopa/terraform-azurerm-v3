@@ -150,6 +150,13 @@ resource "azurerm_kubernetes_cluster" "this" {
     }
   }
 
+  storage_profile {
+    blob_driver_enabled = true
+    disk_driver_enabled = true
+    file_driver_enabled = true
+    snapshot_controller_enabled = true
+  }
+
   lifecycle {
     ignore_changes = [
       default_node_pool[0].node_count,
