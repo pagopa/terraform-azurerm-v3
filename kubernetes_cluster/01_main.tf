@@ -151,10 +151,11 @@ resource "azurerm_kubernetes_cluster" "this" {
   }
 
   storage_profile {
-    blob_driver_enabled = true
-    disk_driver_enabled = true
-    file_driver_enabled = true
-    snapshot_controller_enabled = true
+    file_driver_enabled         = var.storage_profile_file_driver_enabled
+    disk_driver_enabled         = var.storage_profile_disk_driver_enabled
+    disk_driver_version         = var.storage_profile_disk_driver_version
+    snapshot_controller_enabled = var.storage_profile_snapshot_controller_enabled
+    blob_driver_enabled         = var.storage_profile_blob_driver_enabled
   }
 
   lifecycle {
