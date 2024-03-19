@@ -33,7 +33,8 @@ resource "azurerm_linux_web_app" "cdc" {
       # https://docs.microsoft.com/en-us/azure/azure-monitor/app/sampling
       APPINSIGHTS_SAMPLING_PERCENTAGE = 5
 
-      CONFIGURATION = file(var.json_config_path)
+      CONFIGURATION               = file(var.json_config_path)
+      INTERNAL_STORAGE_CONNECTION = module.internal_storage_account.primary_connection_string
     },
     var.app_settings,
   )
@@ -104,7 +105,8 @@ resource "azurerm_linux_web_app" "data_ti" {
       # https://docs.microsoft.com/en-us/azure/azure-monitor/app/sampling
       APPINSIGHTS_SAMPLING_PERCENTAGE = 5,
 
-      CONFIGURATION = file(var.json_config_path)
+      CONFIGURATION               = file(var.json_config_path)
+      INTERNAL_STORAGE_CONNECTION = module.internal_storage_account.primary_connection_string
     },
     var.app_settings,
   )
