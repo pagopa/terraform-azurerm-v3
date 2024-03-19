@@ -6,6 +6,14 @@ output "name" {
   value = azurerm_redis_cache.this.name
 }
 
+output "location" {
+  value = azurerm_redis_cache.this.location
+}
+
+output "resource_group_name" {
+  value = azurerm_redis_cache.this.resource_group_name
+}
+
 output "primary_access_key" {
   value     = azurerm_redis_cache.this.primary_access_key
   sensitive = true
