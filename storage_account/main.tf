@@ -106,6 +106,8 @@ resource "azurerm_storage_account" "this" {
 
 # Enable advanced threat protection
 resource "azurerm_advanced_threat_protection" "this" {
+  count = var.enable_resource_advanced_threat_protection ? 1 : 0
+
   target_resource_id = azurerm_storage_account.this.id
   enabled            = var.advanced_threat_protection == true && var.use_legacy_defender_version == true
 }
