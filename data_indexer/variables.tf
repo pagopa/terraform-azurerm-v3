@@ -197,20 +197,20 @@ variable "docker_registry_url" {
 }
 variable "cdc_docker_image" {
   type    = string
-  default = null
+  default = "pagopa/change-data-capturer-ms"
 }
 variable "cdc_docker_image_tag" {
   type    = string
-  default = null
+  default = "0.1.0"
 }
 
 variable "data_ti_docker_image" {
   type    = string
-  default = null
+  default = "pagopa/data-ti-ms"
 }
 variable "data_ti_docker_image_tag" {
   type    = string
-  default = null
+  default = "0.1.0"
 }
 
 # Scaling rules
