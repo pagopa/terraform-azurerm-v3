@@ -340,3 +340,36 @@ variable "oidc_issuer_enabled" {
   description = "(Optional) Enable or Disable the OIDC issuer URL"
   default     = false
 }
+
+#
+# Storage profile
+#
+variable "storage_profile_blob_driver_enabled" {
+  type        = bool
+  default     = false
+  description = "(Optional) Is the Blob CSI driver enabled? Defaults to false"
+}
+
+variable "storage_profile_file_driver_enabled" {
+  type        = bool
+  default     = true
+  description = "(Optional) Is the File CSI driver enabled? Defaults to true"
+}
+
+variable "storage_profile_snapshot_controller_enabled" {
+  type        = bool
+  default     = true
+  description = "(Optional) Is the Snapshot Controller enabled? Defaults to true"
+}
+
+variable "storage_profile_disk_driver_enabled" {
+  type        = bool
+  default     = true
+  description = "(Optional) Is the Disk CSI driver enabled? Defaults to true"
+}
+
+variable "storage_profile_disk_driver_version" {
+  type        = string
+  default     = "v1"
+  description = "(Optional) Disk CSI Driver version to be used. Possible values are v1 and v2. Defaults to v1"
+}
