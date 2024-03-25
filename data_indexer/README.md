@@ -50,10 +50,10 @@ Use the example Terraform template, saved in `./tests`, to test this module and 
 | <a name="input_autoscale_default"></a> [autoscale\_default](#input\_autoscale\_default) | The number of instances that are available for scaling if metrics are not available for evaluation. | `number` | `5` | no |
 | <a name="input_autoscale_maximum"></a> [autoscale\_maximum](#input\_autoscale\_maximum) | The maximum number of instances for this resource. | `number` | `20` | no |
 | <a name="input_autoscale_minimum"></a> [autoscale\_minimum](#input\_autoscale\_minimum) | The minimum number of instances for this resource. | `number` | `1` | no |
-| <a name="input_cdc_docker_image"></a> [cdc\_docker\_image](#input\_cdc\_docker\_image) | n/a | `string` | `null` | no |
-| <a name="input_cdc_docker_image_tag"></a> [cdc\_docker\_image\_tag](#input\_cdc\_docker\_image\_tag) | n/a | `string` | `null` | no |
-| <a name="input_data_ti_docker_image"></a> [data\_ti\_docker\_image](#input\_data\_ti\_docker\_image) | n/a | `string` | `null` | no |
-| <a name="input_data_ti_docker_image_tag"></a> [data\_ti\_docker\_image\_tag](#input\_data\_ti\_docker\_image\_tag) | n/a | `string` | `null` | no |
+| <a name="input_cdc_docker_image"></a> [cdc\_docker\_image](#input\_cdc\_docker\_image) | n/a | `string` | `"pagopa/change-data-capturer-ms"` | no |
+| <a name="input_cdc_docker_image_tag"></a> [cdc\_docker\_image\_tag](#input\_cdc\_docker\_image\_tag) | n/a | `string` | `"0.1.0@sha256:94379d99d78062e89353b45d6b463cd7bf80e24869b7d2d1a8b7cbf316fd07e4"` | no |
+| <a name="input_data_ti_docker_image"></a> [data\_ti\_docker\_image](#input\_data\_ti\_docker\_image) | n/a | `string` | `"pagopa/data-ti-ms"` | no |
+| <a name="input_data_ti_docker_image_tag"></a> [data\_ti\_docker\_image\_tag](#input\_data\_ti\_docker\_image\_tag) | n/a | `string` | `"0.1.0@sha256:dc7b8cee0aa1e22658f61a0d5d19be44202f83f0533f35de2ef0eb87697cdb94"` | no |
 | <a name="input_docker_registry_url"></a> [docker\_registry\_url](#input\_docker\_registry\_url) | n/a | `string` | `"http://ghcr.io/"` | no |
 | <a name="input_evh_config"></a> [evh\_config](#input\_evh\_config) | The Internal Event Hubs (topics) configuration | <pre>object({<br>    name                = string<br>    resource_group_name = string<br>    topics              = set(string)<br>  })</pre> | n/a | yes |
 | <a name="input_health_check_maxpingfailures"></a> [health\_check\_maxpingfailures](#input\_health\_check\_maxpingfailures) | Max ping failures allowed | `number` | `null` | no |
