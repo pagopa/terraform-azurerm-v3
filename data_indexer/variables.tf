@@ -201,7 +201,7 @@ variable "cdc_docker_image" {
 }
 variable "cdc_docker_image_tag" {
   type    = string
-  default = "0.1.0"
+  default = "0.1.0@sha256:94379d99d78062e89353b45d6b463cd7bf80e24869b7d2d1a8b7cbf316fd07e4"
 }
 
 variable "data_ti_docker_image" {
@@ -210,7 +210,7 @@ variable "data_ti_docker_image" {
 }
 variable "data_ti_docker_image_tag" {
   type    = string
-  default = "0.1.0"
+  default = "0.1.0@sha256:dc7b8cee0aa1e22658f61a0d5d19be44202f83f0533f35de2ef0eb87697cdb94"
 }
 
 # Scaling rules
