@@ -48,59 +48,10 @@ variable "internal_storage_account_info" {
 
 ## App service plan
 
-variable "plan_type" {
-  type        = string
-  description = "(Required) Specifies if app service plan is external or internal"
-  validation {
-    condition = (
-      var.plan_type == "internal" ||
-      var.plan_type == "external"
-    )
-    error_message = "Plan type can be only internal or external."
-  }
-  default = "internal"
-}
-
-variable "plan_id" {
-  type        = string
-  description = "(Optional only if plan_type=internal) Specifies the external app service plan id."
-  default     = null
-}
-
-variable "plan_name" {
-  type        = string
-  description = "(Optional) Specifies the name of the App Service Plan component. Changing this forces a new resource to be created."
-  default     = null
-}
-
-variable "plan_kind" {
-  type        = string
-  description = "(Optional) The kind of the App Service Plan to create. Possible values are Windows (also available as App), Linux, elastic (for Premium Consumption) and FunctionApp (for a Consumption Plan). Changing this forces a new resource to be created."
-  default     = null
-}
-
 variable "sku_name" {
   type        = string
   description = "(Required) The SKU for the plan."
   default     = "P0v3"
-}
-
-variable "sticky_settings" {
-  type        = list(string)
-  description = "(Optional) A list of app_setting names that the Linux Function App will not swap between Slots when a swap operation is triggered"
-  default     = []
-}
-
-variable "plan_maximum_elastic_worker_count" {
-  type        = number
-  description = "(Optional) The maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan."
-  default     = null
-}
-
-variable "plan_per_site_scaling" {
-  type        = bool
-  description = "(Optional) Can Apps assigned to this App Service Plan be scaled independently? If set to false apps assigned to this plan will scale to all instances of the plan. Defaults to false."
-  default     = false
 }
 
 ## App service
@@ -115,23 +66,6 @@ variable "app_settings" {
   default = {}
 }
 
-variable "health_check_path" {
-  type        = string
-  description = "(Optional) The health check path to be pinged by App Service."
-  default     = null
-}
-
-variable "health_check_maxpingfailures" {
-  type        = number
-  description = "Max ping failures allowed"
-  default     = null
-
-  validation {
-    condition     = var.health_check_maxpingfailures == null ? true : (var.health_check_maxpingfailures >= 2 && var.health_check_maxpingfailures <= 10)
-    error_message = "Possible values are null or a number between 2 and 10"
-  }
-}
-
 variable "allowed_subnets" {
   type        = list(string)
   description = "(Optional) List of subnet allowed to call the appserver endpoint."
@@ -144,30 +78,17 @@ variable "allowed_ips" {
   default     = []
 }
 
-variable "vnet_integration" {
-  type        = bool
-  description = "(optional) enable vnet integration. Wheter it's true the subnet_id should not be null."
-  default     = false
-}
-
-variable "subnet_id" {
-  type        = string
-  description = "(Optional) Subnet id wether you want to integrate the app service to a subnet."
-  default     = null
-}
-
 variable "tags" {
   type = map(any)
 }
 
 # Subnet
 
-variable "subnet_name" {
-  type = string
-}
-
-variable "virtual_network_name" {
-  type = string
+variable "virtual_network" {
+  type = object({
+    name                = string
+    resource_group_name = string
+  })
 }
 
 variable "address_prefixes" {

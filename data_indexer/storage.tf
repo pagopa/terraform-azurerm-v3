@@ -7,7 +7,7 @@ module "internal_storage_account" {
   account_tier                  = var.internal_storage_account_info.account_tier
   account_replication_type      = var.internal_storage_account_info.account_replication_type
   access_tier                   = var.internal_storage_account_info.access_tier
-  resource_group_name           = var.resource_group_name
+  resource_group_name           = azurerm_resource_group.this.name
   location                      = var.location
   advanced_threat_protection    = false
   public_network_access_enabled = false
@@ -18,7 +18,7 @@ module "internal_storage_account" {
 resource "azurerm_private_endpoint" "blob" {
   name                = format("%s-blob-endpoint", module.internal_storage_account.name)
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.this.name
   subnet_id           = var.private_endpoint_subnet_id
 
   private_service_connection {
@@ -39,7 +39,7 @@ resource "azurerm_private_endpoint" "blob" {
 resource "azurerm_private_endpoint" "queue" {
   name                = format("%s-queue-endpoint", module.internal_storage_account.name)
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.this.name
   subnet_id           = var.private_endpoint_subnet_id
 
   private_service_connection {
@@ -60,7 +60,7 @@ resource "azurerm_private_endpoint" "queue" {
 resource "azurerm_private_endpoint" "table" {
   name                = format("%s-table-endpoint", module.internal_storage_account.name)
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.this.name
   subnet_id           = var.private_endpoint_subnet_id
 
   private_service_connection {

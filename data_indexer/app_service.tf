@@ -1,13 +1,13 @@
 resource "azurerm_service_plan" "this" {
-  name                = var.plan_name
+  name                = "${var.name}-di-plan"
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.this.name
 
   sku_name = var.sku_name
   os_type  = "Linux"
 
-  maximum_elastic_worker_count = var.plan_maximum_elastic_worker_count
-  per_site_scaling_enabled     = var.plan_per_site_scaling
+  maximum_elastic_worker_count = null
+  per_site_scaling_enabled     = false
 
   tags = var.tags
 }
@@ -15,12 +15,14 @@ resource "azurerm_service_plan" "this" {
 # CDC App Service ################################################################
 
 resource "azurerm_linux_web_app" "cdc" {
-  name                = var.name
+  name                = "${var.name}-di-cdc-app"
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.this.name
 
-  service_plan_id = azurerm_service_plan.this.id
-  https_only      = true
+  service_plan_id           = azurerm_service_plan.this.id
+  https_only                = true
+  virtual_network_subnet_id = azurerm_subnet.this.id
+
   #tfsec:ignore:azure-appservice-require-client-cert
   client_certificate_enabled = false
   client_affinity_enabled    = false
@@ -71,11 +73,6 @@ resource "azurerm_linux_web_app" "cdc" {
   tags = var.tags
 }
 
-resource "azurerm_app_service_virtual_network_swift_connection" "cdc" {
-  app_service_id = azurerm_linux_web_app.cdc.id
-  subnet_id      = azurerm_subnet.this.id
-}
-
 resource "azurerm_role_assignment" "evh_sender" {
   for_each             = data.azurerm_eventhub.evh
   scope                = each.value.id
@@ -87,12 +84,14 @@ resource "azurerm_role_assignment" "evh_sender" {
 
 # Data Transformer App Service #################################################################
 resource "azurerm_linux_web_app" "data_ti" {
-  name                = var.name
+  name                = "${var.name}-di-data-ti-app"
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.this.name
 
-  service_plan_id = azurerm_service_plan.this.id
-  https_only      = true
+  service_plan_id           = azurerm_service_plan.this.id
+  https_only                = true
+  virtual_network_subnet_id = azurerm_subnet.this.id
+
   #tfsec:ignore:azure-appservice-require-client-cert
   client_certificate_enabled = false
   client_affinity_enabled    = false
@@ -144,11 +143,6 @@ resource "azurerm_linux_web_app" "data_ti" {
   tags = var.tags
 }
 
-resource "azurerm_app_service_virtual_network_swift_connection" "data_ti" {
-  app_service_id = azurerm_linux_web_app.data_ti.id
-  subnet_id      = azurerm_subnet.this.id
-}
-
 resource "azurerm_role_assignment" "evh_listener" {
   for_each             = data.azurerm_eventhub.evh
   scope                = each.value.id
@@ -160,7 +154,7 @@ resource "azurerm_role_assignment" "evh_listener" {
 
 resource "azurerm_monitor_autoscale_setting" "appservice_plan" {
   name                = format("%s-autoscale", azurerm_service_plan.this.name)
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.this.name
   location            = var.location
   target_resource_id  = azurerm_service_plan.this.id
 
