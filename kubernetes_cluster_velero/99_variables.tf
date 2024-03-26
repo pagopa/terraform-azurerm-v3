@@ -95,15 +95,15 @@ variable "enable_sa_backup" {
 }
 
 variable "advanced_threat_protection" {
-  type = string
+  type        = string
   description = "(Optional) Enabled azurerm_advanced_threat_protection resource, Default true"
-  default = true
+  default     = true
 }
 
 variable "enable_low_availability_alert" {
-  type = string
+  type        = string
   description = "(Optional) Enable the Low Availability alert. Default is true"
-  default = true
+  default     = true
 }
 
 variable "tags" {
