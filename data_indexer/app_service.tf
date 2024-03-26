@@ -3,7 +3,7 @@ resource "azurerm_service_plan" "this" {
   location            = var.location
   resource_group_name = azurerm_resource_group.this.name
 
-  sku_name = var.sku_name
+  sku_name = var.config.sku_name
   os_type  = "Linux"
 
   maximum_elastic_worker_count = null
@@ -35,17 +35,17 @@ resource "azurerm_linux_web_app" "cdc" {
       # https://docs.microsoft.com/en-us/azure/azure-monitor/app/sampling
       APPINSIGHTS_SAMPLING_PERCENTAGE = 5
 
-      CONFIGURATION               = file(var.json_config_path)
+      CONFIGURATION               = file(var.config.json_config_path)
       INTERNAL_STORAGE_CONNECTION = module.internal_storage_account.primary_connection_string
     },
-    var.app_settings,
+    var.config.app_settings,
   )
   site_config {
     always_on         = true
     use_32_bit_worker = false
     application_stack {
-      docker_image_name   = "${var.cdc_docker_image}:${var.cdc_docker_image_tag}"
-      docker_registry_url = var.docker_registry_url
+      docker_image_name   = "${var.config.cdc_docker_image}:${var.config.cdc_docker_image_tag}"
+      docker_registry_url = var.config.docker_registry_url
     }
 
     minimum_tls_version    = "1.2"
@@ -104,17 +104,17 @@ resource "azurerm_linux_web_app" "data_ti" {
       # https://docs.microsoft.com/en-us/azure/azure-monitor/app/sampling
       APPINSIGHTS_SAMPLING_PERCENTAGE = 5,
 
-      CONFIGURATION               = file(var.json_config_path)
+      CONFIGURATION               = file(var.config.json_config_path)
       INTERNAL_STORAGE_CONNECTION = module.internal_storage_account.primary_connection_string
     },
-    var.app_settings,
+    var.config.app_settings,
   )
   site_config {
     always_on         = true
     use_32_bit_worker = false
     application_stack {
-      docker_image_name   = "${var.data_ti_docker_image}:${var.data_ti_docker_image_tag}"
-      docker_registry_url = var.docker_registry_url
+      docker_image_name   = "${var.config.data_ti_docker_image}:${var.config.data_ti_docker_image_tag}"
+      docker_registry_url = var.config.docker_registry_url
     }
 
     minimum_tls_version    = "1.2"
@@ -162,9 +162,9 @@ resource "azurerm_monitor_autoscale_setting" "appservice_plan" {
     name = "default"
 
     capacity {
-      default = var.autoscale_default
-      minimum = var.autoscale_minimum
-      maximum = var.autoscale_maximum
+      default = var.config.autoscale_default
+      minimum = var.config.autoscale_minimum
+      maximum = var.config.autoscale_maximum
     }
 
     # Increase rules

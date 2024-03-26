@@ -2,11 +2,11 @@
 module "internal_storage_account" {
   source = "../storage_account"
 
-  name                          = format("%ssit", replace(var.name, "-", ""))
-  account_kind                  = var.internal_storage_account_info.account_kind
-  account_tier                  = var.internal_storage_account_info.account_tier
-  account_replication_type      = var.internal_storage_account_info.account_replication_type
-  access_tier                   = var.internal_storage_account_info.access_tier
+  name                          = format("%dist", replace(var.name, "-", ""))
+  account_kind                  = var.internal_storage.account_kind
+  account_tier                  = var.internal_storage.account_tier
+  account_replication_type      = var.internal_storage.account_replication_type
+  access_tier                   = var.internal_storage.access_tier
   resource_group_name           = azurerm_resource_group.this.name
   location                      = var.location
   advanced_threat_protection    = false
@@ -19,7 +19,7 @@ resource "azurerm_private_endpoint" "blob" {
   name                = format("%s-blob-endpoint", module.internal_storage_account.name)
   location            = var.location
   resource_group_name = azurerm_resource_group.this.name
-  subnet_id           = var.private_endpoint_subnet_id
+  subnet_id           = var.internal_storage.private_endpoint_subnet_id
 
   private_service_connection {
     name                           = format("%s-blob", module.internal_storage_account.name)
@@ -40,7 +40,7 @@ resource "azurerm_private_endpoint" "queue" {
   name                = format("%s-queue-endpoint", module.internal_storage_account.name)
   location            = var.location
   resource_group_name = azurerm_resource_group.this.name
-  subnet_id           = var.private_endpoint_subnet_id
+  subnet_id           = var.internal_storage.private_endpoint_subnet_id
 
   private_service_connection {
     name                           = format("%s-queue", module.internal_storage_account.name)
@@ -61,7 +61,7 @@ resource "azurerm_private_endpoint" "table" {
   name                = format("%s-table-endpoint", module.internal_storage_account.name)
   location            = var.location
   resource_group_name = azurerm_resource_group.this.name
-  subnet_id           = var.private_endpoint_subnet_id
+  subnet_id           = var.internal_storage.private_endpoint_subnet_id
 
   private_service_connection {
     name                           = format("%s-table", module.internal_storage_account.name)
