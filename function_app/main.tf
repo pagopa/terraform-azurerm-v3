@@ -1,6 +1,6 @@
 #tfsec:ignore:azure-storage-default-action-deny
 module "storage_account" {
-  source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.64.0"
+  source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.70.1"
 
   name                          = coalesce(var.storage_account_name, format("%sst", replace(var.name, "-", "")))
   account_kind                  = var.storage_account_info.account_kind
@@ -19,7 +19,7 @@ module "storage_account" {
 module "storage_account_durable_function" {
   count = var.internal_storage.enable ? 1 : 0
 
-  source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.64.0"
+  source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.70.1"
 
   name                          = coalesce(var.storage_account_durable_name, format("%ssdt", replace(var.name, "-", "")))
   account_kind                  = var.internal_storage_account_info != null ? var.internal_storage_account_info.account_kind : var.storage_account_info.account_kind
@@ -28,8 +28,9 @@ module "storage_account_durable_function" {
   access_tier                   = var.internal_storage_account_info != null ? var.internal_storage_account_info.account_kind != "Storage" ? var.internal_storage_account_info.access_tier : null : var.storage_account_info.account_kind != "Storage" ? var.storage_account_info.access_tier : null
   resource_group_name           = var.resource_group_name
   location                      = var.location
-  advanced_threat_protection    = false
-  public_network_access_enabled = false
+  advanced_threat_protection    = var.internal_storage_account_info != null ? var.internal_storage_account_info.advanced_threat_protection_enable : false
+  use_legacy_defender_version   = var.internal_storage_account_info != null ? var.internal_storage_account_info.use_legacy_defender_version : true
+  public_network_access_enabled = var.internal_storage_account_info != null ? var.internal_storage_account_info.public_network_access_enabled : false
 
   tags = var.tags
 }
