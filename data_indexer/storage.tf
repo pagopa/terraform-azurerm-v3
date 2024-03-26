@@ -2,15 +2,16 @@
 module "internal_storage_account" {
   source = "../storage_account"
 
-  name                          = format("%dist", replace(var.name, "-", ""))
-  account_kind                  = var.internal_storage.account_kind
-  account_tier                  = var.internal_storage.account_tier
-  account_replication_type      = var.internal_storage.account_replication_type
-  access_tier                   = var.internal_storage.access_tier
-  resource_group_name           = azurerm_resource_group.this.name
-  location                      = var.location
-  advanced_threat_protection    = false
-  public_network_access_enabled = false
+  name                                       = "${replace(var.name, "-", "")}dist"
+  account_kind                               = var.internal_storage.account_kind
+  account_tier                               = var.internal_storage.account_tier
+  account_replication_type                   = var.internal_storage.account_replication_type
+  access_tier                                = var.internal_storage.access_tier
+  resource_group_name                        = azurerm_resource_group.this.name
+  location                                   = var.location
+  enable_resource_advanced_threat_protection = false
+  advanced_threat_protection                 = false
+  public_network_access_enabled              = false
 
   tags = var.tags
 }

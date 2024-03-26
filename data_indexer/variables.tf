@@ -28,10 +28,10 @@ variable "internal_storage" {
 variable "config" {
   type = object({
     sku_name                 = optional(string, "P0v3")
-    app_settings             = map(string)
-    allowed_subnets          = list(string)
-    allowed_ips              = list(string)
-    docker_registry_url      = optional(string, "http://ghcr.io/")
+    app_settings             = optional(map(string), {})
+    allowed_subnets          = optional(list(string), [])
+    allowed_ips              = optional(list(string), [])
+    docker_registry_url      = optional(string, "http://ghcr.io")
     cdc_docker_image         = optional(string, "pagopa/change-data-capturer-ms")
     cdc_docker_image_tag     = optional(string, "0.1.0@sha256:94379d99d78062e89353b45d6b463cd7bf80e24869b7d2d1a8b7cbf316fd07e4")
     data_ti_docker_image     = optional(string, "pagopa/data-ti-ms")

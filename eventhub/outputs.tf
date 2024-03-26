@@ -13,6 +13,11 @@ output "key_ids" {
   value       = local.keys
 }
 
+output "name" {
+  description = "The name of this Event Hub"
+  value       = azurerm_eventhub_namespace.this.name
+}
+
 output "keys" {
   description = "Map of hubs with keys => primary_key / secondary_key mapping."
   sensitive   = true
