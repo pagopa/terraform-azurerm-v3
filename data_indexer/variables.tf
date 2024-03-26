@@ -9,11 +9,6 @@ variable "location" {
   description = "(Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created."
 }
 
-variable "resource_group_name" {
-  type        = string
-  description = "(Required) The name of the resource group in which to create the App Service and App Service Plan."
-}
-
 ## Internal Storage
 variable "internal_storage" {
   type = object({
@@ -59,19 +54,15 @@ variable "virtual_network" {
 
 variable "subnet" {
   type = object({
-    address_prefixes  = list(string)
-    service_endpoints = list(string)
-  })
-  default = {
-    address_prefixes = []
-    service_endpoints = [
+    address_prefixes = list(string)
+    service_endpoints = optional(list(string), [
       "Microsoft.Web",
       "Microsoft.AzureCosmosDB",
       "Microsoft.Storage",
       "Microsoft.Sql",
       "Microsoft.EventHub"
-    ]
-  }
+    ])
+  })
 }
 
 # Event Hub
