@@ -797,4 +797,3 @@ webhooks:
     - UPDATE
     resources:
     - logstashes
-

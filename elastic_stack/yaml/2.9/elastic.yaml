@@ -21,13 +21,16 @@ spec:
       spec:
         containers:
         - name: elasticsearch
-          #resources:
-          #  requests:
-          #    memory: 6Gi
-          #    cpu: 1
-          #  limits:
-          #    memory: 8Gi
-          #    cpu: 2
+          resources:
+            requests:
+              memory: ${v.requestMemory}
+              cpu: ${v.requestCPU}
+            limits:
+              memory: ${v.limitsMemory}
+              cpu: ${v.limitsCPU}
+          #env:
+          #- name: ES_JAVA_OPTS
+          #  value: "-Xms1024m -Xmx1500m"
         affinity:
           #podAntiAffinity:
           #  preferredDuringSchedulingIgnoredDuringExecution:
