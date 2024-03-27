@@ -60,7 +60,7 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.64.0 |
+| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.70.0 |
 
 ## Resources
 
@@ -83,9 +83,11 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_advanced_threat_protection"></a> [advanced\_threat\_protection](#input\_advanced\_threat\_protection) | (Optional) Enabled azurerm\_advanced\_threat\_protection resource, Default true | `string` | `true` | no |
 | <a name="input_aks_cluster_name"></a> [aks\_cluster\_name](#input\_aks\_cluster\_name) | (Required) Name of the aks cluster on which Velero will be installed | `string` | n/a | yes |
 | <a name="input_aks_cluster_rg"></a> [aks\_cluster\_rg](#input\_aks\_cluster\_rg) | (Required) AKS cluster resource group name | `string` | n/a | yes |
 | <a name="input_backup_storage_container_name"></a> [backup\_storage\_container\_name](#input\_backup\_storage\_container\_name) | (Required) Name of the storage container where Velero keeps the backups | `string` | n/a | yes |
+| <a name="input_enable_low_availability_alert"></a> [enable\_low\_availability\_alert](#input\_enable\_low\_availability\_alert) | (Optional) Enable the Low Availability alert. Default is true | `string` | `true` | no |
 | <a name="input_enable_sa_backup"></a> [enable\_sa\_backup](#input\_enable\_sa\_backup) | (Optional) enables storage account point in time recovery | `bool` | `false` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Resource location | `string` | n/a | yes |
 | <a name="input_plugin_version"></a> [plugin\_version](#input\_plugin\_version) | (Optional) Version for the velero plugin | `string` | `"v1.7.1"` | no |
