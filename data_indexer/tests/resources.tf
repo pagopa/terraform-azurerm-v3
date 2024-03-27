@@ -164,9 +164,8 @@ module "data_indexer" {
     private_endpoint_subnet_id = module.pendpoints_snet.id
   }
   evh_config = {
-    name                = module.event_hub.name
-    resource_group_name = azurerm_resource_group.rg.name
-    topics              = ["test"]
+    hub_ids = module.event_hub.hub_ids
+    topics  = ["test"]
   }
   tags = var.tags
 }

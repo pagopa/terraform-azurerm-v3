@@ -1,3 +1,7 @@
+locals {
+  topic_ids = { for k, v in var.evh_config.hub_ids : k => v if contains(var.evh_config.topics, k) }
+}
+
 resource "azurerm_service_plan" "this" {
   name                = "${var.name}-di-plan"
   location            = var.location
@@ -74,8 +78,8 @@ resource "azurerm_linux_web_app" "cdc" {
 }
 
 resource "azurerm_role_assignment" "evh_sender" {
-  for_each             = data.azurerm_eventhub.evh
-  scope                = each.value.id
+  for_each             = local.topic_ids
+  scope                = each.value
   role_definition_name = "Azure Event Hubs Data Sender"
   principal_id         = azurerm_linux_web_app.cdc.identity[0].principal_id
 }
@@ -144,8 +148,8 @@ resource "azurerm_linux_web_app" "data_ti" {
 }
 
 resource "azurerm_role_assignment" "evh_listener" {
-  for_each             = data.azurerm_eventhub.evh
-  scope                = each.value.id
+  for_each             = local.topic_ids
+  scope                = each.value
   role_definition_name = "Azure Event Hubs Data Receiver"
   principal_id         = azurerm_linux_web_app.data_ti.identity[0].principal_id
 }

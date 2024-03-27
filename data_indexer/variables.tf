@@ -68,11 +68,10 @@ variable "subnet" {
 # Event Hub
 variable "evh_config" {
   type = object({
-    name                = string
-    resource_group_name = string
-    topics              = set(string)
+    hub_ids = map(string)
+    topics  = set(string)
   })
-  description = "The Internal Event Hubs (topics) configuration"
+  description = "The Internal Event Hubs (topics) configuration and related ids"
 }
 
 # tag
