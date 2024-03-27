@@ -136,12 +136,6 @@ module "event_hub" {
   tags = var.tags
 }
 
-locals {
-  event_hub = {
-    connection = "${format("%s-evh-ns", local.project)}.servicebus.windows.net:9093"
-  }
-}
-
 module "data_indexer" {
   source = "../../data_indexer"
 
