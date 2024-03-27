@@ -1,6 +1,6 @@
 
 module "internal_storage_account" {
-  source = "../storage_account"
+  source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.72.2"
 
   name                                       = "${replace(var.name, "-", "")}dist"
   account_kind                               = var.internal_storage.account_kind
