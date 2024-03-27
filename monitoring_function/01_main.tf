@@ -240,7 +240,7 @@ resource "azurerm_monitor_metric_alert" "self_alert" {
   description         = "Monitors the availability of the synthetic monitoring function"
   severity            = var.self_alert_configuration.severity
   frequency           = var.self_alert_configuration.frequency
-  auto_mitigate       = false
+  auto_mitigate       = true
   enabled             = var.self_alert_configuration.enabled
 
   criteria {
