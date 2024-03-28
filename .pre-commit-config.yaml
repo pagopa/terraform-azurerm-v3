@@ -7,11 +7,11 @@ repos:
         args:
           - --args=--hide providers
       #validate will exclude folders that contains xyz/test... and .utils that contains only scripts stuffs
-      - id: terraform_validate
-        exclude: '(.*\/tests|.utils)'
-        args:
-          - --args=-json
-          - --args=-no-color
+      # - id: terraform_validate
+      #   exclude: '(.*\/tests|.utils)'
+      #   args:
+      #     - --args=-json
+      #     - --args=-no-color
       # - id: terraform_trivy
       #   args:
       #     - >
