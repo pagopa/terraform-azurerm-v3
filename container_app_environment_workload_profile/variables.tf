@@ -32,9 +32,13 @@ variable "internal_load_balancer" {
   default     = false
 }
 
-variable "log_analytics_workspace_id" {
-  type        = string
-  description = "Log Analytics Workspace resource id"
+variable "log_analytics_workspace" {
+  type = object({
+    customer_id = string
+    shared_key  = string
+  })
+  description = "Log Analytics Workspace resource"
+  sensitive   = true
 }
 
 variable "tags" {
@@ -44,6 +48,7 @@ variable "tags" {
 variable "application_insights_connection_string" {
   type      = string
   sensitive = true
+  default   = ""
 }
 
 variable "workload_profiles" {

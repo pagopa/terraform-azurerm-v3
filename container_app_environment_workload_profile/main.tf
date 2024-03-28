@@ -12,13 +12,11 @@ resource "azapi_resource" "container_app_environment" {
 
   body = jsonencode({
     properties = {
-      appInsightsConfiguration = {
-        connectionString = var.application_insights_connection_string
-      }
       appLogsConfiguration = {
         destination = "log-analytics"
         logAnalyticsConfiguration = {
-          customerId = var.log_analytics_workspace_id
+          customerId = var.log_analytics_workspace.customer_id
+          sharedKey  = var.log_analytics_workspace.shared_key
         }
       }
       vnetConfiguration = {
