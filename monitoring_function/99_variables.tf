@@ -45,7 +45,6 @@ variable "job_settings" {
     cpu_requirement              = optional(number, 0.25)        #(Optional) Decimal; cpu requirement
     memory_requirement           = optional(string, "0.5Gi")     #(Optional) Memory requirement
     http_client_timeout          = optional(number, 30000)       #(Optional) Default http client response timeout, in milliseconds
-    http_connection_timeout      = optional(number, 2000)        #(Optional) Default http client connection timeout, in milliseconds
     default_duration_limit       = optional(number, 10000)       #(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds
     availability_prefix          = optional(string, "synthetic") #(Optional) Prefix used for prefixing availability test names
     container_app_environment_id = string                        #(Required) If defined, the id of the container app environment tu be used to run the monitoring job. If provided, skips the creation of a dedicated subnet
@@ -57,7 +56,6 @@ variable "job_settings" {
     cpu_requirement              = 0.25
     memory_requirement           = "0.5Gi"
     http_client_timeout          = 30000
-    http_connection_timeout      = 2000
     default_duration_limit       = 10000
     availability_prefix          = "synthetic"
     container_app_environment_id = null
