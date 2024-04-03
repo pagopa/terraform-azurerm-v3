@@ -8,7 +8,7 @@ terraform {
     }
     grafana = {
       source  = "grafana/grafana"
-      version = "<= 2.3.0"
+      version = "<= 2.14.3"
     }
   }
 }
