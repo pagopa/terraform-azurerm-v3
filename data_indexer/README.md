@@ -19,7 +19,7 @@ Use the example Terraform template, saved in `./tests`, to test this module and 
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_internal_storage_account"></a> [internal\_storage\_account](#module\_internal\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.72.2 |
+| <a name="module_internal_storage_account"></a> [internal\_storage\_account](#module\_internal\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.76.0 |
 
 ## Resources
 
