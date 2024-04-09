@@ -5,6 +5,11 @@ variable "name" {
   type = string
 }
 
+variable "tenant_id" {
+  type    = string
+  default = null
+}
+
 variable "storage_account_kind" {
   type    = string
   default = "StorageV2"
@@ -29,6 +34,11 @@ variable "location" {
   type = string
 }
 
+variable "cdn_location" {
+  type        = string
+  default     = null
+  description = "Specific location for CDN"
+}
 variable "tags" {
   type = map(string)
 }
@@ -321,6 +331,24 @@ variable "keyvault_vault_name" {
   description = "Key vault name"
 }
 
+variable "keyvault_id" {
+  type        = string
+  description = "Key vault id"
+  default     = null
+}
+
+variable "azuread_service_principal_azure_cdn_frontdoor_id" {
+  type        = string
+  description = "Azure CDN Front Door Principal ID - Microsoft.AzureFrontDoor-Cdn"
+  default     = null
+}
+
+variable "custom_hostname_kv" {
+  type        = bool
+  default     = false
+  description = "Flag required to enable the association between KV certificate and CDN when the hostname is different from the APEX"
+}
+
 variable "dns_zone_name" {
   type = string
 }
@@ -334,6 +362,11 @@ variable "advanced_threat_protection_enabled" {
   default = false
 }
 
+variable "enable_resource_advanced_threat_protection" {
+  type        = bool
+  description = "Enabled azurerm_advanced_threat_protection resource"
+  default     = true
+}
 
 variable "storage_account_nested_items_public" {
   type        = bool
