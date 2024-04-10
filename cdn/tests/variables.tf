@@ -7,6 +7,12 @@ variable "prefix" {
 variable "location" {
   description = "Resorce location"
   type        = string
+  default     = "italynorth"
+}
+
+variable "location_cdn" {
+  description = "Resorce location CDN"
+  type        = string
   default     = "westeurope"
 }
 

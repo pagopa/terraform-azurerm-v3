@@ -37,7 +37,7 @@ variable "location" {
 variable "cdn_location" {
   type        = string
   default     = null
-  description = "Specific location for CDN"
+  description = "If the location of the CDN needs to be different from that of the storage account, set this variable to the location where the CDN should be created. For example, cdn_location = westeurope and location = northitaly"
 }
 variable "tags" {
   type = map(string)
@@ -343,7 +343,7 @@ variable "azuread_service_principal_azure_cdn_frontdoor_id" {
   default     = null
 }
 
-variable "custom_hostname_kv" {
+variable "custom_hostname_kv_enabled" {
   type        = bool
   default     = false
   description = "Flag required to enable the association between KV certificate and CDN when the hostname is different from the APEX"
@@ -362,7 +362,7 @@ variable "advanced_threat_protection_enabled" {
   default = false
 }
 
-variable "enable_resource_advanced_threat_protection" {
+variable "resource_advanced_threat_protection_enabled" {
   type        = bool
   description = "Enabled azurerm_advanced_threat_protection resource"
   default     = true

@@ -22,7 +22,7 @@ module "cdn_storage_account" {
   public_network_access_enabled   = true
 
   advanced_threat_protection                 = var.advanced_threat_protection_enabled
-  enable_resource_advanced_threat_protection = var.enable_resource_advanced_threat_protection
+  enable_resource_advanced_threat_protection = var.resource_advanced_threat_protection_enabled
 
   index_document     = var.index_document
   error_404_document = var.error_404_document
@@ -549,7 +549,7 @@ resource "null_resource" "apex_custom_hostname" {
 }
 
 resource "null_resource" "custom_hostname" {
-  count = var.dns_zone_name != var.hostname && !var.custom_hostname_kv ? 1 : 0
+  count = var.dns_zone_name != var.hostname && !var.custom_hostname_kv_enabled ? 1 : 0
 
   depends_on = [
     azurerm_dns_cname_record.hostname[0],
@@ -600,7 +600,7 @@ resource "null_resource" "custom_hostname" {
 }
 
 resource "null_resource" "custom_hostname_kv_certificate" {
-  count = var.dns_zone_name != var.hostname && var.custom_hostname_kv ? 1 : 0
+  count = var.dns_zone_name != var.hostname && var.custom_hostname_kv_enabled ? 1 : 0
 
   depends_on = [
     azurerm_dns_cname_record.hostname[0],
@@ -713,7 +713,7 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_settings_cdn_profile" 
 }
 
 resource "azurerm_key_vault_access_policy" "azure_cdn_frontdoor_policy" {
-  count = var.custom_hostname_kv ? 1 : 0
+  count = var.custom_hostname_kv_enabled ? 1 : 0
 
   key_vault_id = var.keyvault_id
   tenant_id    = var.tenant_id
