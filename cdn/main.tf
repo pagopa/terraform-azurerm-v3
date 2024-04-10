@@ -1,9 +1,13 @@
+locals {
+  cdn_location = var.cdn_location != null ? var.cdn_location : var.location
+}
+
 /**
  * Storage account
  **/
 module "cdn_storage_account" {
 
-  source = "github.com/pagopa/terraform-azurerm-v3//storage_account?ref=v7.76.0"
+  source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.76.0"
 
   name = replace("${var.prefix}-${var.name}-sa", "-", "")
 
@@ -17,7 +21,8 @@ module "cdn_storage_account" {
   allow_nested_items_to_be_public = var.storage_account_nested_items_public
   public_network_access_enabled   = true
 
-  advanced_threat_protection = var.advanced_threat_protection_enabled
+  advanced_threat_protection                 = var.advanced_threat_protection_enabled
+  enable_resource_advanced_threat_protection = var.resource_advanced_threat_protection_enabled
 
   index_document     = var.index_document
   error_404_document = var.error_404_document
@@ -31,7 +36,7 @@ module "cdn_storage_account" {
 resource "azurerm_cdn_profile" "this" {
   name                = "${var.prefix}-${var.name}-cdn-profile"
   resource_group_name = var.resource_group_name
-  location            = var.location
+  location            = local.cdn_location
   sku                 = "Standard_Microsoft"
 
   tags = var.tags
@@ -40,7 +45,7 @@ resource "azurerm_cdn_profile" "this" {
 resource "azurerm_cdn_endpoint" "this" {
   name                          = "${var.prefix}-${var.name}-cdn-endpoint"
   resource_group_name           = var.resource_group_name
-  location                      = var.location
+  location                      = local.cdn_location
   profile_name                  = azurerm_cdn_profile.this.name
   is_https_allowed              = true
   is_http_allowed               = true
@@ -544,7 +549,7 @@ resource "null_resource" "apex_custom_hostname" {
 }
 
 resource "null_resource" "custom_hostname" {
-  count = var.dns_zone_name != var.hostname ? 1 : 0
+  count = var.dns_zone_name != var.hostname && !var.custom_hostname_kv_enabled ? 1 : 0
 
   depends_on = [
     azurerm_dns_cname_record.hostname[0],
@@ -574,6 +579,66 @@ resource "null_resource" "custom_hostname" {
         --profile-name ${self.triggers.profile_name} \
         --name ${replace(self.triggers.name, ".", "-")} \
         --min-tls-version "1.2"
+    EOT
+  }
+  # https://docs.microsoft.com/it-it/cli/azure/cdn/custom-domain?view=azure-cli-latest
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOT
+      az cdn custom-domain disable-https \
+        --resource-group ${self.triggers.resource_group_name} \
+        --endpoint-name ${self.triggers.endpoint_name} \
+        --profile-name ${self.triggers.profile_name} \
+        --name ${replace(self.triggers.name, ".", "-")} && \
+      az cdn custom-domain delete \
+        --resource-group ${self.triggers.resource_group_name} \
+        --endpoint-name ${self.triggers.endpoint_name} \
+        --profile-name ${self.triggers.profile_name} \
+        --name ${replace(self.triggers.name, ".", "-")}
+    EOT
+  }
+}
+
+resource "null_resource" "custom_hostname_kv_certificate" {
+  count = var.dns_zone_name != var.hostname && var.custom_hostname_kv_enabled ? 1 : 0
+
+  depends_on = [
+    azurerm_dns_cname_record.hostname[0],
+    azurerm_cdn_endpoint.this,
+  ]
+
+  triggers = {
+    resource_group_name = var.resource_group_name
+    endpoint_name       = azurerm_cdn_endpoint.this.name
+    profile_name        = azurerm_cdn_profile.this.name
+    name                = var.hostname
+    hostname            = var.hostname
+
+    keyvault_resource_group_name = var.keyvault_resource_group_name
+    keyvault_subscription_id     = var.keyvault_subscription_id
+    keyvault_vault_name          = var.keyvault_vault_name
+  }
+
+  # https://docs.microsoft.com/it-it/cli/azure/cdn/custom-domain?view=azure-cli-latest
+  provisioner "local-exec" {
+    command = <<EOT
+      az cdn custom-domain create \
+        --resource-group ${self.triggers.resource_group_name} \
+        --endpoint-name ${self.triggers.endpoint_name} \
+        --profile-name ${self.triggers.profile_name} \
+        --name ${replace(self.triggers.name, ".", "-")} \
+        --hostname ${self.triggers.hostname} && \
+      az cdn custom-domain enable-https \
+        --resource-group ${self.triggers.resource_group_name} \
+        --endpoint-name ${self.triggers.endpoint_name} \
+        --profile-name ${self.triggers.profile_name} \
+        --name ${replace(self.triggers.name, ".", "-")} \
+        --min-tls-version "1.2" \
+        --user-cert-protocol-type sni \
+        --user-cert-group-name ${self.triggers.keyvault_resource_group_name} \
+        --user-cert-vault-name ${self.triggers.keyvault_vault_name} \
+        --user-cert-secret-name ${replace(self.triggers.name, ".", "-")} \
+        --user-cert-subscription-id  ${self.triggers.keyvault_subscription_id}
     EOT
   }
   # https://docs.microsoft.com/it-it/cli/azure/cdn/custom-domain?view=azure-cli-latest
@@ -645,4 +710,20 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_settings_cdn_profile" 
   metric {
     category = "AllMetrics"
   }
+}
+
+resource "azurerm_key_vault_access_policy" "azure_cdn_frontdoor_policy" {
+  count = var.custom_hostname_kv_enabled ? 1 : 0
+
+  key_vault_id = var.keyvault_id
+  tenant_id    = var.tenant_id
+  object_id    = var.azuread_service_principal_azure_cdn_frontdoor_id
+
+  secret_permissions = [
+    "Get",
+  ]
+
+  certificate_permissions = [
+    "Get",
+  ]
 }
