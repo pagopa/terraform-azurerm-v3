@@ -151,6 +151,12 @@ variable "allowed_subnets" {
   default     = []
 }
 
+variable "ip_restriction_default_action" {
+  description = "(Optional) The Default action for traffic that does not match any ip_restriction rule. possible values include 'Allow' and 'Deny'. If not set, it will be set to Allow if no ip restriction rules have been configured."
+  type        = string
+  default     = null
+}
+
 variable "cors" {
   type = object({
     allowed_origins = list(string) # A list of origins which should be able to make cross-origin calls. * can be used to allow all calls.

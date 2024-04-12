@@ -1,7 +1,8 @@
 locals {
-  allowed_ips     = [for ip in var.allowed_ips : { ip_address = ip, virtual_network_subnet_id = null }]
-  allowed_subnets = [for s in var.allowed_subnets : { ip_address = null, virtual_network_subnet_id = s }]
-  ip_restrictions = concat(local.allowed_subnets, local.allowed_ips)
+  allowed_ips                   = [for ip in var.allowed_ips : { ip_address = ip, virtual_network_subnet_id = null }]
+  allowed_subnets               = [for s in var.allowed_subnets : { ip_address = null, virtual_network_subnet_id = s }]
+  ip_restrictions               = concat(local.allowed_subnets, local.allowed_ips)
+  ip_restriction_default_action = length(local.ip_restrictions) == 0 ? "Allow" : "Deny"
 }
 
 resource "azurerm_linux_function_app_slot" "this" {
@@ -63,6 +64,7 @@ resource "azurerm_linux_function_app_slot" "this" {
     auto_swap_slot_name               = var.auto_swap_slot_name
     health_check_path                 = var.health_check_path
     health_check_eviction_time_in_min = var.health_check_path != null ? var.health_check_maxpingfailures : null
+    ip_restriction_default_action     = var.ip_restriction_default_action != null ? var.ip_restriction_default_action : local.ip_restriction_default_action
   }
 
   app_settings = merge(
