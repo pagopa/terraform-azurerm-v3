@@ -5,7 +5,7 @@
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.97.1 |
 
 ## Modules
 
@@ -31,7 +31,7 @@ No modules.
 | <a name="input_frontend_private_ip_address"></a> [frontend\_private\_ip\_address](#input\_frontend\_private\_ip\_address) | (Optional) Private ip address to assign to frontend. Use it with type = private | `string` | `""` | no |
 | <a name="input_frontend_private_ip_address_allocation"></a> [frontend\_private\_ip\_address\_allocation](#input\_frontend\_private\_ip\_address\_allocation) | (Optional) Frontend ip allocation type (Static or Dynamic) | `string` | `"Dynamic"` | no |
 | <a name="input_frontend_subnet_id"></a> [frontend\_subnet\_id](#input\_frontend\_subnet\_id) | (Optional) Frontend subnet id to use when in private mode | `string` | `""` | no |
-| <a name="input_lb_backend_pools"></a> [lb\_backend\_pools](#input\_lb\_backend\_pools) | (Optional) Backend pool and ip address configuration | <pre>list(object(<br>    {<br>      name = string<br>      ips = list(object(<br>        {<br>          ip      = string<br>          vnet_id = string<br>      }))<br>  }))</pre> | <pre>[<br>  {<br>    "ips": [],<br>    "name": "default"<br>  }<br>]</pre> | no |
+| <a name="input_lb_backend_pools"></a> [lb\_backend\_pools](#input\_lb\_backend\_pools) | (Optional) Backend pool and ip address configuration | <pre>list(object(<br>    {<br>      name = string<br>      ips = list(object(<br>        {<br>          ip      = string<br>          type    = optional(string)<br>          vnet_id = string<br>      }))<br>  }))</pre> | <pre>[<br>  {<br>    "ips": [],<br>    "name": "default"<br>  }<br>]</pre> | no |
 | <a name="input_lb_port"></a> [lb\_port](#input\_lb\_port) | Protocols to be used for lb rules. Format as name => {frontend\_port, protocol, backend\_port, backend\_pool\_name, probe\_name} | <pre>map(object({<br>    frontend_port     = string<br>    protocol          = string<br>    backend_port      = string<br>    backend_pool_name = string<br>    probe_name        = string<br>  }))</pre> | `{}` | no |
 | <a name="input_lb_probe"></a> [lb\_probe](#input\_lb\_probe) | (Optional) Protocols to be used for lb health probes. Format as name => {protocol, port, request\_path} | <pre>map(object({<br>    protocol     = string<br>    port         = string<br>    request_path = string<br>  }))</pre> | `{}` | no |
 | <a name="input_lb_probe_interval"></a> [lb\_probe\_interval](#input\_lb\_probe\_interval) | Interval in seconds the load balancer health probe rule does a check | `number` | `5` | no |

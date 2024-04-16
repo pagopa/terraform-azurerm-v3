@@ -8,7 +8,7 @@ data "azurerm_kubernetes_cluster" "aks_cluster" {
 }
 
 module "velero_storage_account" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.24.0"
+  source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.76.0"
 
   name                            = "${local.sa_prefix}velerosa"
   account_kind                    = var.storage_account_kind
@@ -18,8 +18,8 @@ module "velero_storage_account" {
   resource_group_name             = var.resource_group_name
   location                        = var.location
   allow_nested_items_to_be_public = false
-  advanced_threat_protection      = true
-  enable_low_availability_alert   = false
+  advanced_threat_protection      = var.advanced_threat_protection
+  enable_low_availability_alert   = var.enable_low_availability_alert
   public_network_access_enabled   = var.use_storage_private_endpoint ? false : true
   tags                            = var.tags
 

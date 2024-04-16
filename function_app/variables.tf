@@ -48,6 +48,8 @@ variable "storage_account_info" {
     account_replication_type          = string # Defines the type of replication to use for this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS.
     access_tier                       = string # Defines the access tier for BlobStorage, FileStorage and StorageV2 accounts. Valid options are Hot and Cool, defaults to Hot.
     advanced_threat_protection_enable = bool
+    use_legacy_defender_version       = bool
+    public_network_access_enabled     = bool
   })
 
   default = {
@@ -56,7 +58,23 @@ variable "storage_account_info" {
     account_replication_type          = "ZRS"
     access_tier                       = "Hot"
     advanced_threat_protection_enable = true
+    use_legacy_defender_version       = true
+    public_network_access_enabled     = false
   }
+}
+
+variable "internal_storage_account_info" {
+  type = object({
+    account_kind                      = string # Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Changing this forces a new resource to be created. Defaults to Storage.
+    account_tier                      = string # Defines the Tier to use for this storage account. Valid options are Standard and Premium. For BlockBlobStorage and FileStorage accounts only Premium is valid.
+    account_replication_type          = string # Defines the type of replication to use for this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS.
+    access_tier                       = string # Defines the access tier for BlobStorage, FileStorage and StorageV2 accounts. Valid options are Hot and Cool, defaults to Hot.
+    advanced_threat_protection_enable = bool
+    use_legacy_defender_version       = bool
+    public_network_access_enabled     = bool
+  })
+
+  default = null
 }
 
 variable "app_service_plan_id" {

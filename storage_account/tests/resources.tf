@@ -16,6 +16,7 @@ module "storage_account" {
   resource_group_name             = azurerm_resource_group.rg.name
   location                        = azurerm_resource_group.rg.location
   advanced_threat_protection      = true
+  use_legacy_defender_version     = true
   allow_nested_items_to_be_public = false
   public_network_access_enabled   = true
 

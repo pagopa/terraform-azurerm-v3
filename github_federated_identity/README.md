@@ -19,9 +19,7 @@ For debugging purposes, you might be useful module's output containing the brand
 
 ## Design
 
-To avoid the creation of tons of similar identities, each subscription should have a single resource group which contains two user managed identities, one for Continuos Integration and the other for Continuos Delivery/Deployment workflows. Each user managed identity is federated with one or more repositories and with one or more GitHub environments.
-
-This module expects to find an existing resource group named `<prefix>-<shortenv>-<domain>-identity-rg`. Then, it creates a [user managed identity](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities?pivots=identity-mi-methods-azp) in it using the naming convention `<prefix>-<shortenv>-<domain>-github-<idrole>-identity`; the `idrole` value is obtained from the input variable `identity_role` and can be either `ci` or `cd`. Finally, the variable `github_federations` defines the list of the repositories and GitHub environments to create a federation with. The federation output name uses the form `<prefix>-<shortenv>-<domain>-${var.app_name}-github"-<repo>-<scope>-<subject>`.
+This module expects to find an existing resource group named `<prefix>-<shortenv>-identity-rg`. Then, it creates a [user managed identity](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities?pivots=identity-mi-methods-azp) in it using the naming convention `<prefix>-<shortenv>-<domain>-[<app_name>]-github-<idrole>-identity`; the `idrole` value is obtained from the input variable `identity_role` and can be either `ci` or `cd`. Finally, the variable `github_federations` defines the list of the repositories and GitHub environments to create a federation with. The federation output name uses the form `<prefix>-<shortenv>-<domain>-github"-<repo>-<scope>-<subject>`.
 
 > Consume this module once for each identity. You are likely to invoke the module twice then, one time for CI identity and one time for CD identity.
 
@@ -41,7 +39,7 @@ The Terraform template in `./tests` folder can be used as an example or a templa
 
 ### Requirements
 
-As stated in the [Design](#design) section, you must define a new resource group before invoking this module. Look at the `./tests` to get an example. Remember: the resource group name should match the naming convention `<prefix>-<shortenv>-<domain>-identity-rg`, where `domain` can be empty.
+As stated in the [Design](#design) section, you must define a new resource group before invoking this module. Look at the `./tests` to get an example. Remember: the resource group name should match the naming convention `<prefix>-<shortenv>-identity-rg`.
 
 If the resource group is not found, an exception is thrown.
 
@@ -65,7 +63,7 @@ This granularity is useful in such scenario where is needed a writing-role on th
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.97.1 |
 
 ## Modules
 

@@ -57,11 +57,12 @@ variable "backends" {
 
 variable "listeners" {
   type = map(object({
-    protocol           = string # The Protocol which should be used. Possible values are Http and Https
-    host               = string # The Hostname which should be used for this HTTP Listener. Setting this value changes Listener Type to 'Multi site'.
-    port               = number # The port used for this Frontend Port.
-    ssl_profile_name   = string # The name of the associated SSL Profile which should be used for this HTTP Listener.
-    firewall_policy_id = string # The ID of the Web Application Firewall Policy which should be used for this HTTP Listener.
+    protocol           = string                     # The Protocol which should be used. Possible values are Http and Https
+    host               = string                     # The Hostname which should be used for this HTTP Listener. Setting this value changes Listener Type to 'Multi site'.
+    port               = number                     # The port used for this Frontend Port.
+    ssl_profile_name   = string                     # The name of the associated SSL Profile which should be used for this HTTP Listener.
+    firewall_policy_id = string                     # The ID of the Web Application Firewall Policy which should be used for this HTTP Listener.
+    type               = optional(string, "Public") # The type of Listener "Public" - "Private"
     certificate = object({
       name = string # The Name of the SSL certificate that is unique within this Application Gateway
       id   = string # Secret Id of (base-64 encoded unencrypted pfx) Secret or Certificate object stored in Azure KeyVault. You need to enable soft delete for keyvault to use this feature. Required if data is not set.
@@ -294,4 +295,14 @@ EOD
 
 variable "tags" {
   type = map(any)
+}
+
+variable "private_ip_address" {
+  type        = list(string)
+  description = "Private frontend ip"
+  default     = []
+  validation {
+    condition     = length(var.private_ip_address) <= 1
+    error_message = "Private IP address must contain at most one element"
+  }
 }

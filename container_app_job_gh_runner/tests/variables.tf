@@ -6,7 +6,7 @@ variable "location" {
 variable "prefix" {
   description = "Resorce prefix"
   type        = string
-  default     = "azrmtest"
+  default     = "azrmte"
 }
 
 variable "tags" {
@@ -30,39 +30,26 @@ variable "key_vault" {
     name                = "azrmtest-keyvault"
     secret_name         = "gh-pat"
   }
+
+  description = "KeyVault properties"
 }
 
-variable "network" {
+variable "job" {
   type = object({
-    vnet_resource_group_name = string
-    vnet_name                = string
-    subnet_cidr_block        = string
+    name                 = optional(string)
+    repo_owner           = optional(string)
+    repo                 = optional(string)
+    polling_interval     = optional(number)
+    scale_max_executions = optional(number)
   })
 
   default = {
-    vnet_resource_group_name = "azrmtest-vnet-rg"
-    vnet_name                = "azrmtest-vnet"
-    subnet_cidr_block        = "10.0.2.0/23"
+    name                 = "azurermv3"
+    repo_owner           = "pagopa"
+    repo                 = "terraform-azurerm-v3"
+    polling_interval     = 30
+    scale_max_executions = 5
   }
-}
 
-variable "environment" {
-  type = object({
-    customerId = string
-    sharedKey  = string
-  })
-}
-
-variable "app" {
-  type = object({
-    repos      = optional(set(string))
-    repo_owner = string
-  })
-
-  default = {
-    repo_owner = "pagopa"
-    repos = [
-      "terraform-azurerm-v3"
-    ]
-  }
+  description = "Container App job properties"
 }

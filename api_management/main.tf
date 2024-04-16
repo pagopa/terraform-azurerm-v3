@@ -306,7 +306,7 @@ resource "azurerm_monitor_metric_alert" "this" {
 # 🧺 REDIS
 #
 resource "azurerm_api_management_redis_cache" "this" {
-  count = var.redis_connection_string != null ? 1 : 0
+  count = var.redis_cache_enabled ? 1 : 0
 
   name              = format("%s-redis", var.name)
   api_management_id = azurerm_api_management.this.id

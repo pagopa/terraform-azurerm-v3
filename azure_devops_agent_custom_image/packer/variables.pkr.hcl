@@ -61,4 +61,15 @@ variable "build_rg_name" {
   description = "(Required) temporary build resource group name"
 }
 
-
+variable "build_vnet_name" {
+  type        = string
+  description = "(Required) temporary build resource group name"
+}
+variable "build_vnet_subnet_name" {
+  type        = string
+  description = "(Required) temporary build resource group name"
+}
+variable "build_vnet_rg_name" {
+  type        = string
+  description = "(Required) temporary build resource group name"
+}

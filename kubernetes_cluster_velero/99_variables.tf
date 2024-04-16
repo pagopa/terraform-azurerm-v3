@@ -1,12 +1,7 @@
-variable "tags" {
-  type = map(any)
-}
-
 variable "resource_group_name" {
   type        = string
   description = "(Required) Name of the resource group in which the backup storage account is located"
 }
-
 
 variable "backup_storage_container_name" {
   type        = string
@@ -97,4 +92,20 @@ variable "enable_sa_backup" {
   type        = bool
   description = "(Optional) enables storage account point in time recovery"
   default     = false
+}
+
+variable "advanced_threat_protection" {
+  type        = string
+  description = "(Optional) Enabled azurerm_advanced_threat_protection resource, Default true"
+  default     = true
+}
+
+variable "enable_low_availability_alert" {
+  type        = string
+  description = "(Optional) Enable the Low Availability alert. Default is true"
+  default     = true
+}
+
+variable "tags" {
+  type = map(any)
 }

@@ -31,7 +31,7 @@ see folder ../test for more info
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.97.1 |
 
 ## Modules
 
@@ -87,6 +87,7 @@ No modules.
 | <a name="output_hub_ids"></a> [hub\_ids](#output\_hub\_ids) | Map of hubs and their ids. |
 | <a name="output_key_ids"></a> [key\_ids](#output\_key\_ids) | List of key ids. |
 | <a name="output_keys"></a> [keys](#output\_keys) | Map of hubs with keys => primary\_key / secondary\_key mapping. |
+| <a name="output_name"></a> [name](#output\_name) | The name of this Event Hub |
 | <a name="output_namespace_id"></a> [namespace\_id](#output\_namespace\_id) | Id of Event Hub Namespace. |
 | <a name="output_private_dns_zone"></a> [private\_dns\_zone](#output\_private\_dns\_zone) | ID of the private DNS zone which resolves the name of the Private Endpoint used to connect to EventHub |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

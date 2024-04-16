@@ -35,38 +35,39 @@ variable "env_short" {
   }
 }
 
-variable "network" {
-  type = object({
-    vnet_resource_group_name = string
-    vnet_name                = string
-    subnet_cidr_block        = string
-  })
-
-  description = "Existing VNet information and subnet CIDR block to use (must be /23)"
-}
-
 variable "environment" {
   type = object({
-    customerId = string
-    sharedKey  = string
+    name                = string
+    resource_group_name = string
   })
 
-  description = "Container App Environment logging configuration (Log Analytics Workspace)"
+  description = "Container App Environment configuration (Log Analytics Workspace)"
 }
 
-variable "app" {
+variable "container" {
   type = object({
-    repo_owner = optional(string, "pagopa")
-    repos      = set(string)
-    image      = optional(string, "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:c7ebe4453578c9df426b793366b8498c030ec0f47f753ea2c685a3c0ec0bb646")
+    cpu    = number
+    memory = string
+    image  = string
   })
 
-  validation {
-    condition = (
-      var.app.repos != null && length(var.app.repos) >= 1
-    )
-    error_message = "List of repos must supplied"
+  default = {
+    cpu    = 0.5
+    memory = "1Gi"
+    image  = "ghcr.io/pagopa/github-self-hosted-runner-azure:latest"
   }
+
+  description = "Job Container configuration"
+}
+
+variable "job" {
+  type = object({
+    name                 = string
+    repo_owner           = optional(string, "pagopa")
+    repo                 = string
+    polling_interval     = optional(number, 30)
+    scale_max_executions = optional(number, 5)
+  })
 
   description = "Container App job configuration"
 }

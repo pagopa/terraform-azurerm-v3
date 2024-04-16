@@ -23,7 +23,7 @@ variable "aad_admin_group_ids" {
 }
 
 #
-# Default node pool
+# 🤖 System node pool
 #
 
 variable "system_node_pool_name" {
@@ -107,7 +107,7 @@ variable "system_node_pool_tags" {
 ### END SYSTEM NODE POOL
 
 #
-# User node pool
+# 👤 User node pool
 #
 variable "user_node_pool_enabled" {
   type        = bool
@@ -124,11 +124,13 @@ variable "user_node_pool_name" {
     )
     error_message = "Max length is 12 chars."
   }
+  default = ""
 }
 
 variable "user_node_pool_vm_size" {
   type        = string
   description = "(Required) The size of the Virtual Machine, such as Standard_B4ms or Standard_D4s_vX. See https://pagopa.atlassian.net/wiki/spaces/DEVOPS/pages/134840344/Best+practice+su+prodotti"
+  default     = ""
 }
 
 variable "user_node_pool_os_disk_type" {
@@ -140,16 +142,19 @@ variable "user_node_pool_os_disk_type" {
 variable "user_node_pool_os_disk_size_gb" {
   type        = number
   description = "(Optional) The size of the OS Disk which should be used for each agent in the Node Pool. Changing this forces a new resource to be created."
+  default     = 0
 }
 
 variable "user_node_pool_node_count_min" {
   type        = number
   description = "(Required) The minimum number of nodes which should exist in this Node Pool. If specified this must be between 1 and 1000."
+  default     = 0
 }
 
 variable "user_node_pool_node_count_max" {
   type        = number
   description = "(Required) The maximum number of nodes which should exist in this Node Pool. If specified this must be between 1 and 1000."
+  default     = 0
 }
 
 variable "user_node_pool_max_pods" {
@@ -174,12 +179,6 @@ variable "user_node_pool_enable_host_encryption" {
   type        = bool
   description = "(Optional) Should the nodes in the Default Node Pool have host encryption enabled? Defaults to true."
   default     = false
-}
-
-variable "user_node_pool_only_critical_addons_enabled" {
-  type        = bool
-  description = "(Optional) Enabling this option will taint default node pool with CriticalAddonsOnly=true:NoSchedule taint. Changing this forces a new resource to be created."
-  default     = true
 }
 
 variable "user_node_pool_ultra_ssd_enabled" {
@@ -219,7 +218,7 @@ variable "kubernetes_version" {
 }
 
 #
-# Network
+# ☁️ Network
 #
 variable "private_cluster_enabled" {
   type        = bool
@@ -243,38 +242,26 @@ variable "vnet_user_subnet_id" {
   default     = null
 }
 
-variable "dns_prefix_private_cluster" {
-  type        = string
-  description = "Specifies the DNS prefix to use with private clusters. Changing this forces a new resource to be created."
-  default     = null
-}
-
 variable "automatic_channel_upgrade" {
   type        = string
   description = "(Optional) The upgrade channel for this Kubernetes Cluster. Possible values are patch, rapid, node-image and stable. Omitting this field sets this value to none."
   default     = null
 }
 
-variable "api_server_authorized_ip_ranges" {
-  type        = list(string)
-  description = "The IP ranges to whitelist for incoming traffic to the masters."
-  default     = []
-}
-
 variable "network_profile" {
   type = object({
-    dns_service_ip      = string # e.g. '10.2.0.10'. IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns)
-    network_policy      = string # e.g. 'azure'. Sets up network policy to be used with Azure CNI. Currently supported values are calico and azure.
-    network_plugin      = string # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
-    network_plugin_mode = string # e.g. 'azure'. Network plugin mode to use for networking. Currently supported value is overlay
-    outbound_type       = string # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
-    service_cidr        = string # e.g. '10.2.0.0/16'. The Network Range used by the Kubernetes service
+    dns_service_ip      = optional(string, "10.2.0.10")    # e.g. '10.2.0.10'. IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns)
+    network_policy      = optional(string, "azure")        # e.g. 'azure'. Sets up network policy to be used with Azure CNI. Currently supported values are calico and azure.
+    network_plugin      = optional(string, "azure")        # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
+    network_plugin_mode = optional(string, null)           # e.g. 'azure'. Network plugin mode to use for networking. Currently supported value is overlay
+    outbound_type       = optional(string, "loadBalancer") # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
+    service_cidr        = optional(string, "10.2.0.0/16")  # e.g. '10.2.0.0/16'. The Network Range used by the Kubernetes service
   })
   default = {
     dns_service_ip      = "10.2.0.10"
     network_policy      = "azure"
     network_plugin      = "azure"
-    network_plugin_mode = ""
+    network_plugin_mode = null
     outbound_type       = "loadBalancer"
     service_cidr        = "10.2.0.0/16"
   }
@@ -308,15 +295,8 @@ variable "addon_azure_pod_identity_enabled" {
   default     = false
 }
 
-# Kubernetes RBAC
-variable "rbac_enabled" {
-  type        = bool
-  description = "Is Role Based Access Control Enabled?"
-  default     = true
-}
-
 #
-# Logs
+# 📄 Logs
 #
 variable "log_analytics_workspace_id" {
   type        = string
@@ -330,6 +310,9 @@ variable "microsoft_defender_log_analytics_workspace_id" {
   default     = null
 }
 
+#
+# 🚓 Security
+#
 variable "sec_log_analytics_workspace_id" {
   type        = string
   default     = null
@@ -346,3 +329,47 @@ variable "tags" {
   type = map(any)
 }
 
+variable "workload_identity_enabled" {
+  type        = bool
+  description = "(Optional) Specifies whether Azure AD Workload Identity should be enabled for the Cluster. Defaults to false."
+  default     = false
+}
+
+variable "oidc_issuer_enabled" {
+  type        = bool
+  description = "(Optional) Enable or Disable the OIDC issuer URL"
+  default     = false
+}
+
+#
+# Storage profile
+#
+variable "storage_profile_blob_driver_enabled" {
+  type        = bool
+  default     = false
+  description = "(Optional) Is the Blob CSI driver enabled? Defaults to false"
+}
+
+variable "storage_profile_file_driver_enabled" {
+  type        = bool
+  default     = true
+  description = "(Optional) Is the File CSI driver enabled? Defaults to true"
+}
+
+variable "storage_profile_snapshot_controller_enabled" {
+  type        = bool
+  default     = true
+  description = "(Optional) Is the Snapshot Controller enabled? Defaults to true"
+}
+
+variable "storage_profile_disk_driver_enabled" {
+  type        = bool
+  default     = true
+  description = "(Optional) Is the Disk CSI driver enabled? Defaults to true"
+}
+
+variable "storage_profile_disk_driver_version" {
+  type        = string
+  default     = "v1"
+  description = "(Optional) Disk CSI Driver version to be used. Possible values are v1 and v2. Defaults to v1"
+}

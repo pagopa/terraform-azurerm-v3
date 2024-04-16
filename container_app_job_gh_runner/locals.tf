@@ -1,49 +1,44 @@
 locals {
-  name                = "${var.prefix}-${var.env_short}"
-  resource_group_name = "${local.name}-github-runner-rg"
+  project = "${var.prefix}-${var.env_short}"
 
-  rules = [for repo in var.app.repos :
-    {
-      name = "github-runner-${var.env_short}-${repo}"
-      type = "github-runner"
-      metadata = {
-        owner                     = var.app.repo_owner
-        runnerScope               = "repo"
-        repos                     = "${repo}"
-        targetWorkflowQueueLength = "1"
-        labels                    = "github-runner-${var.env_short}-${repo}"
-      }
-      auth = [
-        {
-          secretRef        = "personal-access-token"
-          triggerParameter = "personalAccessToken"
-        }
-      ]
+  rule = {
+    name = "${local.project}-${var.job.name}-github-runner-rule"
+    type = "github-runner"
+    metadata = {
+      owner                     = var.job.repo_owner
+      runnerScope               = "repo"
+      repos                     = "${var.job.repo}"
+      targetWorkflowQueueLength = "1"
+      github-runner             = "https://api.github.com"
     }
-  ]
+    auth = [
+      {
+        secretRef        = "personal-access-token"
+        triggerParameter = "personalAccessToken"
+      }
+    ]
+  }
 
-  containers = [for repo in var.app.repos :
-    {
-      env = [
-        {
-          name      = "GITHUB_PAT"
-          secretRef = "personal-access-token"
-        },
-        {
-          name  = "REPO_URL"
-          value = "https://github.com/${var.app.repo_owner}/${repo}"
-        },
-        {
-          name  = "REGISTRATION_TOKEN_API_URL"
-          value = "https://api.github.com/repos/${var.app.repo_owner}/${repo}/actions/runners/registration-token"
-        }
-      ]
-      image = var.app.image
-      name  = "github-runner-${var.env_short}-${repo}"
-      resources = {
-        cpu    = 1.0
-        memory = "2Gi"
+  container = {
+    env = [
+      {
+        name      = "GITHUB_PAT"
+        secretRef = "personal-access-token"
+      },
+      {
+        name  = "REPO_URL"
+        value = "https://github.com/${var.job.repo_owner}/${var.job.repo}"
+      },
+      {
+        name  = "REGISTRATION_TOKEN_API_URL"
+        value = "https://api.github.com/repos/${var.job.repo_owner}/${var.job.repo}/actions/runners/registration-token"
       }
+    ]
+    image = var.container.image
+    name  = "${local.project}-${var.job.name}-runner"
+    resources = {
+      cpu    = var.container.cpu
+      memory = var.container.memory
     }
-  ]
+  }
 }

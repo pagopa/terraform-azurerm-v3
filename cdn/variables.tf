@@ -5,6 +5,11 @@ variable "name" {
   type = string
 }
 
+variable "tenant_id" {
+  type    = string
+  default = null
+}
+
 variable "storage_account_kind" {
   type    = string
   default = "StorageV2"
@@ -29,6 +34,11 @@ variable "location" {
   type = string
 }
 
+variable "cdn_location" {
+  type        = string
+  default     = null
+  description = "If the location of the CDN needs to be different from that of the storage account, set this variable to the location where the CDN should be created. For example, cdn_location = westeurope and location = northitaly"
+}
 variable "tags" {
   type = map(string)
 }
@@ -321,6 +331,24 @@ variable "keyvault_vault_name" {
   description = "Key vault name"
 }
 
+variable "keyvault_id" {
+  type        = string
+  description = "Key vault id"
+  default     = null
+}
+
+variable "azuread_service_principal_azure_cdn_frontdoor_id" {
+  type        = string
+  description = "Azure CDN Front Door Principal ID - Microsoft.AzureFrontDoor-Cdn"
+  default     = null
+}
+
+variable "custom_hostname_kv_enabled" {
+  type        = bool
+  default     = false
+  description = "Flag required to enable the association between KV certificate and CDN when the hostname is different from the APEX"
+}
+
 variable "dns_zone_name" {
   type = string
 }
@@ -334,9 +362,19 @@ variable "advanced_threat_protection_enabled" {
   default = false
 }
 
+variable "resource_advanced_threat_protection_enabled" {
+  type        = bool
+  description = "Enabled azurerm_advanced_threat_protection resource"
+  default     = true
+}
 
 variable "storage_account_nested_items_public" {
   type        = bool
   default     = true
   description = "(Optional) reflects to property 'allow_nested_items_to_be_public' on storage account module"
+}
+
+variable "log_analytics_workspace_id" {
+  type        = string
+  description = "Log Analytics Workspace id to send logs to"
 }
