@@ -147,9 +147,36 @@ variable "internal_private_dns_zone_resource_group_name" {
   default     = null
 }
 
+variable "action" {
+  description = "The ID of the Action Group and optional map of custom string properties to include with the post webhook operation."
+  type = set(object(
+    {
+      action_group_id    = string
+      webhook_properties = map(string)
+    }
+  ))
+  default = []
+}
+
+variable "alerts_enabled" {
+  type        = bool
+  default     = true
+  description = "Should Metrics Alert be enabled?"
+}
+
+variable "tags" {
+  type = map(any)
+}
+
 #
 # Alerts
 #
+variable "metric_alerts_create" {
+  type        = bool
+  description = "Create metric alerts"
+  default     = true
+}
+
 variable "metric_alerts" {
   default = {}
 
@@ -178,25 +205,4 @@ EOD
       }
     ))
   }))
-}
-
-variable "action" {
-  description = "The ID of the Action Group and optional map of custom string properties to include with the post webhook operation."
-  type = set(object(
-    {
-      action_group_id    = string
-      webhook_properties = map(string)
-    }
-  ))
-  default = []
-}
-
-variable "alerts_enabled" {
-  type        = bool
-  default     = true
-  description = "Should Metrics Alert be enabled?"
-}
-
-variable "tags" {
-  type = map(any)
 }
