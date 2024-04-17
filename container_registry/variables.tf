@@ -13,13 +13,13 @@ variable "resource_group_name" {
 variable "sku" {
   type        = string
   description = "(Required) The SKU name of the container registry. Possible values are Basic, Standard and Premium."
-  default     = "Basic"
+  default     = "Premium"
 }
 
 variable "zone_redundancy_enabled" {
   type        = string
   description = "(Optional) Whether zone redundancy is enabled for this Container Registry? Changing this forces a new resource to be created. Defaults to false."
-  default     = false
+  default     = true
 }
 
 variable "admin_enabled" {
@@ -37,7 +37,7 @@ variable "anonymous_pull_enabled" {
 variable "public_network_access_enabled" {
   type        = bool
   description = "(Optional) Whether public network access is allowed for the container registry. Defaults to true."
-  default     = true
+  default     = false
 }
 
 variable "network_rule_bypass_option" {
@@ -76,29 +76,26 @@ variable "network_rule_set" {
   }]
 }
 
+variable "private_endpoint_enabled" {
+  type = bool
+  description = "Enable private endpoint, default: true"
+  default = true
+}
+
 variable "private_endpoint" {
   type = object({
-    enabled              = bool
     virtual_network_id   = string
     subnet_id            = string
     private_dns_zone_ids = list(string)
   })
-  description = "(Required) Enable private endpoint with required params"
-}
+  default = {
+    virtual_network_id   = null
+    subnet_id            = null
+    private_dns_zone_ids = [""]
+  }
 
-# Not ready for multi region
-# variable "private_endpoint_georeplications" {
-#   type = list(object({
-#     enabled              = bool
-#     location             = string
-#     resource_group_name  = string
-#     virtual_network_id   = string
-#     subnet_id            = string
-#     private_dns_zone_ids = list(string)
-#   }))
-#   description = "(Required) Enable private endpoint with required params"
-#   default = []
-# }
+  description = "(Required) Enable and configure private endpoint with required params"
+}
 
 variable "sec_log_analytics_workspace_id" {
   type        = string
@@ -114,4 +111,10 @@ variable "sec_storage_id" {
 
 variable "tags" {
   type = map(any)
+}
+
+variable "monitor_diagnostic_setting_enabled" {
+  type = bool
+  description = "Enable monitor diagnostic setting"
+  default = false
 }

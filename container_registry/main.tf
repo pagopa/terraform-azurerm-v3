@@ -35,7 +35,7 @@ resource "azurerm_container_registry" "this" {
 }
 
 resource "azurerm_private_endpoint" "this" {
-  count = var.private_endpoint.enabled ? 1 : 0
+  count = var.private_endpoint_enabled ? 1 : 0
 
   name                = "${azurerm_container_registry.this.name}-private-endpoint-0"
   location            = var.location
@@ -57,32 +57,9 @@ resource "azurerm_private_endpoint" "this" {
   tags = var.tags
 }
 
-# Not ready for multi region
-# resource "azurerm_private_endpoint" "georeplications" {
-#   for_each = { for v in var.private_endpoint_georeplications : v.enabled => v if v.enabled }
-
-#   name                = "${azurerm_container_registry.this.name}-private-endpoint-${index(var.private_endpoint_georeplications, each.value) + 1}"
-#   location            = each.value.location
-#   resource_group_name = each.value.resource_group_name
-#   subnet_id           = each.value.subnet_id
-
-#   private_dns_zone_group {
-#     name                 = "${azurerm_container_registry.this.name}-private-dns-zone-group-${index(var.private_endpoint_georeplications, each.value) + 1}"
-#     private_dns_zone_ids = each.value.private_dns_zone_ids
-#   }
-
-#   private_service_connection {
-#     name                           = "${azurerm_container_registry.this.name}-private-service-connection-${index(var.private_endpoint_georeplications, each.value) + 1}"
-#     private_connection_resource_id = azurerm_container_registry.this.id
-#     is_manual_connection           = false
-#     subresource_names              = ["registry"]
-#   }
-
-#   tags = var.tags
-# }
-
+### This resource is deprecated, use azure policy instead
 resource "azurerm_monitor_diagnostic_setting" "this" {
-  count                      = var.sec_log_analytics_workspace_id != null ? 1 : 0
+  count                      = var.sec_log_analytics_workspace_id != null || var.monitor_diagnostic_setting_enabled ? 1 : 0
   name                       = "SecurityLogs"
   target_resource_id         = azurerm_container_registry.this.id
   log_analytics_workspace_id = var.sec_log_analytics_workspace_id
