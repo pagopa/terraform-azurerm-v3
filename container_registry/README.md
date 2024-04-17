@@ -10,46 +10,24 @@ TBD
 
 - **Private endpoints** is avaible only for Premium sku.
 
+## Migration form modules < v8
+
+### deprecations
+* `var.private_endpoint.enabled` was deprecated: use `var.private_endpoint_enabled`
+
+### new variables
+* `var.monitor_diagnostic_setting_enabled`: allow to enable monitor setting (deprecated) because we use the azure policy
+
+### default values
+All the changed enable the module to be production ready
+
+* `sku`: now is "Premium"
+* `zone_redundancy_enabled`: is true
+* `public_network_access_enabled`: is false
+
 ## How to use it
 
-### Public mode
-
-```ts
-resource "azurerm_resource_group" "rg_docker" {
-  name     = local.docker_rg_name
-  location = var.location
-  tags     = var.tags
-}
-
-module "container_registry_public" {
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//container_registry?ref=v3.15.0"
-  name                = local.docker_registry_name
-  resource_group_name = azurerm_resource_group.rg_docker.name
-  location            = azurerm_resource_group.rg_docker.location
-
-  sku                           = "Standard"
-  admin_enabled                 = false
-  anonymous_pull_enabled        = false
-  zone_redundancy_enabled       = false
-  public_network_access_enabled = true
-
-  private_endpoint = {
-    enabled              = false
-    private_dns_zone_ids = null
-    subnet_id            = null
-    virtual_network_id   = null
-  }
-
-  # georeplications = [{
-  #   # location                  = var.location_seconsary
-  #   regional_endpoint_enabled = false
-  #   zone_redundancy_enabled   = false
-  # }]
-
-  tags = var.tags
-}
-
-```
+See tests folder
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
