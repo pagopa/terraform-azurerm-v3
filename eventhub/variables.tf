@@ -171,10 +171,10 @@ variable "tags" {
 #
 # Alerts
 #
-variable "metric_alerts_enabled" {
-  type = bool
-  description = "Enabled metric alerts"
-  default = true
+variable "metric_alerts_create" {
+  type        = bool
+  description = "Create metric alerts"
+  default     = true
 }
 
 variable "metric_alerts" {

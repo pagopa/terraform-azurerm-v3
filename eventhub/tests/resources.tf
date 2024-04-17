@@ -98,8 +98,7 @@ module "event_hub_complete" {
     ]
   }]
 
-  alerts_enabled = false
-  # metric_alerts  = var.ehns_metric_alerts
+  metric_alerts_create = false
 
   tags = var.tags
 }
@@ -118,7 +117,7 @@ module "event_hub_core_only" {
 
   private_endpoint_created = false
 
-  alerts_enabled = false
+  metric_alerts_create = false
 
   tags = var.tags
 }
@@ -145,7 +144,7 @@ module "event_hub_core_network" {
     resource_group_name = azurerm_private_dns_zone.external_zone.resource_group_name
   }
 
-  alerts_enabled = false
+  metric_alerts_create = false
 
   tags = var.tags
 }
