@@ -1,20 +1,20 @@
-resource "azurerm_resource_group" "vnet_eventhub_rg" {
-  name     = "rg_fake_vnet_eventhub"
+resource "azurerm_resource_group" "vnet_acr_rg" {
+  name     = "rg_fake_vnet_acr"
   location = var.location
 
   tags = var.tags
 }
 
-resource "azurerm_resource_group" "eventhub_rg" {
-  name     = "rg_fake_eventhub"
+resource "azurerm_resource_group" "acr_rg" {
+  name     = "rg_fake_acr"
   location = var.location
 
   tags = var.tags
 }
 
-resource "azurerm_virtual_network" "this" {
-  name                = "vnet-fake-eventhub"
-  resource_group_name = "vnet-fake-eventhub-rg"
+resource "azurerm_virtual_network" "vnet_acr" {
+  name                = "vnet-fake-acr"
+  resource_group_name = "vnet-fake-acr-rg"
   location            = var.location
   address_space       = ["10.3.200.0/16"]
 }
@@ -23,129 +23,78 @@ module "private_endpoint_snet" {
   source                                    = "../../subnet"
   name                                      = "${local.project}-pe-snet"
   address_prefixes                          = ["10.3.200.0/24"]
-  resource_group_name                       = azurerm_resource_group.vnet_eventhub_rg.name
-  virtual_network_name                      = azurerm_virtual_network.this.name
+  resource_group_name                       = azurerm_resource_group.vnet_acr_rg.name
+  virtual_network_name                      = azurerm_virtual_network.vnet_acr.name
   private_endpoint_network_policies_enabled = true
 }
 
-## Eventhub subnet
-module "eventhub_snet" {
+## acr subnet
+module "acr_snet" {
   source                                    = "../../subnet"
-  name                                      = "${local.project}-eventhub-snet"
+  name                                      = "${local.project}-acr-snet"
   address_prefixes                          = ["10.3.201.0/24"]
-  resource_group_name                       = azurerm_resource_group.vnet_eventhub_rg.name
-  virtual_network_name                      = azurerm_virtual_network.this.name
-  service_endpoints                         = ["Microsoft.EventHub"]
+  resource_group_name                       = azurerm_resource_group.vnet_acr_rg.name
+  virtual_network_name                      = azurerm_virtual_network.vnet_acr.name
+  service_endpoints                         = ["Microsoft.acr"]
   private_endpoint_network_policies_enabled = true
 }
 
 resource "azurerm_private_dns_zone" "external_zone" {
   name                = "${local.project}-private-dns-zone"
-  resource_group_name = azurerm_resource_group.vnet_eventhub_rg.name
+  resource_group_name = azurerm_resource_group.vnet_acr_rg.name
 }
 
 #--------------------------------------------------------------------------------------
 
-resource "azurerm_resource_group" "rg_eventhub" {
-  name     = "${local.project}-eventhub-rg"
+resource "azurerm_resource_group" "rg_acr" {
+  name     = "${local.project}-acr-rg"
   location = var.location
 
   tags = var.tags
 }
 
-module "event_hub_complete" {
-  source = "../../eventhub"
+module "__acr_private" {
+  source              = "../../container_registry"
+  name                = "acrprivatepremium"
+  resource_group_name = azurerm_resource_group.rg_acr.name
+  location            = azurerm_resource_group.rg_acr.location
 
-  name                 = "${local.project}-evh-complete-ns"
-  location             = var.location
-  resource_group_name  = azurerm_resource_group.rg_eventhub.name
-  auto_inflate_enabled = false
-  sku                  = "Standard"
-  zone_redundant       = true
+  admin_enabled                 = false
+  anonymous_pull_enabled        = false
 
-  virtual_network_ids = [azurerm_virtual_network.this.id]
-
-  internal_private_dns_zone_created             = true
-  internal_private_dns_zone_resource_group_name = "dvopla-eventhub-private-dns-zone-rg"
-
-  private_endpoint_created             = true
-  private_endpoint_resource_group_name = "dvopla-d-azdoa-rg"
-  # use a dedicated subnet for private endpoints, this is only for example
-  private_endpoint_subnet_id = module.eventhub_snet.id
-
-  eventhubs = [{
-    name              = "rtd-trx"
-    partitions        = 1
-    message_retention = 1
-    consumers = [
-      "bpd-payment-instrument",
-      "rtd-trx-fa-comsumer-group",
-      "idpay-consumer-group"
-    ]
-    keys = [
-      {
-        name   = "rtd-csv-connector"
-        listen = false
-        send   = true
-        manage = false
-      },
-      {
-        name   = "bpd-payment-instrument"
-        listen = true
-        send   = false
-        manage = false
-      },
-    ]
-  }]
-
-  alerts_enabled = false
-  # metric_alerts  = var.ehns_metric_alerts
-
-  tags = var.tags
-}
-
-module "event_hub_core_only" {
-  source = "../../eventhub"
-
-  name                 = "${local.project}-evh-core-ns"
-  location             = var.location
-  resource_group_name  = azurerm_resource_group.rg_eventhub.name
-  auto_inflate_enabled = false
-  sku                  = "Standard"
-  zone_redundant       = true
-
-  virtual_network_ids = [azurerm_virtual_network.this.id]
-
-  private_endpoint_created = false
-
-  alerts_enabled = false
-
-  tags = var.tags
-}
-
-module "event_hub_core_network" {
-  source = "../../eventhub"
-
-  name                 = "${local.project}-evh-with-network-ns"
-  location             = var.location
-  resource_group_name  = azurerm_resource_group.rg_eventhub.name
-  auto_inflate_enabled = false
-  sku                  = "Standard"
-  zone_redundant       = true
-
-  virtual_network_ids = [azurerm_virtual_network.this.id]
-
-  private_endpoint_created             = true
-  private_endpoint_subnet_id           = module.private_endpoint_snet.id
-  private_endpoint_resource_group_name = azurerm_resource_group.vnet_eventhub_rg.name
-
-  private_dns_zones = {
-    id                  = [azurerm_private_dns_zone.external_zone.id]
-    name                = [azurerm_private_dns_zone.external_zone.name]
-    resource_group_name = azurerm_private_dns_zone.external_zone.resource_group_name
+  private_endpoint = {
+    private_dns_zone_ids = [azurerm_private_dns_zone.external_zone.id]
+    subnet_id            = module.acr_snet.id
+    virtual_network_id   = azurerm_virtual_network.vnet_acr.id
   }
 
-  alerts_enabled = false
+  network_rule_set = [{
+    default_action  = "Allow"
+    ip_rule         = []
+    virtual_network = []
+  }]
+
+  tags = var.tags
+}
+
+module "__acr_public_dev" {
+  source              = "../../container_registry"
+  name                = "acrpublicdev"
+  resource_group_name = azurerm_resource_group.rg_acr.name
+  location            = azurerm_resource_group.rg_acr.location
+
+  sku                           = "Standard"
+  admin_enabled                 = false
+  anonymous_pull_enabled        = false
+  zone_redundancy_enabled       = false
+  public_network_access_enabled = true
+  private_endpoint_enabled = false
+
+  network_rule_set = [{
+    default_action  = "Allow"
+    ip_rule         = []
+    virtual_network = []
+  }]
 
   tags = var.tags
 }
