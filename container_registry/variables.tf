@@ -77,9 +77,9 @@ variable "network_rule_set" {
 }
 
 variable "private_endpoint_enabled" {
-  type = bool
+  type        = bool
   description = "Enable private endpoint, default: true"
-  default = true
+  default     = true
 }
 
 variable "private_endpoint" {
@@ -114,7 +114,7 @@ variable "tags" {
 }
 
 variable "monitor_diagnostic_setting_enabled" {
-  type = bool
+  type        = bool
   description = "Enable monitor diagnostic setting"
-  default = false
+  default     = false
 }

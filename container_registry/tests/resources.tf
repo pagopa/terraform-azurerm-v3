@@ -59,8 +59,8 @@ module "__acr_private" {
   resource_group_name = azurerm_resource_group.rg_acr.name
   location            = azurerm_resource_group.rg_acr.location
 
-  admin_enabled                 = false
-  anonymous_pull_enabled        = false
+  admin_enabled          = false
+  anonymous_pull_enabled = false
 
   private_endpoint = {
     private_dns_zone_ids = [azurerm_private_dns_zone.external_zone.id]
@@ -88,7 +88,7 @@ module "__acr_public_dev" {
   anonymous_pull_enabled        = false
   zone_redundancy_enabled       = false
   public_network_access_enabled = true
-  private_endpoint_enabled = false
+  private_endpoint_enabled      = false
 
   network_rule_set = [{
     default_action  = "Allow"
