@@ -155,7 +155,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "eventhub" {
 #
 
 resource "azurerm_monitor_metric_alert" "this" {
-  for_each = var.metric_alerts_enabled ? var.metric_alerts : []
+  for_each = var.metric_alerts_enabled ? var.metric_alerts : {}
 
   name                = format("%s-%s", azurerm_eventhub_namespace.this.name, upper(each.key))
   description         = each.value.description
