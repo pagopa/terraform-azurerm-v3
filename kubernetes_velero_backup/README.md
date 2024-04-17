@@ -3,7 +3,6 @@
 Module that allows the scheduling of velero backups for specific namespaces
 Note that this module selects the correct cluster to work on using the command `kubectl config use-context "<cluster_name>"`, so you should have that context available in your `.kube` folder.
 This is achievable using the utility script `k8setup.sh` included in the aks-setup folder of your IaC project
-This module creates also an alert rule for each namespace scheduled for backup, based on query execution against the container logs searching for the string signaling the correct execution of the backup
 
 ## How to use it
 
@@ -24,20 +23,6 @@ module "aks_namespace_backup" {
   ttl = "100h0m0s"
   schedule = "0 3 * * *" #refers to UTC timezone
   volume_snapshot = false
-  
-  alert_enabled = true
-  prefix = "myprefix-${var.env_short}-${var.location_short}"
-  cluster_id = module.aks[count.index].id
-  location = azurerm_resource_group.rg_aks_backup.location
-  rg_name = azurerm_resource_group.rg_aks_backup.name
-  
-  #optional alert parameters
-  alert_frequency = 60
-  alert_time_window = 1440
-  alert_severity = 1
-  alert_threshold = 1
-    
-  tags = var.tags
 }
 ```
 
