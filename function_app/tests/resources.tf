@@ -74,6 +74,8 @@ module "function_app" {
     azurerm_subnet.function_app_subnet.id,
   ]
 
+  ip_restriction_default_action = "Deny"
+
   app_service_plan_info = {
     kind     = "Linux"
     sku_size = "P1v3"
