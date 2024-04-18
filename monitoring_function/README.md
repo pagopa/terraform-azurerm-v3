@@ -24,6 +24,7 @@ That's an example of the properties that can be specified, containing the defaul
     "threshold" : 100, # (Optional) The criteria threshold value that activates the alert
     "operator" : "LessThan" # (Optional) The criteria operator. Possible values are Equals, GreaterThan, GreaterThanOrEqual, LessThan and LessThanOrEqual
     "aggregation": "Average" # (Required) The statistic that runs over the metric values. Possible values are Average, Count, Minimum, Maximum and Total.
+    "customActionGroupIds": [] # (OPtional) List of additional action group ids associated to this specific alert
 }
 ```
 

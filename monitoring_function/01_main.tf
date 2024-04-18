@@ -187,6 +187,8 @@ locals {
     operator    = "LessThan"
     aggregation = "Average"
   }
+
+  default_custom_action_groups = []
 }
 
 
@@ -222,7 +224,7 @@ resource "azurerm_monitor_metric_alert" "alert" {
 
 
   dynamic "action" {
-    for_each = var.application_insights_action_group_ids
+    for_each = concat(var.application_insights_action_group_ids, lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "customActionGroupIds", local.default_custom_action_groups))
 
     content {
       action_group_id = action.value
