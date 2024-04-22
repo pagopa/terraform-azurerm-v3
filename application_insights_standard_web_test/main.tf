@@ -14,9 +14,11 @@ resource "azurerm_application_insights_standard_web_test" "this" {
   location                = var.location
   application_insights_id = var.application_insights_id
   geo_locations           = ["emea-nl-ams-azr"]
-  description             = "HTTP Standard WebTests"
+  description             = "HTTP Standard WebTests ${local.alert_name} running on: emea-nl-ams-azr"
   frequency               = var.frequency
   enabled                 = var.alert_enabled
+  retry_enabled           = var.retry_enabled
+  timeout                 = var.timeout
 
   request {
     url       = "${var.https_endpoint}${var.https_endpoint_path}"
@@ -28,14 +30,14 @@ resource "azurerm_application_insights_standard_web_test" "this" {
 
       content {
         name  = header.value.headername
-        value = header.value.headervaule
+        value = header.value.headervalue
       }
     }
   }
 
 }
 
-## migrate to Microsoft.Insights/webTests 
+## migrate to Microsoft.Insights/webTests
 
 resource "azurerm_monitor_metric_alert" "alert_this" {
   name                = local.alert_name
@@ -46,6 +48,7 @@ resource "azurerm_monitor_metric_alert" "alert_this" {
   frequency           = var.metric_frequency
   auto_mitigate       = false
   enabled             = var.alert_enabled
+  window_size         = var.metric_window_size
 
   criteria {
     metric_namespace = "microsoft.insights/components"
@@ -59,7 +62,6 @@ resource "azurerm_monitor_metric_alert" "alert_this" {
       operator = "Include"
       values   = [local.alert_name]
     }
-
   }
 
   dynamic "action" {

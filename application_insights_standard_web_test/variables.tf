@@ -64,20 +64,38 @@ variable "alert_enabled" {
 
 variable "frequency" {
   type        = number
-  description = "Interval in seconds between test runs for this WebTest."
+  description = "(Optional) Interval in seconds between test runs for this WebTest. Valid options are 300, 600 and 900. Defaults to 300."
   default     = 300
+}
+
+variable "retry_enabled" {
+  type        = bool
+  default     = false
+  description = "(Optional) Should the retry on WebTest failure be enabled?"
+}
+
+variable "timeout" {
+  type        = number
+  default     = 30
+  description = "(Optional) Seconds until this WebTest will timeout and fail. Default is 30."
 }
 
 variable "metric_frequency" {
   type        = string
-  description = "Interval in seconds between test runs metric alert"
+  description = "(Optional) The evaluation frequency of this Metric Alert, represented in ISO 8601 duration format. Possible values are PT1M, PT5M, PT15M, PT30M and PT1H. Defaults to PT5M."
   default     = "PT5M"
 }
 
 variable "metric_severity" {
   type        = number
-  description = "metric alert severity"
+  description = "(Optional) The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4. Defaults to 0."
   default     = 0
+}
+
+variable "metric_window_size" {
+  type        = string
+  description = "(Optional) The period of time that is used to monitor alert activity, represented in ISO 8601 duration format. This value must be greater than frequency. Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D. Defaults to PT5M."
+  default     = "PT5M"
 }
 
 variable "https_probe_threshold" {
