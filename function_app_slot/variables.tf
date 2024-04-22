@@ -71,6 +71,12 @@ variable "allowed_subnets" {
   description = "List of subnet ids which are allowed to call the function. An empty list means from each subnet."
 }
 
+variable "ip_restriction_default_action" {
+  description = "(Optional) The Default action for traffic that does not match any ip_restriction rule. possible values include 'Allow' and 'Deny'. If not set, it will be set to Allow if no ip restriction rules have been configured."
+  type        = string
+  default     = null
+}
+
 variable "subnet_id" {
   type        = string
   description = "The ID of the subnet the app service will be associated to (the subnet must have a service_delegation configured for Microsoft.Web/serverFarms)"
