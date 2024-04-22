@@ -17,8 +17,8 @@ resource "azurerm_application_insights_standard_web_test" "this" {
   description             = "HTTP Standard WebTests ${local.alert_name} running on: emea-nl-ams-azr"
   frequency               = var.frequency
   enabled                 = var.alert_enabled
-  retry_enabled = var.retry_enabled
-  timeout = var.timeout
+  retry_enabled           = var.retry_enabled
+  timeout                 = var.timeout
 
   request {
     url       = "${var.https_endpoint}${var.https_endpoint_path}"
@@ -48,7 +48,7 @@ resource "azurerm_monitor_metric_alert" "alert_this" {
   frequency           = var.metric_frequency
   auto_mitigate       = false
   enabled             = var.alert_enabled
-  window_size = var.metric_window_size
+  window_size         = var.metric_window_size
 
   criteria {
     metric_namespace = "microsoft.insights/components"

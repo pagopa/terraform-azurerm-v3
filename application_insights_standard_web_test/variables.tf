@@ -69,14 +69,14 @@ variable "frequency" {
 }
 
 variable "retry_enabled" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "(Optional) Should the retry on WebTest failure be enabled?"
 }
 
 variable "timeout" {
-  type = number
-  default = 30
+  type        = number
+  default     = 30
   description = "(Optional) Seconds until this WebTest will timeout and fail. Default is 30."
 }
 
