@@ -14,6 +14,7 @@ data "azurerm_virtual_network" "build_vnet" {
   resource_group_name = var.build_vnet_rg_name
 }
 
+#--------------- RESOURCES ------------------------
 
 resource "random_id" "rg_randomizer" {
   keepers = {
@@ -71,7 +72,6 @@ resource "azurerm_role_assignment" "packer_sp_build_vnet_role" {
   role_definition_name = "Network Contributor"
   principal_id         = azuread_service_principal.packer_sp.object_id
 }
-
 
 resource "null_resource" "build_packer_image" {
 
