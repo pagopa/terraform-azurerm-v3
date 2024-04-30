@@ -54,7 +54,10 @@ module "azdoa_custom_image" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
+| <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | <= 2.47.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | <= 3.101.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | <= 3.2.1 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | <= 3.6.0 |
 
 ## Modules
 
@@ -91,14 +94,12 @@ No modules.
 | <a name="input_build_subnet_name"></a> [build\_subnet\_name](#input\_build\_subnet\_name) | (Required) Packer build subnet name | `string` | n/a | yes |
 | <a name="input_build_vnet_name"></a> [build\_vnet\_name](#input\_build\_vnet\_name) | (Required) Packer build vnet name | `string` | n/a | yes |
 | <a name="input_build_vnet_rg_name"></a> [build\_vnet\_rg\_name](#input\_build\_vnet\_rg\_name) | (Required) Packer build vnet rg name | `string` | n/a | yes |
-| <a name="input_force_replacement"></a> [force\_replacement](#input\_force\_replacement) | (Optional) Wheather if the image should be deleted and recreated even if already existing | `bool` | `false` | no |
 | <a name="input_image_name"></a> [image\_name](#input\_image\_name) | (Required) name assigned to the generated image. Note that the pair <image\_name, image\_version> must be unique and not already existing | `string` | n/a | yes |
 | <a name="input_image_version"></a> [image\_version](#input\_image\_version) | (Required) Version assigned to the generated image. Note that the pair <image\_name, image\_version> must be unique and not already existing | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | (Required) prefix used in resource creation | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The name of the Resource Group in which the custom image will be created | `string` | n/a | yes |
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | (Required) Azure subscription id | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
 | <a name="input_vm_sku"></a> [vm\_sku](#input\_vm\_sku) | (Optional) Size of VMs in the scale set. Default to Standard\_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info. | `string` | `"Standard_B1s"` | no |
 
 ## Outputs
