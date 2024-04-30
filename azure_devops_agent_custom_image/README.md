@@ -40,9 +40,7 @@ module "azdoa_custom_image" {
   build_vnet_name     = "my-vnet-name" 
   build_subnet_name   = "my-subnet-name"  
   build_vnet_rg_name  = "vnet-rg-name"
-
   
-  tags = var.tags
 }
 
 ```
