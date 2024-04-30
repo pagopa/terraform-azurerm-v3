@@ -30,12 +30,6 @@ variable "image_version" {
   description = "(Required) Version assigned to the generated image. Note that the pair <image_name, image_version> must be unique and not already existing"
 }
 
-variable "force_replacement" {
-  type        = bool
-  description = "(Optional) Wheather if the image should be deleted and recreated even if already existing"
-  default     = false
-}
-
 variable "base_image_offer" {
   type        = string
   default     = "0001-com-ubuntu-server-jammy"
@@ -57,10 +51,6 @@ variable "vm_sku" {
   type        = string
   description = "(Optional) Size of VMs in the scale set. Default to Standard_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info."
   default     = "Standard_B1s"
-}
-
-variable "tags" {
-  type = map(any)
 }
 
 variable "prefix" {
