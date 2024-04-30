@@ -50,7 +50,7 @@ variable "base_image_version" {
 variable "vm_sku" {
   type        = string
   description = "(Optional) Size of VMs in the scale set. Default to Standard_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info."
-  default     = "Standard_B1s"
+  default     = "Standard_B2ms"
 }
 
 variable "prefix" {
@@ -61,7 +61,7 @@ variable "prefix" {
 variable "build_rg_name" {
   type        = string
   description = "(Optional) Packer build temporary resource group name"
-  default     = "tmp-packer-build"
+  default     = "tmp-packer-azdo-image-build"
 }
 
 variable "build_vnet_name" {
