@@ -20,10 +20,10 @@ locals {
 resource "azurerm_eventhub" "events" {
   for_each = local.hubs
 
-  name                = each.key
-  namespace_name      = var.event_hub_namespace_name
-  partition_count     = each.value.partitions
-  message_retention   = each.value.message_retention
+  name              = each.key
+  namespace_name    = var.event_hub_namespace_name
+  partition_count   = each.value.partitions
+  message_retention = each.value.message_retention
 
   resource_group_name = var.event_hub_namespace_resource_group_name
 }
@@ -31,9 +31,9 @@ resource "azurerm_eventhub" "events" {
 resource "azurerm_eventhub_consumer_group" "events" {
   for_each = local.consumers
 
-  name                = each.value.name
-  namespace_name      = var.event_hub_namespace_name
-  eventhub_name       = each.value.hub
+  name           = each.value.name
+  namespace_name = var.event_hub_namespace_name
+  eventhub_name  = each.value.hub
 
   resource_group_name = var.event_hub_namespace_resource_group_name
   user_metadata       = "terraform"
@@ -44,9 +44,9 @@ resource "azurerm_eventhub_consumer_group" "events" {
 resource "azurerm_eventhub_authorization_rule" "events" {
   for_each = local.keys
 
-  name                = each.value.key.name
-  namespace_name      = var.event_hub_namespace_name
-  eventhub_name       = each.value.hub
+  name           = each.value.key.name
+  namespace_name = var.event_hub_namespace_name
+  eventhub_name  = each.value.hub
 
   resource_group_name = var.event_hub_namespace_resource_group_name
 
