@@ -223,12 +223,6 @@ variable "action" {
 # Threat Protection
 # -------------------
 
-variable "enable_resource_advanced_threat_protection" {
-  type        = bool
-  description = "Enabled azurerm_advanced_threat_protection resource"
-  default     = true
-}
-
 variable "advanced_threat_protection" {
   type        = bool
   default     = false
