@@ -2,17 +2,16 @@
 module "storage_account" {
   source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.6.0"
 
-  name                                       = coalesce(var.storage_account_name, format("%sst", replace(var.name, "-", "")))
-  account_kind                               = var.storage_account_info.account_kind
-  account_tier                               = var.storage_account_info.account_tier
-  account_replication_type                   = var.storage_account_info.account_replication_type
-  access_tier                                = var.storage_account_info.account_kind != "Storage" ? var.storage_account_info.access_tier : null
-  resource_group_name                        = var.resource_group_name
-  location                                   = var.location
-  advanced_threat_protection                 = var.storage_account_info.advanced_threat_protection_enable
-  use_legacy_defender_version                = var.storage_account_info.use_legacy_defender_version
-  enable_resource_advanced_threat_protection = var.storage_account_info.advanced_threat_protection_enable == true || var.storage_account_info.use_legacy_defender_version == true
-  public_network_access_enabled              = true
+  name                          = coalesce(var.storage_account_name, format("%sst", replace(var.name, "-", "")))
+  account_kind                  = var.storage_account_info.account_kind
+  account_tier                  = var.storage_account_info.account_tier
+  account_replication_type      = var.storage_account_info.account_replication_type
+  access_tier                   = var.storage_account_info.account_kind != "Storage" ? var.storage_account_info.access_tier : null
+  resource_group_name           = var.resource_group_name
+  location                      = var.location
+  advanced_threat_protection    = var.storage_account_info.advanced_threat_protection_enable
+  use_legacy_defender_version   = var.storage_account_info.use_legacy_defender_version
+  public_network_access_enabled = true
 
   tags = var.tags
 }
