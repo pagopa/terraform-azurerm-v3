@@ -18,6 +18,18 @@ variable "virtual_network_name" {
   description = "(Required) The name of the virtual network in which the resources (Vmss, LB) are located."
 }
 
+variable "use_internal_subnet_vmss" {
+  type        = bool
+  description = "Use your custom subnet for vmss"
+  default = true
+}
+
+variable "use_internal_subnet_lb" {
+  type        = bool
+  description = "Use your custom subnet for Load Balancer"
+  default = true
+}
+
 variable "subnet_vmss_id" {
   type        = string
   description = "(Optional) The subnet id of virtual machine scale set."
@@ -53,10 +65,10 @@ variable "subscription_id" {
   description = "(Required) Azure subscription id"
 }
 
-variable "tenant_id" {
-  type        = string
-  description = "(Required) The Azure AD tenant ID that should be used for authenticating requests to the key vault."
-}
+# variable "tenant_id" {
+#   type        = string
+#   description = "(Required) The Azure AD tenant ID that should be used for authenticating requests to the key vault."
+# }
 
 variable "source_image_name" {
   type        = string
@@ -69,11 +81,11 @@ variable "vm_sku" {
   default     = "Standard_B1s"
 }
 
-variable "admin_password" {
-  type        = string
-  description = "(Optional) The Password which should be used for the local-administrator on this Virtual Machine. Changing this forces a new resource to be created. will be stored in the raw state as plain-text"
-  default     = null
-}
+# variable "admin_password" {
+#   type        = string
+#   description = "(Optional) The Password which should be used for the local-administrator on this Virtual Machine. Changing this forces a new resource to be created. will be stored in the raw state as plain-text"
+#   default     = null
+# }
 
 variable "storage_sku" {
   type        = string

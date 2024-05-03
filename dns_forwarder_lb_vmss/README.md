@@ -13,7 +13,7 @@ To secure the scale set, a Network Security Group has been added, allowing inbou
 
 module "dns_forwarder" {
 
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder_lb_vmss?ref=7.48.0"
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder_lb_vmss?ref=v8.8.0"
 
   name                 = var.prefix
   virtual_network_name = azurerm_virtual_network.vnet.name
@@ -43,10 +43,10 @@ module "dns_forwarder" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | git::https://github.com/pagopa/terraform-azurerm-v3.git//load_balancer | v7.76.0 |
-| <a name="module_subnet_load_balancer"></a> [subnet\_load\_balancer](#module\_subnet\_load\_balancer) | git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet | v7.76.0 |
-| <a name="module_subnet_vmss"></a> [subnet\_vmss](#module\_subnet\_vmss) | git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet | v7.76.0 |
-| <a name="module_vmss"></a> [vmss](#module\_vmss) | git::https://github.com/pagopa/terraform-azurerm-v3.git//vm_scale_set | v7.76.0 |
+| <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | git::https://github.com/pagopa/terraform-azurerm-v3.git//load_balancer | v8.8.0 |
+| <a name="module_subnet_load_balancer"></a> [subnet\_load\_balancer](#module\_subnet\_load\_balancer) | git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet | v8.8.0 |
+| <a name="module_subnet_vmss"></a> [subnet\_vmss](#module\_subnet\_vmss) | git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet | v8.8.0 |
+| <a name="module_vmss"></a> [vmss](#module\_vmss) | git::https://github.com/pagopa/terraform-azurerm-v3.git//vm_scale_set | v8.8.0 |
 
 ## Resources
 
@@ -78,6 +78,8 @@ module "dns_forwarder" {
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | (Required) Azure subscription id | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Required) Tags of all resources. | `map(any)` | n/a | yes |
 | <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id) | (Required) The Azure AD tenant ID that should be used for authenticating requests to the key vault. | `string` | n/a | yes |
+| <a name="input_use_custom_subnet_lb"></a> [use\_custom\_subnet\_lb](#input\_use\_custom\_subnet\_lb) | Use your custom subnet for Load Balancer | `bool` | n/a | yes |
+| <a name="input_use_custom_subnet_vmss"></a> [use\_custom\_subnet\_vmss](#input\_use\_custom\_subnet\_vmss) | Use your custom subnet for vmss | `bool` | n/a | yes |
 | <a name="input_virtual_network_name"></a> [virtual\_network\_name](#input\_virtual\_network\_name) | (Required) The name of the virtual network in which the resources (Vmss, LB) are located. | `string` | n/a | yes |
 | <a name="input_vm_sku"></a> [vm\_sku](#input\_vm\_sku) | (Optional) Size of VMs in the scale set. Default to Standard\_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info. | `string` | `"Standard_B1s"` | no |
 

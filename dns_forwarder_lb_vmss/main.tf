@@ -6,8 +6,8 @@ locals {
   prefix                         = "${var.name}-dns-forwarder"
   frontend_private_ip_address_lb = var.static_address_lb != null ? var.static_address_lb : cidrhost(var.address_prefixes_lb, 4)
 
-  subnet_vmss_id = var.subnet_vmss_id != null ? var.subnet_vmss_id : module.subnet_vmss[0].id
-  subnet_lb_id   = var.subnet_lb_id != null ? var.subnet_lb_id : module.subnet_load_balancer[0].id
+  subnet_vmss_id = var.use_internal_subnet_vmss ? var.subnet_vmss_id : module.subnet_vmss[0].id
+  subnet_lb_id   = var.use_internal_subnet_lb ? var.subnet_lb_id : module.subnet_load_balancer[0].id
 }
 
 #
@@ -15,8 +15,8 @@ locals {
 #
 
 module "subnet_vmss" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v7.76.0"
-  count  = var.subnet_vmss_id != null ? 0 : 1
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v8.8.0"
+  count  = var.use_internal_subnet_vmss ? 0 : 1
 
   name                 = "${local.prefix}-vmss-snet"
   resource_group_name  = var.resource_group_name
@@ -29,8 +29,8 @@ module "subnet_vmss" {
 #
 
 module "subnet_load_balancer" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v7.76.0"
-  count  = var.subnet_lb_id != null ? 0 : 1
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v8.8.0"
+  count  = var.use_internal_subnet_lb ? 0 : 1
 
   name                 = "${local.prefix}-lb-snet"
   resource_group_name  = var.resource_group_name
@@ -100,7 +100,7 @@ resource "azurerm_subnet_network_security_group_association" "vmss" {
 #
 
 module "load_balancer" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//load_balancer?ref=v7.76.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//load_balancer?ref=v8.8.0"
 
   name                = "${local.prefix}-internal"
   resource_group_name = var.resource_group_name
@@ -115,7 +115,7 @@ module "load_balancer" {
   frontend_subnet_id                     = local.subnet_lb_id
 
   lb_probe = {
-    "${local.prefix}" = {
+    local.prefix = {
       protocol     = "Tcp"
       port         = "53"
       request_path = ""
@@ -150,7 +150,7 @@ module "load_balancer" {
 #
 
 module "vmss" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//vm_scale_set?ref=v7.76.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//vm_scale_set?ref=v8.8.0"
 
   name                                   = local.prefix
   resource_group_name                    = var.resource_group_name
