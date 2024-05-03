@@ -12,7 +12,7 @@ data "azurerm_application_insights" "app_insight" {
 }
 
 module "synthetic_monitoring_storage_account" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.76.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.8.0"
 
   name                            = "${local.sa_prefix}synthmon"
   account_kind                    = var.storage_account_settings.kind

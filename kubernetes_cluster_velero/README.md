@@ -15,7 +15,7 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
   }
  
   module "velero" {
-    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_cluster_velero?ref=<version>"
+    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_cluster_velero?ref=8.8.0"
     
     # required
     backup_storage_container_name = "velero-backup"
@@ -60,7 +60,7 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.76.0 |
+| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v8.8.0 |
 
 ## Resources
 

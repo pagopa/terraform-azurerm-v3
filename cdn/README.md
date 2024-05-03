@@ -20,7 +20,7 @@ resource "azurerm_resource_group" "devopslab_cdn_rg" {
 ### Frontend resources
 #tfsec:ignore:azure-storage-queue-services-logging-enabled:exp:2022-05-01 # already ignored, maybe a bug in tfsec
 module "devopslab_cdn" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cdn?ref=v3.15.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cdn?ref=8.8.0"
 
   name                  = "diego"
   prefix                = local.product
@@ -99,7 +99,7 @@ During the apply there will be 1 changed and 1 destroy related to storage see [s
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cdn_storage_account"></a> [cdn\_storage\_account](#module\_cdn\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.76.0 |
+| <a name="module_cdn_storage_account"></a> [cdn\_storage\_account](#module\_cdn\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v8.8.0 |
 
 ## Resources
 

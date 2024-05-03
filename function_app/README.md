@@ -55,7 +55,7 @@ E.g.
 **Docker**
 ```hcl
 module "authorizer_function_app" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app?ref=v6.6.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app?ref=v8.8.0"
 
   resource_group_name = data.azurerm_resource_group.shared_rg.name
   name                = "${local.project}-authorizer-fn"
