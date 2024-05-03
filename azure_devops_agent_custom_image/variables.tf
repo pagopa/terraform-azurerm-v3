@@ -67,6 +67,12 @@ variable "build_rg_name" {
 #
 # Custom VNET
 #
+variable "custom_vnet_enabled" {
+type = bool
+  description = "Enable the use of a custom vnet"
+  default = false
+}
+
 variable "build_vnet_name" {
   type        = string
   description = "(Optional) Packer build vnet name"

@@ -10,6 +10,7 @@ data "azurerm_resource_group" "target_resource_group" {
 }
 
 data "azurerm_virtual_network" "build_vnet" {
+  count = var.custom_vnet_enabled ? 1 : 0
   name                = var.build_vnet_name
   resource_group_name = var.build_vnet_rg_name
 }
@@ -68,7 +69,7 @@ resource "azurerm_role_assignment" "packer_sp_build_rg_role" {
 }
 
 resource "azurerm_role_assignment" "packer_sp_build_vnet_role" {
-  scope                = data.azurerm_virtual_network.build_vnet.id
+  scope                = data.azurerm_virtual_network.build_vnet[0].id
   role_definition_name = "Network Contributor"
   principal_id         = azuread_service_principal.packer_sp.object_id
 }
