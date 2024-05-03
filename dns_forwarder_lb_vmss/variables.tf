@@ -21,13 +21,13 @@ variable "virtual_network_name" {
 variable "use_internal_subnet_vmss" {
   type        = bool
   description = "Use your custom subnet for vmss"
-  default = true
+  default = false
 }
 
 variable "use_internal_subnet_lb" {
   type        = bool
   description = "Use your custom subnet for Load Balancer"
-  default = true
+  default = false
 }
 
 variable "subnet_vmss_id" {

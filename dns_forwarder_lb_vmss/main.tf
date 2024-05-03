@@ -6,8 +6,8 @@ locals {
   prefix                         = "${var.name}-dns-forwarder"
   frontend_private_ip_address_lb = var.static_address_lb != null ? var.static_address_lb : cidrhost(var.address_prefixes_lb, 4)
 
-  subnet_vmss_id = var.use_internal_subnet_vmss ? var.subnet_vmss_id : module.subnet_vmss[0].id
   subnet_lb_id   = var.use_internal_subnet_lb ? var.subnet_lb_id : module.subnet_load_balancer[0].id
+  subnet_vmss_id = var.use_internal_subnet_vmss ? var.subnet_vmss_id : module.subnet_vmss[0].id
 }
 
 #
@@ -115,7 +115,7 @@ module "load_balancer" {
   frontend_subnet_id                     = local.subnet_lb_id
 
   lb_probe = {
-    local.prefix = {
+    (local.prefix) = {
       protocol     = "Tcp"
       port         = "53"
       request_path = ""
