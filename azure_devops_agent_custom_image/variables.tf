@@ -76,7 +76,7 @@ type = bool
 variable "build_vnet_name" {
   type        = string
   description = "(Optional) Packer build vnet name"
-  default = "null"
+  default = null
 }
 
 variable "build_subnet_name" {
