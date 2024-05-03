@@ -119,7 +119,7 @@ module "web_app_service_docker" {
 }
 
 module "web_app_service_slot_docker" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//app_service_slot?ref=8.8.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//app_service_slot?ref=v8.8.0"
 
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location

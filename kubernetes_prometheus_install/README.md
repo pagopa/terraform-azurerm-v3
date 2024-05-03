@@ -10,7 +10,7 @@ Change the `storage_class_name` varaible in order to use a Zone Redundant storag
 
 ```hcl
 module "aks_prometheus_install" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_prometheus_install?ref=8.8.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_prometheus_install?ref=v8.8.0"
   
   prometheus_namespace = "monitoring"
   storage_class_name = "default-zrs" #example of ZRS storage class created by kubernetes_storage_class

@@ -17,7 +17,7 @@ resource "azurerm_resource_group" "azdo_rg" {
 
 # with custom image (previously built. check the module `azure_devops_agent_custom_image` for more details)
 module "module "azdoa_vmss_li" {" {
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=8.8.0"
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=v8.8.0"
   count               = var.enable_azdoa ? 1 : 0
   name                = "${local.azuredevops_agent_vm_name}"
   resource_group_name = azurerm_resource_group.azdo_rg[0].name
@@ -33,7 +33,7 @@ module "module "azdoa_vmss_li" {" {
 
 # with default image
 module "module "azdoa_vmss_li" {" {
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=8.8.0"
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=v8.8.0"
   count               = var.enable_azdoa ? 1 : 0
   name                = "${local.azuredevops_agent_vm_name}"
   resource_group_name = azurerm_resource_group.azdo_rg[0].name
@@ -47,7 +47,7 @@ module "module "azdoa_vmss_li" {" {
 
 # with standard image
 module "module "azdoa_vmss_li" {" {
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=8.8.0"
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//azure_devops_agent?ref=v8.8.0"
   count               = var.enable_azdoa ? 1 : 0
   name                = "${local.azuredevops_agent_vm_name}"
   resource_group_name = azurerm_resource_group.azdo_rg[0].name

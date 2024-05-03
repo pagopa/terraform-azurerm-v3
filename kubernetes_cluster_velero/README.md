@@ -15,7 +15,7 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
   }
  
   module "velero" {
-    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_cluster_velero?ref=8.8.0"
+    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_cluster_velero?ref=v8.8.0"
     
     # required
     backup_storage_container_name = "velero-backup"

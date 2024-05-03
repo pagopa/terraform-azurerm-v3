@@ -12,7 +12,7 @@ This module requires Velero to be installed; check module `kubernetes_cluster_ve
 
 ```hcl
 module "aks_namespace_backup" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_velero_backup?ref=8.8.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_velero_backup?ref=v8.8.0"
   
   # required
   aks_cluster_name = module.aks.name

@@ -33,7 +33,7 @@ resource "azurerm_resource_group" "rg_api" {
 
 # APIM subnet
 module "apim_snet" {
-  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=8.8.0"
+  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v8.8.0"
   name                 = "${local.program}-apim-snet"
   resource_group_name  = data.azurerm_resource_group.rg_vnet.name
   virtual_network_name = data.azurerm_virtual_network.vnet.name
@@ -48,7 +48,7 @@ module "apim_snet" {
 ###########################
 
 module "apim" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//api_management?ref=8.8.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//api_management?ref=v8.8.0"
 
   name = "${local.program}-apim"
 

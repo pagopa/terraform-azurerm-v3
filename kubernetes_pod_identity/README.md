@@ -10,7 +10,7 @@ Module that allows the creation of a pod identity. Check <https://docs.microsoft
 
 ```ts
 module "domain_pod_identity" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_pod_identity?ref=8.8.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_pod_identity?ref=v8.8.0"
 
   resource_group_name = local.aks_resource_group_name
   location            = var.location

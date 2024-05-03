@@ -20,7 +20,7 @@ resource "azurerm_resource_group" "devopslab_cdn_rg" {
 ### Frontend resources
 #tfsec:ignore:azure-storage-queue-services-logging-enabled:exp:2022-05-01 # already ignored, maybe a bug in tfsec
 module "devopslab_cdn" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cdn?ref=8.8.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cdn?ref=v8.8.0"
 
   name                  = "diego"
   prefix                = local.product

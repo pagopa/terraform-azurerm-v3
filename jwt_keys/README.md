@@ -6,7 +6,7 @@ Module that allows the creation of an jwt keys.
 
 ```ts
 module "my_jwt" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//jwt_keys?ref=8.8.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//jwt_keys?ref=v8.8.0"
 
   jwt_name         = "my-jwt"
   key_vault_id     = azurerm_key_vault.kv.id
