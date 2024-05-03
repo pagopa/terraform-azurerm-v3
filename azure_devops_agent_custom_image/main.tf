@@ -104,24 +104,26 @@ resource "null_resource" "build_packer_image" {
   provisioner "local-exec" {
     working_dir = "${path.module}/packer"
     command     = <<EOT
-    packer init . && \
-    packer build \
-    -var "subscription=${var.subscription_id}" \
-    -var "target_resource_group_name=${var.resource_group_name}" \
-    -var "base_image_publisher=${var.base_image_publisher}" \
-    -var "base_image_offer=${var.base_image_offer}" \
-    -var "base_image_sku=${var.base_image_sku}" \
-    -var "base_image_version=${var.base_image_version}" \
-    -var "vm_sku=${var.vm_sku}" \
-    -var "target_image_name=${local.target_image_name}" \
-    -var "location=${var.location}" \
-    -var "client_id=${azuread_application.packer_application.application_id}" \
-    -var "client_secret=${azuread_application_password.velero_application_password.value}" \
-    -var "build_rg_name=${azurerm_resource_group.build_rg.name}" \
-    -var "build_vnet_name=${var.build_vnet_name}" \
-    -var "build_vnet_subnet_name=${var.build_subnet_name}" \
-    -var "build_vnet_rg_name=${var.build_vnet_rg_name}" \
-    .
+    {
+      packer init . && \
+      packer build \
+      -var "subscription=${var.subscription_id}" \
+      -var "target_resource_group_name=${var.resource_group_name}" \
+      -var "base_image_publisher=${var.base_image_publisher}" \
+      -var "base_image_offer=${var.base_image_offer}" \
+      -var "base_image_sku=${var.base_image_sku}" \
+      -var "base_image_version=${var.base_image_version}" \
+      -var "vm_sku=${var.vm_sku}" \
+      -var "target_image_name=${local.target_image_name}" \
+      -var "location=${var.location}" \
+      -var "client_id=${azuread_application.packer_application.application_id}" \
+      -var "client_secret=${azuread_application_password.velero_application_password.value}" \
+      -var "build_rg_name=${azurerm_resource_group.build_rg.name}" \
+      -var "build_vnet_name=${var.build_vnet_name}" \
+      -var "build_vnet_subnet_name=${var.build_subnet_name}" \
+      -var "build_vnet_rg_name=${var.build_vnet_rg_name}" \
+      .
+    } >> /tmp/packer-azdo.log
     EOT
   }
 

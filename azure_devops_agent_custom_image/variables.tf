@@ -64,17 +64,23 @@ variable "build_rg_name" {
   default     = "tmp-packer-azdo-image-build"
 }
 
+#
+# Custom VNET
+#
 variable "build_vnet_name" {
   type        = string
-  description = "(Required) Packer build vnet name"
+  description = "(Optional) Packer build vnet name"
+  default = "null"
 }
 
 variable "build_subnet_name" {
   type        = string
-  description = "(Required) Packer build subnet name"
+  description = "(Optional) Packer build subnet name"
+  default = null
 }
 
 variable "build_vnet_rg_name" {
   type        = string
-  description = "(Required) Packer build vnet rg name"
+  description = "(Optional) Packer build vnet rg name"
+  default = null
 }
