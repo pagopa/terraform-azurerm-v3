@@ -32,7 +32,7 @@ locals {
 
 
 module "core_cosmosdb_containers" {
-  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_sql_container?ref=v3.15.0"
+  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_sql_container?ref=8.5.0"
   for_each = { for c in local.core_cosmosdb_containers : c.name => c }
 
   name                = each.value.name

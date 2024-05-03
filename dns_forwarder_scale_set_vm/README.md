@@ -8,7 +8,7 @@ The dns forwarder vm expose port 53 in TCP/UDP for azure vpn
 
 ```hcl
 module "dns_forwarder_backup_snet" {
-  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v7.11.0"
+  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=8.5.0"
   count                = var.dns_forwarder_backup_is_enabled.uat || var.dns_forwarder_backup_is_enabled.prod ? 1 : 0
   name                 = "${local.project}-dns-forwarder-backup-snet"
   address_prefixes     = var.cidr_subnet_dns_forwarder_backup
@@ -19,7 +19,7 @@ module "dns_forwarder_backup_snet" {
 # with default image
 module "dns_forwarder_backup_vmss_li" {
 
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder_scale_set_vm?ref=dns-forwarder-scaleset-vm"
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder_scale_set_vm?ref=8.5.0"
   count               = var.dns_forwarder_backup_is_enabled.uat || var.dns_forwarder_backup_is_enabled.prod ? 1 : 0
   name                = local.dns_forwarder_backup_name
   resource_group_name = data.azurerm_resource_group.rg_vnet_core.name

@@ -9,7 +9,7 @@ This module allow the creation of Grafana Dashboard to all "grafana = yes" tagge
 ```ts
 module "auto_dashboard" {
 
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//grafana_dashboard?ref=xxx"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//grafana_dashboard?ref=8.5.0"
 
   grafana_url = azurerm_dashboard_grafana.grafana_dashboard.endpoint
   grafana_api_key = "GRAFANA_SERVICE_ACCOUNT_TOKEN"

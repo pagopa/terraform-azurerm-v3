@@ -10,7 +10,7 @@ This module allow the creation of a collection inside a MongoDB database
 
 ```ts
 module "mongdb_collection_name" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_mongodb_collection?ref=v3.15.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_mongodb_collection?ref=8.5.0"
 
   name                = "collectionName"
   resource_group_name = azurerm_resource_group.cosmos_mongo_rg[0].name

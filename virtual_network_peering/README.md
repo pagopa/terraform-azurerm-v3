@@ -6,7 +6,7 @@ This module allow the creation of a virtual network peering
 
 ```ts
 module "vnet_peering_core_2_aks" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//virtual_network_peering?ref=v3.15.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//virtual_network_peering?ref=8.5.0"
 
   for_each = { for n in var.aks_networks : n.domain_name => n }
 

@@ -30,7 +30,7 @@ locals {
 # }
 
 module "apim_devopslab_webapp_python_alpha_api_v1" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//api_management_api?ref=v3.11.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//api_management_api?ref=8.5.0"
 
   name                  = local.apim_devopslab_webapp_python_alpha_api.api_name
   api_management_name   = module.apim.name

@@ -6,7 +6,7 @@ This module create an alert for a http(s) webservice
 
 ```hcl
 module "webservice_monitor_01" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//application_insights_standard_web_test?ref=vX.X.X"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//application_insights_standard_web_test?ref=8.5.0"
   
 
   https_endpoint                         = "https://api.dev.platform.pagopa.it"
