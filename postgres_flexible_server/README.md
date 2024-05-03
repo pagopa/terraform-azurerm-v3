@@ -94,7 +94,7 @@ variable "pgflex_public_metric_alerts" {
 
   # Postgres Flexible Server subnet
   module "postgres_flexible_snet" {
-    source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=8.5.0"
+    source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=8.8.0"
     name                                      = "${local.program}-pgres-flexible-snet"
     address_prefixes                          = var.cidr_subnet_flex_dbms
     resource_group_name                       = data.azurerm_resource_group.rg_vnet.name
@@ -140,7 +140,7 @@ variable "pgflex_public_metric_alerts" {
 
     count = var.pgflex_private_config.enabled ? 1 : 0
 
-    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//postgres_flexible_server?ref=8.5.0"
+    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//postgres_flexible_server?ref=8.8.0"
 
     name                = "${local.program}-private-pgflex"
     location            = azurerm_resource_group.postgres_dbs.location
@@ -200,7 +200,7 @@ variable "pgflex_public_metric_alerts" {
 
     count = var.pgflex_public_config.enabled ? 1 : 0
 
-    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//postgres_flexible_server?ref=8.5.0"
+    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//postgres_flexible_server?ref=8.8.0"
 
     name                = "${local.program}-public-pgflex"
     location            = azurerm_resource_group.postgres_dbs.location
@@ -254,7 +254,7 @@ module "postgres_flexible_server_private" {
 
     count = var.pgflex_private_config.enabled ? 1 : 0
 
-    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//postgres_flexible_server?ref=8.5.0"
+    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//postgres_flexible_server?ref=8.8.0"
 
     name                = "${local.program}-private-pgflex"
     location            = azurerm_resource_group.postgres_dbs.location

@@ -10,7 +10,7 @@ This module allow the creation of api management product, and associate to a gro
 
 ```ts
 module "apim_product_devopslab" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//api_management_product?ref=8.5.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//api_management_product?ref=8.8.0"
 
   product_id   = "devopslab"
   display_name = "DevOpsLab Program"

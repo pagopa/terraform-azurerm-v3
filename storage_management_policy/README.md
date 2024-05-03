@@ -7,7 +7,7 @@ This module allow the creation of a management policy for storage account
 ```ts
 module "storage_account_durable_function_management_policy" {
   count  = length(local.internal_containers) == 0 ? 0 : 1
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_management_policy?ref=8.5.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_management_policy?ref=8.8.0"
 
   storage_account_id = module.storage_account_durable_function[0].id
 

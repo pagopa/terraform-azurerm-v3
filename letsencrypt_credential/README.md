@@ -14,7 +14,7 @@ TBD
 
 ```ts
 module "letsencrypt_diego" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//letsencrypt_credential?ref=8.5.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//letsencrypt_credential?ref=8.8.0"
 
   prefix            = "dvopla"
   env               = "d"

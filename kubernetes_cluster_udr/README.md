@@ -492,7 +492,7 @@ keda_helm_version        = "2.6.2"
   }
 
   module "aks" {
-    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_cluster?ref=8.5.0"
+    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_cluster?ref=8.8.0"
 
     count = var.aks_enabled ? 1 : 0
 

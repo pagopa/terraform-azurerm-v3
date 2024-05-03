@@ -20,7 +20,7 @@ Use the example Terraform template, saved in `tests`, to test this module.
 #####
 module "backupstorage" {
   count  = 1
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=8.5.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=8.8.0"
 
   name                            = replace("${local.project}-backupstorage", "-", "")
   account_kind                    = "StorageV2"
@@ -71,7 +71,7 @@ resource "azurerm_private_endpoint" "backupstorage_private_endpoint" {
 module "private_endpoint_snet" {
   count = var.enable.core.private_endpoints_subnet ? 1 : 0
 
-  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=8.5.0"
+  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=8.8.0"
   name                 = "private-endpoint-snet"
   resource_group_name  = azurerm_resource_group.rg_vnet.name
   virtual_network_name = module.vnet.name
