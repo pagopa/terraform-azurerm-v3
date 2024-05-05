@@ -10,7 +10,7 @@ data "azurerm_resource_group" "target_resource_group" {
 }
 
 data "azurerm_virtual_network" "build_vnet" {
-  count = !var.use_external_vnet ? 1 : 0
+  count = var.use_external_vnet ? 1 : 0
   name                = var.build_vnet_name
   resource_group_name = var.build_vnet_rg_name
 }
@@ -68,7 +68,7 @@ resource "azurerm_role_assignment" "packer_sp_build_rg_role" {
 }
 
 resource "azurerm_role_assignment" "packer_sp_build_vnet_role" {
-  count = !var.use_external_vnet ? 1 : 0
+  count = var.use_external_vnet ? 1 : 0
 
   scope                = data.azurerm_virtual_network.build_vnet[0].id
   role_definition_name = "Network Contributor"
