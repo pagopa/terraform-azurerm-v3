@@ -33,7 +33,7 @@ This module creates a table storage to save the provided monitoring configuratio
 ```hcl
 
 module "synthetic_monitoring_subnet" {
-  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v7.39.0"
+  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v8.8.0"
   name                 = "${var.prefix}-synthetic-monitoring-snet"
   address_prefixes     = ["10.1.182.0/23"]
   resource_group_name  = "dvopla-d-vnet-rg"
@@ -63,7 +63,7 @@ resource "azurerm_container_app_environment" "container_app_environment" {
 
 # basic
 module "monitoring_function" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//monitoring_function?ref=5cdc24a"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//monitoring_function?ref=v8.8.0"
 
   location = "northeurope"
   prefix = "dvopla-d"
@@ -106,7 +106,7 @@ module "monitoring_function" {
 
 # with private endpoint and custom alert configuration
 module "monitoring_function" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//monitoring_function?ref=5cdc24a"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//monitoring_function?ref=v8.8.0"
 
   location = "northeurope"
   prefix = "dvopla-d"

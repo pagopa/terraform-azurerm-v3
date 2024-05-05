@@ -21,7 +21,7 @@ resource "azurerm_resource_group" "dns_forwarder" {
 module "dns_forwarder_snet" {
   count = var.dns_forwarder_enabled ? 1 : 0
 
-  source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v3.15.0"
+  source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v8.8.0"
   name                                      = "${local.project}-dnsforwarder-snet"
   address_prefixes                          = var.cidr_subnet_dnsforwarder
   resource_group_name                       = azurerm_resource_group.rg_vnet.name
@@ -38,7 +38,7 @@ module "dns_forwarder_snet" {
 }
 
 module "dns_forwarder" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder?ref=v3.15.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder?ref=v8.8.0"
 
   name                = "${local.project}-dns-forwarder"
   location            = var.location

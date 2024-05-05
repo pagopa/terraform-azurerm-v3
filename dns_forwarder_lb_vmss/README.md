@@ -13,7 +13,7 @@ To secure the scale set, a Network Security Group has been added, allowing inbou
 
 module "dns_forwarder" {
 
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder_lb_vmss?ref=7.48.0"
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder_lb_vmss?ref=v8.8.0"
 
   name                 = var.prefix
   virtual_network_name = azurerm_virtual_network.vnet.name
