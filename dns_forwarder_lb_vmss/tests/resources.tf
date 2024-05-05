@@ -15,7 +15,7 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 module "subnet_dns_forwarder_lb" {
-  source                                    = "../../subnet"
+  source = "../../subnet"
 
   name                 = "test-dns-forwarder-lb"
   address_prefixes     = ["10.1.0.200/24"]
@@ -24,7 +24,7 @@ module "subnet_dns_forwarder_lb" {
 }
 
 module "subnet_dns_forwarder_vmss" {
-  source                                    = "../../subnet"
+  source = "../../subnet"
 
   name                 = "test-dns-forwarder-vmss"
   address_prefixes     = ["10.1.0.201/24"]
@@ -61,7 +61,7 @@ module "__dns_forwarder_lb_vmss_internal_subnet" {
   source_image_name    = var.source_image_name
   key_vault_id         = azurerm_key_vault.this.id
 
-  use_internal_subnet_lb = true
+  use_internal_subnet_lb   = true
   use_internal_subnet_vmss = true
 
   tags = var.tags
@@ -78,7 +78,7 @@ module "__dns_forwarder_lb_vmss_with_externals_subnet" {
   subnet_lb_id      = module.subnet_dns_forwarder_lb.id
   static_address_lb = cidrhost("10.1.0.200/24", 4)
 
-  subnet_vmss_id    = module.subnet_dns_forwarder_vmss.id
+  subnet_vmss_id = module.subnet_dns_forwarder_vmss.id
 
   location          = var.location
   subscription_id   = data.azurerm_subscription.current.subscription_id
