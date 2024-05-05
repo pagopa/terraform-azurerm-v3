@@ -20,40 +20,40 @@ Use the example Terraform template, saved in `tests`, to test this module.
 
 ## Known Issues
 
-- Applying the immutability policy on an existing storage account fails due to a 404 NotFound error on the threat protection creation for the new storage. Solution, delete the resource and create the new one with the immutability policy.
-- Changing the `period_since_creation_in_days` will be updated in terraform state but not in the cloud provider resource. Solution, change the value using the Azure portal.
+* Applying the immutability policy on an existing storage account fails due to a 404 NotFound error on the threat protection creation for the new storage. Solution, delete the resource and create the new one with the immutability policy.
+* Changing the `period_since_creation_in_days` will be updated in terraform state but not in the cloud provider resource. Solution, change the value using the Azure portal.
 
 ## Migration from v2
 
 🆕 To use this module you need to use change this variables/arguments:
 
-- `blob_properties_delete_retention_policy_days` -> `blob_delete_retention_days`
-- `allow_blob_public_access` -> `allow_nested_items_to_be_public`
-- `enable_versioning` -> `blob_versioning_enabled`
+* `blob_properties_delete_retention_policy_days` -> `blob_delete_retention_days`
+* `allow_blob_public_access` -> `allow_nested_items_to_be_public`
+* `enable_versioning` -> `blob_versioning_enabled`
 
 ❌ Don't use this variables:
 
-- `enable_https_traffic_only` -> don't use any more, now default is true and mandatory
-- `versioning_name`
+* `enable_https_traffic_only` -> don't use any more, now default is true and mandatory
+* `versioning_name`
 
 ❌ Don't use locks because are managed outside of the module:
 
-- `lock_enabled`
-- `lock_name`
-- `lock_level`  
-- `lock_notes`
+* `lock_enabled`
+* `lock_name`
+* `lock_level`  
+* `lock_notes`
 
 🔥 destroied resources
 
-- `module.<name>.azurerm_template_deployment.versioning[0]` is destroied becuase we use an internal variable and not more an arm.
+* `module.<name>.azurerm_template_deployment.versioning[0]` is destroied becuase we use an internal variable and not more an arm.
 
 ### Migration results
 
 During the apply there will be this result:
 
-- 1 changed (related to storage, that need to update one property `cross_tenant_replication_enabled`)
+* 1 changed (related to storage, that need to update one property `cross_tenant_replication_enabled`)
 
-- 2 destroy (related to storage, that need to destroy the old arm command for versioning `azurerm_template_deployment.versioning`)
+* 2 destroy (related to storage, that need to destroy the old arm command for versioning `azurerm_template_deployment.versioning`)
 
 like this:
 
