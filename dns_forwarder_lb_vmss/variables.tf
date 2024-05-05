@@ -56,8 +56,7 @@ variable "address_prefixes_lb" {
 
 variable "static_address_lb" {
   type        = string
-  description = "(Optional) The static address of load balancer."
-  default     = null
+  description = "(Required) The static address of load balancer."
 }
 
 variable "subscription_id" {
