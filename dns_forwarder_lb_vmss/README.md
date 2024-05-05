@@ -9,25 +9,8 @@ To secure the scale set, a Network Security Group has been added, allowing inbou
 
 ## How to use
 
-```hcl
+See `tests` folder for example
 
-module "dns_forwarder" {
-
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder_lb_vmss?ref=v8.8.0"
-
-  name                 = var.prefix
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  resource_group_name  = azurerm_resource_group.rg.name
-  location             = var.location
-  subscription_id      = data.azurerm_subscription.current.subscription_id
-  source_image_name    = var.source_image_name
-  tenant_id            = data.azurerm_client_config.current.tenant_id
-  key_vault_id         = azurerm_key_vault.kv.id
-
-  tags = var.tags
-}
-
-```
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
