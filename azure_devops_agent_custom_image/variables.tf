@@ -68,25 +68,25 @@ variable "build_rg_name" {
 # Custom VNET
 #
 variable "use_external_vnet" {
-type = bool
+  type        = bool
   description = "Enable the use of a custom vnet"
-  default = false
+  default     = false
 }
 
 variable "build_vnet_name" {
   type        = string
   description = "(Optional) Packer build vnet name"
-  default = null
+  default     = null
 }
 
 variable "build_subnet_name" {
   type        = string
   description = "(Optional) Packer build subnet name"
-  default = null
+  default     = null
 }
 
 variable "build_vnet_rg_name" {
   type        = string
   description = "(Optional) Packer build vnet rg name"
-  default = null
+  default     = null
 }

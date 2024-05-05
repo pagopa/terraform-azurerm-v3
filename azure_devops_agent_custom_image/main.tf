@@ -10,7 +10,7 @@ data "azurerm_resource_group" "target_resource_group" {
 }
 
 data "azurerm_virtual_network" "build_vnet" {
-  count = var.use_external_vnet ? 1 : 0
+  count               = var.use_external_vnet ? 1 : 0
   name                = var.build_vnet_name
   resource_group_name = var.build_vnet_rg_name
 }
@@ -87,7 +87,7 @@ resource "null_resource" "build_packer_image" {
     vm_sku                     = var.vm_sku
     target_image_name          = local.target_image_name
     location                   = var.location
-    use_external_vnet = var.use_external_vnet
+    use_external_vnet          = var.use_external_vnet
   }
 
   depends_on = [
@@ -123,9 +123,9 @@ resource "null_resource" "build_packer_image" {
       -var "client_id=${azuread_application.packer_application.application_id}" \
       -var "client_secret=${azuread_application_password.velero_application_password.value}" \
       -var "build_rg_name=${azurerm_resource_group.build_rg.name}" \
-      ${var.use_external_vnet ? "-var 'build_vnet_name=${var.build_vnet_name}'" : "" } \
-      ${var.use_external_vnet ? "-var 'build_vnet_subnet_name=${var.build_subnet_name}'" : "" } \
-      ${var.use_external_vnet ? "-var 'build_vnet_rg_name=${var.build_vnet_rg_name}'" : "" } \
+      ${var.use_external_vnet ? "-var 'build_vnet_name=${var.build_vnet_name}'" : ""} \
+      ${var.use_external_vnet ? "-var 'build_vnet_subnet_name=${var.build_subnet_name}'" : ""} \
+      ${var.use_external_vnet ? "-var 'build_vnet_rg_name=${var.build_vnet_rg_name}'" : ""} \
       .
 
     } >> /tmp/packer-azdo.log
