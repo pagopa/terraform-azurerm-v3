@@ -67,7 +67,7 @@ variable "build_rg_name" {
 #
 # Custom VNET
 #
-variable "custom_vnet_enabled" {
+variable "use_external_vnet" {
 type = bool
   description = "Enable the use of a custom vnet"
   default = false
