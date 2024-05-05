@@ -99,7 +99,7 @@ During the apply there will be 1 changed and 1 destroy related to storage see [s
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cdn_storage_account"></a> [cdn\_storage\_account](#module\_cdn\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.76.0 |
+| <a name="module_cdn_storage_account"></a> [cdn\_storage\_account](#module\_cdn\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v8.8.0 |
 
 ## Resources
 
