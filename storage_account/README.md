@@ -8,124 +8,52 @@ In terraform output you can get the resource group name.
 
 ![architecture](./docs/module-arch.drawio.png)
 
+## Logic breaking changes
+
+* `enable_resource_advanced_threat_protection` was removed -> now use only `advanced_threat_protection`
+
 ## How to use it
 
 ### simple example
 
 Use the example Terraform template, saved in `tests`, to test this module.
 
-### example with private network and public access denied
-
-```hcl
-#####
-module "backupstorage" {
-  count  = 1
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.8.0"
-
-  name                            = replace("${local.project}-backupstorage", "-", "")
-  account_kind                    = "StorageV2"
-  account_tier                    = "Standard"
-  account_replication_type        = "GRS"
-  access_tier                     = "Cool"
-  blob_versioning_enabled         = true
-  resource_group_name             = azurerm_resource_group.rg_storage.name
-  location                        = var.location
-  allow_nested_items_to_be_public = false
-  advanced_threat_protection      = true
-  enable_low_availability_alert   = false
-  public_network_access_enabled   = false
-  tags                            = var.tags
-}
-
-resource "azurerm_private_endpoint" "backupstorage_private_endpoint" {
-  count = 1
-
-  name                = "${local.project}-backupstorage-private-endpoint"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg_storage.name
-  subnet_id           = module.private_endpoint_snet[0].id
-
-  private_dns_zone_group {
-    name                 = "${local.project}-backupstorage-private-dns-zone-group"
-    private_dns_zone_ids = [azurerm_private_dns_zone.storage_account.id]
-  }
-
-  private_service_connection {
-    name                           = "${local.project}-backupstorage-private-service-connection"
-    private_connection_resource_id = module.backupstorage[0].id
-    is_manual_connection           = false
-    subresource_names              = ["blob"]
-  }
-
-  tags = var.tags
-
-  depends_on = [
-    module.backupstorage
-  ]
-}
-
-#
-#
-#
-
-module "private_endpoint_snet" {
-  count = var.enable.core.private_endpoints_subnet ? 1 : 0
-
-  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v8.8.0"
-  name                 = "private-endpoint-snet"
-  resource_group_name  = azurerm_resource_group.rg_vnet.name
-  virtual_network_name = module.vnet.name
-  address_prefixes     = var.cidr_subnet_private_endpoint
-
-  private_endpoint_network_policies_enabled = false
-  service_endpoints = [
-    "Microsoft.Web", "Microsoft.AzureCosmosDB", "Microsoft.EventHub"
-  ]
-}
-
-resource "azurerm_private_dns_zone" "storage_account" {
-  name                = "privatelink.blob.core.windows.net"
-  resource_group_name = azurerm_resource_group.rg_vnet.name
-}
-
-```
-
 ## Known Issues
 
-- Applying the immutability policy on an existing storage account fails due to a 404 NotFound error on the threat protection creation for the new storage. Solution, delete the resource and create the new one with the immutability policy.
-- Changing the `period_since_creation_in_days` will be updated in terraform state but not in the cloud provider resource. Solution, change the value using the Azure portal.
+* Applying the immutability policy on an existing storage account fails due to a 404 NotFound error on the threat protection creation for the new storage. Solution, delete the resource and create the new one with the immutability policy.
+* Changing the `period_since_creation_in_days` will be updated in terraform state but not in the cloud provider resource. Solution, change the value using the Azure portal.
 
 ## Migration from v2
 
 🆕 To use this module you need to use change this variables/arguments:
 
-- `blob_properties_delete_retention_policy_days` -> `blob_delete_retention_days`
-- `allow_blob_public_access` -> `allow_nested_items_to_be_public`
-- `enable_versioning` -> `blob_versioning_enabled`
+* `blob_properties_delete_retention_policy_days` -> `blob_delete_retention_days`
+* `allow_blob_public_access` -> `allow_nested_items_to_be_public`
+* `enable_versioning` -> `blob_versioning_enabled`
 
 ❌ Don't use this variables:
 
-- `enable_https_traffic_only` -> don't use any more, now default is true and mandatory
-- `versioning_name`
+* `enable_https_traffic_only` -> don't use any more, now default is true and mandatory
+* `versioning_name`
 
 ❌ Don't use locks because are managed outside of the module:
 
-- `lock_enabled`
-- `lock_name`
-- `lock_level`  
-- `lock_notes`
+* `lock_enabled`
+* `lock_name`
+* `lock_level`  
+* `lock_notes`
 
 🔥 destroied resources
 
-- `module.<name>.azurerm_template_deployment.versioning[0]` is destroied becuase we use an internal variable and not more an arm.
+* `module.<name>.azurerm_template_deployment.versioning[0]` is destroied becuase we use an internal variable and not more an arm.
 
 ### Migration results
 
 During the apply there will be this result:
 
-- 1 changed (related to storage, that need to update one property `cross_tenant_replication_enabled`)
+* 1 changed (related to storage, that need to update one property `cross_tenant_replication_enabled`)
 
-- 2 destroy (related to storage, that need to destroy the old arm command for versioning `azurerm_template_deployment.versioning`)
+* 2 destroy (related to storage, that need to destroy the old arm command for versioning `azurerm_template_deployment.versioning`)
 
 like this:
 
