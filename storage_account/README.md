@@ -8,87 +8,15 @@ In terraform output you can get the resource group name.
 
 ![architecture](./docs/module-arch.drawio.png)
 
+## Logic breaking changes
+
+* `enable_resource_advanced_threat_protection` was removed -> now use only `advanced_threat_protection`
+
 ## How to use it
 
 ### simple example
 
 Use the example Terraform template, saved in `tests`, to test this module.
-
-### example with private network and public access denied
-
-```hcl
-#####
-module "backupstorage" {
-  count  = 1
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.8.0"
-
-  name                            = replace("${local.project}-backupstorage", "-", "")
-  account_kind                    = "StorageV2"
-  account_tier                    = "Standard"
-  account_replication_type        = "GRS"
-  access_tier                     = "Cool"
-  blob_versioning_enabled         = true
-  resource_group_name             = azurerm_resource_group.rg_storage.name
-  location                        = var.location
-  allow_nested_items_to_be_public = false
-  advanced_threat_protection      = true
-  enable_low_availability_alert   = false
-  public_network_access_enabled   = false
-  tags                            = var.tags
-}
-
-resource "azurerm_private_endpoint" "backupstorage_private_endpoint" {
-  count = 1
-
-  name                = "${local.project}-backupstorage-private-endpoint"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg_storage.name
-  subnet_id           = module.private_endpoint_snet[0].id
-
-  private_dns_zone_group {
-    name                 = "${local.project}-backupstorage-private-dns-zone-group"
-    private_dns_zone_ids = [azurerm_private_dns_zone.storage_account.id]
-  }
-
-  private_service_connection {
-    name                           = "${local.project}-backupstorage-private-service-connection"
-    private_connection_resource_id = module.backupstorage[0].id
-    is_manual_connection           = false
-    subresource_names              = ["blob"]
-  }
-
-  tags = var.tags
-
-  depends_on = [
-    module.backupstorage
-  ]
-}
-
-#
-#
-#
-
-module "private_endpoint_snet" {
-  count = var.enable.core.private_endpoints_subnet ? 1 : 0
-
-  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v8.8.0"
-  name                 = "private-endpoint-snet"
-  resource_group_name  = azurerm_resource_group.rg_vnet.name
-  virtual_network_name = module.vnet.name
-  address_prefixes     = var.cidr_subnet_private_endpoint
-
-  private_endpoint_network_policies_enabled = false
-  service_endpoints = [
-    "Microsoft.Web", "Microsoft.AzureCosmosDB", "Microsoft.EventHub"
-  ]
-}
-
-resource "azurerm_private_dns_zone" "storage_account" {
-  name                = "privatelink.blob.core.windows.net"
-  resource_group_name = azurerm_resource_group.rg_vnet.name
-}
-
-```
 
 ## Known Issues
 
