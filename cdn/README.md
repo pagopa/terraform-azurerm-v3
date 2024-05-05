@@ -6,6 +6,10 @@ This module allow the creation of a CDN endpoint and CDN profile
 
 ![This is an image](./docs/module-arch.drawio.png)
 
+## Logical breaking changes
+
+* `resource_advanced_threat_protection_enabled` was removed -> use `advanced_threat_protection_enabled`
+
 ## How to use it
 
 ```ts

@@ -22,7 +22,6 @@ module "cdn_storage_account" {
   public_network_access_enabled   = true
 
   advanced_threat_protection                 = var.advanced_threat_protection_enabled
-  enable_resource_advanced_threat_protection = var.resource_advanced_threat_protection_enabled
 
   index_document     = var.index_document
   error_404_document = var.error_404_document
