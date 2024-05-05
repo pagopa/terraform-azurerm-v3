@@ -70,7 +70,7 @@ variable "main_server_additional_alerts" {
   # Postgres Flexible Server subnet
   module "postgres_flexible_snet_replica" {
     count = var.geo_replica_enabled ? 1 : 0
-    source                                        = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v6.2.1"
+    source                                        = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v8.8.0"
     name                                          = "${local.project_replica}-pgres-flexible-snet"
     address_prefixes                              = var.geo_replica_cidr_subnet_postgresql
     resource_group_name                           = data.azurerm_resource_group.rg_vnet.name
@@ -112,7 +112,7 @@ variable "main_server_additional_alerts" {
   }
 
   module "postgresql_fdr_replica_db" {
-    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//postgres_flexible_server_replica?ref=<version>"
+    source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//postgres_flexible_server_replica?ref=v8.8.0"
     count = var.geo_replica_enabled ? 1 : 0
   
     name = "${local.project_replica}-flexible-postgresql"

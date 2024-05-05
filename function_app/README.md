@@ -55,7 +55,7 @@ E.g.
 **Docker**
 ```hcl
 module "authorizer_function_app" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app?ref=v6.6.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//function_app?ref=v8.8.0"
 
   resource_group_name = data.azurerm_resource_group.shared_rg.name
   name                = "${local.project}-authorizer-fn"
@@ -211,14 +211,14 @@ See [Generic resource migration](../.docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.95.0, <= 3.99.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.95.0, <= 3.100.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_storage_account"></a> [storage\_account](#module\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.76.0 |
-| <a name="module_storage_account_durable_function"></a> [storage\_account\_durable\_function](#module\_storage\_account\_durable\_function) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.76.0 |
+| <a name="module_storage_account"></a> [storage\_account](#module\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v8.8.0 |
+| <a name="module_storage_account_durable_function"></a> [storage\_account\_durable\_function](#module\_storage\_account\_durable\_function) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v8.8.0 |
 
 ## Resources
 

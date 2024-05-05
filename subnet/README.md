@@ -8,7 +8,7 @@ This module allow the creation of subnet
 
 ```ts
 module "private_endpoints_snet" {
-  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v3.15.0"
+  source               = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v8.8.0"
   name                 = "${local.program}-private-endpoints-snet"
   address_prefixes     = var.cidr_subnet_private_endpoints
   virtual_network_name = data.azurerm_virtual_network.vnet.name
@@ -28,7 +28,7 @@ module "private_endpoints_snet" {
 
 ```ts
 module "funcs_diego_snet" {
-  source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v3.15.0"
+  source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v8.8.0"
   name                                      = "${local.project}-funcs-snet"
   address_prefixes                          = var.cidr_subnet_funcs_diego_domain
   resource_group_name                       = data.azurerm_resource_group.rg_vnet_core.name
@@ -68,7 +68,7 @@ module "funcs_diego_snet" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.97.1 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.100.0 |
 
 ## Modules
 

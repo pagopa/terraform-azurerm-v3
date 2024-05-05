@@ -32,6 +32,9 @@ resource "azurerm_key_vault" "this" {
   tags = var.tags
 }
 
+#
+# CDN
+#
 module "cdn" {
   source = "../../cdn"
 

@@ -9,7 +9,7 @@ This module allows the creation of Linux virtual machine scale set (VMSS) with a
 # with default image
 module "vmss" {
 
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//vm_scale_set?ref=7.47.0"
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//vm_scale_set?ref=v8.8.0"
 
   name                = var.name
   resource_group_name = data.azurerm_resource_group.rg_vnet_core.name

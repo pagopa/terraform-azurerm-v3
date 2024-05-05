@@ -8,7 +8,7 @@ This module creates a service account and its related secrets
 
 ```hcl
 module "kubernetes_service_account" {
-  source  = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_service_account?ref=<version>"
+  source  = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_service_account?ref=v8.8.0"
   name = "azure-devops"
   namespace = local.system_domain_namespace
 }
