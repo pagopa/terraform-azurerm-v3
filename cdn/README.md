@@ -6,6 +6,10 @@ This module allow the creation of a CDN endpoint and CDN profile
 
 ![This is an image](./docs/module-arch.drawio.png)
 
+## Logical breaking changes
+
+* `resource_advanced_threat_protection_enabled` was removed -> use `advanced_threat_protection_enabled`
+
 ## How to use it
 
 ```ts
@@ -20,7 +24,7 @@ resource "azurerm_resource_group" "devopslab_cdn_rg" {
 ### Frontend resources
 #tfsec:ignore:azure-storage-queue-services-logging-enabled:exp:2022-05-01 # already ignored, maybe a bug in tfsec
 module "devopslab_cdn" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cdn?ref=v3.15.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cdn?ref=v8.8.0"
 
   name                  = "diego"
   prefix                = local.product
@@ -99,7 +103,7 @@ During the apply there will be 1 changed and 1 destroy related to storage see [s
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cdn_storage_account"></a> [cdn\_storage\_account](#module\_cdn\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v7.76.0 |
+| <a name="module_cdn_storage_account"></a> [cdn\_storage\_account](#module\_cdn\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v8.8.0 |
 
 ## Resources
 
@@ -145,7 +149,6 @@ During the apply there will be 1 changed and 1 destroy related to storage see [s
 | <a name="input_name"></a> [name](#input\_name) | n/a | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | n/a | `string` | n/a | yes |
 | <a name="input_querystring_caching_behaviour"></a> [querystring\_caching\_behaviour](#input\_querystring\_caching\_behaviour) | n/a | `string` | `"IgnoreQueryString"` | no |
-| <a name="input_resource_advanced_threat_protection_enabled"></a> [resource\_advanced\_threat\_protection\_enabled](#input\_resource\_advanced\_threat\_protection\_enabled) | Enabled azurerm\_advanced\_threat\_protection resource | `bool` | `true` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | n/a | `string` | n/a | yes |
 | <a name="input_storage_access_tier"></a> [storage\_access\_tier](#input\_storage\_access\_tier) | n/a | `string` | `"Hot"` | no |
 | <a name="input_storage_account_kind"></a> [storage\_account\_kind](#input\_storage\_account\_kind) | n/a | `string` | `"StorageV2"` | no |

@@ -12,7 +12,7 @@ This module allow the setup of a cosmos db account
 
 ```ts
 module "cosmos_mongo" {
-  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_account?ref=v3.15.0"
+  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_account?ref=v8.8.0"
   name     = "${local.project}-cosmos-mongo"
   location = var.location
   domain   = var.domain
@@ -69,7 +69,7 @@ module "cosmos_mongo" {
 
 ```ts
 module "cosmos_core" {
-  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_account?ref=v3.15.0"
+  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_account?ref=v8.8.0"
   name     = "${local.project}-cosmos-core"
   location = var.location
   domain   = var.domain

@@ -13,7 +13,7 @@ To secure the scale set, a Network Security Group has been added, allowing inbou
 
 module "dns_forwarder" {
 
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder_lb_vmss?ref=7.48.0"
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder_lb_vmss?ref=v8.8.0"
 
   name                 = var.prefix
   virtual_network_name = azurerm_virtual_network.vnet.name
@@ -43,10 +43,10 @@ module "dns_forwarder" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | git::https://github.com/pagopa/terraform-azurerm-v3.git//load_balancer | v7.76.0 |
-| <a name="module_subnet_load_balancer"></a> [subnet\_load\_balancer](#module\_subnet\_load\_balancer) | git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet | v7.76.0 |
-| <a name="module_subnet_vmss"></a> [subnet\_vmss](#module\_subnet\_vmss) | git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet | v7.76.0 |
-| <a name="module_vmss"></a> [vmss](#module\_vmss) | git::https://github.com/pagopa/terraform-azurerm-v3.git//vm_scale_set | v7.76.0 |
+| <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | git::https://github.com/pagopa/terraform-azurerm-v3.git//load_balancer | v8.8.0 |
+| <a name="module_subnet_load_balancer"></a> [subnet\_load\_balancer](#module\_subnet\_load\_balancer) | git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet | v8.8.0 |
+| <a name="module_subnet_vmss"></a> [subnet\_vmss](#module\_subnet\_vmss) | git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet | v8.8.0 |
+| <a name="module_vmss"></a> [vmss](#module\_vmss) | git::https://github.com/pagopa/terraform-azurerm-v3.git//vm_scale_set | v8.8.0 |
 
 ## Resources
 

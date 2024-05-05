@@ -7,7 +7,7 @@ This module deploys the cert mounter blueprint in the target namespace, creating
 ```hcl
 
 module "cert_mounter" {
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cert_mounter?ref=<version>"
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cert_mounter?ref=v8.8.0"
   namespace           = var.domain
   certificate_name    = "${var.aks_cluster_domain_name}-${var.domain}-internal-${var.env}-cstar-pagopa-it" #name of the certificate stored in the given kv
   kv_name             = data.azurerm_key_vault.kv.name

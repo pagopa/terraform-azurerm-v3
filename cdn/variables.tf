@@ -362,12 +362,6 @@ variable "advanced_threat_protection_enabled" {
   default = false
 }
 
-variable "resource_advanced_threat_protection_enabled" {
-  type        = bool
-  description = "Enabled azurerm_advanced_threat_protection resource"
-  default     = true
-}
-
 variable "storage_account_nested_items_public" {
   type        = bool
   default     = true
