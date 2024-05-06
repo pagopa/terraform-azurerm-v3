@@ -120,3 +120,9 @@ variable "zone_balance" {
   description = "(Optional) If true forces the even distribution of instances across all the configured zones ('zones' variable)"
 }
 
+variable "tags" {
+  type        = map(any)
+  description = "Tags"
+  default     = {}
+}
+
