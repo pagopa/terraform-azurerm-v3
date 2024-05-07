@@ -109,6 +109,7 @@ No modules.
 | <a name="input_storage_sku"></a> [storage\_sku](#input\_storage\_sku) | (Optional) The SKU of the storage account with which to persist VM. Use a singular sku that would be applied across all disks, or specify individual disks. Usage: [--storage-sku SKU \| --storage-sku ID=SKU ID=SKU ID=SKU...], where each ID is os or a 0-indexed lun. Allowed values: Standard\_LRS, Premium\_LRS, StandardSSD\_LRS, UltraSSD\_LRS, Premium\_ZRS, StandardSSD\_ZRS. | `string` | `"StandardSSD_LRS"` | no |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | (Required) An existing subnet ID | `string` | `null` | no |
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | (Required) Azure subscription id | `string` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags | `map(any)` | `{}` | no |
 | <a name="input_vm_sku"></a> [vm\_sku](#input\_vm\_sku) | (Optional) Size of VMs in the scale set. Default to Standard\_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info. | `string` | `"Standard_B2ms"` | no |
 | <a name="input_vmss_instances"></a> [vmss\_instances](#input\_vmss\_instances) | (Optional) The number of Virtual Machines in the Scale Set. Defaults to 0. | `number` | `"0"` | no |
 | <a name="input_zone_balance"></a> [zone\_balance](#input\_zone\_balance) | (Optional) If true forces the even distribution of instances across all the configured zones ('zones' variable) | `bool` | `false` | no |
