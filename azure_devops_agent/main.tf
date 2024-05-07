@@ -24,7 +24,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
   resource_group_name = var.resource_group_name
   location            = var.location
   sku                 = var.vm_sku
-  instances           = 1
+  instances           = var.vmss_instances
   admin_username      = "adminuser"
   admin_password      = var.admin_password
 
@@ -81,5 +81,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
       tags["__AzureDevOpsElasticPoolTimeStamp"],
     ]
   }
+
 }
 
