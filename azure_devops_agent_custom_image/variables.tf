@@ -30,12 +30,6 @@ variable "image_version" {
   description = "(Required) Version assigned to the generated image. Note that the pair <image_name, image_version> must be unique and not already existing"
 }
 
-variable "force_replacement" {
-  type        = bool
-  description = "(Optional) Wheather if the image should be deleted and recreated even if already existing"
-  default     = false
-}
-
 variable "base_image_offer" {
   type        = string
   default     = "0001-com-ubuntu-server-jammy"
@@ -56,11 +50,7 @@ variable "base_image_version" {
 variable "vm_sku" {
   type        = string
   description = "(Optional) Size of VMs in the scale set. Default to Standard_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info."
-  default     = "Standard_B1s"
-}
-
-variable "tags" {
-  type = map(any)
+  default     = "Standard_B2ms"
 }
 
 variable "prefix" {
@@ -71,20 +61,32 @@ variable "prefix" {
 variable "build_rg_name" {
   type        = string
   description = "(Optional) Packer build temporary resource group name"
-  default     = "tmp-packer-build"
+  default     = "tmp-packer-azdo-image-build"
+}
+
+#
+# Custom VNET
+#
+variable "use_external_vnet" {
+  type        = bool
+  description = "Enable the use of a custom vnet"
+  default     = false
 }
 
 variable "build_vnet_name" {
   type        = string
-  description = "(Required) Packer build vnet name"
+  description = "(Optional) Packer build vnet name"
+  default     = null
 }
 
 variable "build_subnet_name" {
   type        = string
-  description = "(Required) Packer build subnet name"
+  description = "(Optional) Packer build subnet name"
+  default     = null
 }
 
 variable "build_vnet_rg_name" {
   type        = string
-  description = "(Required) Packer build vnet rg name"
+  description = "(Optional) Packer build vnet rg name"
+  default     = null
 }
