@@ -9,11 +9,6 @@ variable "name" {
   description = "(Required) The name of the Linux Virtual Machine Scale Set. Changing this forces a new resource to be created."
 }
 
-variable "subscription_name" {
-  type        = string
-  description = "(Required) Azure subscription name"
-}
-
 variable "subscription_id" {
   type        = string
   description = "(Required) Azure subscription id"
@@ -63,10 +58,16 @@ variable "image_type" {
   }
 }
 
+variable "vmss_instances" {
+  type        = number
+  description = "(Optional) The number of Virtual Machines in the Scale Set. Defaults to 0."
+  default     = "0"
+}
+
 variable "vm_sku" {
   type        = string
   description = "(Optional) Size of VMs in the scale set. Default to Standard_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info."
-  default     = "Standard_B1s"
+  default     = "Standard_B2ms"
 }
 
 variable "storage_sku" {
@@ -107,11 +108,6 @@ variable "admin_password" {
   default     = null
 }
 
-variable "tags" {
-  type = map(any)
-}
-
-
 variable "zones" {
   type        = list(string)
   description = "(Optional) List of AZ on which the scale set will distribute its instances"
@@ -122,5 +118,11 @@ variable "zone_balance" {
   type        = bool
   default     = false
   description = "(Optional) If true forces the even distribution of instances across all the configured zones ('zones' variable)"
+}
+
+variable "tags" {
+  type        = map(any)
+  description = "Tags"
+  default     = {}
 }
 
