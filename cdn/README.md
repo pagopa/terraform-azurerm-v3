@@ -32,7 +32,8 @@ module "devopslab_cdn" {
   location              = azurerm_resource_group.devopslab_cdn_rg.location
   hostname              = "cdn-diego-app.devopslab.pagopa.it"
   https_rewrite_enabled = true
-  lock_enabled          = false
+  
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.law.id
 
   index_document     = "index.html"
   error_404_document = "404.html"
