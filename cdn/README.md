@@ -168,6 +168,7 @@ During the apply there will be 1 changed and 1 destroy related to storage see [s
 | <a name="output_id"></a> [id](#output\_id) | Deprecated, use endpoint\_id instead. |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 | <a name="output_profile_id"></a> [profile\_id](#output\_profile\_id) | n/a |
+| <a name="output_storage_id"></a> [storage\_id](#output\_storage\_id) | n/a |
 | <a name="output_storage_primary_access_key"></a> [storage\_primary\_access\_key](#output\_storage\_primary\_access\_key) | n/a |
 | <a name="output_storage_primary_blob_connection_string"></a> [storage\_primary\_blob\_connection\_string](#output\_storage\_primary\_blob\_connection\_string) | n/a |
 | <a name="output_storage_primary_blob_host"></a> [storage\_primary\_blob\_host](#output\_storage\_primary\_blob\_host) | n/a |
