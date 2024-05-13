@@ -6,6 +6,12 @@ resource "null_resource" "pgbouncer_check" {
   count = length(regexall("^B_.*", var.sku_name)) > 0 && var.pgbouncer_enabled ? "ERROR: PgBouncer is not allow for Burstable(B) series" : 0
 }
 
+
+data "azurerm_postgresql_flexible_server" "primary_Server" {
+  name                = var.primary_server_name
+  resource_group_name = var.primary_server_rg_name
+}
+
 resource "azurerm_postgresql_flexible_server" "this" {
 
   name                = var.name
@@ -22,7 +28,7 @@ resource "azurerm_postgresql_flexible_server" "this" {
 
   sku_name = var.sku_name
 
-  source_server_id = var.source_server_id
+  source_server_id = data.azurerm_postgresql_flexible_server.primary_Server.id
 
   dynamic "high_availability" {
     for_each = var.high_availability_enabled && var.standby_availability_zone != null ? ["dummy"] : []
@@ -58,3 +64,28 @@ resource "azurerm_postgresql_flexible_server_configuration" "pgbouncer_enabled" 
   value     = "True"
 }
 
+
+
+resource "null_resource" "virtual_endpoint" {
+  triggers = {
+    rg_name = var.primary_server_rg_name
+    primary_server_name = var.primary_server_name
+    ve_name = var.virtual_endpoint_name
+    member_name = azurerm_postgresql_flexible_server.this.name
+  }
+
+   provisioner "local-exec" {
+    command = <<EOT
+    az postgres flexible-server virtual-endpoint create --resource-group ${self.triggers.rg_name} --server-name ${self.triggers.primary_server_name} --name ${self.triggers.ve_name} --endpoint-type ReadWrite --members ${self.triggers.member_name}
+    EOT
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOT
+    az postgres flexible-server virtual-endpoint delete --resource-group ${self.triggers.rg_name} --server-name ${self.triggers.primary_server_name} --name ${self.triggers.ve_name}
+    EOT
+  }
+
+
+}
