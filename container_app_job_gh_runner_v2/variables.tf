@@ -119,12 +119,12 @@ variable "job" {
   description = "Container App job configuration"
 }
 
-variable "key_vault" {
-  type = object({
-    resource_group_name = string
-    name                = string
-    secret_name         = string
-  })
-
-  description = "Data of the KeyVault which stores PAT as secret"
-}
+# variable "key_vault" {
+#   type = object({
+#     resource_group_name = string
+#     name                = string
+#     secret_name         = string
+#   })
+#
+#   description = "Data of the KeyVault which stores PAT as secret"
+# }

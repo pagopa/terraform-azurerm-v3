@@ -1,10 +1,10 @@
 output "id" {
-  value       = azapi_resource.container_app_job.id
+  value       = azurerm_container_app_job.job.id
   description = "Container App job id"
 }
 
 output "name" {
-  value       = azapi_resource.container_app_job.name
+  value       = azurerm_container_app_job.job.name
   description = "Container App job name"
 }
 
