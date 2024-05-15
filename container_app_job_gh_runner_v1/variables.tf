@@ -1,3 +1,45 @@
+locals {
+  project = "${var.prefix}-${var.env_short}"
+
+  rule = {
+    name = "${local.project}-${var.job.name}-github-runner-rule"
+    custom_rule_type  = "github-runner"
+    metadata = {
+      owner                     = var.job.repo_owner
+      runnerScope               = "repo"
+      repos                     = var.job.repo
+      targetWorkflowQueueLength = "1"
+      github-runner             = "https://api.github.com"
+    }
+    authentication  = [
+      {
+        secret_name         = "personal-access-token"
+        trigger_parameter = "personalAccessToken"
+      }
+    ]
+  }
+
+  container = {
+    env = [
+#       {
+#         name      = "GITHUB_PAT"
+#         secretRef = "personal-access-token"
+#       },
+      {
+        name  = "REPO_URL"
+        value = "https://github.com/${var.job.repo_owner}/${var.job.repo}"
+      },
+      {
+        name  = "REGISTRATION_TOKEN_API_URL"
+        value = "https://api.github.com/repos/${var.job.repo_owner}/${var.job.repo}/actions/runners/registration-token"
+      }
+    ]
+  }
+}
+
+#
+# Variables
+#
 variable "tags" {
   type        = map(any)
   description = "Tags for new resources"
@@ -58,6 +100,11 @@ variable "container" {
   }
 
   description = "Job Container configuration"
+}
+
+variable "job_name_prefix" {
+  type = string
+  description = "Job name prefix"
 }
 
 variable "job" {
