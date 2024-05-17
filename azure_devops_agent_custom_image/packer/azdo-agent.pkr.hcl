@@ -1,12 +1,3 @@
-packer {
-  required_plugins {
-    azure = {
-      version = ">= 1.4.2"
-      source  = "github.com/hashicorp/azure"
-    }
-  }
-}
-
 source "azure-arm" "ubuntu" {
   #use_interactive_auth              = true
   subscription_id                   = var.subscription
