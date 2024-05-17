@@ -80,7 +80,7 @@ resource "null_resource" "build_packer_image" {
       ${var.use_external_vnet ? "-var 'build_vnet_rg_name=${var.build_vnet_rg_name}'" : ""} \
       .
 
-    } >> /tmp/packer-azdo.log
+    }
     EOT
   }
 
