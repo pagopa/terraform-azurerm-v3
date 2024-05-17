@@ -62,7 +62,6 @@ resource "null_resource" "build_packer_image" {
   provisioner "local-exec" {
     working_dir = "${path.module}/packer"
     command     = <<EOT
-    {
       packer init .
 
       packer build \
@@ -81,8 +80,6 @@ resource "null_resource" "build_packer_image" {
       var "build_vnet_rg_name=${var.build_vnet_rg_name}" \
       %{ endif }
       .
-
-    }
     EOT
   }
 
