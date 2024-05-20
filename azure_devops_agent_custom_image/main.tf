@@ -78,7 +78,7 @@ resource "null_resource" "build_packer_image" {
       -var "build_vnet_subnet_name=${var.build_subnet_name}" \
       -var "build_vnet_rg_name=${var.build_vnet_rg_name}" \
       %{ endif }
-      .
+      azdo-agent.pkr.hcl
     EOT
   }
 
