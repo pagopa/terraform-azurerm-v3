@@ -61,9 +61,7 @@ resource "null_resource" "build_packer_image" {
   # requires packer https://developer.hashicorp.com/packer/tutorials/docker-get-started/get-started-install-cli
   provisioner "local-exec" {
     working_dir = "${path.module}/packer"
-    command     = <<EOT
-      packer init .
-    EOT
+    command     = "packer init ."
   }
 
 }
