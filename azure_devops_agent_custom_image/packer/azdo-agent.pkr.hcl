@@ -1,5 +1,6 @@
 source "azure-arm" "ubuntu" {
   #use_interactive_auth              = true
+  use_azure_cli_auth = true
 #  subscription_id                   = var.subscription
 #  client_id                         = var.client_id
 #  client_secret                     = var.client_secret
