@@ -61,7 +61,9 @@ resource "null_resource" "build_packer_image" {
   # requires packer https://developer.hashicorp.com/packer/tutorials/docker-get-started/get-started-install-cli
   provisioner "local-exec" {
     working_dir = "${path.module}/packer"
-    command     = packer init . && packer build -var "target_resource_group_name=${var.resource_group_name}" -var "base_image_publisher=${var.base_image_publisher}" -var "base_image_offer=${var.base_image_offer}" -var "base_image_sku=${var.base_image_sku}" -var "base_image_version=${var.base_image_version}" -var "vm_sku=${var.vm_sku}" -var "target_image_name=${local.target_image_name}" -var "location=${var.location}" -var "build_rg_name=${azurerm_resource_group.build_rg.name}" .
+    command     = <<EOT
+packer init . && packer build -var "target_resource_group_name=${var.resource_group_name}" -var "base_image_publisher=${var.base_image_publisher}" -var "base_image_offer=${var.base_image_offer}" -var "base_image_sku=${var.base_image_sku}" -var "base_image_version=${var.base_image_version}" -var "vm_sku=${var.vm_sku}" -var "target_image_name=${local.target_image_name}" -var "location=${var.location}" -var "build_rg_name=${azurerm_resource_group.build_rg.name}" .
+    EOT
   }
 
 }
