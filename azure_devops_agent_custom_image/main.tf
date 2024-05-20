@@ -62,6 +62,7 @@ resource "null_resource" "build_packer_image" {
   provisioner "local-exec" {
     working_dir = "${path.module}/packer"
     command     = <<EOT
+      packer plugins install github.com/hashicorp/azure && \
       packer build \
       -var "target_resource_group_name=${var.resource_group_name}" \
       -var "base_image_publisher=${var.base_image_publisher}" \
