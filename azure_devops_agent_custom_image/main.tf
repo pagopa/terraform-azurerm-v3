@@ -62,7 +62,7 @@ resource "null_resource" "build_packer_image" {
   provisioner "local-exec" {
     working_dir = "${path.module}/packer"
     command     = <<EOT
-    packer init
+    packer -v
     EOT
   }
 
