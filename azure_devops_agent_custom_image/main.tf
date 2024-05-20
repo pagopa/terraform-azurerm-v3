@@ -73,11 +73,9 @@ resource "null_resource" "build_packer_image" {
       -var "target_image_name=${local.target_image_name}" \
       -var "location=${var.location}" \
       -var "build_rg_name=${azurerm_resource_group.build_rg.name}" \
-      %{ if var.use_external_vnet }
-      -var "build_vnet_name=${var.build_vnet_name}" \
-      -var "build_vnet_subnet_name=${var.build_subnet_name}" \
-      -var "build_vnet_rg_name=${var.build_vnet_rg_name}" \
-      %{ endif }
+       ${var.use_external_vnet ? "-var 'build_vnet_name=${var.build_vnet_name}'" : ""} \
+      ${var.use_external_vnet ? "-var 'build_vnet_subnet_name=${var.build_subnet_name}'" : ""} \
+      ${var.use_external_vnet ? "-var 'build_vnet_rg_name=${var.build_vnet_rg_name}'" : ""} \
       azdo-agent.pkr.hcl
     EOT
   }
