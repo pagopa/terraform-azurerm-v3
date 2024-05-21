@@ -1,5 +1,14 @@
+packer {
+  required_plugins {
+    azure = {
+      version = ">= 2.0.0"
+      source  = "github.com/hashicorp/azure"
+    }
+  }
+}
+
 source "azure-arm" "ubuntu" {
-  use_azure_cli_auth = true
+  use_azure_cli_auth                = true
   os_type                           = "Linux"
   image_publisher                   = var.base_image_publisher
   image_offer                       = var.base_image_offer
