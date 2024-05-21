@@ -98,10 +98,12 @@ module "event_hub" {
   sku                 = "Basic"
   zone_redundant      = true
   virtual_network_ids = [azurerm_virtual_network.vnet.id]
-  subnet_id           = module.pendpoints_snet.id
+  private_endpoint_subnet_id = module.pendpoints_snet.id
+  private_endpoint_created = true
   private_dns_zones = {
     id   = [azurerm_private_dns_zone.privatelink_servicebus.id]
     name = [azurerm_private_dns_zone.privatelink_servicebus.name]
+    resource_group_name = azurerm_resource_group.rg.name
   }
 
   eventhubs = [
