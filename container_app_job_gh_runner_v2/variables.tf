@@ -1,24 +1,6 @@
 locals {
   project = "${var.prefix}-${var.env_short}"
 
-  rule = {
-    name = "${local.project}-${var.job.name}-github-runner-rule"
-    custom_rule_type  = "github-runner"
-    metadata = {
-      owner                     = var.job.repo_owner
-      runnerScope               = "repo"
-      repos                     = var.job.repo
-      targetWorkflowQueueLength = "1"
-      github-runner             = "https://api.github.com"
-    }
-    authentication  = [
-      {
-        secret_name         = "personal-access-token"
-        trigger_parameter = "personalAccessToken"
-      }
-    ]
-  }
-
   container = {
     env = [
 #       {
@@ -77,13 +59,14 @@ variable "env_short" {
   }
 }
 
-variable "environment" {
-  type = object({
-    name                = string
-    resource_group_name = string
-  })
+variable "container_app_environment_name" {
+  type = string
+  description = "Container App Environment name"
+}
 
-  description = "Container App Environment configuration (Log Analytics Workspace)"
+variable "container_app_environment_rg_name" {
+  type = string
+  description = "Container App Environment rg name"
 }
 
 variable "container" {
