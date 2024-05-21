@@ -12,11 +12,22 @@ service:
 
 readinessProbe:
   httpGet:
-    port: 80
+    port: 8080
+  initialDelaySeconds: 30
+  failureThreshold: 7
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
 
 livenessProbe:
   httpGet:
-    port: 80
+    port: 8080
+  initialDelaySeconds: 10
+  failureThreshold: 7
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  terminationGracePeriodSeconds: 30
 
 resources:
   requests:
