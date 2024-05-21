@@ -79,19 +79,7 @@ curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add - && \
 sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" $$ \
 sudo apt-get update && sudo apt-get install -y packer
 
-# install az repo
-sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
-sudo mkdir -p /etc/apt/keyrings
-curl -sLS https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg
-sudo chmod go+r /etc/apt/keyrings/microsoft.gpg
-AZ_DIST=$(lsb_release -cs)
-echo "Types: deb
-URIs: https://packages.microsoft.com/repos/azure-cli/
-Suites: ${AZ_DIST}
-Components: main
-Architectures: $(dpkg --print-architecture)
-Signed-by: /etc/apt/keyrings/microsoft.gpg" | sudo tee /etc/apt/sources.list.d/azure-cli.sources
-sudo apt-get update
+check_command "packer"
 
 # install azure az repos
 sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
