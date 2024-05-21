@@ -10,29 +10,9 @@ variable "https_endpoint" {
   description = "Https endpoint to check"
 }
 
-variable "namespace" {
-  type        = string
-  description = "(Required) Namespace where the helm chart will be installed"
-}
-
 variable "location_string" {
   type        = string
   description = "(Required) Location string"
-}
-
-variable "helm_chart_version" {
-  type        = string
-  description = "Helm chart version for the tls checker application"
-}
-
-variable "helm_chart_image_name" {
-  type        = string
-  description = "Docker image name"
-}
-
-variable "helm_chart_image_tag" {
-  type        = string
-  description = "Docker image tag"
 }
 
 variable "time_trigger" {
@@ -47,11 +27,58 @@ variable "expiration_delta_in_days" {
   description = "(Optional)"
 }
 
+
+#
+# 🔒 KV
+#
+variable "keyvault_name" {
+  type        = string
+  description = "(Required) Keyvault name"
+}
+
+variable "keyvault_tenant_id" {
+  type        = string
+  description = "(Required) Keyvault tenant id"
+}
+
 variable "kv_secret_name_for_application_insights_connection_string" {
   type        = string
   description = "(Required) The name of the secret inside the kv that contains the application insights connection string"
 }
 
+#
+# 🪖 HELM & Kubernetes
+#
+variable "namespace" {
+  type        = string
+  description = "(Required) Namespace where the helm chart will be installed"
+}
+
+variable "helm_chart_present" {
+  type        = bool
+  description = "Is this helm chart present?"
+  default     = true
+}
+
+variable "helm_chart_version" {
+  type        = string
+  description = "Helm chart version for the tls checker application"
+  default = "5.9.0"
+}
+
+variable "helm_chart_image_name" {
+  type        = string
+  description = "Docker image name"
+}
+
+variable "helm_chart_image_tag" {
+  type        = string
+  description = "Docker image tag"
+}
+
+#
+# App Insigths and alert
+#
 variable "application_insights_resource_group" {
   type        = string
   description = "(Required) Application Insights resource group"
@@ -77,20 +104,4 @@ variable "alert_enabled" {
   type        = bool
   description = "(Optional) Is this alert enabled?"
   default     = true
-}
-
-variable "helm_chart_present" {
-  type        = bool
-  description = "Is this helm chart present?"
-  default     = true
-}
-
-variable "keyvault_name" {
-  type        = string
-  description = "(Required) Keyvault name"
-}
-
-variable "keyvault_tenant_id" {
-  type        = string
-  description = "(Required) Keyvault tenant id"
 }
