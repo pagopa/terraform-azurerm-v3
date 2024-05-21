@@ -73,7 +73,6 @@ resource "null_resource" "build_packer_image" {
       -var "base_image_version=${var.base_image_version}" \
       -var "vm_sku=${var.vm_sku}" \
       -var "target_image_name=${local.target_image_name}" \
-      -var "location=${var.location}" \
       -var "build_rg_name=${azurerm_resource_group.build_rg.name}" \
       ${var.use_external_vnet ? "-var 'build_vnet_name=${var.build_vnet_name}'" : ""} \
       ${var.use_external_vnet ? "-var 'build_vnet_subnet_name=${var.build_subnet_name}'" : ""} \
