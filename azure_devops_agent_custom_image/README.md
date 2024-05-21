@@ -15,6 +15,8 @@ The final image is built in a temporary resource group, named after the build re
 Once done, you can simply pick up the built image name from the log, and configure it to be used as base image for your vm or scale set
 The image name will be found in the logs, in the following line
 
+It uses the current az cli session to execute all the actions, so it can be run on azdo agents
+
 ```sh
 module.azdoa_custom_image.null_resource.build_packer_image (local-exec): ManagedImageName: my_image_name-v3
 ```
@@ -36,7 +38,8 @@ module "azdoa_custom_image" {
   image_version       = "v1"
   subscription_id     = data.azurerm_subscription.current.subscription_id
   prefix              = "devopla"
-  
+  #optional
+  use_external_vnet   = true
   build_vnet_name     = "my-vnet-name" 
   build_subnet_name   = "my-subnet-name"  
   build_vnet_rg_name  = "vnet-rg-name"

@@ -1,10 +1,3 @@
-variable "location" {
-  type        = string
-  default     = "northeurope"
-  description = "(Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created."
-}
-
-
 variable "target_resource_group_name" {
   type        = string
   description = "(string) - Resource group under which the final artifact will be stored."
