@@ -9,7 +9,7 @@ resource "helm_release" "helm_this" {
   namespace  = var.namespace
 
   values = [
-    "${templatefile("${path.module}/templates/tls-cert.yaml.tpl",
+    templatefile("${path.module}/templates/tls-cert.yaml.tpl",
       {
         namespace                                                 = var.namespace
         image_name                                                = var.helm_chart_image_name
@@ -23,7 +23,7 @@ resource "helm_release" "helm_this" {
         keyvault_name                                             = var.keyvault_name
         keyvault_tenant_id                                        = var.keyvault_tenant_id
         kv_secret_name_for_application_insights_connection_string = var.kv_secret_name_for_application_insights_connection_string
-    })}",
+    }),
   ]
 }
 
