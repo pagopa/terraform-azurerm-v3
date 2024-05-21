@@ -1,9 +1,5 @@
 source "azure-arm" "ubuntu" {
-  #use_interactive_auth              = true
   use_azure_cli_auth = true
-#  subscription_id                   = var.subscription
-#  client_id                         = var.client_id
-#  client_secret                     = var.client_secret
   os_type                           = "Linux"
   image_publisher                   = var.base_image_publisher
   image_offer                       = var.base_image_offer
@@ -19,8 +15,8 @@ source "azure-arm" "ubuntu" {
   virtual_network_subnet_name       = var.build_vnet_subnet_name
   virtual_network_resource_group_name = var.build_vnet_rg_name
 
-#  location                          = var.location
   ssh_username                      = "packer"
+  # not used
   ssh_password                      = "password"
   communicator                      = "ssh"
 }
