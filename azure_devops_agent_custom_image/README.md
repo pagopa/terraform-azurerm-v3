@@ -15,6 +15,8 @@ The final image is built in a temporary resource group, named after the build re
 Once done, you can simply pick up the built image name from the log, and configure it to be used as base image for your vm or scale set
 The image name will be found in the logs, in the following line
 
+It uses the current az cli session to execute all the actions, so it can be run on azdo agents
+
 ```sh
 module.azdoa_custom_image.null_resource.build_packer_image (local-exec): ManagedImageName: my_image_name-v3
 ```
@@ -36,7 +38,8 @@ module "azdoa_custom_image" {
   image_version       = "v1"
   subscription_id     = data.azurerm_subscription.current.subscription_id
   prefix              = "devopla"
-  
+  #optional
+  use_external_vnet   = true
   build_vnet_name     = "my-vnet-name" 
   build_subnet_name   = "my-subnet-name"  
   build_vnet_rg_name  = "vnet-rg-name"
@@ -65,15 +68,7 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [azuread_application.packer_application](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application) | resource |
-| [azuread_application_password.velero_application_password](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_password) | resource |
-| [azuread_service_principal.packer_sp](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
-| [azuread_service_principal_password.packer_principal_password](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal_password) | resource |
 | [azurerm_resource_group.build_rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
-| [azurerm_role_assignment.packer_sp_build_rg_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
-| [azurerm_role_assignment.packer_sp_build_vnet_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
-| [azurerm_role_assignment.packer_sp_rg_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
-| [azurerm_role_assignment.packer_sp_sub_reader_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [null_resource.build_packer_image](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [random_id.rg_randomizer](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
