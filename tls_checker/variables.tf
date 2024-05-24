@@ -63,7 +63,7 @@ variable "helm_chart_present" {
 variable "helm_chart_version" {
   type        = string
   description = "Helm chart version for the tls checker application"
-  default = "5.9.0"
+  default = "5.9.1"
 }
 
 variable "helm_chart_image_name" {
