@@ -13,7 +13,7 @@ service:
 readinessProbe:
   httpGet:
     port: 8080
-  initialDelaySeconds: 30
+  initialDelaySeconds: 90
   failureThreshold: 7
   periodSeconds: 10
   timeoutSeconds: 1
@@ -22,7 +22,7 @@ readinessProbe:
 livenessProbe:
   httpGet:
     port: 8080
-  initialDelaySeconds: 30
+  initialDelaySeconds: 90
   failureThreshold: 7
   periodSeconds: 10
   timeoutSeconds: 1
