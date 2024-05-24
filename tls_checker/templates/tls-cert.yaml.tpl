@@ -22,10 +22,20 @@ readinessProbe:
 livenessProbe:
   httpGet:
     port: 8080
-  initialDelaySeconds: 10
+  initialDelaySeconds: 30
   failureThreshold: 7
   periodSeconds: 10
   timeoutSeconds: 1
+  successThreshold: 1
+  terminationGracePeriodSeconds: 30
+
+startupProbe:
+  httpGet:
+    port: 8080
+  initialDelaySeconds: 60
+  failureThreshold: 7
+  periodSeconds: 10
+  timeoutSeconds: 10
   successThreshold: 1
   terminationGracePeriodSeconds: 30
 
