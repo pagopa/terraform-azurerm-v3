@@ -42,10 +42,10 @@ startupProbe:
 resources:
   requests:
     memory: '128Mi'
-    cpu: '20m'
+    cpu: '50m'
   limits:
     memory: '128Mi'
-    cpu: '20m'
+    cpu: '50m'
 
 envConfig:
   WEBSITE_SITE_NAME: '${website_site_name}'
