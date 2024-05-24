@@ -90,7 +90,7 @@ resource "azurerm_app_service_plan" "app_docker" {
 }
 
 module "web_app_service_docker" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//app_service?ref=v3.11.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//app_service?ref=v8.8.0"
 
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
@@ -119,7 +119,7 @@ module "web_app_service_docker" {
 }
 
 module "web_app_service_slot_docker" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//app_service_slot?ref=v2.2.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//app_service_slot?ref=v8.8.0"
 
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location

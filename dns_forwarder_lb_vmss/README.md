@@ -9,25 +9,8 @@ To secure the scale set, a Network Security Group has been added, allowing inbou
 
 ## How to use
 
-```hcl
+See `tests` folder for example
 
-module "dns_forwarder" {
-
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder_lb_vmss?ref=v8.8.0"
-
-  name                 = var.prefix
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  resource_group_name  = azurerm_resource_group.rg.name
-  location             = var.location
-  subscription_id      = data.azurerm_subscription.current.subscription_id
-  source_image_name    = var.source_image_name
-  tenant_id            = data.azurerm_client_config.current.tenant_id
-  key_vault_id         = azurerm_key_vault.kv.id
-
-  tags = var.tags
-}
-
-```
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -64,20 +47,20 @@ module "dns_forwarder" {
 |------|-------------|------|---------|:--------:|
 | <a name="input_address_prefixes_lb"></a> [address\_prefixes\_lb](#input\_address\_prefixes\_lb) | (Optional) The address prefixes to use for load balancer subnet. | `string` | `"10.1.200.0/29"` | no |
 | <a name="input_address_prefixes_vmss"></a> [address\_prefixes\_vmss](#input\_address\_prefixes\_vmss) | (Optional) The address prefixes to use for the virtual machine scale set subnet. | `string` | `"10.1.200.8/29"` | no |
-| <a name="input_admin_password"></a> [admin\_password](#input\_admin\_password) | (Optional) The Password which should be used for the local-administrator on this Virtual Machine. Changing this forces a new resource to be created. will be stored in the raw state as plain-text | `string` | `null` | no |
 | <a name="input_create_vmss_nsg"></a> [create\_vmss\_nsg](#input\_create\_vmss\_nsg) | (Optional) Boolean flag to create the network security group to virtual machine scale set. | `bool` | `true` | no |
 | <a name="input_key_vault_id"></a> [key\_vault\_id](#input\_key\_vault\_id) | (Required) The ID of the Key Vault where the Secret should be created. | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the Virtual Machine Scale Set, Load Balancer. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) The name of the Resource Group in which the resources should be exist. | `string` | n/a | yes |
 | <a name="input_source_image_name"></a> [source\_image\_name](#input\_source\_image\_name) | (Required) The name of an Image which each Virtual Machine in this Scale Set should be based on. It must be stored in the same subscription & resource group of this resource | `string` | n/a | yes |
-| <a name="input_static_address_lb"></a> [static\_address\_lb](#input\_static\_address\_lb) | (Optional) The static address of load balancer. | `string` | `null` | no |
+| <a name="input_static_address_lb"></a> [static\_address\_lb](#input\_static\_address\_lb) | (Required) The static address of load balancer. | `string` | n/a | yes |
 | <a name="input_storage_sku"></a> [storage\_sku](#input\_storage\_sku) | (Optional) The SKU of the storage account with which to persist VM. Use a singular sku that would be applied across all disks, or specify individual disks. Usage: [--storage-sku SKU \| --storage-sku ID=SKU ID=SKU ID=SKU...], where each ID is os or a 0-indexed lun. Allowed values: Standard\_LRS, Premium\_LRS, StandardSSD\_LRS, UltraSSD\_LRS, Premium\_ZRS, StandardSSD\_ZRS. | `string` | `"StandardSSD_ZRS"` | no |
 | <a name="input_subnet_lb_id"></a> [subnet\_lb\_id](#input\_subnet\_lb\_id) | (Optional) The subnet id of load balancer. | `string` | `null` | no |
 | <a name="input_subnet_vmss_id"></a> [subnet\_vmss\_id](#input\_subnet\_vmss\_id) | (Optional) The subnet id of virtual machine scale set. | `string` | `null` | no |
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | (Required) Azure subscription id | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Required) Tags of all resources. | `map(any)` | n/a | yes |
-| <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id) | (Required) The Azure AD tenant ID that should be used for authenticating requests to the key vault. | `string` | n/a | yes |
+| <a name="input_use_internal_subnet_lb"></a> [use\_internal\_subnet\_lb](#input\_use\_internal\_subnet\_lb) | Use your custom subnet for Load Balancer | `bool` | `false` | no |
+| <a name="input_use_internal_subnet_vmss"></a> [use\_internal\_subnet\_vmss](#input\_use\_internal\_subnet\_vmss) | Use your custom subnet for vmss | `bool` | `false` | no |
 | <a name="input_virtual_network_name"></a> [virtual\_network\_name](#input\_virtual\_network\_name) | (Required) The name of the virtual network in which the resources (Vmss, LB) are located. | `string` | n/a | yes |
 | <a name="input_vm_sku"></a> [vm\_sku](#input\_vm\_sku) | (Optional) Size of VMs in the scale set. Default to Standard\_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info. | `string` | `"Standard_B1s"` | no |
 
