@@ -2,7 +2,7 @@ resource "azurerm_resource_group" "rg" {
   name     = "${local.project}-rg"
   location = var.location
 
-  
+
 }
 
 resource "azurerm_virtual_network" "vnet" {
@@ -91,22 +91,22 @@ module "pendpoints_snet" {
 }
 
 module "cosmosdb_account" {
-  source                    = "../../cosmosdb_account"
-  name                      = "${local.project}-cosmosdb"
-  location                  = var.location
-  resource_group_name       = azurerm_resource_group.rg.name
-  offer_type                = var.offer_type
-  kind                      = var.kind
-  enable_free_tier          = true
-  enable_automatic_failover = true
-  domain=var.domain
-  main_geo_location_location = var.location
+  source                           = "../../cosmosdb_account"
+  name                             = "${local.project}-cosmosdb"
+  location                         = var.location
+  resource_group_name              = azurerm_resource_group.rg.name
+  offer_type                       = var.offer_type
+  kind                             = var.kind
+  enable_free_tier                 = true
+  enable_automatic_failover        = true
+  domain                           = var.domain
+  main_geo_location_location       = var.location
   main_geo_location_zone_redundant = var.main_geo_location_zone_redundant
-  mongo_server_version = var.mongo_server_version
-  
+  mongo_server_version             = var.mongo_server_version
+
   // For mongo,cassandra,table add "Enable Mongo","Enable Cassandra","Enable Table"
   capabilities = var.capabilities
-  
+
 
   allowed_virtual_network_subnet_ids = [
     module.pendpoints_snet.id
@@ -117,14 +117,14 @@ module "cosmosdb_account" {
   // Virtual network settings
   is_virtual_network_filter_enabled = true
 
-  
-  
+
+
   private_endpoint_enabled = true
   subnet_id                = module.pendpoints_snet.id
 
   //to enable mongo,cassandra or table change azurerm_private_dns_zone.privatelink_sql to privatelink_mongo/cassandra/table
-  private_dns_zone_sql_ids     = [azurerm_private_dns_zone.privatelink_sql.id]
-  
+  private_dns_zone_sql_ids = [azurerm_private_dns_zone.privatelink_sql.id]
+
 
   tags = var.tags
 

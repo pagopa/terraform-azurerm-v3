@@ -6,7 +6,7 @@ variable "location" {
 variable "domain" {
   type        = string
   description = "(Optional) Specifies the domain of the CosmosDB Account."
-  default = ""
+  default     = ""
 }
 
 
@@ -22,10 +22,10 @@ variable "mongo_server_version" {
   default     = null
 }
 
-variable "main_geo_location_zone_redundant"{
+variable "main_geo_location_zone_redundant" {
   type        = bool
   description = "Should zone redundancy be enabled for main region? Set true for prod environments"
-  default = false
+  default     = false
 }
 
 variable "vnet_address_space" {
@@ -48,7 +48,7 @@ variable "offer_type" {
 variable "kind" {
   type        = string
   description = "Specifies the Kind of CosmosDB to create - possible values are GlobalDocumentDB and MongoDB."
-  default = "GlobalDocumentDB"
+  default     = "GlobalDocumentDB"
 }
 
 
