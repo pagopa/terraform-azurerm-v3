@@ -31,11 +31,11 @@ livenessProbe:
 
 resources:
   requests:
-    memory: '96Mi'
-    cpu: '10m'
+    memory: '128Mi'
+    cpu: '20m'
   limits:
     memory: '128Mi'
-    cpu: '50m'
+    cpu: '20m'
 
 envConfig:
   WEBSITE_SITE_NAME: '${website_site_name}'
