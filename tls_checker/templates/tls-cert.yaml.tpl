@@ -12,8 +12,9 @@ service:
 
 readinessProbe:
   httpGet:
+    path: /
     port: 8080
-  initialDelaySeconds: 90
+  initialDelaySeconds: 30
   failureThreshold: 7
   periodSeconds: 10
   timeoutSeconds: 1
@@ -21,8 +22,9 @@ readinessProbe:
 
 livenessProbe:
   httpGet:
+    path: /
     port: 8080
-  initialDelaySeconds: 90
+  initialDelaySeconds: 30
   failureThreshold: 7
   periodSeconds: 10
   timeoutSeconds: 1
@@ -31,8 +33,9 @@ livenessProbe:
 
 startupProbe:
   httpGet:
+    path: /
     port: 8080
-  initialDelaySeconds: 60
+  initialDelaySeconds: 30
   failureThreshold: 7
   periodSeconds: 10
   timeoutSeconds: 10
@@ -42,10 +45,10 @@ startupProbe:
 resources:
   requests:
     memory: '128Mi'
-    cpu: '50m'
+    cpu: '70m'
   limits:
     memory: '128Mi'
-    cpu: '50m'
+    cpu: '70m'
 
 envConfig:
   WEBSITE_SITE_NAME: '${website_site_name}'
