@@ -376,7 +376,7 @@ variable "storage_profile_disk_driver_version" {
 
 ### Monitoring
 variable "oms_agent_msi_auth_for_monitoring_enabled" {
-  type = bool
+  type        = bool
   description = "(Optional) Is managed identity authentication for monitoring enabled? Default false"
-  default = false
+  default     = false
 }
