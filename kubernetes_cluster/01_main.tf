@@ -216,7 +216,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
 #
 # Role Assigments
 #
-resource "azurerm_role_assignment" "aks" {
+resource "azurerm_role_assignment" "oms_agent_monitoring_metrics" {
   count = var.log_analytics_workspace_id != null ? 1 : 0
 
   scope                = azurerm_kubernetes_cluster.this.id
