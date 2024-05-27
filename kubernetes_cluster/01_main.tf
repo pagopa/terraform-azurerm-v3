@@ -147,6 +147,7 @@ resource "azurerm_kubernetes_cluster" "this" {
 
     content {
       log_analytics_workspace_id = oms_agent.value
+      msi_auth_for_monitoring_enabled = true
     }
   }
 
