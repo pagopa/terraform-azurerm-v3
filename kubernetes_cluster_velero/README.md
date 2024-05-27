@@ -4,6 +4,10 @@ This module installs Velero on the configured aks cluster
 Note that this module selects the correct cluster to work on using the command `kubectl config use-context "<cluster_name>"`, so you should have that context available in your `.kube` folder.
 This is achievable using the utility script `k8setup.sh` included in the aks-setup folder of your IaC project
 
+## Requirements
+
+In order to use this module you need Velero installed locally and/or on your devops agent. It is included since `v7.5.0` of `azure_Devops_agent_custom_image`
+
 
 ## How to use it
 
@@ -54,13 +58,13 @@ This is achievable using the utility script `k8setup.sh` included in the aks-set
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.30 |
-| <a name="requirement_null"></a> [null](#requirement\_null) | <= 3.2.1 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.2 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v8.8.0 |
+| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v8.16.0 |
 
 ## Resources
 

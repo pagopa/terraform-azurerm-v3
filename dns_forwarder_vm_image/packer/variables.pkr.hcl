@@ -4,11 +4,6 @@ variable "location" {
   description = "(Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created."
 }
 
-variable "subscription" {
-  type        = string
-  description = "(Required) Azure subscription"
-}
-
 variable "target_resource_group_name" {
   type        = string
   description = "(string) - Resource group under which the final artifact will be stored."
@@ -43,16 +38,6 @@ variable "target_image_name" {
   description = "(Required) name assigned to the generated image. Note that myust be unique and not already exist"
 }
 
-
-variable "client_id" {
-  type        = string
-  description = "(Required) Service principal client id"
-}
-
-variable "client_secret" {
-  type        = string
-  description = "(Required) service principal client secret"
-}
 
 variable "build_rg_name" {
   type        = string
