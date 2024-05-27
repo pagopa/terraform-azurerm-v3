@@ -36,17 +36,17 @@ module "dns_forwarder" {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.30 |
-| <a name="requirement_null"></a> [null](#requirement\_null) | <= 3.2.1 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | <= 3.6.0 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.2 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.6 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | git::https://github.com/pagopa/terraform-azurerm-v3.git//load_balancer | v8.8.0 |
-| <a name="module_subnet_load_balancer"></a> [subnet\_load\_balancer](#module\_subnet\_load\_balancer) | git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet | v8.8.0 |
-| <a name="module_subnet_vmss"></a> [subnet\_vmss](#module\_subnet\_vmss) | git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet | v8.8.0 |
-| <a name="module_vmss"></a> [vmss](#module\_vmss) | git::https://github.com/pagopa/terraform-azurerm-v3.git//vm_scale_set | v8.8.0 |
+| <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | git::https://github.com/pagopa/terraform-azurerm-v3.git//load_balancer | v8.16.0 |
+| <a name="module_subnet_load_balancer"></a> [subnet\_load\_balancer](#module\_subnet\_load\_balancer) | git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet | v8.16.0 |
+| <a name="module_subnet_vmss"></a> [subnet\_vmss](#module\_subnet\_vmss) | git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet | v8.16.0 |
+| <a name="module_vmss"></a> [vmss](#module\_vmss) | git::https://github.com/pagopa/terraform-azurerm-v3.git//vm_scale_set | v8.16.0 |
 
 ## Resources
 

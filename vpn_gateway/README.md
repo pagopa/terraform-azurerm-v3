@@ -64,7 +64,7 @@ terraform state rm module.vpn.azurerm_virtual_network_gateway.gw
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.30 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | <= 3.4.3 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.4 |
 
 ## Modules
 
