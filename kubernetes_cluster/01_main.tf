@@ -146,7 +146,8 @@ resource "azurerm_kubernetes_cluster" "this" {
     for_each = var.log_analytics_workspace_id != null ? [var.log_analytics_workspace_id] : []
 
     content {
-      log_analytics_workspace_id = oms_agent.value
+      log_analytics_workspace_id      = oms_agent.value
+      msi_auth_for_monitoring_enabled = var.oms_agent_msi_auth_for_monitoring_enabled
     }
   }
 
@@ -215,8 +216,13 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
 #
 # Role Assigments
 #
-resource "azurerm_role_assignment" "aks" {
-  count = var.log_analytics_workspace_id != null ? 1 : 0
+moved {
+  from = azurerm_role_assignment.aks
+  to   = azurerm_role_assignment.oms_agent_monitoring_metrics
+}
+
+resource "azurerm_role_assignment" "oms_agent_monitoring_metrics" {
+  count = var.log_analytics_workspace_id != null && can(azurerm_kubernetes_cluster.this.oms_agent[0].oms_agent_identity[0]) ? 1 : 0
 
   scope                = azurerm_kubernetes_cluster.this.id
   role_definition_name = "Monitoring Metrics Publisher"
