@@ -27,7 +27,6 @@ variable "expiration_delta_in_days" {
   description = "(Optional)"
 }
 
-
 #
 # 🔒 KV
 #
