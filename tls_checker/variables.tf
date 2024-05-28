@@ -63,19 +63,19 @@ variable "helm_chart_present" {
 variable "helm_chart_version" {
   type        = string
   description = "Helm chart version for the tls checker application"
-  default = "5.9.1"
+  default     = "5.9.1"
 }
 
 variable "helm_chart_image_name" {
   type        = string
   description = "Docker image name"
-  default = "ghcr.io/pagopa/infra-ssl-check"
+  default     = "ghcr.io/pagopa/infra-ssl-check"
 }
 
 variable "helm_chart_image_tag" {
   type        = string
   description = "Docker image tag"
-  default = "v1.3.4@sha256:c3d45736706c981493b6216451fc65e99a69d5d64409ccb1c4ca93fef57c921d"
+  default     = "v1.3.4@sha256:c3d45736706c981493b6216451fc65e99a69d5d64409ccb1c4ca93fef57c921d"
 }
 
 #
