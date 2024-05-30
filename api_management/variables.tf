@@ -361,3 +361,9 @@ variable "redis_cache_enabled" {
   description = "(Optional) if true, enables redis caching"
   default     = false
 }
+
+variable "management_logger_applicaiton_insight_enabled" {
+  type        = bool
+  description = "(Optional) if false, disables management logger application insight block"
+  default     = true
+}
