@@ -248,6 +248,7 @@ resource "azurerm_application_gateway" "this" {
             content {
               path         = rewrite_rule.value.url.path
               query_string = rewrite_rule.value.url.query_string
+              reroute      = rewrite_rule.value.url.reroute
             }
           }
         }
