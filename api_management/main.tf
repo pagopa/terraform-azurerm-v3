@@ -165,6 +165,7 @@ resource "azurerm_monitor_autoscale_setting" "this" {
 #
 # Diagnostic, Logs & Monitor
 #
+
 resource "azurerm_api_management_logger" "this" {
   count = var.application_insights.enabled ? 1 : 0
 
@@ -172,9 +173,13 @@ resource "azurerm_api_management_logger" "this" {
   api_management_name = azurerm_api_management.this.name
   resource_group_name = var.resource_group_name
 
-  application_insights {
-    instrumentation_key = var.application_insights.instrumentation_key
+  dynamic "application_insights" {
+    for_each = var.management_logger_applicaiton_insight_enabled ? [1] : []
+    content {
+      instrumentation_key = var.application_insights.instrumentation_key
+    }
   }
+
 }
 
 resource "azurerm_api_management_diagnostic" "this" {

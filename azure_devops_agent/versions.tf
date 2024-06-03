@@ -9,12 +9,12 @@ terraform {
 
     null = {
       source  = "hashicorp/null"
-      version = "<= 3.2.1"
+      version = "~> 3.2"
     }
 
     tls = {
       source  = "hashicorp/tls"
-      version = "<= 4.1.0"
+      version = "~> 4.0"
     }
   }
 }
