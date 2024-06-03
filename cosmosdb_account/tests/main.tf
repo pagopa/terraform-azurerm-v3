@@ -4,12 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.30.0, <= 3.94.0"
-    }
-
-    null = {
-      source  = "hashicorp/null"
-      version = "~> 3.2"
+      version = ">= 3.30.0, <= 3.85.0"
     }
   }
 }
@@ -29,6 +24,10 @@ resource "random_id" "unique" {
   byte_length = 3
 }
 
+data "azurerm_subscription" "current" {}
+
+data "azurerm_client_config" "current" {}
+
 locals {
-  project = "${var.prefix}-${random_id.unique.hex}"
+  project = "${var.prefix}${random_id.unique.hex}"
 }
