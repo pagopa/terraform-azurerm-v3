@@ -380,3 +380,9 @@ variable "oms_agent_msi_auth_for_monitoring_enabled" {
   description = "(Optional) Is managed identity authentication for monitoring enabled? Default false"
   default     = false
 }
+
+variable "oms_agent_monitoring_metrics_role_assignment_enabled" {
+  type = bool
+  description = "Enabled oms agent monitoring metrics roles"
+  default = true
+}
