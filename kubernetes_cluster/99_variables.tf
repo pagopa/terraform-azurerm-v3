@@ -382,7 +382,7 @@ variable "oms_agent_msi_auth_for_monitoring_enabled" {
 }
 
 variable "oms_agent_monitoring_metrics_role_assignment_enabled" {
-  type = bool
+  type        = bool
   description = "Enabled oms agent monitoring metrics roles"
-  default = true
+  default     = true
 }
