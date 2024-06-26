@@ -319,6 +319,18 @@ resource "azurerm_api_management_redis_cache" "this" {
   redis_cache_id    = var.redis_cache_id
 }
 
+# Already apply forcing redis_connection_string on apim_module
+resource "azurerm_api_management_redis_cache" "this_region" {
+  count             = var.redis_cache_enabled ? 1 : 0
+  name              = "apim-external-cache-redis"
+  api_management_id = azurerm_api_management.this.id
+  connection_string = var.redis_connection_string
+  description       = "APIM external cache Redis"
+  redis_cache_id    = var.redis_cache_id
+  cache_location    = var.location
+}
+
+
 #
 # Certificate
 #
