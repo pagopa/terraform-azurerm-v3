@@ -256,6 +256,7 @@ See [Generic resource migration](../.docs/MIGRATION_GUIDE_GENERIC_RESOURCES.md)
 | <a name="input_docker"></a> [docker](#input\_docker) | ##################### Framework choice ##################### | `any` | `{}` | no |
 | <a name="input_domain"></a> [domain](#input\_domain) | Specifies the domain of the Function App. | `string` | `null` | no |
 | <a name="input_dotnet_version"></a> [dotnet\_version](#input\_dotnet\_version) | n/a | `string` | `null` | no |
+| <a name="input_enable_function_app_public_network_access"></a> [enable\_function\_app\_public\_network\_access](#input\_enable\_function\_app\_public\_network\_access) | (Optional) Should public network access be enabled for the Function App. Defaults to true. | `bool` | `true` | no |
 | <a name="input_enable_healthcheck"></a> [enable\_healthcheck](#input\_enable\_healthcheck) | Enable the healthcheck alert. Default is true | `bool` | `true` | no |
 | <a name="input_export_keys"></a> [export\_keys](#input\_export\_keys) | n/a | `bool` | `false` | no |
 | <a name="input_health_check_maxpingfailures"></a> [health\_check\_maxpingfailures](#input\_health\_check\_maxpingfailures) | Max ping failures allowed | `number` | `10` | no |
