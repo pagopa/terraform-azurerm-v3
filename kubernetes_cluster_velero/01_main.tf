@@ -108,11 +108,6 @@ resource "local_file" "credentials" {
   })
   filename = "${path.module}/credentials-velero.txt"
 
-  lifecycle {
-    replace_triggered_by = [
-      module.velero_storage_account
-    ]
-  }
 }
 
 
