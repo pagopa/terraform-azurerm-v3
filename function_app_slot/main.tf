@@ -6,13 +6,14 @@ locals {
 }
 
 resource "azurerm_linux_function_app_slot" "this" {
-  name                        = var.name
-  function_app_id             = var.function_app_id
-  storage_account_name        = var.storage_account_name
-  storage_account_access_key  = var.storage_account_access_key
-  https_only                  = var.https_only
-  client_certificate_enabled  = var.client_certificate_enabled
-  functions_extension_version = var.runtime_version
+  name                          = var.name
+  function_app_id               = var.function_app_id
+  storage_account_name          = var.storage_account_name
+  storage_account_access_key    = var.storage_account_access_key
+  https_only                    = var.https_only
+  client_certificate_enabled    = var.client_certificate_enabled
+  functions_extension_version   = var.runtime_version
+  public_network_access_enabled = var.enable_function_app_public_network_access
 
   site_config {
     minimum_tls_version       = "1.2"
