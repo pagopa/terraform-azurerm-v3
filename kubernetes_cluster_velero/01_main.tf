@@ -8,7 +8,7 @@ data "azurerm_kubernetes_cluster" "aks_cluster" {
 }
 
 module "velero_storage_account" {
-  source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.16.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.16.0"
 
   name                            = "${local.sa_prefix}velerosa"
   account_kind                    = var.storage_account_kind
@@ -69,53 +69,48 @@ resource "azurerm_storage_container" "velero_backup_container" {
 data "azuread_client_config" "current" {}
 
 
-resource "azuread_application" "velero_application" {
-  display_name = "${var.prefix}-velero-application"
-  owners       = [data.azuread_client_config.current.object_id]
-}
 
-resource "azuread_application_password" "velero_application_password" {
-  application_object_id = azuread_application.velero_application.object_id
-}
-
-resource "azuread_service_principal" "velero_sp" {
-  application_id = azuread_application.velero_application.application_id
-  owners         = [data.azuread_client_config.current.object_id]
-}
-
-resource "azuread_service_principal_password" "velero_principal_password" {
-  service_principal_id = azuread_service_principal.velero_sp.object_id
-}
-
-resource "azurerm_role_assignment" "velero_sp_aks_role" {
-  scope                = data.azurerm_kubernetes_cluster.aks_cluster.id #var.aks_cluster_id
-  role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
-  principal_id         = azuread_service_principal.velero_sp.object_id
-}
-
-resource "azurerm_role_assignment" "velero_sp_storage_role" {
-  scope                = module.velero_storage_account.id
-  role_definition_name = "Storage Account Contributor"
-  principal_id         = azuread_service_principal.velero_sp.object_id
-}
+###
+#resource "azuread_application" "velero_application" {
+#  display_name = "${var.prefix}-velero-application"
+#  owners       = [data.azuread_client_config.current.object_id]
+#}
+#
+#resource "azuread_application_password" "velero_application_password" {
+#  application_object_id = azuread_application.velero_application.object_id
+#}
+#
+#resource "azuread_service_principal" "velero_sp" {
+#  application_id = azuread_application.velero_application.application_id
+#  owners         = [data.azuread_client_config.current.object_id]
+#}
+#
+#resource "azuread_service_principal_password" "velero_principal_password" {
+#  service_principal_id = azuread_service_principal.velero_sp.object_id
+#}
+####
+#resource "azurerm_role_assignment" "velero_sp_aks_role" {
+#  scope                = data.azurerm_kubernetes_cluster.aks_cluster.id #var.aks_cluster_id
+#  role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
+#  principal_id         = azuread_service_principal.velero_sp.object_id
+#}
+#
+#resource "azurerm_role_assignment" "velero_sp_storage_role" {
+#  scope                = module.velero_storage_account.id
+#  role_definition_name = "Storage Account Contributor"
+#  principal_id         = azuread_service_principal.velero_sp.object_id
+#}
 
 resource "local_file" "credentials" {
 
   content = templatefile("${path.module}/velero-credentials.tpl", {
-    subscription_id = var.subscription_id
-    tenant_id       = var.tenant_id
-    client_id       = azuread_application.velero_application.application_id
-    client_secret   = azuread_application_password.velero_application_password.value
-    backup_rg       = var.resource_group_name
+    sa_access_key   = module.velero_storage_account.primary_access_key
   })
   filename = "${path.module}/credentials-velero.txt"
 
   lifecycle {
     replace_triggered_by = [
-      azurerm_storage_container.velero_backup_container,
-      azuread_application.velero_application,
-      azuread_service_principal.velero_sp,
-      azuread_application_password.velero_application_password
+      module.velero_storage_account
     ]
   }
 }
@@ -129,8 +124,6 @@ resource "null_resource" "install_velero" {
     storage_account       = module.velero_storage_account.name
     subscription_id       = var.subscription_id
     tenant_id             = var.tenant_id
-    client_id             = azuread_application.velero_application.application_id
-    client_secret         = azuread_application_password.velero_application_password.value
     resource_group        = var.resource_group_name
     plugin_version        = var.plugin_version
     cluster_name          = var.aks_cluster_name
@@ -159,9 +152,6 @@ resource "null_resource" "install_velero" {
     replace_triggered_by = [
       local_file.credentials,
       azurerm_storage_container.velero_backup_container,
-      azuread_service_principal.velero_sp,
-      azuread_application.velero_application,
-      azuread_application_password.velero_application_password
     ]
   }
 }
