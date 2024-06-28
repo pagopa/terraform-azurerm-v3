@@ -105,6 +105,9 @@ resource "local_file" "credentials" {
 
   content = templatefile("${path.module}/velero-credentials.tpl", {
     sa_access_key   = module.velero_storage_account.primary_access_key
+    subscription_id = var.subscription_id
+    tenant_id       = var.tenant_id
+    backup_rg       = var.resource_group_name
   })
   filename = "${path.module}/credentials-velero.txt"
 
