@@ -264,6 +264,12 @@ variable "app_service_logs" {
   default     = null
 }
 
+variable "enable_function_app_public_network_access" {
+  type        = bool
+  description = "(Optional) Should public network access be enabled for the Function App. Defaults to true."
+  default     = true
+}
+
 # -------------------
 # Alerts variables
 # -------------------
