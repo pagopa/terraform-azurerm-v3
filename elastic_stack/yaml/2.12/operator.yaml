@@ -1,10 +1,10 @@
 # Source: eck-operator/templates/operator-namespace.yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: elastic-system
-  labels:
-    name: elastic-system
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: elastic-system
+#   labels:
+#     name: elastic-system
 ---
 # Source: eck-operator/templates/service-account.yaml
 apiVersion: v1
