@@ -1,3 +1,8 @@
+variable "es_host" {
+  description = "Elastic Host"
+  type = "string"
+}
+
 variable "namespace" {
   description = "Namespace for ECK Operator"
   type        = string

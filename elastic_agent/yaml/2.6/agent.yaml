@@ -958,7 +958,7 @@ spec:
           ]
           env:
             - name: ES_HOST
-              value: "https://quickstart-es-http.elastic-system.svc.cluster.local:9200"
+              value: ${es_host}
             # The basic authentication username used to connect to Elasticsearch
             # This user needs the privileges required to publish events to Elasticsearch.
             - name: ES_USERNAME
