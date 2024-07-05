@@ -1,6 +1,6 @@
 variable "es_host" {
   description = "Elastic Host"
-  type = "string"
+  type = string
 }
 
 variable "namespace" {
