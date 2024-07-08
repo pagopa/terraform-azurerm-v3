@@ -32,6 +32,12 @@ variable "revision_description" {
   default = null
 }
 
+variable "api_type" {
+  type        = string
+  default     = "http"
+  description = "(Optional) Type of API. Possible values are graphql, http, soap, and websocket. Defaults to http."
+}
+
 variable "oauth2_authorization" {
   type = object({
     authorization_server_name = string
