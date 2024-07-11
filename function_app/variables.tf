@@ -171,7 +171,7 @@ variable "subnet_id" {
 
 variable "allowed_service_tags" {
   type        = list(string)
-  description = "(Optional) List of service tags allowed to call the appserver endpoint."
+  description = "(Optional) List of service tags allowed to call the function app endpoint."
   default     = []
 }
 
