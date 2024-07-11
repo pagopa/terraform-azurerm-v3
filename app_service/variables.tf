@@ -150,6 +150,12 @@ variable "vnet_integration" {
   default     = false
 }
 
+variable "public_network_access_enabled" {
+  type        = bool
+  description = "(Optional) Should public network access be enabled for the App Service. Defaults to true."
+  default     = true
+}
+
 variable "subnet_id" {
   type        = string
   description = "(Optional) Subnet id wether you want to integrate the app service to a subnet."
