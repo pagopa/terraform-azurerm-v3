@@ -28,8 +28,9 @@ resource "azurerm_linux_web_app" "this" {
   location            = var.location
   resource_group_name = var.resource_group_name
 
-  service_plan_id = var.plan_type == "internal" ? azurerm_service_plan.this[0].id : var.plan_id
-  https_only      = var.https_only
+  service_plan_id               = var.plan_type == "internal" ? azurerm_service_plan.this[0].id : var.plan_id
+  https_only                    = var.https_only
+  public_network_access_enabled = var.public_network_access_enabled
   #tfsec:ignore:azure-appservice-require-client-cert
   client_certificate_enabled = var.client_cert_enabled
   client_affinity_enabled    = var.client_affinity_enabled

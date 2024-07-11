@@ -1,10 +1,11 @@
 resource "azurerm_linux_web_app_slot" "this" {
   name = var.name
 
-  app_service_id             = var.app_service_id
-  https_only                 = var.https_only
-  client_affinity_enabled    = var.client_affinity_enabled
-  client_certificate_enabled = var.client_certificate_enabled
+  app_service_id                = var.app_service_id
+  https_only                    = var.https_only
+  public_network_access_enabled = var.public_network_access_enabled
+  client_affinity_enabled       = var.client_affinity_enabled
+  client_certificate_enabled    = var.client_certificate_enabled
 
   # https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
   app_settings = merge(
