@@ -58,6 +58,12 @@ variable "allowed_ips" {
   description = "Ip from wich is allowed to call the function. An empty list means from everywhere."
 }
 
+variable "allowed_service_tags" {
+  type        = list(string)
+  description = "(Optional) List of service tags allowed to call the function app endpoint."
+  default     = []
+}
+
 variable "cors" {
   type = object({
     allowed_origins = list(string)

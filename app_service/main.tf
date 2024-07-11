@@ -4,7 +4,6 @@ locals {
   ip_restrictions = concat(local.allowed_subnets, local.allowed_ips)
 }
 
-
 resource "azurerm_service_plan" "this" {
   count = var.plan_type == "internal" ? 1 : 0
 
@@ -94,6 +93,15 @@ resource "azurerm_linux_web_app" "this" {
       }
     }
 
+    dynamic "ip_restriction" {
+      for_each = var.allowed_service_tags
+      iterator = st
+
+      content {
+        service_tag = st.value
+        name        = "rule"
+      }
+    }
   }
 
   # Managed identity
