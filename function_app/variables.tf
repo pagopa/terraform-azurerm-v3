@@ -169,6 +169,12 @@ variable "subnet_id" {
   description = "The ID of the subnet the app service will be associated to (the subnet must have a service_delegation configured for Microsoft.Web/serverFarms)"
 }
 
+variable "allowed_service_tags" {
+  type        = list(string)
+  description = "(Optional) List of service tags allowed to call the appserver endpoint."
+  default     = []
+}
+
 variable "vnet_integration" {
   type        = bool
   description = "(optional) Enable vnet integration. Wheter it's true the subnet_id should not be null."

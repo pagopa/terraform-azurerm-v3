@@ -97,6 +97,12 @@ variable "allowed_ips" {
   default     = []
 }
 
+variable "allowed_service_tags" {
+  type        = list(string)
+  description = "(Optional) List of service tags allowed to call the appserver endpoint."
+  default     = []
+}
+
 variable "vnet_integration" {
   type        = bool
   description = "(optional) enable vnet integration. Wheter it's true the subnet_id should not be null."

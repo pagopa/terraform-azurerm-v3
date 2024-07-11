@@ -286,6 +286,16 @@ resource "azurerm_linux_function_app" "this" {
       }
     }
 
+    dynamic "ip_restriction" {
+      for_each = var.allowed_service_tags
+      iterator = st
+
+      content {
+        service_tag = st.value
+        name        = "rule"
+      }
+    }
+
     dynamic "cors" {
       for_each = var.cors != null ? [var.cors] : []
       content {

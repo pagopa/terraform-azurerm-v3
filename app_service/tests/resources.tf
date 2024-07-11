@@ -113,6 +113,8 @@ module "web_app_service_docker" {
     azurerm_subnet.arm_subnet.id,
   ]
 
+  allowed_service_tags = ["AI"]
+
   tags = var.tags
 }
 
