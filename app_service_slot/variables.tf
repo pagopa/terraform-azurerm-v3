@@ -115,6 +115,23 @@ variable "subnet_id" {
   default     = null
 }
 
+variable "auto_heal_enabled" {
+  type        = bool
+  description = "(Optional) True to enable the auto heal on the app service"
+  default     = false
+}
+
+variable "auto_heal_settings" {
+  type = object({
+    startup_time           = string
+    slow_requests_count    = number
+    slow_requests_interval = string
+    slow_requests_time     = string
+  })
+  description = "(Optional) Auto heal settings"
+  default     = null
+}
+
 variable "tags" {
   type = map(any)
 }

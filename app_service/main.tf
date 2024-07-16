@@ -102,6 +102,25 @@ resource "azurerm_linux_web_app" "this" {
         name        = "rule"
       }
     }
+
+    auto_heal_enabled = var.auto_heal_enabled ? true : null
+
+    dynamic "auto_heal_setting" {
+      for_each = var.auto_heal_enabled ? [1] : []
+      content {
+        action {
+          action_type                    = "Recycle"
+          minimum_process_execution_time = var.auto_heal_settings.startup_time
+        }
+        trigger {
+          slow_request {
+            count      = var.auto_heal_settings.slow_requests_count
+            interval   = var.auto_heal_settings.slow_requests_interval
+            time_taken = var.auto_heal_settings.slow_requests_time
+          }
+        }
+      }
+    }
   }
 
   # Managed identity
