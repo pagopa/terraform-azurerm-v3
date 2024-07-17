@@ -76,6 +76,8 @@ resource "azurerm_linux_web_app_slot" "this" {
       }
     }
 
+    auto_heal_enabled = var.auto_heal_enabled ? true : null
+
     dynamic "auto_heal_setting" {
       for_each = var.auto_heal_enabled ? [1] : []
       content {
