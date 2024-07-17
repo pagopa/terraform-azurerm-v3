@@ -19,7 +19,7 @@ module "cdn_storage_account" {
   resource_group_name             = var.resource_group_name
   location                        = var.location
   allow_nested_items_to_be_public = var.storage_account_nested_items_public
-  public_network_access_enabled   = var.public_network_access_enabled
+  public_network_access_enabled   = var.storage_public_network_access_enabled
 
   advanced_threat_protection = var.advanced_threat_protection_enabled
 

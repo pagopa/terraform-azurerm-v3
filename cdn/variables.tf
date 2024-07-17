@@ -40,7 +40,7 @@ variable "cdn_location" {
   description = "If the location of the CDN needs to be different from that of the storage account, set this variable to the location where the CDN should be created. For example, cdn_location = westeurope and location = northitaly"
 }
 
-variable "public_network_access_enabled" {
+variable "storage_public_network_access_enabled" {
   type        = bool
   default     = true
   description = "Flag to set public public network for storage account"
