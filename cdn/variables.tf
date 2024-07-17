@@ -42,7 +42,7 @@ variable "cdn_location" {
 
 variable "public_network_access_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Flag to set public public network for storage account"
 }
 
