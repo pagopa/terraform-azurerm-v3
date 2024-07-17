@@ -39,4 +39,34 @@ variable "prometheus_helm" {
   })
 
   description = "Prometheus helm chart configuration"
+
+
+  default = {
+    chart_version = "25.24.1"
+    server = {
+      image_name = "quay.io/prometheus/prometheus"
+      image_tag  = "v2.53.1",
+    }
+    alertmanager = {
+      image_name = "quay.io/prometheus/alertmanager"
+      image_tag  = "v0.27.0",
+    }
+    node_exporter = {
+      image_name = "quay.io/prometheus/node-exporter"
+      image_tag  = "v1.8.2"
+    }
+    configmap_reload_prometheus = {
+      image_name = "jimmidyson/configmap-reload"
+      image_tag  = "v0.13.1"
+    }
+    configmap_reload_alertmanager = {
+      image_name = "jimmidyson/configmap-reload"
+      image_tag  = "v0.13.1"
+    }
+    pushgateway = {
+      image_name = "prom/pushgateway"
+      image_tag  = "v1.9.0"
+    }
+  }
+
 }
