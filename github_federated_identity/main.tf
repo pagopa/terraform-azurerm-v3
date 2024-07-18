@@ -48,5 +48,5 @@ resource "azurerm_federated_identity_credential" "identity_credentials" {
   audience            = each.value.audience
   issuer              = each.value.issuer
   parent_id           = azurerm_user_assigned_identity.identity.id
-  subject             = each.value.subject == "pull_request" ? "repo:${each.value.org}/${each.value.repository}:${each.value.subject}" : "repo:${each.value.org}/${each.value.repository}:${each.value.credentials_scope}:${each.value.subject}"
+  subject             = each.value.subject == "pull_request" ? "repo:${each.value.org}/${each.value.repository}:${each.value.subject}" : "repo:${each.value.org}/${each.value.repository}:${each.value.credentials_scope}:${replace(each.value.subject, "-", "/")}"
 }
