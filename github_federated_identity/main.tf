@@ -44,7 +44,7 @@ resource "azurerm_role_assignment" "identity_rg_role_assignment" {
 resource "azurerm_federated_identity_credential" "identity_credentials" {
   for_each            = { for g in var.github_federations : "${g.repository}.${g.credentials_scope}.${replace(g.subject, "/", ".")}" => g } # key must be unique
   resource_group_name = local.resource_group_name
-  name                = "${local.federation_prefix}-${each.value.repository}-${each.value.credentials_scope}-${replace(each.value.subject, "/", ".")}"
+  name                = "${local.federation_prefix}-${each.value.repository}-${each.value.credentials_scope}-${replace(each.value.subject, "/", "-")}"
   audience            = each.value.audience
   issuer              = each.value.issuer
   parent_id           = azurerm_user_assigned_identity.identity.id
