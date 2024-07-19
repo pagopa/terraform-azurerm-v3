@@ -144,13 +144,13 @@ variable "alert_use_web_test_criteria" {
 }
 
 variable "alert_auto_mitigate" {
-  type = bool
+  type        = bool
   description = "(Optional) auto mitigate the alert when triggered"
-  default = false
+  default     = false
 }
 
 variable "availability_failed_location_threshold" {
-  type = number
+  type        = number
   description = "(Optional) number of failed location that should trigger the alert. used when 'alert_use_web_test_criteria' is true"
-  default = 1
+  default     = 1
 }
