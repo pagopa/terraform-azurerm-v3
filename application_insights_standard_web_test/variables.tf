@@ -103,3 +103,19 @@ variable "https_probe_threshold" {
   description = "threshold for metric alert"
   default     = 90
 }
+
+variable "validation_rules" {
+  type = object({
+    content = optional(object({
+      content_match = string
+      ignore_case = optional(bool, false)
+      pass_if_text_found = optional(bool, true)
+    }), null)
+    expected_status_code = optional(number, 200)
+    ssl_cert_remaining_lifetime = optional(number,7)
+    ssl_check_enabled = optional(bool, true)
+
+  })
+  description = "(Optional) validation rules block"
+  default = null
+}
