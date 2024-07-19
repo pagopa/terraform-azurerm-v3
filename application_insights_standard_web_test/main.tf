@@ -64,7 +64,7 @@ resource "azurerm_application_insights_standard_web_test" "this" {
 resource "azurerm_monitor_metric_alert" "alert_this" {
   name                = local.alert_name
   resource_group_name = var.application_insights_resource_group
-  scopes              = [var.application_insights_id]
+  scopes              = var.alert_use_web_test_criteria ? [var.application_insights_id, azurerm_application_insights_standard_web_test.this.id] : [var.application_insights_id]
   description         = "Whenever the average availabilityresults/availabilitypercentage is less than ${var.https_probe_threshold}%"
   severity            = var.metric_severity
   frequency           = var.metric_frequency
@@ -72,17 +72,29 @@ resource "azurerm_monitor_metric_alert" "alert_this" {
   enabled             = var.alert_enabled
   window_size         = var.metric_window_size
 
-  criteria {
-    metric_namespace = "microsoft.insights/components"
-    metric_name      = "availabilityResults/availabilityPercentage"
-    aggregation      = "Average"
-    operator         = "LessThan"
-    threshold        = var.https_probe_threshold
+  dynamic "criteria" {
+    for_each = var.alert_use_web_test_criteria ? [] : [1]
+    content {
+      metric_namespace = "microsoft.insights/components"
+      metric_name      = "availabilityResults/availabilityPercentage"
+      aggregation      = "Average"
+      operator         = "LessThan"
+      threshold        = var.https_probe_threshold
 
-    dimension {
-      name     = "availabilityResult/name"
-      operator = "Include"
-      values   = [local.alert_name]
+      dimension {
+        name     = "availabilityResult/name"
+        operator = "Include"
+        values   = [local.alert_name]
+      }
+    }
+  }
+
+  dynamic "application_insights_web_test_location_availability_criteria" {
+    for_each = var.alert_use_web_test_criteria ? [1] : []
+    content {
+      component_id = var.application_insights_id
+      failed_location_count = 1
+      web_test_id = azurerm_application_insights_standard_web_test.this.id
     }
   }
 

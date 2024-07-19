@@ -136,3 +136,9 @@ variable "request_parse_dependent_requests_enabled" {
   default = true
   description = "(Optional) Should the parsing of dependend requests be enabled? Defaults to true."
 }
+
+variable "alert_use_web_test_criteria" {
+  type = bool
+  default = false
+  description = "(Optional) if true, uses the application_insights_web_test_location_availability_criteria instead of criteria block to read the web test result"
+}
