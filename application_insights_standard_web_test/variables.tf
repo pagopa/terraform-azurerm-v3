@@ -1,5 +1,5 @@
 locals {
-  alert_name                = var.alert_name != null ? lower(replace("${var.alert_name}", "/\\W/", "-")) : lower(replace("${var.https_endpoint}", "/\\W/", "-"))
+  alert_name                = replace(var.alert_name != null ? lower("${var.alert_name}") : lower("${var.https_endpoint}"), (var.replace_non_words_in_name ? "/\\W/" : "-"), "-")
   alert_name_sha256_limited = substr(sha256(var.alert_name), 0, 5)
 }
 
@@ -102,4 +102,55 @@ variable "https_probe_threshold" {
   type        = number
   description = "threshold for metric alert"
   default     = 90
+}
+
+variable "validation_rules" {
+  type = object({
+    content = optional(object({
+      content_match      = string
+      ignore_case        = optional(bool, false)
+      pass_if_text_found = optional(bool, true)
+    }), null)
+    expected_status_code        = optional(number, 200)
+    ssl_cert_remaining_lifetime = optional(number, 7)
+    ssl_check_enabled           = optional(bool, true)
+
+  })
+  description = "(Optional) validation rules block"
+  default     = null
+}
+
+
+variable "replace_non_words_in_name" {
+  type        = bool
+  default     = false
+  description = "(Optional) if true, replaces non words characters in web test name with dash"
+}
+
+variable "request_follow_redirects" {
+  description = "(Optional) Should the following of redirects be enabled?"
+  default     = true
+}
+
+variable "request_parse_dependent_requests_enabled" {
+  default     = true
+  description = "(Optional) Should the parsing of dependend requests be enabled? Defaults to true."
+}
+
+variable "alert_use_web_test_criteria" {
+  type        = bool
+  default     = false
+  description = "(Optional) if true, uses the application_insights_web_test_location_availability_criteria instead of criteria block to read the web test result"
+}
+
+variable "alert_auto_mitigate" {
+  type        = bool
+  description = "(Optional) auto mitigate the alert when triggered"
+  default     = false
+}
+
+variable "availability_failed_location_threshold" {
+  type        = number
+  description = "(Optional) number of failed location that should trigger the alert. used when 'alert_use_web_test_criteria' is true"
+  default     = 1
 }
