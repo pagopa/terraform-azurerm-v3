@@ -44,11 +44,15 @@ resource "azurerm_application_insights_standard_web_test" "this" {
       expected_status_code = var.validation_rules.expected_status_code
       ssl_cert_remaining_lifetime = var.validation_rules.ssl_cert_remaining_lifetime
       ssl_check_enabled = var.validation_rules.ssl_check_enabled
-      content {
-        content_match = var.validation_rules.content.content_match
-        ignore_case = var.validation_rules.content.ignore_case
-        pass_if_text_found = var.validation_rules.content.pass_if_text_found
+      dynamic "content"{
+        for_each = var.validation_rules.content != null ? [1] : []
+        content {
+          content_match = var.validation_rules.content.content_match
+          ignore_case = var.validation_rules.content.ignore_case
+          pass_if_text_found = var.validation_rules.content.pass_if_text_found
+        }
       }
+
     }
 
   }
