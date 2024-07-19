@@ -126,3 +126,13 @@ variable "replace_dot_in_name" {
   default = false
   description = "(Optional) if true, replaces dots in web test name with dash"
 }
+
+
+variable "request_follow_redirects" {
+  description = "(Optional) Should the following of redirects be enabled?"
+  default = true
+}
+variable "request_parse_dependent_requests_enabled" {
+  default = true
+  description = "(Optional) Should the parsing of dependend requests be enabled? Defaults to true."
+}

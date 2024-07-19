@@ -8,6 +8,7 @@ locals {
   ])
 }
 
+
 resource "azurerm_application_insights_standard_web_test" "this" {
   name                    = local.alert_name
   resource_group_name     = var.application_insights_resource_group
@@ -24,6 +25,8 @@ resource "azurerm_application_insights_standard_web_test" "this" {
     url       = "${var.https_endpoint}${var.https_endpoint_path}"
     body      = var.https_probe_body
     http_verb = var.https_probe_method
+    follow_redirects_enabled = var.request_follow_redirects
+    parse_dependent_requests_enabled = var.request_parse_dependent_requests_enabled
 
     dynamic "header" {
       for_each = local.all_headers_value
