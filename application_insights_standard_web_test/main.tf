@@ -22,10 +22,10 @@ resource "azurerm_application_insights_standard_web_test" "this" {
   timeout                 = var.timeout
 
   request {
-    url       = "${var.https_endpoint}${var.https_endpoint_path}"
-    body      = var.https_probe_body
-    http_verb = var.https_probe_method
-    follow_redirects_enabled = var.request_follow_redirects
+    url                              = "${var.https_endpoint}${var.https_endpoint_path}"
+    body                             = var.https_probe_body
+    http_verb                        = var.https_probe_method
+    follow_redirects_enabled         = var.request_follow_redirects
     parse_dependent_requests_enabled = var.request_parse_dependent_requests_enabled
 
     dynamic "header" {
@@ -41,14 +41,14 @@ resource "azurerm_application_insights_standard_web_test" "this" {
   dynamic "validation_rules" {
     for_each = var.validation_rules != null ? [1] : []
     content {
-      expected_status_code = var.validation_rules.expected_status_code
+      expected_status_code        = var.validation_rules.expected_status_code
       ssl_cert_remaining_lifetime = var.validation_rules.ssl_cert_remaining_lifetime
-      ssl_check_enabled = var.validation_rules.ssl_check_enabled
-      dynamic "content"{
+      ssl_check_enabled           = var.validation_rules.ssl_check_enabled
+      dynamic "content" {
         for_each = var.validation_rules.content != null ? [1] : []
         content {
-          content_match = var.validation_rules.content.content_match
-          ignore_case = var.validation_rules.content.ignore_case
+          content_match      = var.validation_rules.content.content_match
+          ignore_case        = var.validation_rules.content.ignore_case
           pass_if_text_found = var.validation_rules.content.pass_if_text_found
         }
       }
@@ -65,10 +65,10 @@ resource "azurerm_monitor_metric_alert" "alert_this" {
   name                = local.alert_name
   resource_group_name = var.application_insights_resource_group
   scopes              = var.alert_use_web_test_criteria ? [var.application_insights_id, azurerm_application_insights_standard_web_test.this.id] : [var.application_insights_id]
-  description         = "Whenever the average availabilityresults/availabilitypercentage is less than ${var.https_probe_threshold}%"
+  description         = var.alert_use_web_test_criteria ? "Whenever the webtest fails from more than ${var.availability_failed_location_threshold} location" : "Whenever the average availabilityresults/availabilitypercentage is less than ${var.https_probe_threshold}%"
   severity            = var.metric_severity
   frequency           = var.metric_frequency
-  auto_mitigate       = false
+  auto_mitigate       = var.alert_auto_mitigate
   enabled             = var.alert_enabled
   window_size         = var.metric_window_size
 
@@ -92,9 +92,9 @@ resource "azurerm_monitor_metric_alert" "alert_this" {
   dynamic "application_insights_web_test_location_availability_criteria" {
     for_each = var.alert_use_web_test_criteria ? [1] : []
     content {
-      component_id = var.application_insights_id
-      failed_location_count = 1
-      web_test_id = azurerm_application_insights_standard_web_test.this.id
+      component_id          = var.application_insights_id
+      failed_location_count = var.availability_failed_location_threshold
+      web_test_id           = azurerm_application_insights_standard_web_test.this.id
     }
   }
 
