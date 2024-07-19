@@ -1,5 +1,5 @@
 locals {
-  alert_name                = var.alert_name != null ? lower(replace("${var.alert_name}", "/\\W/", "-")) : lower(replace("${var.https_endpoint}", "/\\W/", "-"))
+  alert_name                = replace(var.alert_name != null ? lower("${var.alert_name}") : lower("${var.https_endpoint}") , var.replace_dot_in_name ? "/\\W/" : "-", "-")
   alert_name_sha256_limited = substr(sha256(var.alert_name), 0, 5)
 }
 
@@ -118,4 +118,11 @@ variable "validation_rules" {
   })
   description = "(Optional) validation rules block"
   default = null
+}
+
+
+variable "replace_dot_in_name" {
+  type = bool
+  default = false
+  description = "(Optional) if true, replaces dots in web test name with dash"
 }
