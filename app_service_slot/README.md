@@ -92,6 +92,7 @@ No modules.
 | <a name="input_go_version"></a> [go\_version](#input\_go\_version) | n/a | `string` | `null` | no |
 | <a name="input_health_check_path"></a> [health\_check\_path](#input\_health\_check\_path) | (Optional) The health check path to be pinged by App Service. | `string` | `null` | no |
 | <a name="input_https_only"></a> [https\_only](#input\_https\_only) | (Optional) Can the App Service only be accessed via HTTPS? Defaults to true. | `bool` | `true` | no |
+| <a name="input_ip_restriction_default_action"></a> [ip\_restriction\_default\_action](#input\_ip\_restriction\_default\_action) | (Optional) The Default action for traffic that does not match any ip\_restriction rule. possible values include Allow and Deny. Defaults to Allow. | `string` | `"Allow"` | no |
 | <a name="input_java_server"></a> [java\_server](#input\_java\_server) | n/a | `string` | `null` | no |
 | <a name="input_java_server_version"></a> [java\_server\_version](#input\_java\_server\_version) | n/a | `string` | `null` | no |
 | <a name="input_java_version"></a> [java\_version](#input\_java\_version) | n/a | `string` | `null` | no |
