@@ -44,6 +44,8 @@ resource "azurerm_linux_web_app_slot" "this" {
 
     http2_enabled = true
 
+    ip_restriction_default_action = var.ip_restriction_default_action
+
     dynamic "ip_restriction" {
       for_each = var.allowed_subnets
       iterator = subnet
