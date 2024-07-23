@@ -133,12 +133,12 @@ variable "health_check_maxpingfailures" {
 }
 
 variable "ip_restriction_default_action" {
-  type = string
+  type        = string
   description = "(Optional) The Default action for traffic that does not match any ip_restriction rule. possible values include Allow and Deny. Defaults to Allow."
-  default = "Allow"
+  default     = "Allow"
 
   validation {
-    condition = contains(["Allow", "Deny"], var.ip_restriction_default_action)
+    condition     = contains(["Allow", "Deny"], var.ip_restriction_default_action)
     error_message = "Possible values include Allow and Deny"
   }
 }
