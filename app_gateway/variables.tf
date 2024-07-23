@@ -153,9 +153,10 @@ variable "rewrite_rule_sets" {
       }))
 
       url = object({
-        path         = string                # The URL path to rewrite.
-        query_string = string                # The query string to rewrite.
-        reroute      = optional(bool, false) # Whether the URL path map should be reevaluated after this rewrite has been applied.
+        path         = string                 # The URL path to rewrite.
+        query_string = string                 # The query string to rewrite.
+        reroute      = optional(bool, false)  # Whether the URL path map should be reevaluated after this rewrite has been applied.
+        components   = optional(string, null) # The components used to rewrite the URL. Possible values are path_only and query_string_only to limit the rewrite to the URL Path or URL Query String only.
       })
 
     }))
