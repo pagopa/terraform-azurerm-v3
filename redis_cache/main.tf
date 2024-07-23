@@ -15,11 +15,13 @@ resource "azurerm_redis_cache" "this" {
   zones                         = var.sku_name == "Premium" ? var.zones : null
 
   redis_configuration {
-    enable_authentication         = var.enable_authentication
-    rdb_backup_enabled            = var.backup_configuration != null
-    rdb_backup_frequency          = var.backup_configuration != null ? var.backup_configuration.frequency : null
-    rdb_backup_max_snapshot_count = var.backup_configuration != null ? var.backup_configuration.max_snapshot_count : null
-    rdb_storage_connection_string = var.backup_configuration != null ? var.backup_configuration.storage_connection_string : null
+    enable_authentication                  = var.enable_authentication
+    rdb_backup_enabled                     = var.backup_configuration != null
+    rdb_backup_frequency                   = var.backup_configuration != null ? var.backup_configuration.frequency : null
+    rdb_backup_max_snapshot_count          = var.backup_configuration != null ? var.backup_configuration.max_snapshot_count : null
+    rdb_storage_connection_string          = var.backup_configuration != null ? var.backup_configuration.storage_connection_string : null
+    data_persistence_authentication_method = "SAS"
+    storage_account_subscription_id        = "ec285037-c673-4f58-b594-d7c480da4e8b"
   }
 
   dynamic "patch_schedule" {
