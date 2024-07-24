@@ -1,5 +1,5 @@
 resource "azurerm_virtual_network_peering" "source" {
-  name                      = format("%s-to-%s", var.source_virtual_network_name, var.target_virtual_network_name)
+  name                      = var.source_custom_name == null ? format("%s-to-%s", var.source_virtual_network_name, var.target_virtual_network_name) : var.source_custom_name
   resource_group_name       = var.source_resource_group_name
   virtual_network_name      = var.source_virtual_network_name
   remote_virtual_network_id = var.target_remote_virtual_network_id
@@ -11,7 +11,7 @@ resource "azurerm_virtual_network_peering" "source" {
 }
 
 resource "azurerm_virtual_network_peering" "target" {
-  name                      = format("%s-to-%s", var.target_virtual_network_name, var.source_virtual_network_name)
+  name                      = var.target_custom_name == null ? format("%s-to-%s", var.target_virtual_network_name, var.source_virtual_network_name) : var.target_custom_name
   resource_group_name       = var.target_resource_group_name
   virtual_network_name      = var.target_virtual_network_name
   remote_virtual_network_id = var.source_remote_virtual_network_id
