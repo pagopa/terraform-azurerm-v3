@@ -32,8 +32,19 @@ resource "azurerm_container_group" "this" {
   }
 
   tags = var.tags
+
+  lifecycle {
+    ignore_changes       = [container[0].volume[0].secret]
+    replace_triggered_by = [null_resource.secret_trigger.id]
+  }
 }
 
 data "local_file" "corefile" {
   filename = format("%s/Corefile", path.module)
+}
+
+resource "null_resource" "secret_trigger" {
+  triggers = {
+    trigger = base64encode(data.local_file.corefile.content)
+  }
 }
