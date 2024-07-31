@@ -114,3 +114,14 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "random_upper" {
+  type        = bool
+  description = "(Optional) allows upper case in random string"
+  default     = false
+}
+variable "random_special" {
+  type        = bool
+  description = "(optional) allows special chars in random string"
+  default     = false
+}

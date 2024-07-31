@@ -97,6 +97,8 @@ No modules.
 | <a name="input_pip_allocation_method"></a> [pip\_allocation\_method](#input\_pip\_allocation\_method) | Defines the allocation method for this IP address. Possible values are Static or Dynamic. | `string` | `"Dynamic"` | no |
 | <a name="input_pip_id"></a> [pip\_id](#input\_pip\_id) | External public ip | `string` | `null` | no |
 | <a name="input_pip_sku"></a> [pip\_sku](#input\_pip\_sku) | The SKU of the Public IP. Accepted values are Basic and Standard. Defaults to Basic. | `string` | `"Basic"` | no |
+| <a name="input_random_special"></a> [random\_special](#input\_random\_special) | (optional) allows special chars in random string | `bool` | `false` | no |
+| <a name="input_random_upper"></a> [random\_upper](#input\_random\_upper) | (Optional) allows upper case in random string | `bool` | `false` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Name of resource group to deploy resources in. | `any` | n/a | yes |
 | <a name="input_sec_log_analytics_workspace_id"></a> [sec\_log\_analytics\_workspace\_id](#input\_sec\_log\_analytics\_workspace\_id) | Log analytics workspace security (it should be in a different subscription). | `string` | `null` | no |
 | <a name="input_sec_storage_id"></a> [sec\_storage\_id](#input\_sec\_storage\_id) | Storage Account security (it should be in a different subscription). | `string` | `null` | no |
