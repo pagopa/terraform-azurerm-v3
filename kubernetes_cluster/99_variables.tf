@@ -256,6 +256,7 @@ variable "network_profile" {
     network_plugin_mode = optional(string, null)           # e.g. 'azure'. Network plugin mode to use for networking. Currently supported value is overlay
     outbound_type       = optional(string, "loadBalancer") # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
     service_cidr        = optional(string, "10.2.0.0/16")  # e.g. '10.2.0.0/16'. The Network Range used by the Kubernetes service
+    network_data_plane        = optional(string, "azure")  # e.g. 'azure'. (Optional) Specifies the data plane used for building the Kubernetes network. Possible values are azure and cilium. Defaults to azure. Disabling this forces a new resource to be created.
   })
   default = {
     dns_service_ip      = "10.2.0.10"
@@ -264,6 +265,7 @@ variable "network_profile" {
     network_plugin_mode = null
     outbound_type       = "loadBalancer"
     service_cidr        = "10.2.0.0/16"
+    network_data_plane = "azure"
   }
   description = "See variable description to understand how to use it, and see examples"
 }
