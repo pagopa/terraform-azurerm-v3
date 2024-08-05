@@ -106,8 +106,8 @@ variable "system_node_pool_tags" {
 }
 
 variable "system_node_pool_upgrade_settings_drain_timeout_in_minutes" {
-  type = string
-  default = 30
+  type        = string
+  default     = 30
   description = "(Optional) The amount of time in minutes to wait on eviction of pods and graceful termination per node. This eviction wait time honors pod disruption budgets for upgrades. If this time is exceeded, the upgrade fails. Unsetting this after configuring it will force a new resource to be created."
 }
 
@@ -207,8 +207,8 @@ variable "user_node_pool_tags" {
 }
 
 variable "user_node_pool_upgrade_settings_drain_timeout_in_minutes" {
-  type = string
-  default = 30
+  type        = string
+  default     = 30
   description = "(Optional) The amount of time in minutes to wait on eviction of pods and graceful termination per node. This eviction wait time honors pod disruption budgets for upgrades. If this time is exceeded, the upgrade fails. Unsetting this after configuring it will force a new resource to be created."
 }
 
