@@ -61,6 +61,7 @@ resource "azurerm_kubernetes_cluster" "this" {
 
     upgrade_settings {
       max_surge = var.upgrade_settings_max_surge
+      drain_timeout_in_minutes = var.system_node_pool_upgrade_settings_drain_timeout_in_minutes
     }
 
     tags = merge(var.tags, var.system_node_pool_tags)
@@ -202,6 +203,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
 
   upgrade_settings {
     max_surge = var.upgrade_settings_max_surge
+    drain_timeout_in_minutes = var.user_node_pool_upgrade_settings_drain_timeout_in_minutes
   }
 
   tags = merge(var.tags, var.user_node_pool_tags)
