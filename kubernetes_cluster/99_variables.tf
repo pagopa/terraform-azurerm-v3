@@ -104,7 +104,14 @@ variable "system_node_pool_tags" {
   description = "(Optional) A mapping of tags to assign to the Node Pool."
   default     = {}
 }
-### END SYSTEM NODE POOL
+
+variable "system_node_pool_upgrade_settings_drain_timeout_in_minutes" {
+  type        = string
+  default     = 30
+  description = "(Optional) The amount of time in minutes to wait on eviction of pods and graceful termination per node. This eviction wait time honors pod disruption budgets for upgrades. If this time is exceeded, the upgrade fails. Unsetting this after configuring it will force a new resource to be created."
+}
+
+### <END SYSTEM NODE POOL/>
 
 #
 # 👤 User node pool
@@ -198,6 +205,13 @@ variable "user_node_pool_tags" {
   description = "(Optional) A mapping of tags to assign to the Node Pool."
   default     = {}
 }
+
+variable "user_node_pool_upgrade_settings_drain_timeout_in_minutes" {
+  type        = string
+  default     = 30
+  description = "(Optional) The amount of time in minutes to wait on eviction of pods and graceful termination per node. This eviction wait time honors pod disruption budgets for upgrades. If this time is exceeded, the upgrade fails. Unsetting this after configuring it will force a new resource to be created."
+}
+
 ### END USER NODE POOL
 
 variable "upgrade_settings_max_surge" {
