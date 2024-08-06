@@ -29,9 +29,12 @@ az acr helm install-cli -y --client-version 3.14.2
 check_command "helm"
 
 # install kubectl
-az aks install-cli --client-version 1.27.12 --kubelogin-version 0.1.3
+# https://kubernetes.io/releases/
+# https://github.com/Azure/kubelogin/releases
+az aks install-cli --client-version 1.29.7 --kubelogin-version 0.1.4
 
 check_command "kubectl"
+check_command "kubelogin"
 
 # setup DOCKER installation from https://docs.docker.com/engine/install/ubuntu/
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
@@ -60,7 +63,7 @@ wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY
 check_command "yq"
 
 # install SOPS from https://github.com/mozilla/sops
-SOPS_VERSION="3.8.1"
+SOPS_VERSION="3.9.0"
 wget "https://github.com/mozilla/sops/releases/download/v${SOPS_VERSION}/sops_${SOPS_VERSION}_amd64.deb"
 apt install -y "$PWD/sops_${SOPS_VERSION}_amd64.deb"
 
@@ -75,25 +78,13 @@ sudo mv velero-${VELERO_VERSION}-linux-amd64/velero /usr/bin/velero
 check_command "velero"
 
 # install packer
-curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add - && \
-sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" $$ \
-sudo apt-get update && sudo apt-get install -y packer
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null && \
+sudo apt-get update && \
+sudo apt-get install -y packer
 
 check_command "packer"
 
-# install azure az repos
-sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
-sudo mkdir -p /etc/apt/keyrings
-curl -sLS https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg
-sudo chmod go+r /etc/apt/keyrings/microsoft.gpg
-AZ_DIST=$(lsb_release -cs)
-echo "Types: deb
-URIs: https://packages.microsoft.com/repos/azure-cli/
-Suites: ${AZ_DIST}
-Components: main
-Architectures: $(dpkg --print-architecture)
-Signed-by: /etc/apt/keyrings/microsoft.gpg" | sudo tee /etc/apt/sources.list.d/azure-cli.sources
-sudo apt-get update
 # prepare machine for k6 large load test
 
 sysctl -w net.ipv4.ip_local_port_range="1024 65535"
