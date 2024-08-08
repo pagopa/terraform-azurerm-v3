@@ -76,6 +76,11 @@ variable "default_metric_alerts" {
           name     = "node"
           operator = "Include"
           values   = ["*"]
+        },
+        {
+          name     = "device"
+          operator = "Include"
+          values   = ["*"]
         }
       ]
     }
