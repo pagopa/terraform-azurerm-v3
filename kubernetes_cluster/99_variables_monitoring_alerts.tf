@@ -108,22 +108,11 @@ variable "default_metric_alerts" {
           name     = "phase"
           operator = "Include"
           values   = ["Failed"]
-        }
-      ]
-    }
-    pods_ready = {
-      aggregation      = "Average"
-      metric_namespace = "Microsoft.ContainerService/managedClusters"
-      metric_name      = "kube_pod_status_ready"
-      operator         = "LessThan"
-      threshold        = 1
-      frequency        = "PT15M"
-      window_size      = "PT1H"
-      dimension = [
+        },
         {
-          name     = "condition"
+          name     = "namespace"
           operator = "Include"
-          values   = ["Ready"]
+          values   = ["*"]
         }
       ]
     }
