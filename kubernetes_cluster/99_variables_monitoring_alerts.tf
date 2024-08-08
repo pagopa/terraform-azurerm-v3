@@ -30,33 +30,34 @@ variable "default_metric_alerts" {
   }))
 
   default = {
-    node_cpu = {
+    node_cpu_usage_percentage = {
       aggregation      = "Average"
-      metric_namespace = "Insights.Container/nodes"
-      metric_name      = "cpuUsagePercentage"
+      metric_namespace = "Microsoft.ContainerService/managedClusters"
+      metric_name      = "node_cpu_usage_percentage"
       operator         = "GreaterThan"
       threshold        = 80
       frequency        = "PT15M"
       window_size      = "PT1H"
       dimension = [
         {
-          name     = "host"
+          name     = "node"
           operator = "Include"
           values   = ["*"]
         }
-      ],
+      ]
     }
-    node_memory = {
+
+    node_memory_working_set_percentage = {
       aggregation      = "Average"
-      metric_namespace = "Insights.Container/nodes"
-      metric_name      = "memoryWorkingSetPercentage"
+      metric_namespace = "Microsoft.ContainerService/managedClusters"
+      metric_name      = "node_memory_working_set_percentage"
       operator         = "GreaterThan"
       threshold        = 80
       frequency        = "PT15M"
       window_size      = "PT1H"
       dimension = [
         {
-          name     = "host"
+          name     = "node"
           operator = "Include"
           values   = ["*"]
         }
@@ -64,36 +65,31 @@ variable "default_metric_alerts" {
     }
     node_disk = {
       aggregation      = "Average"
-      metric_namespace = "Insights.Container/nodes"
-      metric_name      = "DiskUsedPercentage"
+      metric_namespace = "Microsoft.ContainerService/managedClusters"
+      metric_name      = "node_disk_usage_percentage"
       operator         = "GreaterThan"
       threshold        = 80
       frequency        = "PT15M"
       window_size      = "PT1H"
       dimension = [
         {
-          name     = "host"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "device"
+          name     = "node"
           operator = "Include"
           values   = ["*"]
         }
-      ],
+      ]
     }
     node_not_ready = {
       aggregation      = "Average"
-      metric_namespace = "Insights.Container/nodes"
-      metric_name      = "nodesCount"
+      metric_namespace = "Microsoft.ContainerService/managedClusters"
+      metric_name      = "kube_node_status_condition"
       operator         = "GreaterThan"
       threshold        = 0
       frequency        = "PT15M"
       window_size      = "PT1H"
       dimension = [
         {
-          name     = "status"
+          name     = "status2"
           operator = "Include"
           values   = ["NotReady"]
         }
@@ -101,8 +97,8 @@ variable "default_metric_alerts" {
     }
     pods_failed = {
       aggregation      = "Average"
-      metric_namespace = "Insights.Container/pods"
-      metric_name      = "podCount"
+      metric_namespace = "Microsoft.ContainerService/managedClusters"
+      metric_name      = "kube_pod_status_phase"
       operator         = "GreaterThan"
       threshold        = 0
       frequency        = "PT15M"
@@ -117,82 +113,18 @@ variable "default_metric_alerts" {
     }
     pods_ready = {
       aggregation      = "Average"
-      metric_namespace = "Insights.Container/pods"
-      metric_name      = "PodReadyPercentage"
+      metric_namespace = "Microsoft.ContainerService/managedClusters"
+      metric_name      = "kube_pod_status_ready"
       operator         = "LessThan"
-      threshold        = 80
+      threshold        = 1
       frequency        = "PT15M"
       window_size      = "PT1H"
       dimension = [
         {
-          name     = "Kubernetes namespace"
+          name     = "condition"
           operator = "Include"
-          values   = ["*"]
+          values   = ["Ready"]
         }
-      ]
-    }
-    container_cpu = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/containers"
-      metric_name      = "cpuExceededPercentage"
-      operator         = "GreaterThan"
-      threshold        = 95
-      frequency        = "PT15M"
-      window_size      = "PT1H"
-      dimension = [
-        {
-          name     = "Kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ]
-    }
-    container_memory = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/containers"
-      metric_name      = "memoryWorkingSetExceededPercentage"
-      operator         = "GreaterThan"
-      threshold        = 95
-      frequency        = "PT15M"
-      window_size      = "PT1H"
-      dimension = [
-        {
-          name     = "Kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        },
-      ]
-    }
-    container_oom = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/pods"
-      metric_name      = "oomKilledContainerCount"
-      operator         = "GreaterThan"
-      threshold        = 0
-      frequency        = "PT15M"
-      window_size      = "PT1H"
-      dimension = [
-        {
-          name     = "Kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        },
-      ]
-    }
-    container_restart = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/pods"
-      metric_name      = "restartingContainerCount"
-      operator         = "GreaterThan"
-      threshold        = 0
-      frequency        = "PT15M"
-      window_size      = "PT1H"
-      dimension = [
-        {
-          name     = "Kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        },
       ]
     }
   }
