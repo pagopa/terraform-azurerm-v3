@@ -37,11 +37,13 @@ variable "workload_identity_enabled" {
 variable "workload_identity_service_account_name" {
   type = string
   description = "Service account name linked to workload identity"
+  default = null
 }
 
 variable "workload_identity_client_id" {
   type = string
   description = "ClientID in form of 'qwerty123-a1aa-1234-xyza-qwerty123' linked to workload identity"
+  default = null
 }
 
 
