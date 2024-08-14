@@ -23,27 +23,27 @@ variable "tenant_id" {
 }
 
 variable "cert_mounter_chart_version" {
-  type = string
+  type        = string
   description = "(Optional) Cert mounter chart version"
-  default = "1.0.4"
+  default     = "1.0.4"
 }
 
 variable "workload_identity_enabled" {
-  type = bool
+  type        = bool
   description = "Enable workload identity chart"
-  default = false
+  default     = false
 }
 
 variable "workload_identity_service_account_name" {
-  type = string
+  type        = string
   description = "Service account name linked to workload identity"
-  default = null
+  default     = null
 }
 
 variable "workload_identity_client_id" {
-  type = string
+  type        = string
   description = "ClientID in form of 'qwerty123-a1aa-1234-xyza-qwerty123' linked to workload identity"
-  default = null
+  default     = null
 }
 
 
