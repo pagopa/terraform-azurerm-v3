@@ -9,7 +9,7 @@ resource "helm_release" "cert_mounter" {
 
   values = [
     var.workload_identity_enabled ?
-      templatefile("cert-mounter-workload-identity.yaml.tpl", {
+      templatefile("${path.module}/helm/cert-mounter-workload-identity.yaml.tpl", {
         NAMESPACE        = var.namespace,
         CERTIFICATE_NAME = var.certificate_name,
         KEY_VAULT_NAME   = var.kv_name
@@ -17,7 +17,7 @@ resource "helm_release" "cert_mounter" {
         SERVICE_ACCOUNT_NAME = var.workload_identity_service_account_name
         WORKLOAD_IDENTITY_CLIENT_ID = var.workload_identity_client_id
       }) :
-      templatefile("cert-mounter-pod-identity.yaml.tpl", {
+      templatefile("${path.module}/helm/cert-mounter-pod-identity.yaml.tpl", {
         NAMESPACE        = var.namespace,
         CERTIFICATE_NAME = var.certificate_name,
         KEY_VAULT_NAME   = var.kv_name
