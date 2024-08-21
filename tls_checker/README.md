@@ -10,17 +10,14 @@ Optional variables:
 -   helm_chart_image_name                                    
 -   helm_chart_image_tag                                      
 
-```ts
+```hcl
 module "tls_checker" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//tls_checker?ref=v8.18.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//tls_checker?ref=tls_cert_mounter_workload_identity"
 
-  https_endpoint                                            = local.domain_aks_hostname
-  alert_name                                                = local.domain_aks_hostname
-  alert_enabled                                             = true
-  helm_chart_present                                        = true
-#   helm_chart_version                                        = var.tls_cert_check_helm.chart_version
-#   helm_chart_image_name                                     = var.tls_cert_check_helm.image_name
-#   helm_chart_image_tag                                      = var.tls_cert_check_helm.image_tag
+  https_endpoint     = local.domain_aks_hostname
+  alert_name         = local.domain_aks_hostname
+  alert_enabled      = true
+  helm_chart_present = true
   namespace                                                 = kubernetes_namespace.domain_namespace.metadata[0].name
   location_string                                           = var.location
   kv_secret_name_for_application_insights_connection_string = "dvopla-d-itn-appinsights-connection-string"
@@ -29,6 +26,10 @@ module "tls_checker" {
   application_insights_resource_group                       = data.azurerm_resource_group.monitor_rg.name
   application_insights_id                                   = data.azurerm_application_insights.application_insights.id
   application_insights_action_group_ids                     = [data.azurerm_monitor_action_group.slack.id, data.azurerm_monitor_action_group.email.id]
+
+  workload_identity_enabled = true
+  workload_identity_service_account_name = "${var.domain}-workload-identity"
+  workload_identity_client_id = azurerm_user_assigned_identity.this.client_id
 }
 
 ```
@@ -83,6 +84,9 @@ No modules.
 | <a name="input_location_string"></a> [location\_string](#input\_location\_string) | (Required) Location string | `string` | n/a | yes |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | (Required) Namespace where the helm chart will be installed | `string` | n/a | yes |
 | <a name="input_time_trigger"></a> [time\_trigger](#input\_time\_trigger) | cron trigger pattern | `string` | `"*/1 * * * *"` | no |
+| <a name="input_workload_identity_client_id"></a> [workload\_identity\_client\_id](#input\_workload\_identity\_client\_id) | ClientID in form of 'qwerty123-a1aa-1234-xyza-qwerty123' linked to workload identity | `string` | `null` | no |
+| <a name="input_workload_identity_enabled"></a> [workload\_identity\_enabled](#input\_workload\_identity\_enabled) | Enable workload identity chart | `bool` | `false` | no |
+| <a name="input_workload_identity_service_account_name"></a> [workload\_identity\_service\_account\_name](#input\_workload\_identity\_service\_account\_name) | Service account name linked to workload identity | `string` | `null` | no |
 
 ## Outputs
 
