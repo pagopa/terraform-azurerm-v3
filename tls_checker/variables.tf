@@ -3,6 +3,8 @@ locals {
   alert_name_sha256_limited = substr(sha256(var.alert_name), 0, 5)
   # all this work is mandatory to avoid helm name limit of 53 chars
   helm_chart_name = "${lower(substr(replace("chckr-${var.alert_name}", "/\\W/", "-"), 0, 47))}${local.alert_name_sha256_limited}"
+  chart_version = var.workload_identity_enabled ? "2.0.0" : "1.0.4"
+
 }
 
 variable "https_endpoint" {
@@ -105,4 +107,26 @@ variable "alert_enabled" {
   type        = bool
   description = "(Optional) Is this alert enabled?"
   default     = true
+}
+
+#
+# Workload Identity
+#
+
+variable "workload_identity_enabled" {
+  type        = bool
+  description = "Enable workload identity chart"
+  default     = false
+}
+
+variable "workload_identity_service_account_name" {
+  type        = string
+  description = "Service account name linked to workload identity"
+  default     = null
+}
+
+variable "workload_identity_client_id" {
+  type        = string
+  description = "ClientID in form of 'qwerty123-a1aa-1234-xyza-qwerty123' linked to workload identity"
+  default     = null
 }
