@@ -1,9 +1,9 @@
 moved {
   from = "helm_release.helm_this"
-  to   = "helm_release.tls_checker"
+  to   = "helm_release.this_chart"
 }
 
-resource "helm_release" "tls_checker" {
+resource "helm_release" "this_chart" {
 
   count = var.helm_chart_present ? 1 : 0
 
@@ -88,6 +88,6 @@ resource "azurerm_monitor_metric_alert" "alert_this" {
   }
 
   depends_on = [
-    helm_release.tls_checker[0]
+    helm_release.this_chart[0]
   ]
 }
