@@ -1,9 +1,4 @@
-moved {
-  from = "helm_release.helm_this"
-  to   = "helm_release.this_chart"
-}
-
-resource "helm_release" "this_chart" {
+resource "helm_release" "helm_this" {
 
   count = var.helm_chart_present ? 1 : 0
 
@@ -88,6 +83,6 @@ resource "azurerm_monitor_metric_alert" "alert_this" {
   }
 
   depends_on = [
-    helm_release.this_chart[0]
+    helm_release.helm_this[0]
   ]
 }
