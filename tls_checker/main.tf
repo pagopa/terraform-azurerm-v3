@@ -12,7 +12,7 @@ resource "helm_release" "helm_this" {
 
   values = [
     var.workload_identity_enabled ?
-    templatefile("${path.module}/templates/cert-mounter-workload-identity.yaml.tpl",
+    templatefile("${path.module}/templates/tls-cert-workload-identity.yaml.tpl",
       {
         namespace                                                 = var.namespace
         image_name                                                = var.helm_chart_image_name
