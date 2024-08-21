@@ -28,6 +28,10 @@ variable "cert_mounter_chart_version" {
   default     = "1.0.4"
 }
 
+#
+# Workload Identity
+#
+
 variable "workload_identity_enabled" {
   type        = bool
   description = "Enable workload identity chart"
@@ -45,5 +49,3 @@ variable "workload_identity_client_id" {
   description = "ClientID in form of 'qwerty123-a1aa-1234-xyza-qwerty123' linked to workload identity"
   default     = null
 }
-
-
