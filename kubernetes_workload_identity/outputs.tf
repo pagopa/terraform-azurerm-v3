@@ -19,5 +19,5 @@ output "workload_identity_service_account_namespace" {
 }
 
 output "workload_identity_client_id_secret_name" {
-  value = try(azurerm_key_vault_secret.workload_identity_client_id[0].name, null)
+  value = try(azurerm_key_vault_secret.workload_identity_client_id.name, null)
 }

@@ -64,31 +64,22 @@ variable "service_account_image_pull_secret_names" {
 #
 # Key Vault Permissions
 #
-variable "kv_configure_enabled" {
-  type = bool
-  description = "(Optional) Enable the kv configuration"
-  default = true
-}
-
 variable "key_vault_id" {
   type        = any
   description = "(Required) Specifies the id of the Key Vault resource. Changing this forces a new resource to be created."
 }
 
-variable "secret_permissions" {
+variable "key_vault_secret_permissions" {
   type        = list(string)
-  description = "(Optional) API permissions of the identity to access secrets, must be one or more from the following: Backup, Delete, Get, List, Purge, Recover, Restore and Set."
-  default     = []
+  description = "(Required) API permissions of the identity to access secrets, must be one or more from the following: Backup, Delete, Get, List, Purge, Recover, Restore and Set."
 }
 
-variable "key_permissions" {
+variable "key_vault_key_permissions" {
   type        = list(string)
-  description = "(Optional) API permissions of the identity to access keys, must be one or more from the following: Backup, Create, Decrypt, Delete, Encrypt, Get, Import, List, Purge, Recover, Restore, Sign, UnwrapKey, Update, Verify and WrapKey."
-  default     = []
+  description = "(Required) API permissions of the identity to access keys, must be one or more from the following: Backup, Create, Decrypt, Delete, Encrypt, Get, Import, List, Purge, Recover, Restore, Sign, UnwrapKey, Update, Verify and WrapKey."
 }
 
-variable "certificate_permissions" {
+variable "key_vault_certificate_permissions" {
   type        = list(string)
-  description = "(Optional) API permissions of the identity to access certificates, must be one or more from the following: Backup, Create, Delete, DeleteIssuers, Get, GetIssuers, Import, List, ListIssuers, ManageContacts, ManageIssuers, Purge, Recover, Restore, SetIssuers and Update."
-  default     = []
+  description = "(Required) API permissions of the identity to access certificates, must be one or more from the following: Backup, Create, Delete, DeleteIssuers, Get, GetIssuers, Import, List, ListIssuers, ManageContacts, ManageIssuers, Purge, Recover, Restore, SetIssuers and Update."
 }

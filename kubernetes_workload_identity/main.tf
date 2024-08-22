@@ -51,17 +51,15 @@ resource "kubernetes_service_account_v1" "workload_identity_sa" {
 #
 
 resource "azurerm_key_vault_access_policy" "this" {
-  count = var.kv_configure_enabled ? 1 : 0
-
   key_vault_id = var.key_vault_id
   tenant_id    = azurerm_user_assigned_identity.this.tenant_id
 
   # The object ID of a user, service principal or security group in the Azure Active Directory tenant for the vault.
   object_id = azurerm_user_assigned_identity.this.principal_id
 
-  certificate_permissions = var.certificate_permissions
-  key_permissions         = var.key_permissions
-  secret_permissions      = var.secret_permissions
+  certificate_permissions = var.key_vault_certificate_permissions
+  key_permissions         = var.key_vault_key_permissions
+  secret_permissions      = var.key_vault_secret_permissions
 
   depends_on = [
     azurerm_user_assigned_identity.this
@@ -69,8 +67,6 @@ resource "azurerm_key_vault_access_policy" "this" {
 }
 
 resource "azurerm_key_vault_secret" "workload_identity_client_id" {
-  count = var.kv_configure_enabled ? 1 : 0
-
   key_vault_id = var.key_vault_id
   name         = "${local.workload_identity_name}-client-id"
   value        = azurerm_user_assigned_identity.this.client_id
