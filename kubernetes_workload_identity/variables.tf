@@ -2,11 +2,6 @@ locals {
   workload_identity_name = var.workload_identity_full_name ? var.workload_identity_full_name : "${var.workload_name_prefix}-workload-identity"
 }
 
-variable "location" {
-  type        = string
-  description = "(Required) Location of the Kubernetes cluster."
-}
-
 variable "workload_name_prefix" {
   type        = string
   description = "(Required) The name prefix of the user assigned identity and Workload identity. Changing this forces a new identity to be created."

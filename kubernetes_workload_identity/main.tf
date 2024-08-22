@@ -8,7 +8,7 @@ resource "azurerm_user_assigned_identity" "this" {
   name = local.workload_identity_name
 
   resource_group_name = var.workload_identity_resource_group_name
-  location            = var.location
+  location            = data.azurerm_kubernetes_cluster.aks.location
 }
 
 resource "azurerm_federated_identity_credential" "workload_identity_federation" {
