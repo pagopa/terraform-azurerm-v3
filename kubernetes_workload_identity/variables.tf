@@ -7,11 +7,6 @@ variable "location" {
   description = "(Required) Location of the Kubernetes cluster."
 }
 
-variable "tenant_id" {
-  type        = string
-  description = "(Required) The Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Changing this forces a new resource to be created."
-}
-
 variable "workload_name_prefix" {
   type        = string
   description = "(Required) The name prefix of the user assigned identity and Workload identity. Changing this forces a new identity to be created."
@@ -83,7 +78,6 @@ variable "kv_configure_enabled" {
 variable "key_vault_id" {
   type        = any
   description = "(Required) Specifies the id of the Key Vault resource. Changing this forces a new resource to be created."
-  default     = null
 }
 
 variable "secret_permissions" {

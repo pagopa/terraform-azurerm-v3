@@ -54,7 +54,7 @@ resource "azurerm_key_vault_access_policy" "this" {
   count = var.kv_configure_enabled ? 0 : 1
 
   key_vault_id = var.key_vault_id
-  tenant_id    = var.tenant_id
+  tenant_id    = azurerm_user_assigned_identity.this.tenant_id
 
   # The object ID of a user, service principal or security group in the Azure Active Directory tenant for the vault.
   object_id = azurerm_user_assigned_identity.this.principal_id
