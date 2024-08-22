@@ -30,7 +30,7 @@ resource "kubernetes_service_account_v1" "workload_identity_sa" {
     namespace = var.namespace
     annotations = merge(
       {
-      "azure.workload.identity/client-id" = azurerm_user_assigned_identity.this.client_id
+        "azure.workload.identity/client-id" = azurerm_user_assigned_identity.this.client_id
       },
       var.service_account_annotations
     )

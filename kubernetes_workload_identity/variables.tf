@@ -8,9 +8,9 @@ variable "workload_name_prefix" {
 }
 
 variable "workload_identity_full_name" {
-  type = string
+  type        = string
   description = "(Optional) The full name for the user assigned identity and Workload identity. Changing this forces a new identity to be created."
-  default = null
+  default     = null
 }
 
 variable "workload_identity_resource_group_name" {
@@ -38,27 +38,27 @@ variable "namespace" {
 }
 
 variable "service_account_configuration_enabled" {
-  type = string
+  type        = string
   description = "(Optional) Enabled the service account configuration"
-  default = true
+  default     = true
 }
 
 variable "service_account_annotations" {
-  type = map(string)
+  type        = map(string)
   description = "(Optional) More annotations for service account"
-  default = {}
+  default     = {}
 }
 
 variable "service_account_labels" {
-  type = map(string)
+  type        = map(string)
   description = "(Optional) More Labels for service account"
-  default = {}
+  default     = {}
 }
 
 variable "service_account_image_pull_secret_names" {
-  type = set(string)
+  type        = set(string)
   description = "(Optional) Sets of image pull secert names"
-  default = []
+  default     = []
 }
 
 #
