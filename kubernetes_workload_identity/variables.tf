@@ -1,5 +1,5 @@
 locals {
-  workload_identity_name = var.workload_identity_full_name ? var.workload_identity_full_name : "${var.workload_name_prefix}-workload-identity"
+  workload_identity_name = var.workload_identity_full_name != null ? var.workload_identity_full_name : "${var.workload_name_prefix}-workload-identity"
 }
 
 variable "workload_name_prefix" {
