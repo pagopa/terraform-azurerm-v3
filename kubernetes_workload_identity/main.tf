@@ -41,7 +41,7 @@ resource "kubernetes_service_account_v1" "workload_identity_sa" {
   dynamic "image_pull_secret" {
     for_each = var.service_account_image_pull_secret_names
     content {
-      image_pull_secert = image_pull_secret.key
+      name = image_pull_secret.key
     }
   }
 }
