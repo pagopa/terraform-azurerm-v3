@@ -1,6 +1,13 @@
 # kubernetes pod identity
 
-Module that allows the creation of a pod identity. Check <https://docs.microsoft.com/en-us/azure/aks/use-azure-ad-pod-identity#create-an-aks-cluster-with-kubenet-network-plugin> or <https://docs.microsoft.com/en-us/azure/aks/use-azure-ad-pod-identity#run-a-sample-application> for more information.
+Module that allows the creation of a workload identity.
+
+To enable workload identity this others resources are created:
+
+* user managed identity
+* federated identity
+* key vault policy
+* service account with user managed client id
 
 ## Architecture
 
@@ -8,28 +15,22 @@ Module that allows the creation of a pod identity. Check <https://docs.microsoft
 
 ## How to use it
 
-```ts
-module "domain_pod_identity" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_pod_identity?ref=v8.8.0"
+```hcl
+module "workload_identity" {
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_workload_identity?ref=workload-identity-setup"
 
-  resource_group_name = local.aks_resource_group_name
-  location            = var.location
-  tenant_id           = data.azurerm_subscription.current.tenant_id
-  cluster_name        = local.aks_name
+  workload_name_prefix                  = var.domain
+  workload_identity_resource_group_name = data.azurerm_kubernetes_cluster.aks.resource_group_name
+  aks_name                              = data.azurerm_kubernetes_cluster.aks.name
+  aks_resource_group_name               = data.azurerm_kubernetes_cluster.aks.resource_group_name
+  namespace                             = var.domain
 
-  identity_name = "${var.domain}-pod-identity"
-  namespace     = kubernetes_namespace.domain_namespace.metadata[0].name
-  key_vault_id  = data.azurerm_key_vault.kv.id
-
-  secret_permissions = ["Get"]
+  key_vault_id                      = data.azurerm_key_vault.kv_domain.id
+  key_vault_certificate_permissions = ["Get"]
+  key_vault_key_permissions         = ["Get"]
+  key_vault_secret_permissions      = ["Get"]
 }
 ```
-
-## Migration from v2
-
-1️⃣ Arguments changed:
-
-* `certificate_permissions`, `key_permissions` and `secret_permissions` related to keyvault access policy, must start with a capitol letter. E.g [Backup Delete Get List Purge Recover Restore Set]
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
