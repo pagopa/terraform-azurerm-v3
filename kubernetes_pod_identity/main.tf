@@ -39,6 +39,7 @@ resource "null_resource" "create_pod_identity" {
         --cluster-name ${self.triggers.cluster_name} \
         --namespace ${self.triggers.namespace} \
         --name ${self.triggers.name} \
+        --verbose \
         --identity-resource-id ${self.triggers.identity_id}
 
       echo "✅ pod identity created"
@@ -54,6 +55,7 @@ resource "null_resource" "create_pod_identity" {
     when    = destroy
     command = <<EOT
       az aks pod-identity delete \
+        --verbose \
         --resource-group ${self.triggers.resource_group} \
         --cluster-name ${self.triggers.cluster_name} \
         --namespace ${self.triggers.namespace} \
