@@ -34,13 +34,14 @@ resource "null_resource" "create_pod_identity" {
 
   provisioner "local-exec" {
     command = <<EOT
+      echo "🔨 start creation pod Identity"
       az aks pod-identity add \
         --resource-group ${self.triggers.resource_group} \
         --cluster-name ${self.triggers.cluster_name} \
         --namespace ${self.triggers.namespace} \
         --name ${self.triggers.name} \
         --verbose \
-        --identity-resource-id ${self.triggers.identity_id}
+        --identity-resource-id ${self.triggers.identity_id} && echo "✅ podIdentity created" || echo "❌ Error during podIdentity creation"
 
       echo "✅ pod identity created"
 
@@ -54,6 +55,7 @@ resource "null_resource" "create_pod_identity" {
   provisioner "local-exec" {
     when    = destroy
     command = <<EOT
+      echo "🔨 start destroy pod Identity"
       az aks pod-identity delete \
         --verbose \
         --resource-group ${self.triggers.resource_group} \
