@@ -59,9 +59,7 @@ resource "null_resource" "create_pod_identity" {
         --resource-group ${self.triggers.resource_group} \
         --cluster-name ${self.triggers.cluster_name} \
         --namespace ${self.triggers.namespace} \
-        --name ${self.triggers.name}
-
-      echo "✅ pod identity deleted"
+        --name ${self.triggers.name} && echo "✅ podIdentity deleted" || echo "❌ Error during podIdentity delete"
 
       az aks pod-identity list \
         --resource-group ${self.triggers.resource_group} \
