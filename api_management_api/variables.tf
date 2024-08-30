@@ -105,3 +105,12 @@ variable "version_set_id" {
   description = "The ID of the Version Set which this API is associated with."
   default     = null
 }
+
+variable "subscription_key_names" {
+  type = object({
+    header = string
+    query  = string
+  })
+  description = "Override the default name of the header and query string containing the subscription key header"
+  default     = null
+}
