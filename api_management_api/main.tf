@@ -27,6 +27,13 @@ resource "azurerm_api_management_api" "this" {
     content_value  = var.content_value
   }
 
+  dynamic "subscription_key_parameter_names" {
+    for_each = var.subscription_key_names == null ? [] : ["dummy"]
+    content {
+      header = var.subscription_key_names.header
+      query  = var.subscription_key_names.query
+    }
+  }
 }
 
 resource "azurerm_api_management_api_policy" "this" {

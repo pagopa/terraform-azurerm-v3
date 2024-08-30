@@ -99,6 +99,7 @@ No modules.
 | <a name="input_revision"></a> [revision](#input\_revision) | n/a | `string` | `"1"` | no |
 | <a name="input_revision_description"></a> [revision\_description](#input\_revision\_description) | n/a | `string` | `null` | no |
 | <a name="input_service_url"></a> [service\_url](#input\_service\_url) | n/a | `string` | n/a | yes |
+| <a name="input_subscription_key_names"></a> [subscription\_key\_names](#input\_subscription\_key\_names) | Override the default name of the header and query string containing the subscription key header | <pre>object({<br>    header = string<br>    query  = string<br>  })</pre> | `null` | no |
 | <a name="input_subscription_required"></a> [subscription\_required](#input\_subscription\_required) | Should this API require a subscription key? | `bool` | `false` | no |
 | <a name="input_version_set_id"></a> [version\_set\_id](#input\_version\_set\_id) | The ID of the Version Set which this API is associated with. | `string` | `null` | no |
 | <a name="input_xml_content"></a> [xml\_content](#input\_xml\_content) | The XML Content for this Policy as a string | `string` | `null` | no |
