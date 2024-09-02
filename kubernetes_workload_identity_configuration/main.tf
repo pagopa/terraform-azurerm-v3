@@ -4,19 +4,19 @@ data "azurerm_kubernetes_cluster" "aks" {
 }
 
 data "azurerm_user_assigned_identity" "this" {
-  name                = var.workload_identity_name
+  name                = local.workload_identity_name
   resource_group_name = var.workload_identity_resource_group_name
 }
 
 #------------------------------------------------------------------------------
 
 resource "azurerm_federated_identity_credential" "workload_identity_federation" {
-  name                = var.workload_identity_name
+  name                = local.workload_identity_name
   resource_group_name = var.workload_identity_resource_group_name
   audience            = ["api://AzureADTokenExchange"]
   issuer              = data.azurerm_kubernetes_cluster.aks.oidc_issuer_url
   parent_id           = data.azurerm_user_assigned_identity.this.id
-  subject             = "system:serviceaccount:${var.namespace}:${var.workload_identity_name}"
+  subject             = "system:serviceaccount:${var.namespace}:${local.workload_identity_name}"
 
   depends_on = [
     data.azurerm_user_assigned_identity.this
@@ -29,7 +29,7 @@ resource "azurerm_federated_identity_credential" "workload_identity_federation" 
 resource "kubernetes_service_account_v1" "workload_identity_sa" {
   count = var.service_account_configuration_enabled ? 1 : 0
   metadata {
-    name      = var.workload_identity_name
+    name      = local.workload_identity_name
     namespace = var.namespace
     annotations = merge(
       {
@@ -75,6 +75,6 @@ resource "azurerm_key_vault_access_policy" "this" {
 
 resource "azurerm_key_vault_secret" "workload_identity_client_id" {
   key_vault_id = var.key_vault_id
-  name         = "${var.workload_identity_name}-client-id"
+  name         = "${local.workload_identity_name}-client-id"
   value        = data.azurerm_user_assigned_identity.this.client_id
 }
