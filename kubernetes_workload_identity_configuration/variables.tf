@@ -1,13 +1,9 @@
-locals {
-  workload_identity_name = var.workload_identity_full_name != null ? var.workload_identity_full_name : "${var.workload_name_prefix}-workload-identity"
-}
-
 variable "workload_name_prefix" {
   type        = string
   description = "(Required) The name prefix of the user assigned identity and Workload identity. Changing this forces a new identity to be created."
 }
 
-variable "workload_identity_full_name" {
+variable "workload_identity_name" {
   type        = string
   description = "(Optional) The full name for the user assigned identity and Workload identity. Changing this forces a new identity to be created."
   default     = null

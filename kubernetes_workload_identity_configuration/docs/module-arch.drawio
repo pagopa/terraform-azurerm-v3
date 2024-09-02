@@ -1,0 +1,74 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.5 Chrome/126.0.6478.183 Electron/31.3.0 Safari/537.36" version="24.7.5">
+  <diagram id="ozIA6NuR--no_rFxZAqq" name="Page-1">
+    <mxGraphModel dx="1878" dy="988" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wyt2ktpQZS7VqZ2dQxVH-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.037;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=18;sketch=1;" parent="1" source="wyt2ktpQZS7VqZ2dQxVH-1" target="wyt2ktpQZS7VqZ2dQxVH-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wyt2ktpQZS7VqZ2dQxVH-4" value="Request Access Policy" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=18;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;" parent="wyt2ktpQZS7VqZ2dQxVH-3" vertex="1" connectable="0">
+          <mxGeometry x="-0.0634" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wyt2ktpQZS7VqZ2dQxVH-1" value="User&lt;br style=&quot;font-size: 18px;&quot;&gt;Managed Identity" style="sketch=0;aspect=fixed;html=1;points=[];align=center;image;fontSize=18;image=img/lib/mscae/Managed_Identities.svg;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;" parent="1" vertex="1">
+          <mxGeometry x="200" y="240" width="60.8" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wyt2ktpQZS7VqZ2dQxVH-2" value="" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=18;image=img/lib/azure2/security/Key_Vaults.svg;sketch=0;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;" parent="1" vertex="1">
+          <mxGeometry x="640" y="240" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wyt2ktpQZS7VqZ2dQxVH-6" value="" style="rounded=1;whiteSpace=wrap;html=1;sketch=0;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=18;arcSize=3;" parent="1" vertex="1">
+          <mxGeometry x="160" y="520" width="480" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="wyt2ktpQZS7VqZ2dQxVH-7" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;image;fontSize=18;image=img/lib/mscae/Kubernetes_Services.svg;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;" parent="1" vertex="1">
+          <mxGeometry x="110" y="480" width="108.11" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wyt2ktpQZS7VqZ2dQxVH-8" value="" style="rounded=1;whiteSpace=wrap;html=1;sketch=0;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=18;arcSize=4;" parent="1" vertex="1">
+          <mxGeometry x="240" y="600" width="360" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wyt2ktpQZS7VqZ2dQxVH-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;sketch=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.525;entryY=1.025;entryDx=0;entryDy=0;entryPerimeter=0;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=18;curved=1;exitX=0.995;exitY=0.63;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="wyt2ktpQZS7VqZ2dQxVH-14" target="wyt2ktpQZS7VqZ2dQxVH-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="760" y="730" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wyt2ktpQZS7VqZ2dQxVH-13" value="POD can read&lt;br style=&quot;font-size: 18px;&quot;&gt;KV resources&lt;br style=&quot;font-size: 18px;&quot;&gt;using workload identity" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=18;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;" parent="wyt2ktpQZS7VqZ2dQxVH-12" vertex="1" connectable="0">
+          <mxGeometry x="0.2627" y="29" relative="1" as="geometry">
+            <mxPoint x="37" y="-126" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wyt2ktpQZS7VqZ2dQxVH-9" value="namespace" style="sketch=0;html=1;dashed=0;whitespace=wrap;fillColor=#2875E2;strokeColor=#ffffff;points=[[0.005,0.63,0],[0.1,0.2,0],[0.9,0.2,0],[0.5,0,0],[0.995,0.63,0],[0.72,0.99,0],[0.5,1,0],[0.28,0.99,0]];shape=mxgraph.kubernetes.icon;prIcon=ns;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=18;labelPosition=center;verticalLabelPosition=bottom;align=center;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="200" y="560" width="80" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="wyt2ktpQZS7VqZ2dQxVH-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;sketch=1;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=18;curved=1;exitX=0.987;exitY=0.913;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.9;entryY=0.2;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="wyt2ktpQZS7VqZ2dQxVH-1" target="wyt2ktpQZS7VqZ2dQxVH-9" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="313" />
+              <mxPoint x="380" y="575" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="xrH80FmCDJYERrUyLHNJ-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;curved=1;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=18;" edge="1" parent="1" source="wyt2ktpQZS7VqZ2dQxVH-14" target="xrH80FmCDJYERrUyLHNJ-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wyt2ktpQZS7VqZ2dQxVH-14" value="POD&lt;br style=&quot;font-size: 18px;&quot;&gt;(uses workload identity)" style="sketch=1;html=1;dashed=0;whitespace=wrap;fillColor=#2875E2;strokeColor=#ffffff;points=[[0.005,0.63,0],[0.1,0.2,0],[0.9,0.2,0],[0.5,0,0],[0.995,0.63,0],[0.72,0.99,0],[0.5,1,0],[0.28,0.99,0]];shape=mxgraph.kubernetes.icon;prIcon=pod;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=18;labelPosition=center;verticalLabelPosition=bottom;align=center;verticalAlign=top;curveFitting=1;jiggle=2;" parent="1" vertex="1">
+          <mxGeometry x="310" y="616" width="85" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="xrH80FmCDJYERrUyLHNJ-1" value="service account" style="aspect=fixed;sketch=0;html=1;dashed=0;whitespace=wrap;verticalLabelPosition=bottom;verticalAlign=top;fillColor=#2875E2;strokeColor=#ffffff;points=[[0.005,0.63,0],[0.1,0.2,0],[0.9,0.2,0],[0.5,0,0],[0.995,0.63,0],[0.72,0.99,0],[0.5,1,0],[0.28,0.99,0]];shape=mxgraph.kubernetes.icon2;kubernetesLabel=1;prIcon=sa;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="470" y="720" width="93.75" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="xrH80FmCDJYERrUyLHNJ-3" value="Entra" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=18;image=img/lib/azure2/other/Entra_Identity.svg;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;" vertex="1" parent="1">
+          <mxGeometry x="42" y="40" width="90.01" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="xrH80FmCDJYERrUyLHNJ-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.165;entryDx=0;entryDy=0;entryPerimeter=0;curved=1;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=18;sketch=1;curveFitting=1;jiggle=2;" edge="1" parent="1" source="wyt2ktpQZS7VqZ2dQxVH-1" target="xrH80FmCDJYERrUyLHNJ-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="xrH80FmCDJYERrUyLHNJ-6" value="Federated Identity Credentials" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=18;" vertex="1" connectable="0" parent="xrH80FmCDJYERrUyLHNJ-5">
+          <mxGeometry x="0.0929" y="2" relative="1" as="geometry">
+            <mxPoint x="136" y="17" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
