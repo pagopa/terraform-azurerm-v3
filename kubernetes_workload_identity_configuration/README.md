@@ -1,10 +1,10 @@
-# kubernetes pod identity
+# kubernetes workload identity configuration
 
-Module that allows the creation of a workload identity.
+Module that allows the configuration of a workload identity.
 
-To enable workload identity this others resources are created:
+To enable workload identity this others resources are created/configured:
 
-* user managed identity
+* user managed identity (already present into the system)
 * federated identity
 * key vault policy
 * service account with user managed client id
@@ -54,9 +54,9 @@ No modules.
 | [azurerm_federated_identity_credential.workload_identity_federation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/federated_identity_credential) | resource |
 | [azurerm_key_vault_access_policy.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_access_policy) | resource |
 | [azurerm_key_vault_secret.workload_identity_client_id](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
-| [azurerm_user_assigned_identity.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
 | [kubernetes_service_account_v1.workload_identity_sa](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account_v1) | resource |
 | [azurerm_kubernetes_cluster.aks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/kubernetes_cluster) | data source |
+| [azurerm_user_assigned_identity.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/user_assigned_identity) | data source |
 
 ## Inputs
 
@@ -73,9 +73,8 @@ No modules.
 | <a name="input_service_account_configuration_enabled"></a> [service\_account\_configuration\_enabled](#input\_service\_account\_configuration\_enabled) | (Optional) Enabled the service account configuration | `string` | `true` | no |
 | <a name="input_service_account_image_pull_secret_names"></a> [service\_account\_image\_pull\_secret\_names](#input\_service\_account\_image\_pull\_secret\_names) | (Optional) Sets of image pull secert names | `set(string)` | `[]` | no |
 | <a name="input_service_account_labels"></a> [service\_account\_labels](#input\_service\_account\_labels) | (Optional) More Labels for service account | `map(string)` | `{}` | no |
-| <a name="input_workload_identity_full_name"></a> [workload\_identity\_full\_name](#input\_workload\_identity\_full\_name) | (Optional) The full name for the user assigned identity and Workload identity. Changing this forces a new identity to be created. | `string` | `null` | no |
+| <a name="input_workload_identity_name"></a> [workload\_identity\_name](#input\_workload\_identity\_name) | (Required) The full name for the user assigned identity and Workload identity. Changing this forces a new identity to be created. | `string` | n/a | yes |
 | <a name="input_workload_identity_resource_group_name"></a> [workload\_identity\_resource\_group\_name](#input\_workload\_identity\_resource\_group\_name) | (Required) Resource group for the workload identity. | `string` | n/a | yes |
-| <a name="input_workload_name_prefix"></a> [workload\_name\_prefix](#input\_workload\_name\_prefix) | (Required) The name prefix of the user assigned identity and Workload identity. Changing this forces a new identity to be created. | `string` | n/a | yes |
 
 ## Outputs
 
