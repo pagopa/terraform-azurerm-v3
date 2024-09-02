@@ -761,6 +761,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_aks_resource_group_name"></a> [aks\_resource\_group\_name](#output\_aks\_resource\_group\_name) | AKS resource group name where the aks was installed |
 | <a name="output_fqdn"></a> [fqdn](#output\_fqdn) | The FQDN of the Azure Kubernetes Managed Cluster. |
 | <a name="output_id"></a> [id](#output\_id) | n/a |
 | <a name="output_identity_principal_id"></a> [identity\_principal\_id](#output\_identity\_principal\_id) | The Principal ID associated with this Managed Service Identity. |

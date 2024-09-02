@@ -83,8 +83,12 @@ No modules.
 |------|-------------|
 | <a name="output_user_assigned_identity_client_id"></a> [user\_assigned\_identity\_client\_id](#output\_user\_assigned\_identity\_client\_id) | n/a |
 | <a name="output_user_assigned_identity_id"></a> [user\_assigned\_identity\_id](#output\_user\_assigned\_identity\_id) | n/a |
+| <a name="output_user_assigned_identity_name"></a> [user\_assigned\_identity\_name](#output\_user\_assigned\_identity\_name) | n/a |
+| <a name="output_user_assigned_identity_principal_id"></a> [user\_assigned\_identity\_principal\_id](#output\_user\_assigned\_identity\_principal\_id) | n/a |
+| <a name="output_user_assigned_identity_resource_group_name"></a> [user\_assigned\_identity\_resource\_group\_name](#output\_user\_assigned\_identity\_resource\_group\_name) | n/a |
 | <a name="output_workload_identity_client_id"></a> [workload\_identity\_client\_id](#output\_workload\_identity\_client\_id) | n/a |
 | <a name="output_workload_identity_client_id_secret_name"></a> [workload\_identity\_client\_id\_secret\_name](#output\_workload\_identity\_client\_id\_secret\_name) | n/a |
+| <a name="output_workload_identity_principal_id"></a> [workload\_identity\_principal\_id](#output\_workload\_identity\_principal\_id) | n/a |
 | <a name="output_workload_identity_service_account_name"></a> [workload\_identity\_service\_account\_name](#output\_workload\_identity\_service\_account\_name) | n/a |
 | <a name="output_workload_identity_service_account_namespace"></a> [workload\_identity\_service\_account\_namespace](#output\_workload\_identity\_service\_account\_namespace) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -37,3 +37,8 @@ output "managed_resource_group_id" {
   value       = azurerm_kubernetes_cluster.this.node_resource_group_id
   description = "The ID of the Resource Group containing the resources for this Managed Kubernetes Cluster."
 }
+
+output "aks_resource_group_name" {
+  value       = azurerm_kubernetes_cluster.this.resource_group_name
+  description = "AKS resource group name where the aks was installed"
+}
