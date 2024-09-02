@@ -38,30 +38,17 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [azurerm_federated_identity_credential.workload_identity_federation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/federated_identity_credential) | resource |
-| [azurerm_key_vault_access_policy.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_access_policy) | resource |
-| [azurerm_key_vault_secret.workload_identity_client_id](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
+| [azurerm_management_lock.managed_identity_lock](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_lock) | resource |
 | [azurerm_user_assigned_identity.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
-| [kubernetes_service_account_v1.workload_identity_sa](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account_v1) | resource |
-| [azurerm_kubernetes_cluster.aks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/kubernetes_cluster) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aks_name"></a> [aks\_name](#input\_aks\_name) | (Required) Name of the Kubernetes cluster. | `string` | n/a | yes |
-| <a name="input_aks_resource_group_name"></a> [aks\_resource\_group\_name](#input\_aks\_resource\_group\_name) | (Required) Resource group of the Kubernetes cluster. | `string` | n/a | yes |
-| <a name="input_key_vault_certificate_permissions"></a> [key\_vault\_certificate\_permissions](#input\_key\_vault\_certificate\_permissions) | (Required) API permissions of the identity to access certificates, must be one or more from the following: Backup, Create, Delete, DeleteIssuers, Get, GetIssuers, Import, List, ListIssuers, ManageContacts, ManageIssuers, Purge, Recover, Restore, SetIssuers and Update. | `list(string)` | n/a | yes |
-| <a name="input_key_vault_id"></a> [key\_vault\_id](#input\_key\_vault\_id) | (Required) Specifies the id of the Key Vault resource. Changing this forces a new resource to be created. | `any` | n/a | yes |
-| <a name="input_key_vault_key_permissions"></a> [key\_vault\_key\_permissions](#input\_key\_vault\_key\_permissions) | (Required) API permissions of the identity to access keys, must be one or more from the following: Backup, Create, Decrypt, Delete, Encrypt, Get, Import, List, Purge, Recover, Restore, Sign, UnwrapKey, Update, Verify and WrapKey. | `list(string)` | n/a | yes |
-| <a name="input_key_vault_secret_permissions"></a> [key\_vault\_secret\_permissions](#input\_key\_vault\_secret\_permissions) | (Required) API permissions of the identity to access secrets, must be one or more from the following: Backup, Delete, Get, List, Purge, Recover, Restore and Set. | `list(string)` | n/a | yes |
-| <a name="input_namespace"></a> [namespace](#input\_namespace) | (Required) Kubernetes namespace where the pod identity will be create. | `string` | n/a | yes |
-| <a name="input_service_account_annotations"></a> [service\_account\_annotations](#input\_service\_account\_annotations) | (Optional) More annotations for service account | `map(string)` | `{}` | no |
-| <a name="input_service_account_configuration_enabled"></a> [service\_account\_configuration\_enabled](#input\_service\_account\_configuration\_enabled) | (Optional) Enabled the service account configuration | `string` | `true` | no |
-| <a name="input_service_account_image_pull_secret_names"></a> [service\_account\_image\_pull\_secret\_names](#input\_service\_account\_image\_pull\_secret\_names) | (Optional) Sets of image pull secert names | `set(string)` | `[]` | no |
-| <a name="input_service_account_labels"></a> [service\_account\_labels](#input\_service\_account\_labels) | (Optional) More Labels for service account | `map(string)` | `{}` | no |
+| <a name="input_enable_lock"></a> [enable\_lock](#input\_enable\_lock) | Allow to enable of disable lock for managed identity | `bool` | `true` | no |
 | <a name="input_workload_identity_full_name"></a> [workload\_identity\_full\_name](#input\_workload\_identity\_full\_name) | (Optional) The full name for the user assigned identity and Workload identity. Changing this forces a new identity to be created. | `string` | `null` | no |
-| <a name="input_workload_identity_resource_group_name"></a> [workload\_identity\_resource\_group\_name](#input\_workload\_identity\_resource\_group\_name) | (Required) Resource group for the workload identity. | `string` | n/a | yes |
+| <a name="input_workload_identity_location"></a> [workload\_identity\_location](#input\_workload\_identity\_location) | (Required) The Azure Region where the User Assigned Identity should exist. Changing this forces a new User Assigned Identity to be created. | `string` | n/a | yes |
+| <a name="input_workload_identity_resource_group_name"></a> [workload\_identity\_resource\_group\_name](#input\_workload\_identity\_resource\_group\_name) | (Required) Specifies the name of the Resource Group within which this User Assigned Identity should exist. Changing this forces a new User Assigned Identity to be created. | `string` | n/a | yes |
 | <a name="input_workload_name_prefix"></a> [workload\_name\_prefix](#input\_workload\_name\_prefix) | (Required) The name prefix of the user assigned identity and Workload identity. Changing this forces a new identity to be created. | `string` | n/a | yes |
 
 ## Outputs
@@ -74,8 +61,5 @@ No modules.
 | <a name="output_user_assigned_identity_principal_id"></a> [user\_assigned\_identity\_principal\_id](#output\_user\_assigned\_identity\_principal\_id) | n/a |
 | <a name="output_user_assigned_identity_resource_group_name"></a> [user\_assigned\_identity\_resource\_group\_name](#output\_user\_assigned\_identity\_resource\_group\_name) | n/a |
 | <a name="output_workload_identity_client_id"></a> [workload\_identity\_client\_id](#output\_workload\_identity\_client\_id) | n/a |
-| <a name="output_workload_identity_client_id_secret_name"></a> [workload\_identity\_client\_id\_secret\_name](#output\_workload\_identity\_client\_id\_secret\_name) | n/a |
 | <a name="output_workload_identity_principal_id"></a> [workload\_identity\_principal\_id](#output\_workload\_identity\_principal\_id) | n/a |
-| <a name="output_workload_identity_service_account_name"></a> [workload\_identity\_service\_account\_name](#output\_workload\_identity\_service\_account\_name) | n/a |
-| <a name="output_workload_identity_service_account_namespace"></a> [workload\_identity\_service\_account\_namespace](#output\_workload\_identity\_service\_account\_namespace) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
