@@ -1,11 +1,21 @@
+locals {
+  workload_identity_name = var.workload_identity_name != null ? var.workload_identity_name : "${var.workload_identity_name_prefix}-workload-identity"
+}
+
+variable "workload_identity_name_prefix" {
+  type        = string
+  description = "(Required) The prefix name for the user assigned identity and Workload identity. Changing this forces a new configuration to be created."
+}
+
 variable "workload_identity_name" {
   type        = string
-  description = "(Required) The full name for the user assigned identity and Workload identity. Changing this forces a new identity to be created."
+  description = "(Required) The full name for the user assigned identity and Workload identity. Changing this forces a new configuration to be created."
+  default     = null
 }
 
 variable "workload_identity_resource_group_name" {
   type        = string
-  description = "(Required) Resource group for the workload identity."
+  description = "(Required) Resource group for the workload identity. Changing this forces a new configuration to be created."
 }
 
 #
