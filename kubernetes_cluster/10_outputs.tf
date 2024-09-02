@@ -39,6 +39,6 @@ output "managed_resource_group_id" {
 }
 
 output "aks_resource_group_name" {
-  value = azurerm_kubernetes_cluster.this.resource_group_name
+  value       = azurerm_kubernetes_cluster.this.resource_group_name
   description = "AKS resource group name where the aks was installed"
 }
