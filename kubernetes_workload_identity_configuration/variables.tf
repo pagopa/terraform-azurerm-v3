@@ -5,8 +5,7 @@ variable "workload_name_prefix" {
 
 variable "workload_identity_name" {
   type        = string
-  description = "(Optional) The full name for the user assigned identity and Workload identity. Changing this forces a new identity to be created."
-  default     = null
+  description = "(Required) The full name for the user assigned identity and Workload identity. Changing this forces a new identity to be created."
 }
 
 variable "workload_identity_resource_group_name" {
