@@ -1,10 +1,10 @@
-# kubernetes pod identity
+# kubernetes workload identity configuration
 
-Module that allows the creation of a workload identity.
+Module that allows the configuration of a workload identity.
 
-To enable workload identity this others resources are created:
+To enable workload identity this others resources are created/configured:
 
-* user managed identity
+* user managed identity (already present into the system)
 * federated identity
 * key vault policy
 * service account with user managed client id

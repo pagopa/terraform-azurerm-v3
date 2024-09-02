@@ -5,9 +5,7 @@ data "azurerm_kubernetes_cluster" "aks" {
 
 data "azurerm_user_assigned_identity" "this" {
   name = var.workload_identity_name
-
   resource_group_name = var.workload_identity_resource_group_name
-  location            = data.azurerm_kubernetes_cluster.aks.location
 }
 
 #------------------------------------------------------------------------------

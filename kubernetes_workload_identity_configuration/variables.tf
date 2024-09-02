@@ -1,8 +1,3 @@
-variable "workload_name_prefix" {
-  type        = string
-  description = "(Required) The name prefix of the user assigned identity and Workload identity. Changing this forces a new identity to be created."
-}
-
 variable "workload_identity_name" {
   type        = string
   description = "(Required) The full name for the user assigned identity and Workload identity. Changing this forces a new identity to be created."
