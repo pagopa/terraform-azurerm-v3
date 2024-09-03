@@ -1,5 +1,6 @@
 locals {
-  workload_identity_name = var.workload_identity_name != null ? var.workload_identity_name : "${var.workload_identity_name_prefix}-workload-identity"
+  workload_identity_name                  = var.workload_identity_name != null ? var.workload_identity_name : "${var.workload_identity_name_prefix}-workload-identity"
+  workload_identity_client_id_secret_name = "${local.workload_identity_name}-client-id"
 }
 
 variable "workload_identity_name_prefix" {
@@ -64,22 +65,32 @@ variable "service_account_image_pull_secret_names" {
 #
 # Key Vault Permissions
 #
+variable "key_vault_configuration_enabled" {
+  type        = bool
+  description = "(Optional) Enabled the configuration for key vault operations"
+  default     = true
+}
+
 variable "key_vault_id" {
   type        = any
   description = "(Required) Specifies the id of the Key Vault resource. Changing this forces a new resource to be created."
+  default     = null
 }
 
 variable "key_vault_secret_permissions" {
   type        = list(string)
   description = "(Required) API permissions of the identity to access secrets, must be one or more from the following: Backup, Delete, Get, List, Purge, Recover, Restore and Set."
+  default     = null
 }
 
 variable "key_vault_key_permissions" {
   type        = list(string)
   description = "(Required) API permissions of the identity to access keys, must be one or more from the following: Backup, Create, Decrypt, Delete, Encrypt, Get, Import, List, Purge, Recover, Restore, Sign, UnwrapKey, Update, Verify and WrapKey."
+  default     = null
 }
 
 variable "key_vault_certificate_permissions" {
   type        = list(string)
   description = "(Required) API permissions of the identity to access certificates, must be one or more from the following: Backup, Create, Delete, DeleteIssuers, Get, GetIssuers, Import, List, ListIssuers, ManageContacts, ManageIssuers, Purge, Recover, Restore, SetIssuers and Update."
+  default     = null
 }

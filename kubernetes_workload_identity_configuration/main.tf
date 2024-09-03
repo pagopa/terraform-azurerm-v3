@@ -1,3 +1,9 @@
+resource "null_resource" "workload_identity_oidc_issuer_enabled_check" {
+  count = var.key_vault_configuration_enabled == true && var.key_vault_certificate_permissions == null && var.key_vault_key_permissions == null && var.key_vault_secret_permissions == null ? "⚠️ At least one kv policy configuration must be configured" : 0
+}
+
+#------------------------------------------------------------------------------
+
 data "azurerm_kubernetes_cluster" "aks" {
   name                = var.aks_name
   resource_group_name = var.aks_resource_group_name
@@ -58,6 +64,7 @@ resource "kubernetes_service_account_v1" "workload_identity_sa" {
 #
 
 resource "azurerm_key_vault_access_policy" "this" {
+  count        = var.key_vault_configuration_enabled ? 1 : 0
   key_vault_id = var.key_vault_id
   tenant_id    = data.azurerm_user_assigned_identity.this.tenant_id
 
@@ -74,7 +81,9 @@ resource "azurerm_key_vault_access_policy" "this" {
 }
 
 resource "azurerm_key_vault_secret" "workload_identity_client_id" {
+  count = var.key_vault_configuration_enabled ? 1 : 0
+
   key_vault_id = var.key_vault_id
-  name         = "${local.workload_identity_name}-client-id"
+  name         = local.workload_identity_client_id_secret_name
   value        = data.azurerm_user_assigned_identity.this.client_id
 }
