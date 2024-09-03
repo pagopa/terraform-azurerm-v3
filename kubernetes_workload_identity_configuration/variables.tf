@@ -1,5 +1,6 @@
 locals {
   workload_identity_name = var.workload_identity_name != null ? var.workload_identity_name : "${var.workload_identity_name_prefix}-workload-identity"
+  workload_identity_client_id_secret_name = "${local.workload_identity_name}-client-id"
 }
 
 variable "workload_identity_name_prefix" {
@@ -79,17 +80,17 @@ variable "key_vault_id" {
 variable "key_vault_secret_permissions" {
   type        = list(string)
   description = "(Required) API permissions of the identity to access secrets, must be one or more from the following: Backup, Delete, Get, List, Purge, Recover, Restore and Set."
-  default     = [""]
+  default     = null
 }
 
 variable "key_vault_key_permissions" {
   type        = list(string)
   description = "(Required) API permissions of the identity to access keys, must be one or more from the following: Backup, Create, Decrypt, Delete, Encrypt, Get, Import, List, Purge, Recover, Restore, Sign, UnwrapKey, Update, Verify and WrapKey."
-  default     = [""]
+  default     = null
 }
 
 variable "key_vault_certificate_permissions" {
   type        = list(string)
   description = "(Required) API permissions of the identity to access certificates, must be one or more from the following: Backup, Create, Delete, DeleteIssuers, Get, GetIssuers, Import, List, ListIssuers, ManageContacts, ManageIssuers, Purge, Recover, Restore, SetIssuers and Update."
-  default     = [""]
+  default     = null
 }
