@@ -55,6 +55,7 @@ No modules.
 | [azurerm_key_vault_access_policy.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_access_policy) | resource |
 | [azurerm_key_vault_secret.workload_identity_client_id](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [kubernetes_service_account_v1.workload_identity_sa](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account_v1) | resource |
+| [null_resource.workload_identity_oidc_issuer_enabled_check](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [azurerm_kubernetes_cluster.aks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/kubernetes_cluster) | data source |
 | [azurerm_user_assigned_identity.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/user_assigned_identity) | data source |
 
@@ -64,11 +65,11 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_aks_name"></a> [aks\_name](#input\_aks\_name) | (Required) Name of the Kubernetes cluster. | `string` | n/a | yes |
 | <a name="input_aks_resource_group_name"></a> [aks\_resource\_group\_name](#input\_aks\_resource\_group\_name) | (Required) Resource group of the Kubernetes cluster. | `string` | n/a | yes |
-| <a name="input_key_vault_certificate_permissions"></a> [key\_vault\_certificate\_permissions](#input\_key\_vault\_certificate\_permissions) | (Required) API permissions of the identity to access certificates, must be one or more from the following: Backup, Create, Delete, DeleteIssuers, Get, GetIssuers, Import, List, ListIssuers, ManageContacts, ManageIssuers, Purge, Recover, Restore, SetIssuers and Update. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
+| <a name="input_key_vault_certificate_permissions"></a> [key\_vault\_certificate\_permissions](#input\_key\_vault\_certificate\_permissions) | (Required) API permissions of the identity to access certificates, must be one or more from the following: Backup, Create, Delete, DeleteIssuers, Get, GetIssuers, Import, List, ListIssuers, ManageContacts, ManageIssuers, Purge, Recover, Restore, SetIssuers and Update. | `list(string)` | `null` | no |
 | <a name="input_key_vault_configuration_enabled"></a> [key\_vault\_configuration\_enabled](#input\_key\_vault\_configuration\_enabled) | (Optional) Enabled the configuration for key vault operations | `bool` | `true` | no |
 | <a name="input_key_vault_id"></a> [key\_vault\_id](#input\_key\_vault\_id) | (Required) Specifies the id of the Key Vault resource. Changing this forces a new resource to be created. | `any` | `null` | no |
-| <a name="input_key_vault_key_permissions"></a> [key\_vault\_key\_permissions](#input\_key\_vault\_key\_permissions) | (Required) API permissions of the identity to access keys, must be one or more from the following: Backup, Create, Decrypt, Delete, Encrypt, Get, Import, List, Purge, Recover, Restore, Sign, UnwrapKey, Update, Verify and WrapKey. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
-| <a name="input_key_vault_secret_permissions"></a> [key\_vault\_secret\_permissions](#input\_key\_vault\_secret\_permissions) | (Required) API permissions of the identity to access secrets, must be one or more from the following: Backup, Delete, Get, List, Purge, Recover, Restore and Set. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
+| <a name="input_key_vault_key_permissions"></a> [key\_vault\_key\_permissions](#input\_key\_vault\_key\_permissions) | (Required) API permissions of the identity to access keys, must be one or more from the following: Backup, Create, Decrypt, Delete, Encrypt, Get, Import, List, Purge, Recover, Restore, Sign, UnwrapKey, Update, Verify and WrapKey. | `list(string)` | `null` | no |
+| <a name="input_key_vault_secret_permissions"></a> [key\_vault\_secret\_permissions](#input\_key\_vault\_secret\_permissions) | (Required) API permissions of the identity to access secrets, must be one or more from the following: Backup, Delete, Get, List, Purge, Recover, Restore and Set. | `list(string)` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | (Required) Kubernetes namespace where the pod identity will be create. | `string` | n/a | yes |
 | <a name="input_service_account_annotations"></a> [service\_account\_annotations](#input\_service\_account\_annotations) | (Optional) More annotations for service account | `map(string)` | `{}` | no |
 | <a name="input_service_account_configuration_enabled"></a> [service\_account\_configuration\_enabled](#input\_service\_account\_configuration\_enabled) | (Optional) Enabled the service account configuration | `string` | `true` | no |
@@ -83,12 +84,12 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_user_assigned_identity_client_id"></a> [user\_assigned\_identity\_client\_id](#output\_user\_assigned\_identity\_client\_id) | n/a |
-| <a name="output_user_assigned_identity_id"></a> [user\_assigned\_identity\_id](#output\_user\_assigned\_identity\_id) | n/a |
+| <a name="output_user_assigned_identity_id"></a> [user\_assigned\_identity\_id](#output\_user\_assigned\_identity\_id) | User assigned identity |
 | <a name="output_user_assigned_identity_name"></a> [user\_assigned\_identity\_name](#output\_user\_assigned\_identity\_name) | n/a |
 | <a name="output_user_assigned_identity_principal_id"></a> [user\_assigned\_identity\_principal\_id](#output\_user\_assigned\_identity\_principal\_id) | n/a |
 | <a name="output_user_assigned_identity_resource_group_name"></a> [user\_assigned\_identity\_resource\_group\_name](#output\_user\_assigned\_identity\_resource\_group\_name) | n/a |
-| <a name="output_workload_identity_client_id"></a> [workload\_identity\_client\_id](#output\_workload\_identity\_client\_id) | n/a |
-| <a name="output_workload_identity_client_id_secret_name"></a> [workload\_identity\_client\_id\_secret\_name](#output\_workload\_identity\_client\_id\_secret\_name) | n/a |
+| <a name="output_workload_identity_client_id"></a> [workload\_identity\_client\_id](#output\_workload\_identity\_client\_id) | Workload identity |
+| <a name="output_workload_identity_client_id_secret_name"></a> [workload\_identity\_client\_id\_secret\_name](#output\_workload\_identity\_client\_id\_secret\_name) | KV |
 | <a name="output_workload_identity_principal_id"></a> [workload\_identity\_principal\_id](#output\_workload\_identity\_principal\_id) | n/a |
 | <a name="output_workload_identity_service_account_name"></a> [workload\_identity\_service\_account\_name](#output\_workload\_identity\_service\_account\_name) | n/a |
 | <a name="output_workload_identity_service_account_namespace"></a> [workload\_identity\_service\_account\_namespace](#output\_workload\_identity\_service\_account\_namespace) | n/a |
