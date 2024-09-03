@@ -58,6 +58,7 @@ resource "kubernetes_service_account_v1" "workload_identity_sa" {
 #
 
 resource "azurerm_key_vault_access_policy" "this" {
+  count = var.key_vault_configuration_enabled ? 1 : 0
   key_vault_id = var.key_vault_id
   tenant_id    = data.azurerm_user_assigned_identity.this.tenant_id
 
@@ -74,6 +75,8 @@ resource "azurerm_key_vault_access_policy" "this" {
 }
 
 resource "azurerm_key_vault_secret" "workload_identity_client_id" {
+  count = var.key_vault_configuration_enabled ? 1 : 0
+
   key_vault_id = var.key_vault_id
   name         = "${local.workload_identity_name}-client-id"
   value        = data.azurerm_user_assigned_identity.this.client_id

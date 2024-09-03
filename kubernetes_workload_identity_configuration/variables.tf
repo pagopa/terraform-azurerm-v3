@@ -64,22 +64,32 @@ variable "service_account_image_pull_secret_names" {
 #
 # Key Vault Permissions
 #
+variable "key_vault_configuration_enabled" {
+  type = bool
+  description = "(Optional) Enabled the configuration for key vault operations"
+  default = true
+}
+
 variable "key_vault_id" {
   type        = any
   description = "(Required) Specifies the id of the Key Vault resource. Changing this forces a new resource to be created."
+  default = null
 }
 
 variable "key_vault_secret_permissions" {
   type        = list(string)
   description = "(Required) API permissions of the identity to access secrets, must be one or more from the following: Backup, Delete, Get, List, Purge, Recover, Restore and Set."
+  default = [""]
 }
 
 variable "key_vault_key_permissions" {
   type        = list(string)
   description = "(Required) API permissions of the identity to access keys, must be one or more from the following: Backup, Create, Decrypt, Delete, Encrypt, Get, Import, List, Purge, Recover, Restore, Sign, UnwrapKey, Update, Verify and WrapKey."
+  default = [""]
 }
 
 variable "key_vault_certificate_permissions" {
   type        = list(string)
   description = "(Required) API permissions of the identity to access certificates, must be one or more from the following: Backup, Create, Delete, DeleteIssuers, Get, GetIssuers, Import, List, ListIssuers, ManageContacts, ManageIssuers, Purge, Recover, Restore, SetIssuers and Update."
+  default = [""]
 }
