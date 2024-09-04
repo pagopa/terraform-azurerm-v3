@@ -44,5 +44,5 @@ output "workload_identity_service_account_namespace" {
 # KV
 #
 output "workload_identity_client_id_secret_name" {
-  value = data.azurerm_user_assigned_identity.this.client_id
+  value = local.workload_identity_client_id_secret_name_title
 }

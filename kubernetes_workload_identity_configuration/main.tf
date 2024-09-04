@@ -84,6 +84,14 @@ resource "azurerm_key_vault_secret" "workload_identity_client_id" {
   count = var.key_vault_configuration_enabled ? 1 : 0
 
   key_vault_id = var.key_vault_id
-  name         = local.workload_identity_client_id_secret_name
+  name         = local.workload_identity_client_id_secret_name_title
   value        = data.azurerm_user_assigned_identity.this.client_id
+}
+
+resource "azurerm_key_vault_secret" "workload_identity_service_account_name" {
+  count = var.key_vault_configuration_enabled ? 1 : 0
+
+  key_vault_id = var.key_vault_id
+  name         = local.workload_identity_service_account_name_title
+  value        = local.workload_identity_name
 }
