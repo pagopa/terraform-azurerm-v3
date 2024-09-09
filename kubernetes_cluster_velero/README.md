@@ -65,7 +65,7 @@ In order to use this module you need Velero installed locally and/or on your dev
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | ../storage_account | n/a |
-| <a name="module_velero_workload_identity_config"></a> [velero\_workload\_identity\_config](#module\_velero\_workload\_identity\_config) | ../kubernetes_workload_identity_configuration | n/a |
+| <a name="module_velero_workload_identity"></a> [velero\_workload\_identity](#module\_velero\_workload\_identity) | ../kubernetes_workload_identity_configuration | n/a |
 
 ## Resources
 
@@ -73,6 +73,8 @@ In order to use this module you need Velero installed locally and/or on your dev
 |------|------|
 | [azurerm_private_endpoint.velero_storage_private_endpoint](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_storage_container.velero_backup_container](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
+| [kubernetes_cluster_role.velero_workload_identity](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role) | resource |
+| [kubernetes_cluster_role_binding.velero_binding](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role_binding) | resource |
 | [local_file.credentials](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
 | [null_resource.install_velero](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |

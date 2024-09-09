@@ -68,7 +68,7 @@ resource "azurerm_storage_container" "velero_backup_container" {
 
 data "azuread_client_config" "current" {}
 
-module "velero_workload_identity_config" {
+module "velero_workload_identity" {
   source = "../kubernetes_workload_identity_configuration"
 
   aks_name                              = var.aks_cluster_name
@@ -81,6 +81,61 @@ module "velero_workload_identity_config" {
   key_vault_key_permissions         = ["Get"]
   key_vault_secret_permissions      = ["Get"]
   key_vault_id                      = var.key_vault_id
+}
+
+resource "kubernetes_cluster_role" "velero_workload_identity" {
+  metadata {
+    name = "velero-workload-identity"
+  }
+
+  rule {
+    api_groups = [""]
+    resources  = ["namespaces"]
+    verbs      = ["get", "list"]
+  }
+
+  rule {
+    api_groups = [""]
+    resources  = ["pods", "persistentvolumeclaims", "persistentvolumes"]
+    verbs      = ["get", "list", "watch"]
+  }
+
+  rule {
+    api_groups = ["batch", "extensions"]
+    resources  = ["jobs"]
+    verbs      = ["create", "delete", "get", "list", "watch"]
+  }
+
+  rule {
+    api_groups = ["velero.io"]
+    resources  = ["*"]
+    verbs      = ["get", "list", "watch", "create", "update", "patch", "delete"]
+  }
+
+  rule {
+    api_groups = [""]
+    resources  = ["secrets"]
+    verbs      = ["get", "list", "create", "update", "delete"]
+  }
+
+}
+
+resource "kubernetes_cluster_role_binding" "velero_binding" {
+  metadata {
+    name = "velero-workload-identity"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = kubernetes_cluster_role.velero_workload_identity.metadata[0].name
+  }
+
+  subject {
+    namespace = "velero"
+    kind      = "ServiceAccount"
+    name      = "velero-workload-identity"
+  }
 }
 
 resource "local_file" "credentials" {
@@ -113,14 +168,14 @@ resource "null_resource" "install_velero" {
     service_account_name  = "velero-workload-identity"
   }
 
-  #  provisioner "local-exec" {
-  #    when    = destroy
-  #    command = <<EOT
-  #    kubectl config use-context "${self.triggers.cluster_name}" && \
-  #    velero uninstall --force
-  #    EOT
-  #  }
-  #
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOT
+      kubectl config use-context "${self.triggers.cluster_name}" && \
+      velero uninstall --force
+      EOT
+  }
+
   provisioner "local-exec" {
     command = <<EOT
     kubectl config use-context "${self.triggers.cluster_name}" && \
