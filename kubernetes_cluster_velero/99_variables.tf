@@ -21,7 +21,7 @@ variable "subscription_id" {
 variable "plugin_version" {
   type        = string
   description = "(Optional) Version for the velero plugin"
-  default     = "v1.7.1"
+  default     = "v1.10.0"
 }
 
 variable "prefix" {
