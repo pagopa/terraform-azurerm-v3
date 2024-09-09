@@ -63,6 +63,10 @@ variable "use_storage_private_endpoint" {
   default     = true
 }
 
+variable "workload_identity_resource_group_name" {
+  type        = string
+  description = "(Required) Specifies the name of the Resource Group within which this User Assigned Identity should exist. Changing this forces a new User Assigned Identity to be created."
+}
 
 variable "storage_account_tier" {
   type        = string

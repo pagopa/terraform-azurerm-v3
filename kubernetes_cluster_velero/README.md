@@ -64,22 +64,15 @@ In order to use this module you need Velero installed locally and/or on your dev
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v8.16.0 |
+| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | ../storage_account | n/a |
+| <a name="module_velero_workload_identity"></a> [velero\_workload\_identity](#module\_velero\_workload\_identity) | ../kubernetes_workload_identity_configuration | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [azuread_application.velero_application](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application) | resource |
-| [azuread_application_password.velero_application_password](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_password) | resource |
-| [azuread_service_principal.velero_sp](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
-| [azuread_service_principal_password.velero_principal_password](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal_password) | resource |
 | [azurerm_private_endpoint.velero_storage_private_endpoint](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
-| [azurerm_role_assignment.velero_sp_aks_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
-| [azurerm_role_assignment.velero_sp_storage_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_storage_container.velero_backup_container](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
-| [local_file.credentials](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
-| [null_resource.install_velero](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
 | [azurerm_kubernetes_cluster.aks_cluster](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/kubernetes_cluster) | data source |
 
@@ -107,6 +100,7 @@ In order to use this module you need Velero installed locally and/or on your dev
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | n/a | yes |
 | <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id) | (Required) ID of the tenant | `string` | n/a | yes |
 | <a name="input_use_storage_private_endpoint"></a> [use\_storage\_private\_endpoint](#input\_use\_storage\_private\_endpoint) | (Optional) Whether to make the storage account private and use a private endpoint to connect | `bool` | `true` | no |
+| <a name="input_workload_identity_resource_group_name"></a> [workload\_identity\_resource\_group\_name](#input\_workload\_identity\_resource\_group\_name) | (Required) Specifies the name of the Resource Group within which this User Assigned Identity should exist. Changing this forces a new User Assigned Identity to be created. | `string` | n/a | yes |
 
 ## Outputs
 
