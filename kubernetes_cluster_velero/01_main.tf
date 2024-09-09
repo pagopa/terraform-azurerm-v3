@@ -15,7 +15,7 @@ module "velero_storage_account" {
   account_tier                    = var.storage_account_tier
   account_replication_type        = var.storage_account_replication_type
   blob_versioning_enabled         = true
-  resource_group_name             = var.resource_group_name
+  resource_group_name             = var.storage_account_resource_group_name
   location                        = var.location
   allow_nested_items_to_be_public = false
   advanced_threat_protection      = var.advanced_threat_protection
@@ -40,7 +40,7 @@ resource "azurerm_private_endpoint" "velero_storage_private_endpoint" {
 
   name                = "${var.prefix}-velerosa-private-endpoint"
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = var.storage_account_resource_group_name
   subnet_id           = var.private_endpoint_subnet_id
 
   private_dns_zone_group {
@@ -77,6 +77,11 @@ module "velero_workload_identity" {
   namespace                             = "velero"
   workload_identity_name_prefix         = "velero"
   workload_identity_resource_group_name = var.workload_identity_resource_group_name
+
+  key_vault_certificate_permissions = ["Get"]
+  key_vault_key_permissions         = ["Get"]
+  key_vault_secret_permissions      = ["Get"]
+  key_vault_id                      = var.key_vault_id
 }
 
 #resource "local_file" "credentials" {

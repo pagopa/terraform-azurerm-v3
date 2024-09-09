@@ -1,11 +1,6 @@
-variable "resource_group_name" {
+variable "storage_account_resource_group_name" {
   type        = string
   description = "(Required) Name of the resource group in which the backup storage account is located"
-}
-
-variable "backup_storage_container_name" {
-  type        = string
-  description = "(Required) Name of the storage container where Velero keeps the backups"
 }
 
 variable "aks_cluster_name" {
@@ -23,11 +18,6 @@ variable "subscription_id" {
   description = "(Required) ID of the subscription"
 }
 
-variable "tenant_id" {
-  type        = string
-  description = "(Required) ID of the tenant"
-}
-
 variable "plugin_version" {
   type        = string
   description = "(Optional) Version for the velero plugin"
@@ -38,7 +28,6 @@ variable "prefix" {
   type        = string
   description = "(Required) Prefix used in the Velero dedicated resource names"
 }
-
 
 variable "location" {
   type        = string
@@ -108,6 +97,11 @@ variable "enable_low_availability_alert" {
   type        = string
   description = "(Optional) Enable the Low Availability alert. Default is true"
   default     = true
+}
+
+variable "key_vault_id" {
+  type        = any
+  description = "(Required) Specifies the id of the Key Vault resource. Changing this forces a new resource to be created."
 }
 
 variable "tags" {
