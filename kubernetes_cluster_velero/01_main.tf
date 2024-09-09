@@ -68,9 +68,8 @@ resource "azurerm_storage_container" "velero_backup_container" {
 
 data "azuread_client_config" "current" {}
 
-module "velero_workload_identity" {
+module "velero_workload_identity_config" {
   source = "../kubernetes_workload_identity_configuration"
-
 
   aks_name                              = var.aks_cluster_name
   aks_resource_group_name               = var.aks_cluster_rg
@@ -82,6 +81,14 @@ module "velero_workload_identity" {
   key_vault_key_permissions         = ["Get"]
   key_vault_secret_permissions      = ["Get"]
   key_vault_id                      = var.key_vault_id
+}
+
+module "velero_workload_identity_init" {
+  source = "../kubernetes_workload_identity_init"
+
+  workload_identity_location            = var.location
+  workload_identity_name_prefix         = null
+  workload_identity_resource_group_name = var.workload_identity_resource_group_name
 }
 
 #resource "local_file" "credentials" {
