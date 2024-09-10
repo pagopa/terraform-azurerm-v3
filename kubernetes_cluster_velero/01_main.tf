@@ -2,11 +2,6 @@ locals {
   sa_prefix = replace(replace(var.prefix, "-", ""), "_", "")
 }
 
-data "azurerm_kubernetes_cluster" "aks_cluster" {
-  name                = var.aks_cluster_name
-  resource_group_name = var.aks_cluster_rg
-}
-
 module "velero_storage_account" {
   source = "../storage_account"
 
@@ -74,7 +69,8 @@ module "velero_workload_identity" {
   aks_name                              = var.aks_cluster_name
   aks_resource_group_name               = var.aks_cluster_rg
   namespace                             = "velero"
-  workload_identity_name_prefix         = "velero"
+  workload_identity_name                = var.workload_identity_name
+  workload_identity_name_prefix         = null
   workload_identity_resource_group_name = var.workload_identity_resource_group_name
 
   key_vault_certificate_permissions = ["Get"]
@@ -83,58 +79,21 @@ module "velero_workload_identity" {
   key_vault_id                      = var.key_vault_id
 }
 
-resource "kubernetes_cluster_role" "velero_workload_identity" {
-  metadata {
-    name = "velero-workload-identity"
-  }
-
-  rule {
-    api_groups = [""]
-    resources  = ["namespaces"]
-    verbs      = ["get", "list"]
-  }
-
-  rule {
-    api_groups = [""]
-    resources  = ["pods", "persistentvolumeclaims", "persistentvolumes"]
-    verbs      = ["get", "list", "watch"]
-  }
-
-  rule {
-    api_groups = ["batch", "extensions"]
-    resources  = ["jobs"]
-    verbs      = ["create", "delete", "get", "list", "watch"]
-  }
-
-  rule {
-    api_groups = ["velero.io"]
-    resources  = ["*"]
-    verbs      = ["get", "list", "watch", "create", "update", "patch", "delete"]
-  }
-
-  rule {
-    api_groups = [""]
-    resources  = ["secrets"]
-    verbs      = ["get", "list", "create", "update", "delete"]
-  }
-
-}
-
 resource "kubernetes_cluster_role_binding" "velero_binding" {
   metadata {
-    name = "velero-workload-identity"
+    name = "velero-role-binding"
   }
 
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "ClusterRole"
-    name      = kubernetes_cluster_role.velero_workload_identity.metadata[0].name
+    name      = "cluster-admin"
   }
 
   subject {
     namespace = "velero"
     kind      = "ServiceAccount"
-    name      = "velero-workload-identity"
+    name      = var.workload_identity_name
   }
 }
 
@@ -152,8 +111,7 @@ resource "local_file" "credentials" {
     ]
   }
 }
-#
-#
+
 resource "null_resource" "install_velero" {
   depends_on = [local_file.credentials]
 
@@ -165,7 +123,8 @@ resource "null_resource" "install_velero" {
     plugin_version        = var.plugin_version
     cluster_name          = var.aks_cluster_name
     credentials_file_name = local_file.credentials.filename
-    service_account_name  = "velero-workload-identity"
+    storage_account_uri   = module.velero_storage_account.primary_blob_endpoint
+    service_account_name  = var.workload_identity_name
   }
 
   provisioner "local-exec" {
@@ -179,13 +138,14 @@ resource "null_resource" "install_velero" {
   provisioner "local-exec" {
     command = <<EOT
     kubectl config use-context "${self.triggers.cluster_name}" && \
-    velero install --provider azure \
+    velero install \
+        --provider azure \
         --service-account-name ${self.triggers.service_account_name} \
         --pod-labels azure.workload.identity/use=true \
         --plugins velero/velero-plugin-for-microsoft-azure:${self.triggers.plugin_version} \
         --bucket ${self.triggers.bucket} \
         --secret-file ${self.triggers.credentials_file_name} \
-        --backup-location-config useAAD="true",resourceGroup=${self.triggers.resource_group},storageAccount=${self.triggers.storage_account},subscriptionId=${self.triggers.subscription_id} \
+        --backup-location-config storageAccountURI=${self.triggers.storage_account_uri},useAAD="true",resourceGroup=${self.triggers.resource_group},storageAccount=${self.triggers.storage_account},subscriptionId=${self.triggers.subscription_id}
     EOT
   }
 
