@@ -107,9 +107,9 @@ variable "patch_schedules" {
 }
 
 variable "data_persistence_authentication_method" {
-  type = string
+  type        = string
   description = " (Optional) Preferred auth method to communicate to storage account used for data persistence. Possible values are SAS and ManagedIdentity. Defaults to ManagedIdentity."
-  default = "ManagedIdentity"
+  default     = "ManagedIdentity"
 }
 
 variable "tags" {
