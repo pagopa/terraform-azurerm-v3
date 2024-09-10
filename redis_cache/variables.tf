@@ -106,6 +106,12 @@ variable "patch_schedules" {
   default = []
 }
 
+variable "data_persistence_authentication_method" {
+  type        = string
+  description = " (Optional) Preferred auth method to communicate to storage account used for data persistence. Possible values are SAS and ManagedIdentity. Defaults to SAS."
+  default     = "SAS"
+}
+
 variable "tags" {
   type = map(any)
 }

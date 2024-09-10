@@ -69,6 +69,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_backup_configuration"></a> [backup\_configuration](#input\_backup\_configuration) | n/a | <pre>object({<br>    frequency                 = number<br>    max_snapshot_count        = number<br>    storage_connection_string = string<br>  })</pre> | `null` | no |
 | <a name="input_capacity"></a> [capacity](#input\_capacity) | The size of the Redis cache to deploy | `number` | `1` | no |
+| <a name="input_data_persistence_authentication_method"></a> [data\_persistence\_authentication\_method](#input\_data\_persistence\_authentication\_method) | (Optional) Preferred auth method to communicate to storage account used for data persistence. Possible values are SAS and ManagedIdentity. Defaults to SAS. | `string` | `"SAS"` | no |
 | <a name="input_enable_authentication"></a> [enable\_authentication](#input\_enable\_authentication) | If set to false, the Redis instance will be accessible without authentication. Defaults to true. | `bool` | `true` | no |
 | <a name="input_enable_non_ssl_port"></a> [enable\_non\_ssl\_port](#input\_enable\_non\_ssl\_port) | Enable the non-SSL port (6379) - disabled by default. | `bool` | `false` | no |
 | <a name="input_family"></a> [family](#input\_family) | The SKU family/pricing group to use | `string` | n/a | yes |
