@@ -7,6 +7,7 @@ locals {
 variable "workload_identity_name_prefix" {
   type        = string
   description = "(Required) The prefix name for the user assigned identity and Workload identity. Changing this forces a new configuration to be created."
+  default     = null
 }
 
 variable "workload_identity_name" {
