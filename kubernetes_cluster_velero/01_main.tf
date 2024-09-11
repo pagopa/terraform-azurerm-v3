@@ -70,7 +70,6 @@ module "velero_workload_identity" {
   aks_resource_group_name               = var.aks_cluster_rg
   namespace                             = "velero"
   workload_identity_name                = var.workload_identity_name
-  workload_identity_name_prefix         = null
   workload_identity_resource_group_name = var.workload_identity_resource_group_name
 
   key_vault_certificate_permissions = ["Get"]
