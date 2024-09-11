@@ -1,5 +1,9 @@
-resource "null_resource" "workload_identity_oidc_issuer_enabled_check" {
+resource "null_resource" "workload_identity_kv_conf_check" {
   count = var.key_vault_configuration_enabled == true && var.key_vault_certificate_permissions == null && var.key_vault_key_permissions == null && var.key_vault_secret_permissions == null ? "⚠️ At least one kv policy configuration must be configured" : 0
+}
+
+resource "null_resource" "workload_identity_name_check" {
+  count = var.workload_identity_name == null && var.workload_identity_name_prefix == null ? "⚠️ At least one between name prefix or name must be fill" : 0
 }
 
 #------------------------------------------------------------------------------

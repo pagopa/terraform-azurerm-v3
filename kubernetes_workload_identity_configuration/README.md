@@ -56,7 +56,8 @@ No modules.
 | [azurerm_key_vault_secret.workload_identity_client_id](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_key_vault_secret.workload_identity_service_account_name](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [kubernetes_service_account_v1.workload_identity_sa](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account_v1) | resource |
-| [null_resource.workload_identity_oidc_issuer_enabled_check](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.workload_identity_kv_conf_check](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.workload_identity_name_check](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [azurerm_kubernetes_cluster.aks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/kubernetes_cluster) | data source |
 | [azurerm_user_assigned_identity.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/user_assigned_identity) | data source |
 
@@ -77,7 +78,7 @@ No modules.
 | <a name="input_service_account_image_pull_secret_names"></a> [service\_account\_image\_pull\_secret\_names](#input\_service\_account\_image\_pull\_secret\_names) | (Optional) Sets of image pull secert names | `set(string)` | `[]` | no |
 | <a name="input_service_account_labels"></a> [service\_account\_labels](#input\_service\_account\_labels) | (Optional) More Labels for service account | `map(string)` | `{}` | no |
 | <a name="input_workload_identity_name"></a> [workload\_identity\_name](#input\_workload\_identity\_name) | (Required) The full name for the user assigned identity and Workload identity. Changing this forces a new configuration to be created. | `string` | `null` | no |
-| <a name="input_workload_identity_name_prefix"></a> [workload\_identity\_name\_prefix](#input\_workload\_identity\_name\_prefix) | (Required) The prefix name for the user assigned identity and Workload identity. Changing this forces a new configuration to be created. | `string` | n/a | yes |
+| <a name="input_workload_identity_name_prefix"></a> [workload\_identity\_name\_prefix](#input\_workload\_identity\_name\_prefix) | (Required) The prefix name for the user assigned identity and Workload identity. Changing this forces a new configuration to be created. | `string` | `null` | no |
 | <a name="input_workload_identity_resource_group_name"></a> [workload\_identity\_resource\_group\_name](#input\_workload\_identity\_resource\_group\_name) | (Required) Resource group for the workload identity. Changing this forces a new configuration to be created. | `string` | n/a | yes |
 
 ## Outputs
