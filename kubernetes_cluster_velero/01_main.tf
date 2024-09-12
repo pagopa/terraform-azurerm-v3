@@ -3,7 +3,7 @@ locals {
 }
 
 module "velero_storage_account" {
-  source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.43.2"
+  source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.44.0"
 
   name                            = "${local.sa_prefix}velerosa"
   account_kind                    = var.storage_account_kind
@@ -64,7 +64,7 @@ resource "azurerm_storage_container" "velero_backup_container" {
 data "azuread_client_config" "current" {}
 
 module "velero_workload_identity" {
-  source = "github.com/pagopa/terraform-azurerm-v3.git//kubernetes_workload_identity_configuration?ref=v8.43.2"
+  source = "github.com/pagopa/terraform-azurerm-v3.git//kubernetes_workload_identity_configuration?ref=v8.44.0"
 
   aks_name                              = var.aks_cluster_name
   aks_resource_group_name               = var.aks_cluster_rg

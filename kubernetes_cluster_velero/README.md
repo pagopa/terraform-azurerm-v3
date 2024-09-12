@@ -64,8 +64,8 @@ In order to use this module you need Velero installed locally and/or on your dev
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v8.43.2 |
-| <a name="module_velero_workload_identity"></a> [velero\_workload\_identity](#module\_velero\_workload\_identity) | github.com/pagopa/terraform-azurerm-v3.git//kubernetes_workload_identity_configuration | v8.43.2 |
+| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v8.44.0 |
+| <a name="module_velero_workload_identity"></a> [velero\_workload\_identity](#module\_velero\_workload\_identity) | github.com/pagopa/terraform-azurerm-v3.git//kubernetes_workload_identity_configuration | v8.44.0 |
 
 ## Resources
 
