@@ -64,14 +64,15 @@ In order to use this module you need Velero installed locally and/or on your dev
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | ../storage_account | n/a |
-| <a name="module_velero_workload_identity"></a> [velero\_workload\_identity](#module\_velero\_workload\_identity) | ../kubernetes_workload_identity_configuration | n/a |
+| <a name="module_velero_storage_account"></a> [velero\_storage\_account](#module\_velero\_storage\_account) | github.com/pagopa/terraform-azurerm-v3.git//storage_account | v8.43.2 |
+| <a name="module_velero_workload_identity"></a> [velero\_workload\_identity](#module\_velero\_workload\_identity) | github.com/pagopa/terraform-azurerm-v3.git//kubernetes_workload_identity_configuration | v8.43.2 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [azurerm_private_endpoint.velero_storage_private_endpoint](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
+| [azurerm_role_assignment.velero_workload_identity_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_storage_container.velero_backup_container](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
 | [kubernetes_cluster_role_binding.velero_binding](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role_binding) | resource |
 | [local_file.credentials](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |

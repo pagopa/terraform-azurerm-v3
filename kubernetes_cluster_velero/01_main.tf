@@ -3,7 +3,7 @@ locals {
 }
 
 module "velero_storage_account" {
-  source = "../storage_account"
+  source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.43.2"
 
   name                            = "${local.sa_prefix}velerosa"
   account_kind                    = var.storage_account_kind
@@ -64,7 +64,7 @@ resource "azurerm_storage_container" "velero_backup_container" {
 data "azuread_client_config" "current" {}
 
 module "velero_workload_identity" {
-  source = "../kubernetes_workload_identity_configuration"
+  source = "github.com/pagopa/terraform-azurerm-v3.git//kubernetes_workload_identity_configuration?ref=v8.43.2"
 
   aks_name                              = var.aks_cluster_name
   aks_resource_group_name               = var.aks_cluster_rg
@@ -154,4 +154,10 @@ resource "null_resource" "install_velero" {
       azurerm_storage_container.velero_backup_container,
     ]
   }
+}
+
+resource "azurerm_role_assignment" "velero_workload_identity_role" {
+  scope                = module.velero_storage_account.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = module.velero_workload_identity.workload_identity_principal_id
 }
