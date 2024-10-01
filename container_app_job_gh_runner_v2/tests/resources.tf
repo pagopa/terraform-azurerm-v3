@@ -67,17 +67,14 @@ module "container_app_job_runner" {
   env_short           = substr(random_id.unique.hex, 0, 1) # change me with your env
 
   # sets reference to the secret which holds the GitHub PAT with access to your repos
-  key_vault = {
-    resource_group_name = azurerm_key_vault.key_vault.resource_group_name
-    name                = azurerm_key_vault.key_vault.name
-    secret_name         = var.key_vault.secret_name
-  }
+  key_vault_rg          = azurerm_key_vault.key_vault.resource_group_name
+  key_vault_name        = azurerm_key_vault.key_vault.name
+  key_vault_secret_name = var.key_vault.secret_name
+
 
   # sets reference to the log analytics workspace you want to use for logging
-  environment = {
-    name                = azurerm_container_app_environment.container_app_environment.name
-    resource_group_name = azurerm_container_app_environment.container_app_environment.resource_group_name
-  }
+  environment_name = azurerm_container_app_environment.container_app_environment.name
+  environment_rg   = azurerm_container_app_environment.container_app_environment.resource_group_name
 
   # sets job properties
   job = var.job

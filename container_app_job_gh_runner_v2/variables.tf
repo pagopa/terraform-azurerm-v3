@@ -40,13 +40,14 @@ variable "env_short" {
   }
 }
 
-variable "environment" {
-  type = object({
-    name                = string
-    resource_group_name = string
-  })
+variable "environment_name" {
+  type        = string
+  description = "(Required) Container App Environment configuration (Log Analytics Workspace)"
+}
 
-  description = "Container App Environment configuration (Log Analytics Workspace)"
+variable "environment_rg" {
+  type        = string
+  description = "(Required) Container App Environment configuration (Log Analytics Workspace)"
 }
 
 variable "container" {
@@ -117,12 +118,17 @@ variable "replica_retry_limit" {
   description = "(Optional) The maximum number of times a replica is allowed to retry."
 }
 
-variable "key_vault" {
-  type = object({
-    resource_group_name = string
-    name                = string
-    secret_name         = string
-  })
+variable "key_vault_name" {
+  type        = string
+  description = "Name of the KeyVault which stores PAT as secret"
+}
 
+variable "key_vault_rg" {
+  type        = string
+  description = "Resource group of the KeyVault which stores PAT as secret"
+}
+
+variable "key_vault_secret_name" {
+  type        = string
   description = "Data of the KeyVault which stores PAT as secret"
 }
