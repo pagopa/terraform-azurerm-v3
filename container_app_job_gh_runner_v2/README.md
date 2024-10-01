@@ -34,7 +34,6 @@ Before using the module, developer needs the following existing resources:
 
 The module creates:
 
-- a subnet (`/23`) in the specified VNet
 - a Container App job with the name `<prefix>-<short_env>-github-runner-job` on the specified Container App Environment
 - a role assignment to allow the Container App Job to read secrets from the existing KeyVault (`Get` permission over KeyVault's secrets access policies)
 
