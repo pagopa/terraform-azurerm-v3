@@ -82,5 +82,7 @@ module "container_app_job_runner" {
   # sets job properties
   job = var.job
 
+  job_meta = var.job_meta
+
   tags = var.tags
 }

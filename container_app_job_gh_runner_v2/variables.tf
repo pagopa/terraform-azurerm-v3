@@ -67,17 +67,24 @@ variable "container" {
 
 variable "job" {
   type = object({
-    name                         = string
-    repo_owner                   = optional(string, "pagopa")
-    repo                         = string
-    runner_scope                 = optional(string, "repo")
-    target_workflow_queue_length = optional(string, "1")
-    github_runner                = optional(string, "https://api.github.com")
-    scale_max_executions         = optional(number, 5)
-    scale_min_executions         = optional(number, 0)
+    name                 = string
+    scale_max_executions = optional(number, 5)
+    scale_min_executions = optional(number, 0)
   })
 
   description = "Container App job configuration"
+}
+
+variable "job_meta" {
+  type = object({
+    repo                         = string
+    repo_owner                   = optional(string, "pagopa")
+    runner_scope                 = optional(string, "repo")
+    target_workflow_queue_length = optional(string, "1")
+    github_runner                = optional(string, "https://api.github.com") #
+  })
+
+  description = "Scaling rules metadata."
 }
 
 variable "parallelism" {

@@ -38,7 +38,6 @@ variable "job" {
   type = object({
     name                 = optional(string)
     repo_owner           = optional(string)
-    repo                 = optional(string)
     polling_interval     = optional(number)
     scale_max_executions = optional(number)
   })
@@ -52,4 +51,15 @@ variable "job" {
   }
 
   description = "Container App job properties"
+}
+
+variable "job_meta" {
+  type = object({
+    repo = optional(string)
+  })
+  default = {
+    repo = "terraform-azurerm-v3"
+  }
+
+  description = "Scaling rules metadata."
 }
