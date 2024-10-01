@@ -69,13 +69,6 @@ Containers needs these environment variables to connect to GitHub, [grab a regis
 - REPO_URL: GitHub repo URL
 - REGISTRATION_TOKEN_API_URL: [GitHub API](https://docs.github.com/en/rest/actions/self-hosted-runners?apiVersion=2022-11-28#create-a-registration-token-for-a-repository) to get the registration token
 
-### Notes
-
-`azapi_resource` is required by CA because:
-
-- `azurerm` doesn't support Container App *jobs* ([feature request](https://github.com/hashicorp/terraform-provider-azurerm/issues/23165))
-- KeyVault reference not supported by `azurerm` ([feature request](https://github.com/hashicorp/terraform-provider-azurerm/issues/21739))
-
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
