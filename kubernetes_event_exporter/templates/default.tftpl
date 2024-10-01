@@ -1,0 +1,54 @@
+config:
+  receivers:
+    - file:
+        layout: {}
+        path: /dev/stdout
+      name: dump
+    %{ if enable_slack }
+    - name: "${slack_receiver_name}"
+      slack:
+        token: "${slack_token}"
+        channel: "${slack_channel}"
+        message: "${slack_message_prefix} {{ .Message }}"
+        title: "${slack_title}"
+        author_name: "${slack_author}"
+        fields:
+          namespace: "{{ .Namespace }}"
+          reason: "{{ .Reason }}"
+          object: "{{ .InvolvedObject.Name }}"
+          createdAt: "{{ .GetTimestampISO8601 }}"
+    %{ endif }
+    %{ if enable_opsgenie }
+    - name: "${opsgenie_receiver_name}"
+      opsgenie:
+        apiKey: "${opsgenie_api_key}"
+        priority: "P3"
+        message: "Event {{ .Reason }} for {{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }} on K8s cluster"
+        alias: "{{ .UID }}"
+        description: "<pre>{{ toPrettyJson . }}</pre>"
+        tags:
+          - "event"
+          - "{{ .Reason }}"
+          - "{{ .InvolvedObject.Kind }}"
+          - "{{ .InvolvedObject.Name }}"
+      %{ endif }
+  route:
+    routes:
+      - match:
+        - receiver: dump
+      %{ if enable_slack }
+      - drop:
+          - namespace: "*test*"
+          - type: "Normal"
+        match:
+          - kind: "Pod|Deployment|ReplicaSet"
+            receiver: "slack"
+      %{ endif }
+      %{ if enable_opsgenie }
+      - drop:
+          - namespace: "*test*"
+          - type: "Normal"
+        match:
+          - kind: "Pod|Deployment|ReplicaSet"
+            receiver: "alert"
+      %{ endif }
