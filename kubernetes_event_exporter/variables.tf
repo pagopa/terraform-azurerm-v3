@@ -1,20 +1,15 @@
-locals {
-  helm_chart_name = "kubernetes-event-exporter"
-}
-
 #
 # 🪖 HELM & Kubernetes
 #
 variable "namespace" {
   type        = string
-  description = "(Required) Namespace where the helm chart will be installed"
-  default     = "default"
+  description = "(Required) Namespace where the helm chart will be installed."
 }
 
-variable "helm_chart_present" {
-  type        = bool
+variable "helm_chart_name" {
+  type        = string
   description = "Is this helm chart present?"
-  default     = true
+  default     = "kubernetes-event-exporter"
 }
 
 variable "helm_chart_version" {
@@ -30,7 +25,7 @@ variable "custom_config" {
 }
 
 variable "custom_variables" {
-  type = map(string)
+  type        = map(string)
   default     = null
   description = "(Optional) This maps contains the custom variable declare by the user on the custom_config"
 }
