@@ -84,6 +84,7 @@ resource "azurerm_key_vault_access_policy" "this" {
   ]
 }
 
+#tfsec:ignore:azure-keyvault-ensure-secret-expiry tfsec:ignore:azure-keyvault-content-type-for-secret
 resource "azurerm_key_vault_secret" "workload_identity_client_id" {
   count = var.key_vault_configuration_enabled ? 1 : 0
 
@@ -92,6 +93,7 @@ resource "azurerm_key_vault_secret" "workload_identity_client_id" {
   value        = data.azurerm_user_assigned_identity.this.client_id
 }
 
+#tfsec:ignore:azure-keyvault-ensure-secret-expiry tfsec:ignore:azure-keyvault-content-type-for-secret
 resource "azurerm_key_vault_secret" "workload_identity_service_account_name" {
   count = var.key_vault_configuration_enabled ? 1 : 0
 
