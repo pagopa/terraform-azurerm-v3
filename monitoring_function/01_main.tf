@@ -68,7 +68,6 @@ resource "azurerm_storage_table_entity" "monitoring_configuration" {
     "tags"                = lookup(local.decoded_configuration[count.index], "tags", null) != null ? jsonencode(local.decoded_configuration[count.index].tags) : null
     "bodyCompareStrategy" = lookup(local.decoded_configuration[count.index], "bodyCompareStrategy", null) != null ? local.decoded_configuration[count.index].bodyCompareStrategy : null
     "expectedBody"        = lookup(local.decoded_configuration[count.index], "expectedBody", null) != null ? jsonencode(local.decoded_configuration[count.index].expectedBody) : null
-
   }
 }
 
@@ -81,8 +80,10 @@ resource "azurerm_private_endpoint" "synthetic_monitoring_storage_private_endpoi
   subnet_id           = var.private_endpoint_subnet_id
 
   private_dns_zone_group {
-    name                 = "${var.prefix}-synthetic-monitoring-private-dns-zone-group"
-    private_dns_zone_ids = [var.storage_account_settings.table_private_dns_zone_id]
+    name = "${var.prefix}-synthetic-monitoring-private-dns-zone-group"
+    private_dns_zone_ids = [
+      var.storage_account_settings.table_private_dns_zone_id
+    ]
   }
 
   private_service_connection {
@@ -95,87 +96,75 @@ resource "azurerm_private_endpoint" "synthetic_monitoring_storage_private_endpoi
   tags = var.tags
 }
 
+resource "azurerm_container_app_job" "monitoring_app_job" {
+  name                         = "${var.prefix}-monitoring-app-job"
+  resource_group_name          = var.resource_group_name
+  location                     = var.location
+  container_app_environment_id = var.job_settings.container_app_environment_id
 
-resource "azapi_resource" "monitoring_app_job" {
-  type      = "Microsoft.App/jobs@2022-11-01-preview"
-  name      = "${var.prefix}-monitoring-app-job"
-  location  = var.location
-  parent_id = data.azurerm_resource_group.parent_rg.id
-  tags      = var.tags
   identity {
     type = "SystemAssigned"
   }
-  body = jsonencode({
-    properties = {
-      configuration = {
-        registries        = []
-        replicaRetryLimit = 1
-        replicaTimeout    = var.job_settings.execution_timeout_seconds
-        scheduleTriggerConfig = {
-          cronExpression         = var.job_settings.cron_scheduling
-          parallelism            = 1
-          replicaCompletionCount = 1
-        }
-        secrets     = []
-        triggerType = "Schedule"
-      }
-      environmentId = var.job_settings.container_app_environment_id
-      template = {
-        containers = [
-          {
-            args    = []
-            command = []
-            env = [
-              {
-                name  = "APP_INSIGHT_CONNECTION_STRING"
-                value = data.azurerm_application_insights.app_insight.connection_string
-              },
-              {
-                name  = "STORAGE_ACCOUNT_NAME"
-                value = module.synthetic_monitoring_storage_account.name
-              },
-              {
-                name  = "STORAGE_ACCOUNT_KEY"
-                value = module.synthetic_monitoring_storage_account.primary_access_key
-              },
-              {
-                name  = "STORAGE_ACCOUNT_TABLE_NAME"
-                value = azurerm_storage_table.table_storage.name
-              },
-              {
-                name  = "AVAILABILITY_PREFIX"
-                value = var.job_settings.availability_prefix
-              },
-              {
-                name  = "HTTP_CLIENT_TIMEOUT"
-                value = tostring(var.job_settings.http_client_timeout)
-              },
-              {
-                name  = "LOCATION"
-                value = var.location
-              },
-              {
-                name  = "CERT_VALIDITY_RANGE_DAYS"
-                value = tostring(var.job_settings.cert_validity_range_days)
-              }
 
-            ]
-            image = "${var.docker_settings.registry_url}/${var.docker_settings.image_name}:${var.docker_settings.image_tag}"
-            name  = "synthetic-monitoring"
-            probes = [
-            ]
-            resources = {
-              cpu    = var.job_settings.cpu_requirement
-              memory = var.job_settings.memory_requirement
-            }
-            volumeMounts = []
-          }
-        ]
-        initContainers = []
-        volumes        = []
-      }
+  schedule_trigger_config {
+    cron_expression          = var.job_settings.cron_scheduling
+    parallelism              = 1
+    replica_completion_count = 1
+  }
+
+  secret {
+    name  = "APP_INSIGHT_CONNECTION_STRING"
+    value = data.azurerm_application_insights.app_insight.connection_string
+  }
+
+  secret {
+    name  = "STORAGE_ACCOUNT_NAME"
+    value = module.synthetic_monitoring_storage_account.name
+  }
+
+  secret {
+    name  = "STORAGE_ACCOUNT_KEY"
+    value = module.synthetic_monitoring_storage_account.primary_access_key
+  }
+
+  secret {
+    name  = "STORAGE_ACCOUNT_TABLE_NAME"
+    value = azurerm_storage_table.table_storage.name
+  }
+
+  secret {
+    name  = "AVAILABILITY_PREFIX"
+    value = var.job_settings.availability_prefix
+  }
+
+  secret {
+    name  = "HTTP_CLIENT_TIMEOUT"
+    value = tostring(var.job_settings.http_client_timeout)
+  }
+
+  secret {
+    name  = "LOCATION"
+    value = var.location
+  }
+
+  secret {
+    name  = "CERT_VALIDITY_RANGE_DAYS"
+    value = tostring(var.job_settings.cert_validity_range_days)
+  }
+
+  template {
+    container {
+      cpu    = var.job_settings.cpu_requirement
+      memory = var.job_settings.memory_requirement
+      name   = "synthetic-monitoring"
+      image  = "${var.docker_settings.registry_url}/${var.docker_settings.image_name}:${var.docker_settings.image_tag}"
     }
-  })
+  }
+
+  replica_retry_limit        = 1
+  replica_timeout_in_seconds = var.job_settings.execution_timeout_seconds
+
+  tags = var.tags
 }
 
 locals {
@@ -213,7 +202,9 @@ resource "azurerm_monitor_metric_alert" "alert" {
     dimension {
       name     = "availabilityResult/name"
       operator = "Include"
-      values   = ["${var.job_settings.availability_prefix}-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"]
+      values = [
+        "${var.job_settings.availability_prefix}-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"
+      ]
     }
     dimension {
       name     = "availabilityResult/location"
@@ -232,7 +223,6 @@ resource "azurerm_monitor_metric_alert" "alert" {
   }
 
 }
-
 
 
 resource "azurerm_monitor_metric_alert" "self_alert" {

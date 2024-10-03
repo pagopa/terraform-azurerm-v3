@@ -10,9 +10,5 @@ terraform {
       source  = "hashicorp/null"
       version = "~> 3.2"
     }
-    azapi = {
-      source  = "azure/azapi"
-      version = "~> 1.11.0"
-    }
   }
 }
