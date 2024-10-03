@@ -113,32 +113,32 @@ resource "azurerm_container_app_job" "monitoring_app_job" {
   }
 
   secret {
-    name  = "app_insight_connection_string"
+    name  = "app-insight-connection-string"
     value = data.azurerm_application_insights.app_insight.connection_string
   }
 
   secret {
-    name  = "storage_account_name"
+    name  = "storage-account-name"
     value = module.synthetic_monitoring_storage_account.name
   }
 
   secret {
-    name  = "storage_account_key"
+    name  = "storage-account-key"
     value = module.synthetic_monitoring_storage_account.primary_access_key
   }
 
   secret {
-    name  = "storage_account_table_name"
+    name  = "storage-account-table-name"
     value = azurerm_storage_table.table_storage.name
   }
 
   secret {
-    name  = "availability_prefix"
+    name  = "availability-prefix"
     value = var.job_settings.availability_prefix
   }
 
   secret {
-    name  = "http_client_timeout"
+    name  = "http-client-timeout"
     value = tostring(var.job_settings.http_client_timeout)
   }
 
@@ -148,7 +148,7 @@ resource "azurerm_container_app_job" "monitoring_app_job" {
   }
 
   secret {
-    name  = "cert_validity_range_days"
+    name  = "cert-validity-range-days"
     value = tostring(var.job_settings.cert_validity_range_days)
   }
 
