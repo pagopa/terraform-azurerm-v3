@@ -190,7 +190,7 @@ resource "azurerm_monitor_metric_alert" "alert" {
   description         = "Monitors the availability of ${local.decoded_configuration[count.index].appName} ${local.decoded_configuration[count.index].apiName} from ${local.decoded_configuration[count.index].type}"
   severity            = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "severity", local.default_alert_configuration.severity)
   frequency           = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "frequency", local.default_alert_configuration.frequency)
-  auto_mitigate       = true
+  auto_mitigate       = var.alert_set_auto_mitigate
   enabled             = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "enabled", local.default_alert_configuration.enabled)
 
   criteria {

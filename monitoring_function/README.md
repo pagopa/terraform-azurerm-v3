@@ -194,6 +194,7 @@ module "monitoring_function" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_alert_set_auto_mitigate"></a> [alert\_set\_auto\_mitigate](#input\_alert\_set\_auto\_mitigate) | (Optional) Should the alerts in this Metric Alert be auto resolved? Defaults to true. | `bool` | `true` | no |
 | <a name="input_application_insight_name"></a> [application\_insight\_name](#input\_application\_insight\_name) | (Required) name of the application insight instance where to publish metrics | `string` | n/a | yes |
 | <a name="input_application_insight_rg_name"></a> [application\_insight\_rg\_name](#input\_application\_insight\_rg\_name) | (Required) name of the application insight instance resource group where to publish metrics | `string` | n/a | yes |
 | <a name="input_application_insights_action_group_ids"></a> [application\_insights\_action\_group\_ids](#input\_application\_insights\_action\_group\_ids) | (Required) Application insights action group ids | `list(string)` | n/a | yes |

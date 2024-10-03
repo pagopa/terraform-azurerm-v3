@@ -127,3 +127,9 @@ variable "self_alert_configuration" {
   }
 }
 
+variable "alert_set_auto_mitigate" {
+  type        = bool
+  default     = true
+  description = "(Optional) Should the alerts in this Metric Alert be auto resolved? Defaults to true."
+}
+
