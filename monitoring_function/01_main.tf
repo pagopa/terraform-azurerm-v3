@@ -113,42 +113,42 @@ resource "azurerm_container_app_job" "monitoring_app_job" {
   }
 
   secret {
-    name  = "APP_INSIGHT_CONNECTION_STRING"
+    name  = "app_insight_connection_string"
     value = data.azurerm_application_insights.app_insight.connection_string
   }
 
   secret {
-    name  = "STORAGE_ACCOUNT_NAME"
+    name  = "storage_account_name"
     value = module.synthetic_monitoring_storage_account.name
   }
 
   secret {
-    name  = "STORAGE_ACCOUNT_KEY"
+    name  = "storage_account_key"
     value = module.synthetic_monitoring_storage_account.primary_access_key
   }
 
   secret {
-    name  = "STORAGE_ACCOUNT_TABLE_NAME"
+    name  = "storage_account_table_name"
     value = azurerm_storage_table.table_storage.name
   }
 
   secret {
-    name  = "AVAILABILITY_PREFIX"
+    name  = "availability_prefix"
     value = var.job_settings.availability_prefix
   }
 
   secret {
-    name  = "HTTP_CLIENT_TIMEOUT"
+    name  = "http_client_timeout"
     value = tostring(var.job_settings.http_client_timeout)
   }
 
   secret {
-    name  = "LOCATION"
+    name  = "location"
     value = var.location
   }
 
   secret {
-    name  = "CERT_VALIDITY_RANGE_DAYS"
+    name  = "cert_validity_range_days"
     value = tostring(var.job_settings.cert_validity_range_days)
   }
 
