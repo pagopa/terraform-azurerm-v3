@@ -96,7 +96,93 @@ resource "azurerm_private_endpoint" "synthetic_monitoring_storage_private_endpoi
   tags = var.tags
 }
 
-resource "azurerm_container_app_job" "monitoring_app_job" {
+resource "azapi_resource" "monitoring_app_job" {
+  count = var.legacy == true ? 1 : 0
+
+  type      = "Microsoft.App/jobs@2022-11-01-preview"
+  name      = "${var.prefix}-monitoring-app-job"
+  location  = var.location
+  parent_id = data.azurerm_resource_group.parent_rg.id
+  tags      = var.tags
+  identity {
+    type = "SystemAssigned"
+  }
+  body = jsonencode({
+    properties = {
+      configuration = {
+        registries        = []
+        replicaRetryLimit = 1
+        replicaTimeout    = var.job_settings.execution_timeout_seconds
+        scheduleTriggerConfig = {
+          cronExpression         = var.job_settings.cron_scheduling
+          parallelism            = 1
+          replicaCompletionCount = 1
+        }
+        secrets     = []
+        triggerType = "Schedule"
+      }
+      environmentId = var.job_settings.container_app_environment_id
+      template = {
+        containers = [
+          {
+            args    = []
+            command = []
+            env = [
+              {
+                name  = "APP_INSIGHT_CONNECTION_STRING"
+                value = data.azurerm_application_insights.app_insight.connection_string
+              },
+              {
+                name  = "STORAGE_ACCOUNT_NAME"
+                value = module.synthetic_monitoring_storage_account.name
+              },
+              {
+                name  = "STORAGE_ACCOUNT_KEY"
+                value = module.synthetic_monitoring_storage_account.primary_access_key
+              },
+              {
+                name  = "STORAGE_ACCOUNT_TABLE_NAME"
+                value = azurerm_storage_table.table_storage.name
+              },
+              {
+                name  = "AVAILABILITY_PREFIX"
+                value = var.job_settings.availability_prefix
+              },
+              {
+                name  = "HTTP_CLIENT_TIMEOUT"
+                value = tostring(var.job_settings.http_client_timeout)
+              },
+              {
+                name  = "LOCATION"
+                value = var.location
+              },
+              {
+                name  = "CERT_VALIDITY_RANGE_DAYS"
+                value = tostring(var.job_settings.cert_validity_range_days)
+              }
+
+            ]
+            image = "${var.docker_settings.registry_url}/${var.docker_settings.image_name}:${var.docker_settings.image_tag}"
+            name  = "synthetic-monitoring"
+            probes = [
+            ]
+            resources = {
+              cpu    = var.job_settings.cpu_requirement
+              memory = var.job_settings.memory_requirement
+            }
+            volumeMounts = []
+          }
+        ]
+        initContainers = []
+        volumes        = []
+      }
+    }
+  })
+}
+
+resource "azurerm_container_app_job" "monitoring_terraform_app_job" {
+  count = var.legacy == false ? 1 : 0
+
   name                         = "${var.prefix}-monitoring-app-job"
   resource_group_name          = var.resource_group_name
   location                     = var.location
@@ -112,45 +198,6 @@ resource "azurerm_container_app_job" "monitoring_app_job" {
     replica_completion_count = 1
   }
 
-  secret {
-    name  = "app-insight-connection-string"
-    value = data.azurerm_application_insights.app_insight.connection_string
-  }
-
-  secret {
-    name  = "storage-account-name"
-    value = module.synthetic_monitoring_storage_account.name
-  }
-
-  secret {
-    name  = "storage-account-key"
-    value = module.synthetic_monitoring_storage_account.primary_access_key
-  }
-
-  secret {
-    name  = "storage-account-table-name"
-    value = azurerm_storage_table.table_storage.name
-  }
-
-  secret {
-    name  = "availability-prefix"
-    value = var.job_settings.availability_prefix
-  }
-
-  secret {
-    name  = "http-client-timeout"
-    value = tostring(var.job_settings.http_client_timeout)
-  }
-
-  secret {
-    name  = "location"
-    value = var.location
-  }
-
-  secret {
-    name  = "cert-validity-range-days"
-    value = tostring(var.job_settings.cert_validity_range_days)
-  }
 
   template {
     container {
@@ -158,6 +205,39 @@ resource "azurerm_container_app_job" "monitoring_app_job" {
       memory = var.job_settings.memory_requirement
       name   = "synthetic-monitoring"
       image  = "${var.docker_settings.registry_url}/${var.docker_settings.image_name}:${var.docker_settings.image_tag}"
+
+      env {
+        name  = "APP_INSIGHT_CONNECTION_STRING"
+        value = data.azurerm_application_insights.app_insight.connection_string
+      }
+      env {
+        name  = "STORAGE_ACCOUNT_NAME"
+        value = module.synthetic_monitoring_storage_account.name
+      }
+      env {
+        name  = "STORAGE_ACCOUNT_KEY"
+        value = module.synthetic_monitoring_storage_account.primary_access_key
+      }
+      env {
+        name  = "STORAGE_ACCOUNT_TABLE_NAME"
+        value = azurerm_storage_table.table_storage.name
+      }
+      env {
+        name  = "AVAILABILITY_PREFIX"
+        value = var.job_settings.availability_prefix
+      }
+      env {
+        name  = "HTTP_CLIENT_TIMEOUT"
+        value = tostring(var.job_settings.http_client_timeout)
+      }
+      env {
+        name  = "LOCATION"
+        value = var.location
+      }
+      env {
+        name  = "CERT_VALIDITY_RANGE_DAYS"
+        value = tostring(var.job_settings.cert_validity_range_days)
+      }
     }
   }
 
@@ -165,6 +245,17 @@ resource "azurerm_container_app_job" "monitoring_app_job" {
   replica_timeout_in_seconds = var.job_settings.execution_timeout_seconds
 
   tags = var.tags
+
+  # Prevents non-sequential destruction of the legacy resource azapi_resource.monitoring_app_job.
+  # This system causes resources to be destroyed and created sequentially by avoiding
+  # avoiding the duplicate resource error and making a switch to new or old version.
+  # ( in case rollback is needed ).
+  lifecycle {
+    precondition {
+      condition     = length(azapi_resource.monitoring_app_job) == 0
+      error_message = "Warning: You cannot create the new resource. Perform legacy import before proceeding with changes."
+    }
+  }
 }
 
 locals {

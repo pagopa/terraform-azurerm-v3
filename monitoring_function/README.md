@@ -168,6 +168,7 @@ module "monitoring_function" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 1.11.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.30 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.2 |
 
@@ -181,7 +182,8 @@ module "monitoring_function" {
 
 | Name | Type |
 |------|------|
-| [azurerm_container_app_job.monitoring_app_job](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_job) | resource |
+| [azapi_resource.monitoring_app_job](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
+| [azurerm_container_app_job.monitoring_terraform_app_job](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_job) | resource |
 | [azurerm_monitor_metric_alert.alert](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_monitor_metric_alert.self_alert](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_private_endpoint.synthetic_monitoring_storage_private_endpoint](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
@@ -200,6 +202,7 @@ module "monitoring_function" {
 | <a name="input_application_insights_action_group_ids"></a> [application\_insights\_action\_group\_ids](#input\_application\_insights\_action\_group\_ids) | (Required) Application insights action group ids | `list(string)` | n/a | yes |
 | <a name="input_docker_settings"></a> [docker\_settings](#input\_docker\_settings) | n/a | <pre>object({<br>    registry_url = optional(string, "ghcr.io")                           #(Optional) Docker container registry url where to find the monitoring image<br>    image_tag    = string                                                #(Optional) Docker image tag<br>    image_name   = optional(string, "pagopa/azure-synthetic-monitoring") #(Optional) Docker image name<br>  })</pre> | <pre>{<br>  "image_name": "pagopa/azure-synthetic-monitoring",<br>  "image_tag": "1.0.0",<br>  "registry_url": "ghcr.io"<br>}</pre> | no |
 | <a name="input_job_settings"></a> [job\_settings](#input\_job\_settings) | n/a | <pre>object({<br>    execution_timeout_seconds    = optional(number, 300)         #(Optional) Job execution timeout, in seconds<br>    cron_scheduling              = optional(string, "* * * * *") #(Optional) Cron expression defining the execution scheduling of the monitoring function<br>    cpu_requirement              = optional(number, 0.25)        #(Optional) Decimal; cpu requirement<br>    memory_requirement           = optional(string, "0.5Gi")     #(Optional) Memory requirement<br>    http_client_timeout          = optional(number, 30000)       #(Optional) Default http client response timeout, in milliseconds<br>    default_duration_limit       = optional(number, 10000)       #(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds<br>    availability_prefix          = optional(string, "synthetic") #(Optional) Prefix used for prefixing availability test names<br>    container_app_environment_id = string                        #(Required) If defined, the id of the container app environment tu be used to run the monitoring job. If provided, skips the creation of a dedicated subnet<br>    cert_validity_range_days     = optional(number, 7)           #(Optional) Number of days before the expiration date of a certificate over which the check is considered success<br>  })</pre> | <pre>{<br>  "availability_prefix": "synthetic",<br>  "cert_validity_range_days": 7,<br>  "container_app_environment_id": null,<br>  "cpu_requirement": 0.25,<br>  "cron_scheduling": "* * * * *",<br>  "default_duration_limit": 10000,<br>  "execution_timeout_seconds": 300,<br>  "http_client_timeout": 30000,<br>  "memory_requirement": "0.5Gi"<br>}</pre> | no |
+| <a name="input_legacy"></a> [legacy](#input\_legacy) | (Optional) Enable new terraform resource features for container app job. | `bool` | `true` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Resource location | `string` | n/a | yes |
 | <a name="input_monitoring_configuration_encoded"></a> [monitoring\_configuration\_encoded](#input\_monitoring\_configuration\_encoded) | (Required) monitoring configuration provided in JSON string format (use jsonencode) | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | (Required) Prefix used in the Velero dedicated resource names | `string` | n/a | yes |
