@@ -247,9 +247,9 @@ resource "azurerm_container_app_job" "monitoring_terraform_app_job" {
   tags = var.tags
 
   # Prevents non-sequential destruction of the legacy resource azapi_resource.monitoring_app_job.
-  # This system causes resources to be destroyed and created sequentially by avoiding
-  # avoiding the duplicate resource error and making a switch to new or old version.
-  # ( in case rollback is needed ).
+  # This configuration forces resources to be destroyed and created sequentially by
+  # avoiding the duplicate resource error and enabling a switch to a new or old version
+  # (in case rollback is needed).
   lifecycle {
     precondition {
       condition     = length(azapi_resource.monitoring_app_job) == 0
