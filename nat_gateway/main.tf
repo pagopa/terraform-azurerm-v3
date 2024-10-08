@@ -32,3 +32,9 @@ resource "azurerm_subnet_nat_gateway_association" "this" {
   subnet_id      = var.subnet_ids[count.index]
   nat_gateway_id = azurerm_nat_gateway.this.id
 }
+
+resource "azurerm_nat_gateway_public_ip_association" "additional_ips" {
+  for_each             = var.additional_public_ip_ids
+  nat_gateway_id       = azurerm_nat_gateway.this.id
+  public_ip_address_id = each.value
+}

@@ -44,3 +44,9 @@ variable "public_ips_count" {
 variable "tags" {
   type = map(any)
 }
+
+variable "additional_public_ip_ids" {
+  type = list(string)
+  default = []
+  description = "(Optional) list of additional public ip ids to associate to the nat gw"
+}
