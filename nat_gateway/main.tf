@@ -34,7 +34,7 @@ resource "azurerm_subnet_nat_gateway_association" "this" {
 }
 
 resource "azurerm_nat_gateway_public_ip_association" "additional_ips" {
-  for_each             = to_set(var.additional_public_ip_ids)
+  for_each             = toset(var.additional_public_ip_ids)
   nat_gateway_id       = azurerm_nat_gateway.this.id
   public_ip_address_id = each.value
 }
