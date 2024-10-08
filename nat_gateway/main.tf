@@ -34,8 +34,9 @@ resource "azurerm_subnet_nat_gateway_association" "this" {
 }
 
 resource "azurerm_nat_gateway_public_ip_association" "additional_ips" {
+  # used count instead of for_each to avoid
+  # " The "for_each" set includes values derived from resource attributes that cannot be determined until apply, and so Terraform cannot determine the full set of keys that will identify the instances of this resource."
   count = length(var.additional_public_ip_ids)
-#   for_each             = toset(var.additional_public_ip_ids)
   nat_gateway_id       = azurerm_nat_gateway.this.id
   public_ip_address_id = var.additional_public_ip_ids[count.index]
 }
