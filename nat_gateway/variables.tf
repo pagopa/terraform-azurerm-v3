@@ -46,7 +46,7 @@ variable "tags" {
 }
 
 variable "additional_public_ip_ids" {
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
   description = "(Optional) list of additional public ip ids to associate to the nat gw"
 }

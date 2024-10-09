@@ -22,8 +22,8 @@ resource "azurerm_public_ip" "nat_ip_2" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
   sku                 = "Standard"
-zones = [1]
-  tags = var.tags
+  zones               = [1]
+  tags                = var.tags
 }
 
 resource "azurerm_public_ip" "nat_ip_3" {
@@ -32,7 +32,7 @@ resource "azurerm_public_ip" "nat_ip_3" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
   sku                 = "Standard"
-  zones = [1]
+  zones               = [1]
 
   tags = var.tags
 }
