@@ -32,6 +32,10 @@ locals {
       {
         name  = "REGISTRATION_TOKEN_API_URL"
         value = "https://api.github.com/repos/${var.job_meta.repo_owner}/${var.job_meta.repo}/actions/runners/registration-token"
+      },
+      {
+        name  = "LABELS"
+        value = join(",", var.runner_labels)
       }
     ]
     image = var.container.image
