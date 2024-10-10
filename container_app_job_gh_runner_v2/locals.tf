@@ -34,7 +34,7 @@ locals {
         value = "https://api.github.com/repos/${var.job_meta.repo_owner}/${var.job_meta.repo}/actions/runners/registration-token"
       },
       {
-        name = "LABELS"
+        name  = "LABELS"
         value = join(",", var.runner_labels)
       }
     ]
