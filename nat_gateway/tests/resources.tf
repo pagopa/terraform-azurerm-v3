@@ -14,6 +14,29 @@ resource "azurerm_virtual_network" "vnet" {
   tags = var.tags
 }
 
+# additional ips created externally of nat gw module
+# optional
+resource "azurerm_public_ip" "nat_ip_2" {
+  name                = "${local.project}-natgw-pip-2"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+  zones               = [1]
+  tags                = var.tags
+}
+
+resource "azurerm_public_ip" "nat_ip_3" {
+  name                = "${local.project}-natgw-pip-3"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+  zones               = [1]
+
+  tags = var.tags
+}
+
 module "nat_gateway" {
   source = "../../nat_gateway"
 
@@ -24,6 +47,9 @@ module "nat_gateway" {
   zones = [1]
 
   public_ips_count = 2
+
+  # optional
+  additional_public_ip_ids = [azurerm_public_ip.nat_ip_2.id, azurerm_public_ip.nat_ip_3.id]
 
   tags = var.tags
 }

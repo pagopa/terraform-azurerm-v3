@@ -81,3 +81,9 @@ variable "key_vault" {
 
   description = "Data of the KeyVault which stores PAT as secret"
 }
+
+variable "runner_labels" {
+  type        = list(string)
+  description = "Labels that allow a GH action to call a specific runner"
+  default     = []
+}

@@ -113,6 +113,7 @@ No modules.
 | <a name="input_replica_retry_limit"></a> [replica\_retry\_limit](#input\_replica\_retry\_limit) | (Optional) The maximum number of times a replica is allowed to retry. | `number` | `1` | no |
 | <a name="input_replica_timeout_in_seconds"></a> [replica\_timeout\_in\_seconds](#input\_replica\_timeout\_in\_seconds) | (Required) The maximum number of seconds a replica is allowed to run. | `number` | `1800` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Resource group name | `string` | n/a | yes |
+| <a name="input_runner_labels"></a> [runner\_labels](#input\_runner\_labels) | Labels that allow a GH action to call a specific runner | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags for new resources | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
 
 ## Outputs
