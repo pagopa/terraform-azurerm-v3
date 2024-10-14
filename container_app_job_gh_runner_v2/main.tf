@@ -39,6 +39,11 @@ resource "azurerm_container_app_job" "container_app_job" {
     name     = "personal-access-token"
   }
 
+  secret {
+    name  = "GITHUB_PAT"
+    value = data.azurerm_key_vault_secret.github_pat.value
+  }
+
   template {
     container {
       cpu    = local.container.resources.cpu

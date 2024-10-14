@@ -11,3 +11,8 @@ data "azurerm_container_app_environment" "container_app_environment" {
   name                = var.environment_name
   resource_group_name = var.environment_rg
 }
+
+data "azurerm_key_vault_secret" "github_pat" {
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+  name         = var.key_vault_secret_name
+}
