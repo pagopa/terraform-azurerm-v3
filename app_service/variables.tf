@@ -132,6 +132,16 @@ variable "health_check_maxpingfailures" {
   }
 }
 
+variable "ip_restriction_default_action" {
+  type        = string
+  description = "The Default action for traffic that does not match any ip_restriction rule. possible values include Allow and Deny."
+
+  validation {
+    condition     = contains(["Allow", "Deny"], var.ip_restriction_default_action)
+    error_message = "Possible values include Allow and Deny"
+  }
+}
+
 variable "allowed_subnets" {
   type        = list(string)
   description = "(Optional) List of subnet allowed to call the appserver endpoint."
@@ -144,10 +154,22 @@ variable "allowed_ips" {
   default     = []
 }
 
+variable "allowed_service_tags" {
+  type        = list(string)
+  description = "(Optional) List of service tags allowed to call the appserver endpoint."
+  default     = []
+}
+
 variable "vnet_integration" {
   type        = bool
   description = "(optional) enable vnet integration. Wheter it's true the subnet_id should not be null."
   default     = false
+}
+
+variable "public_network_access_enabled" {
+  type        = bool
+  description = "(Optional) Should public network access be enabled for the App Service. Defaults to true."
+  default     = true
 }
 
 variable "subnet_id" {
@@ -160,6 +182,23 @@ variable "zone_balancing_enabled" {
   type        = bool
   description = "(Optional) Should the Service Plan balance across Availability Zones in the region. Changing this forces a new resource to be created. If this setting is set to true and the worker_count value is specified, it should be set to a multiple of the number of availability zones in the region. Please see the Azure documentation for the number of Availability Zones in your region."
   default     = false
+}
+
+variable "auto_heal_enabled" {
+  type        = bool
+  description = "(Optional) True to enable the auto heal on the app service"
+  default     = false
+}
+
+variable "auto_heal_settings" {
+  type = object({
+    startup_time           = string
+    slow_requests_count    = number
+    slow_requests_interval = string
+    slow_requests_time     = string
+  })
+  description = "(Optional) Auto heal settings"
+  default     = null
 }
 
 variable "tags" {

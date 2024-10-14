@@ -72,7 +72,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_account_name"></a> [account\_name](#input\_account\_name) | The name of the Cosmos DB Account to create the container within. | `string` | n/a | yes |
-| <a name="input_autoscale_settings"></a> [autoscale\_settings](#input\_autoscale\_settings) | Autoscale settings for collection | <pre>object({<br>    max_throughput = number<br>  })</pre> | `null` | no |
+| <a name="input_autoscale_settings"></a> [autoscale\_settings](#input\_autoscale\_settings) | Autoscale settings for collection | <pre>object({<br/>    max_throughput = number<br/>  })</pre> | `null` | no |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | The name of the Cosmos DB SQL Database to create the container within. | `string` | n/a | yes |
 | <a name="input_default_ttl"></a> [default\_ttl](#input\_default\_ttl) | The default time to live of SQL container. If missing, items are not expired automatically. | `number` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | The name of the Cosmos DB instance. | `string` | n/a | yes |

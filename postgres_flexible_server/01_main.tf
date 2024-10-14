@@ -28,7 +28,8 @@ resource "azurerm_postgresql_flexible_server" "this" {
   # The provided subnet should not have any other resource deployed in it and this subnet will be delegated to the PostgreSQL Flexible Server, if not already delegated.
   delegated_subnet_id = var.private_endpoint_enabled ? var.delegated_subnet_id : null
   #  private_dns_zobe_id will be required when setting a delegated_subnet_id
-  private_dns_zone_id = var.private_endpoint_enabled ? var.private_dns_zone_id : null
+  private_dns_zone_id           = var.private_endpoint_enabled ? var.private_dns_zone_id : null
+  public_network_access_enabled = var.public_network_access_enabled
 
   administrator_login    = var.administrator_login
   administrator_password = var.administrator_password

@@ -2,10 +2,11 @@
 # Gateway
 #
 
+
 resource "random_string" "dns" {
   length  = 6
-  special = false
-  upper   = false
+  special = var.random_special
+  upper   = var.random_upper
 }
 
 resource "azurerm_public_ip" "gw" {

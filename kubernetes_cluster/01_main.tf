@@ -60,7 +60,8 @@ resource "azurerm_kubernetes_cluster" "this" {
     enable_node_public_ip = false
 
     upgrade_settings {
-      max_surge = var.upgrade_settings_max_surge
+      max_surge                = var.upgrade_settings_max_surge
+      drain_timeout_in_minutes = var.system_node_pool_upgrade_settings_drain_timeout_in_minutes
     }
 
     tags = merge(var.tags, var.system_node_pool_tags)
@@ -86,6 +87,7 @@ resource "azurerm_kubernetes_cluster" "this" {
       network_plugin_mode = p.value.network_plugin_mode
       outbound_type       = p.value.outbound_type
       service_cidr        = p.value.service_cidr
+      network_data_plane  = p.value.network_data_plane
       load_balancer_sku   = "standard"
       load_balancer_profile {
         outbound_ip_address_ids = var.outbound_ip_address_ids
@@ -201,7 +203,8 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
   enable_node_public_ip = false
 
   upgrade_settings {
-    max_surge = var.upgrade_settings_max_surge
+    max_surge                = var.upgrade_settings_max_surge
+    drain_timeout_in_minutes = var.user_node_pool_upgrade_settings_drain_timeout_in_minutes
   }
 
   tags = merge(var.tags, var.user_node_pool_tags)

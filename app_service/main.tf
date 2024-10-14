@@ -4,7 +4,6 @@ locals {
   ip_restrictions = concat(local.allowed_subnets, local.allowed_ips)
 }
 
-
 resource "azurerm_service_plan" "this" {
   count = var.plan_type == "internal" ? 1 : 0
 
@@ -28,8 +27,9 @@ resource "azurerm_linux_web_app" "this" {
   location            = var.location
   resource_group_name = var.resource_group_name
 
-  service_plan_id = var.plan_type == "internal" ? azurerm_service_plan.this[0].id : var.plan_id
-  https_only      = var.https_only
+  service_plan_id               = var.plan_type == "internal" ? azurerm_service_plan.this[0].id : var.plan_id
+  https_only                    = var.https_only
+  public_network_access_enabled = var.public_network_access_enabled
   #tfsec:ignore:azure-appservice-require-client-cert
   client_certificate_enabled = var.client_cert_enabled
   client_affinity_enabled    = var.client_affinity_enabled
@@ -71,6 +71,8 @@ resource "azurerm_linux_web_app" "this" {
 
     http2_enabled = true
 
+    ip_restriction_default_action = var.ip_restriction_default_action
+
     dynamic "ip_restriction" {
       for_each = var.allowed_subnets
       iterator = subnet
@@ -93,6 +95,34 @@ resource "azurerm_linux_web_app" "this" {
       }
     }
 
+    dynamic "ip_restriction" {
+      for_each = var.allowed_service_tags
+      iterator = st
+
+      content {
+        service_tag = st.value
+        name        = "rule"
+      }
+    }
+
+    auto_heal_enabled = var.auto_heal_enabled ? true : null
+
+    dynamic "auto_heal_setting" {
+      for_each = var.auto_heal_enabled ? [1] : []
+      content {
+        action {
+          action_type                    = "Recycle"
+          minimum_process_execution_time = var.auto_heal_settings.startup_time
+        }
+        trigger {
+          slow_request {
+            count      = var.auto_heal_settings.slow_requests_count
+            interval   = var.auto_heal_settings.slow_requests_interval
+            time_taken = var.auto_heal_settings.slow_requests_time
+          }
+        }
+      }
+    }
   }
 
   # Managed identity

@@ -104,7 +104,14 @@ variable "system_node_pool_tags" {
   description = "(Optional) A mapping of tags to assign to the Node Pool."
   default     = {}
 }
-### END SYSTEM NODE POOL
+
+variable "system_node_pool_upgrade_settings_drain_timeout_in_minutes" {
+  type        = string
+  default     = 30
+  description = "(Optional) The amount of time in minutes to wait on eviction of pods and graceful termination per node. This eviction wait time honors pod disruption budgets for upgrades. If this time is exceeded, the upgrade fails. Unsetting this after configuring it will force a new resource to be created."
+}
+
+### <END SYSTEM NODE POOL/>
 
 #
 # 👤 User node pool
@@ -198,6 +205,13 @@ variable "user_node_pool_tags" {
   description = "(Optional) A mapping of tags to assign to the Node Pool."
   default     = {}
 }
+
+variable "user_node_pool_upgrade_settings_drain_timeout_in_minutes" {
+  type        = string
+  default     = 30
+  description = "(Optional) The amount of time in minutes to wait on eviction of pods and graceful termination per node. This eviction wait time honors pod disruption budgets for upgrades. If this time is exceeded, the upgrade fails. Unsetting this after configuring it will force a new resource to be created."
+}
+
 ### END USER NODE POOL
 
 variable "upgrade_settings_max_surge" {
@@ -256,6 +270,7 @@ variable "network_profile" {
     network_plugin_mode = optional(string, null)           # e.g. 'azure'. Network plugin mode to use for networking. Currently supported value is overlay
     outbound_type       = optional(string, "loadBalancer") # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
     service_cidr        = optional(string, "10.2.0.0/16")  # e.g. '10.2.0.0/16'. The Network Range used by the Kubernetes service
+    network_data_plane  = optional(string, "azure")        # e.g. 'azure'. (Optional) Specifies the data plane used for building the Kubernetes network. Possible values are azure and cilium. Defaults to azure. Disabling this forces a new resource to be created.
   })
   default = {
     dns_service_ip      = "10.2.0.10"
@@ -264,6 +279,7 @@ variable "network_profile" {
     network_plugin_mode = null
     outbound_type       = "loadBalancer"
     service_cidr        = "10.2.0.0/16"
+    network_data_plane  = "azure"
   }
   description = "See variable description to understand how to use it, and see examples"
 }

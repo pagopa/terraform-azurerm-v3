@@ -6,6 +6,7 @@ resource "azurerm_api_management_api" "this" {
   revision_description = var.revision_description
   display_name         = var.display_name
   description          = var.description
+  api_type             = var.api_type
 
   dynamic "oauth2_authorization" {
     for_each = var.oauth2_authorization.authorization_server_name != null ? ["dummy"] : []
@@ -26,6 +27,13 @@ resource "azurerm_api_management_api" "this" {
     content_value  = var.content_value
   }
 
+  dynamic "subscription_key_parameter_names" {
+    for_each = var.subscription_key_names == null ? [] : ["dummy"]
+    content {
+      header = var.subscription_key_names.header
+      query  = var.subscription_key_names.query
+    }
+  }
 }
 
 resource "azurerm_api_management_api_policy" "this" {

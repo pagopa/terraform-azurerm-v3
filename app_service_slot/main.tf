@@ -1,10 +1,11 @@
 resource "azurerm_linux_web_app_slot" "this" {
   name = var.name
 
-  app_service_id             = var.app_service_id
-  https_only                 = var.https_only
-  client_affinity_enabled    = var.client_affinity_enabled
-  client_certificate_enabled = var.client_certificate_enabled
+  app_service_id                = var.app_service_id
+  https_only                    = var.https_only
+  public_network_access_enabled = var.public_network_access_enabled
+  client_affinity_enabled       = var.client_affinity_enabled
+  client_certificate_enabled    = var.client_certificate_enabled
 
   # https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
   app_settings = merge(
@@ -43,6 +44,8 @@ resource "azurerm_linux_web_app_slot" "this" {
 
     http2_enabled = true
 
+    ip_restriction_default_action = var.ip_restriction_default_action
+
     dynamic "ip_restriction" {
       for_each = var.allowed_subnets
       iterator = subnet
@@ -62,6 +65,35 @@ resource "azurerm_linux_web_app_slot" "this" {
         ip_address                = ip.value
         virtual_network_subnet_id = null
         name                      = "rule"
+      }
+    }
+
+    dynamic "ip_restriction" {
+      for_each = var.allowed_service_tags
+      iterator = st
+
+      content {
+        service_tag = st.value
+        name        = "rule"
+      }
+    }
+
+    auto_heal_enabled = var.auto_heal_enabled ? true : null
+
+    dynamic "auto_heal_setting" {
+      for_each = var.auto_heal_enabled ? [1] : []
+      content {
+        action {
+          action_type                    = "Recycle"
+          minimum_process_execution_time = var.auto_heal_settings.startup_time
+        }
+        trigger {
+          slow_request {
+            count      = var.auto_heal_settings.slow_requests_count
+            interval   = var.auto_heal_settings.slow_requests_interval
+            time_taken = var.auto_heal_settings.slow_requests_time
+          }
+        }
       }
     }
   }

@@ -27,22 +27,32 @@ resource "null_resource" "enable_pod_identity" {
     EOT
   }
 
-  # provisioner "local-exec" {
-  #   when    = destroy
-  #   command = <<EOT
-  #     if az extension list-available | grep aks-preview > /dev/null
-  #     then
-  #       az aks update \
-  #         -g ${self.triggers.resource_group_name} \
-  #         -n ${self.triggers.cluster_name} \
-  #         --disable-pod-identity \
-  #         --no-wait \
-  #         --yes
-  #     else
-  #       echo "addon: aks-preview not avaible"
-  #     fi
-  #   EOT
-  # }
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOT
+      if az extension list-available | grep aks-preview > /dev/null
+      then
+        if [ $(az aks pod-identity list \
+                --resource-group ${self.triggers.resource_group_name} \
+                --name ${self.triggers.cluster_name} \
+                --query 'podIdentityProfile.userAssignedIdentities[].{name:name, state:provisioningState}' \
+                --output json | jq 'length') -eq 0 ]; then
+
+            echo "🔨 [INFO] No pod identity founds"
+            az aks update \
+              -g ${self.triggers.resource_group_name} \
+              -n ${self.triggers.cluster_name} \
+              --disable-pod-identity \
+              --no-wait \
+              --yes && echo "✅ Pod Identity feature disabled" || echo "⚠️ Impossible to disable pod identity"
+        else
+            echo "❌ There are pod identities, disable is not possible"
+        fi
+      else
+        echo "addon: aks-preview not avaible"
+      fi
+    EOT
+  }
 
   depends_on = [
     azurerm_kubernetes_cluster.this

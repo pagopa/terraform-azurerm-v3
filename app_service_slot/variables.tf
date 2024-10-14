@@ -38,6 +38,12 @@ variable "client_affinity_enabled" {
   default     = false
 }
 
+variable "public_network_access_enabled" {
+  type        = bool
+  description = "(Optional) Should public network access be enabled for the App Service. Defaults to true."
+  default     = true
+}
+
 ## App service slot
 variable "name" {
   type        = string
@@ -79,6 +85,17 @@ variable "health_check_path" {
   default     = null
 }
 
+variable "ip_restriction_default_action" {
+  type        = string
+  description = "(Optional) The Default action for traffic that does not match any ip_restriction rule. possible values include Allow and Deny. Defaults to Allow."
+  default     = "Allow"
+
+  validation {
+    condition     = contains(["Allow", "Deny"], var.ip_restriction_default_action)
+    error_message = "Possible values include Allow and Deny"
+  }
+}
+
 variable "allowed_subnets" {
   type        = list(string)
   description = "(Optional) List of subnet allowed to call the appserver endpoint."
@@ -91,6 +108,12 @@ variable "allowed_ips" {
   default     = []
 }
 
+variable "allowed_service_tags" {
+  type        = list(string)
+  description = "(Optional) List of service tags allowed to call the appserver endpoint."
+  default     = []
+}
+
 variable "vnet_integration" {
   type        = bool
   description = "(optional) enable vnet integration. Wheter it's true the subnet_id should not be null."
@@ -100,6 +123,23 @@ variable "vnet_integration" {
 variable "subnet_id" {
   type        = string
   description = "(Optional) Subnet id wether you want to integrate the app service to a subnet."
+  default     = null
+}
+
+variable "auto_heal_enabled" {
+  type        = bool
+  description = "(Optional) True to enable the auto heal on the app service"
+  default     = false
+}
+
+variable "auto_heal_settings" {
+  type = object({
+    startup_time           = string
+    slow_requests_count    = number
+    slow_requests_interval = string
+    slow_requests_time     = string
+  })
+  description = "(Optional) Auto heal settings"
   default     = null
 }
 

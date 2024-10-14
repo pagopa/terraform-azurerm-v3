@@ -32,6 +32,12 @@ variable "revision_description" {
   default = null
 }
 
+variable "api_type" {
+  type        = string
+  default     = "http"
+  description = "(Optional) Type of API. Possible values are graphql, http, soap, and websocket. Defaults to http."
+}
+
 variable "oauth2_authorization" {
   type = object({
     authorization_server_name = string
@@ -97,5 +103,14 @@ variable "api_version" {
 variable "version_set_id" {
   type        = string
   description = "The ID of the Version Set which this API is associated with."
+  default     = null
+}
+
+variable "subscription_key_names" {
+  type = object({
+    header = string
+    query  = string
+  })
+  description = "Override the default name of the header and query string containing the subscription key header"
   default     = null
 }
