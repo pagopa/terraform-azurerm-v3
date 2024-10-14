@@ -97,12 +97,12 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_container"></a> [container](#input\_container) | Job Container configuration | <pre>object({<br/>    cpu    = number<br/>    memory = string<br/>    image  = string<br/>  })</pre> | <pre>{<br/>  "cpu": 0.5,<br/>  "image": "ghcr.io/pagopa/github-self-hosted-runner-azure:latest",<br/>  "memory": "1Gi"<br/>}</pre> | no |
+| <a name="input_container"></a> [container](#input\_container) | Job Container configuration | <pre>object({<br>    cpu    = number<br>    memory = string<br>    image  = string<br>  })</pre> | <pre>{<br>  "cpu": 0.5,<br>  "image": "ghcr.io/pagopa/github-self-hosted-runner-azure:latest",<br>  "memory": "1Gi"<br>}</pre> | no |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
 | <a name="input_environment_name"></a> [environment\_name](#input\_environment\_name) | (Required) Container App Environment configuration (Log Analytics Workspace) | `string` | n/a | yes |
 | <a name="input_environment_rg"></a> [environment\_rg](#input\_environment\_rg) | (Required) Container App Environment configuration (Log Analytics Workspace) | `string` | n/a | yes |
-| <a name="input_job"></a> [job](#input\_job) | Container App job configuration | <pre>object({<br/>    name                 = string<br/>    scale_max_executions = optional(number, 5)<br/>    scale_min_executions = optional(number, 0)<br/>  })</pre> | n/a | yes |
-| <a name="input_job_meta"></a> [job\_meta](#input\_job\_meta) | Scaling rules metadata. | <pre>object({<br/>    repo                         = string<br/>    repo_owner                   = optional(string, "pagopa")<br/>    runner_scope                 = optional(string, "repo")<br/>    target_workflow_queue_length = optional(string, "1")<br/>    github_runner                = optional(string, "https://api.github.com") #<br/>  })</pre> | n/a | yes |
+| <a name="input_job"></a> [job](#input\_job) | Container App job configuration | <pre>object({<br>    name                 = string<br>    scale_max_executions = optional(number, 5)<br>    scale_min_executions = optional(number, 0)<br>  })</pre> | n/a | yes |
+| <a name="input_job_meta"></a> [job\_meta](#input\_job\_meta) | Scaling rules metadata. | <pre>object({<br>    repo                         = string<br>    repo_owner                   = optional(string, "pagopa")<br>    runner_scope                 = optional(string, "repo")<br>    target_workflow_queue_length = optional(string, "1")<br>    github_runner                = optional(string, "https://api.github.com") #<br>  })</pre> | n/a | yes |
 | <a name="input_key_vault_name"></a> [key\_vault\_name](#input\_key\_vault\_name) | Name of the KeyVault which stores PAT as secret | `string` | n/a | yes |
 | <a name="input_key_vault_rg"></a> [key\_vault\_rg](#input\_key\_vault\_rg) | Resource group of the KeyVault which stores PAT as secret | `string` | n/a | yes |
 | <a name="input_key_vault_secret_name"></a> [key\_vault\_secret\_name](#input\_key\_vault\_secret\_name) | Data of the KeyVault which stores PAT as secret | `string` | n/a | yes |
@@ -115,7 +115,7 @@ No modules.
 | <a name="input_replica_timeout_in_seconds"></a> [replica\_timeout\_in\_seconds](#input\_replica\_timeout\_in\_seconds) | (Required) The maximum number of seconds a replica is allowed to run. | `number` | `1800` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Resource group name | `string` | n/a | yes |
 | <a name="input_runner_labels"></a> [runner\_labels](#input\_runner\_labels) | Labels that allow a GH action to call a specific runner | `list(string)` | `[]` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags for new resources | `map(any)` | <pre>{<br/>  "CreatedBy": "Terraform"<br/>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags for new resources | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
 
 ## Outputs
 
