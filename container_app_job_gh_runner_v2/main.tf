@@ -53,6 +53,11 @@ resource "azurerm_container_app_job" "container_app_job" {
           value = env.value["value"]
         }
       }
+
+      env {
+        name        = "GITHUB_PAT"
+        secret_name = "personal-access-token"
+      }
     }
   }
 
