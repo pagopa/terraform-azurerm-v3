@@ -10,7 +10,7 @@ locals {
   #https://raw.githubusercontent.com/elastic/elastic-agent/8.9/deploy/kubernetes/elastic-agent-standalone-kubernetes.yaml
   agent_yaml = templatefile("${path.module}/yaml/${var.eck_version}/agent.yaml", {
 
-    es_host = var.es_host
+    es_host                       = var.es_host
     namespace                     = var.namespace
     dedicated_log_instance_name   = var.dedicated_log_instance_name
     logs_general_to_exclude_paths = local.logs_general_to_exclude_paths
