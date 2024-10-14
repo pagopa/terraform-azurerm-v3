@@ -30,6 +30,10 @@ variable "nodeset_config" {
     roles            = list(string)
     storage          = string
     storageClassName = string
+    requestMemory    = string
+    requestCPU       = string
+    limitsMemory     = string
+    limitsCPU        = string
   }))
   default = {
     default = {
@@ -37,6 +41,10 @@ variable "nodeset_config" {
       roles            = ["master", "data", "data_content", "data_hot", "data_warm", "data_cold", "data_frozen", "ingest", "ml", "remote_cluster_client", "transform"]
       storage          = "5Gi"
       storageClassName = "standard"
+      requestMemory    = "2Gi"
+      requestCPU       = "1"
+      limitsMemory     = "2Gi"
+      limitsCPU        = "1"
     }
   }
 }
@@ -64,7 +72,7 @@ variable "eck_version" {
   type        = string
   description = "ECK (Elastic Cloud on Kubernetes) version, see: https://www.elastic.co/guide/en/cloud-on-k8s/index.html for futher versions"
   validation {
-    condition     = contains(["2.9", "2.6"], var.eck_version)
+    condition     = contains(["2.12", "2.9", "2.6"], var.eck_version)
     error_message = "The ECK version supported is only 2.9 or 2.6"
   }
 }

@@ -4,7 +4,16 @@ resource "null_resource" "b_series_not_ephemeral_system_check" {
 }
 
 resource "null_resource" "b_series_not_ephemeral_user_check" {
-  count = length(regexall("Standard_B", var.user_node_pool_vm_size)) > 0 && var.user_node_pool_os_disk_type == "Ephemeral" ? "ERROR: Burstable(B) series don't allow Ephemeral disks" : 0
+  count = length(regexall("Standard_B", var.user_node_pool_vm_size)) > 0 && var.user_node_pool_os_disk_type == "Ephemeral" && var.user_node_pool_enabled ? "ERROR: Burstable(B) series don't allow Ephemeral disks" : 0
+}
+
+resource "null_resource" "workload_identity_oidc_issuer_enabled_check" {
+  count = var.workload_identity_enabled == true && var.oidc_issuer_enabled == false ? "OIDC Issuer must be enabled, in order to use Workload identity" : 0
+}
+
+locals {
+  # for workload identity is mandatory to hava a oidc issuer enabled
+  oidc_issuer_enabled = var.workload_identity_enabled ? true : var.oidc_issuer_enabled
 }
 
 #tfsec:ignore:AZU008
@@ -51,19 +60,22 @@ resource "azurerm_kubernetes_cluster" "this" {
     enable_node_public_ip = false
 
     upgrade_settings {
-      max_surge = var.upgrade_settings_max_surge
+      max_surge                = var.upgrade_settings_max_surge
+      drain_timeout_in_minutes = var.system_node_pool_upgrade_settings_drain_timeout_in_minutes
     }
 
     tags = merge(var.tags, var.system_node_pool_tags)
   }
 
-  automatic_channel_upgrade       = var.automatic_channel_upgrade
-  api_server_authorized_ip_ranges = var.api_server_authorized_ip_ranges #tfsec:ignore:AZU008
+  automatic_channel_upgrade = var.automatic_channel_upgrade
 
   # managed identity type: https://docs.microsoft.com/en-us/azure/aks/use-managed-identity
   identity {
     type = "SystemAssigned"
   }
+
+  workload_identity_enabled = var.workload_identity_enabled
+  oidc_issuer_enabled       = local.oidc_issuer_enabled
 
   dynamic "network_profile" {
     for_each = var.network_profile != null ? [var.network_profile] : []
@@ -75,6 +87,7 @@ resource "azurerm_kubernetes_cluster" "this" {
       network_plugin_mode = p.value.network_plugin_mode
       outbound_type       = p.value.outbound_type
       service_cidr        = p.value.service_cidr
+      network_data_plane  = p.value.network_data_plane
       load_balancer_sku   = "standard"
       load_balancer_profile {
         outbound_ip_address_ids = var.outbound_ip_address_ids
@@ -135,8 +148,17 @@ resource "azurerm_kubernetes_cluster" "this" {
     for_each = var.log_analytics_workspace_id != null ? [var.log_analytics_workspace_id] : []
 
     content {
-      log_analytics_workspace_id = oms_agent.value
+      log_analytics_workspace_id      = oms_agent.value
+      msi_auth_for_monitoring_enabled = var.oms_agent_msi_auth_for_monitoring_enabled
     }
+  }
+
+  storage_profile {
+    file_driver_enabled         = var.storage_profile_file_driver_enabled
+    disk_driver_enabled         = var.storage_profile_disk_driver_enabled
+    disk_driver_version         = var.storage_profile_disk_driver_version
+    snapshot_controller_enabled = var.storage_profile_snapshot_controller_enabled
+    blob_driver_enabled         = var.storage_profile_blob_driver_enabled
   }
 
   lifecycle {
@@ -181,7 +203,8 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
   enable_node_public_ip = false
 
   upgrade_settings {
-    max_surge = var.upgrade_settings_max_surge
+    max_surge                = var.upgrade_settings_max_surge
+    drain_timeout_in_minutes = var.user_node_pool_upgrade_settings_drain_timeout_in_minutes
   }
 
   tags = merge(var.tags, var.user_node_pool_tags)
@@ -196,8 +219,13 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
 #
 # Role Assigments
 #
-resource "azurerm_role_assignment" "aks" {
-  count = var.log_analytics_workspace_id != null ? 1 : 0
+moved {
+  from = azurerm_role_assignment.aks
+  to   = azurerm_role_assignment.oms_agent_monitoring_metrics
+}
+
+resource "azurerm_role_assignment" "oms_agent_monitoring_metrics" {
+  count = var.log_analytics_workspace_id != null && var.oms_agent_monitoring_metrics_role_assignment_enabled ? 1 : 0
 
   scope                = azurerm_kubernetes_cluster.this.id
   role_definition_name = "Monitoring Metrics Publisher"

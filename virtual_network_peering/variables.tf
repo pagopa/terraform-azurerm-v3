@@ -77,3 +77,14 @@ variable "target_use_remote_gateways" {
   default     = false
 }
 
+variable "source_custom_name" {
+  type        = string
+  description = "(Optional) source peering custom name. if not defined a default calculated name will be used"
+  default     = null
+}
+
+variable "target_custom_name" {
+  type        = string
+  description = "(Optional) target peering custom name. if not defined a default calculated name will be used"
+  default     = null
+}

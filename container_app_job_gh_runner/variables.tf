@@ -35,55 +35,41 @@ variable "env_short" {
   }
 }
 
-variable "network" {
-  type = object({
-    vnet_resource_group_name = string
-    vnet_name                = string
-    subnet_name              = optional(string, "")
-    subnet_cidr_block        = string
-  })
-
-  description = "Existing VNet information and subnet CIDR block to use (must be /23). Optionally specify the subnet name"
-}
-
 variable "environment" {
   type = object({
-    law_name                = string
-    law_resource_group_name = string
+    name                = string
+    resource_group_name = string
   })
 
   description = "Container App Environment configuration (Log Analytics Workspace)"
 }
 
-variable "app" {
-  type = object({
-    repo_owner = optional(string, "pagopa")
-    repos      = set(string)
-    image      = optional(string, "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:c7ebe4453578c9df426b793366b8498c030ec0f47f753ea2c685a3c0ec0bb646")
-  })
-
-  validation {
-    condition = (
-      var.app.repos != null && length(var.app.repos) >= 1
-    )
-    error_message = "List of repos must supplied"
-  }
-
-  description = "Container App job configuration"
-}
-
-variable "vm_size" {
+variable "container" {
   type = object({
     cpu    = number
     memory = string
+    image  = string
   })
 
   default = {
-    cpu    = 1.0
-    memory = "2Gi"
+    cpu    = 0.5
+    memory = "1Gi"
+    image  = "ghcr.io/pagopa/github-self-hosted-runner-azure:latest"
   }
 
-  description = "Job VM size"
+  description = "Job Container configuration"
+}
+
+variable "job" {
+  type = object({
+    name                 = string
+    repo_owner           = optional(string, "pagopa")
+    repo                 = string
+    polling_interval     = optional(number, 30)
+    scale_max_executions = optional(number, 5)
+  })
+
+  description = "Container App job configuration"
 }
 
 variable "key_vault" {
@@ -94,4 +80,10 @@ variable "key_vault" {
   })
 
   description = "Data of the KeyVault which stores PAT as secret"
+}
+
+variable "runner_labels" {
+  type        = list(string)
+  description = "Labels that allow a GH action to call a specific runner"
+  default     = []
 }

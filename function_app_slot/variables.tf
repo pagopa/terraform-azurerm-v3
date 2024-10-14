@@ -58,6 +58,12 @@ variable "allowed_ips" {
   description = "Ip from wich is allowed to call the function. An empty list means from everywhere."
 }
 
+variable "allowed_service_tags" {
+  type        = list(string)
+  description = "(Optional) List of service tags allowed to call the function app endpoint."
+  default     = []
+}
+
 variable "cors" {
   type = object({
     allowed_origins = list(string)
@@ -69,6 +75,12 @@ variable "allowed_subnets" {
   type        = list(string)
   default     = []
   description = "List of subnet ids which are allowed to call the function. An empty list means from each subnet."
+}
+
+variable "ip_restriction_default_action" {
+  description = "(Optional) The Default action for traffic that does not match any ip_restriction rule. possible values include 'Allow' and 'Deny'. If not set, it will be set to Allow if no ip restriction rules have been configured."
+  type        = string
+  default     = null
 }
 
 variable "subnet_id" {
@@ -125,8 +137,14 @@ variable "health_check_path" {
 }
 
 variable "health_check_maxpingfailures" {
-  type    = number
-  default = 10
+  type        = number
+  description = "Max ping failures allowed"
+  default     = 10
+
+  validation {
+    condition     = var.health_check_maxpingfailures == null ? true : (var.health_check_maxpingfailures >= 2 && var.health_check_maxpingfailures <= 10)
+    error_message = "Possible values are null or a number between 2 and 10"
+  }
 }
 
 variable "export_keys" {
@@ -142,6 +160,12 @@ variable "client_certificate_enabled" {
   type        = bool
   description = "Should the function app use Client Certificates"
   default     = false
+}
+
+variable "enable_function_app_public_network_access" {
+  type        = bool
+  description = "(Optional) Should public network access be enabled for the Function App. Defaults to true."
+  default     = true
 }
 
 ######################

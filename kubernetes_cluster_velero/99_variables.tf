@@ -1,16 +1,6 @@
-variable "tags" {
-  type = map(any)
-}
-
-variable "resource_group_name" {
+variable "storage_account_resource_group_name" {
   type        = string
   description = "(Required) Name of the resource group in which the backup storage account is located"
-}
-
-
-variable "backup_storage_container_name" {
-  type        = string
-  description = "(Required) Name of the storage container where Velero keeps the backups"
 }
 
 variable "aks_cluster_name" {
@@ -28,22 +18,16 @@ variable "subscription_id" {
   description = "(Required) ID of the subscription"
 }
 
-variable "tenant_id" {
-  type        = string
-  description = "(Required) ID of the tenant"
-}
-
 variable "plugin_version" {
   type        = string
   description = "(Optional) Version for the velero plugin"
-  default     = "v1.7.1"
+  default     = "v1.10.0"
 }
 
 variable "prefix" {
   type        = string
   description = "(Required) Prefix used in the Velero dedicated resource names"
 }
-
 
 variable "location" {
   type        = string
@@ -68,6 +52,15 @@ variable "use_storage_private_endpoint" {
   default     = true
 }
 
+variable "workload_identity_name" {
+  type        = string
+  description = "(Required) The full name for the user assigned identity and Workload identity. Changing this forces a new identity to be created."
+}
+
+variable "workload_identity_resource_group_name" {
+  type        = string
+  description = "(Required) Specifies the name of the Resource Group within which this User Assigned Identity should exist. Changing this forces a new User Assigned Identity to be created."
+}
 
 variable "storage_account_tier" {
   type        = string
@@ -97,4 +90,25 @@ variable "enable_sa_backup" {
   type        = bool
   description = "(Optional) enables storage account point in time recovery"
   default     = false
+}
+
+variable "advanced_threat_protection" {
+  type        = string
+  description = "(Optional) Enabled azurerm_advanced_threat_protection resource, Default true"
+  default     = true
+}
+
+variable "enable_low_availability_alert" {
+  type        = string
+  description = "(Optional) Enable the Low Availability alert. Default is true"
+  default     = true
+}
+
+variable "key_vault_id" {
+  type        = any
+  description = "(Required) Specifies the id of the Key Vault resource. Changing this forces a new resource to be created."
+}
+
+variable "tags" {
+  type = map(any)
 }

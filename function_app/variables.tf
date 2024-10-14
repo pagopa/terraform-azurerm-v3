@@ -48,6 +48,8 @@ variable "storage_account_info" {
     account_replication_type          = string # Defines the type of replication to use for this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS.
     access_tier                       = string # Defines the access tier for BlobStorage, FileStorage and StorageV2 accounts. Valid options are Hot and Cool, defaults to Hot.
     advanced_threat_protection_enable = bool
+    use_legacy_defender_version       = bool
+    public_network_access_enabled     = bool
   })
 
   default = {
@@ -56,7 +58,23 @@ variable "storage_account_info" {
     account_replication_type          = "ZRS"
     access_tier                       = "Hot"
     advanced_threat_protection_enable = true
+    use_legacy_defender_version       = true
+    public_network_access_enabled     = false
   }
+}
+
+variable "internal_storage_account_info" {
+  type = object({
+    account_kind                      = string # Defines the Kind of account. Valid options are BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2. Changing this forces a new resource to be created. Defaults to Storage.
+    account_tier                      = string # Defines the Tier to use for this storage account. Valid options are Standard and Premium. For BlockBlobStorage and FileStorage accounts only Premium is valid.
+    account_replication_type          = string # Defines the type of replication to use for this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS.
+    access_tier                       = string # Defines the access tier for BlobStorage, FileStorage and StorageV2 accounts. Valid options are Hot and Cool, defaults to Hot.
+    advanced_threat_protection_enable = bool
+    use_legacy_defender_version       = bool
+    public_network_access_enabled     = bool
+  })
+
+  default = null
 }
 
 variable "app_service_plan_id" {
@@ -133,6 +151,12 @@ variable "allowed_subnets" {
   default     = []
 }
 
+variable "ip_restriction_default_action" {
+  description = "(Optional) The Default action for traffic that does not match any ip_restriction rule. possible values include 'Allow' and 'Deny'. If not set, it will be set to Allow if no ip restriction rules have been configured."
+  type        = string
+  default     = null
+}
+
 variable "cors" {
   type = object({
     allowed_origins = list(string) # A list of origins which should be able to make cross-origin calls. * can be used to allow all calls.
@@ -143,6 +167,12 @@ variable "cors" {
 variable "subnet_id" {
   type        = string
   description = "The ID of the subnet the app service will be associated to (the subnet must have a service_delegation configured for Microsoft.Web/serverFarms)"
+}
+
+variable "allowed_service_tags" {
+  type        = list(string)
+  description = "(Optional) List of service tags allowed to call the function app endpoint."
+  default     = []
 }
 
 variable "vnet_integration" {
@@ -238,6 +268,12 @@ variable "app_service_logs" {
   })
   description = "disk_quota_mb - (Optional) The amount of disk space to use for logs. Valid values are between 25 and 100. Defaults to 35. retention_period_days - (Optional) The retention period for logs in days. Valid values are between 0 and 99999.(never delete)."
   default     = null
+}
+
+variable "enable_function_app_public_network_access" {
+  type        = bool
+  description = "(Optional) Should public network access be enabled for the Function App. Defaults to true."
+  default     = true
 }
 
 # -------------------

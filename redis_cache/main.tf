@@ -20,6 +20,8 @@ resource "azurerm_redis_cache" "this" {
     rdb_backup_frequency          = var.backup_configuration != null ? var.backup_configuration.frequency : null
     rdb_backup_max_snapshot_count = var.backup_configuration != null ? var.backup_configuration.max_snapshot_count : null
     rdb_storage_connection_string = var.backup_configuration != null ? var.backup_configuration.storage_connection_string : null
+
+    data_persistence_authentication_method = var.data_persistence_authentication_method
   }
 
   dynamic "patch_schedule" {

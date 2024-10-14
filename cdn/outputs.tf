@@ -1,5 +1,14 @@
-output "id" {
+output "endpoint_id" {
   value = azurerm_cdn_endpoint.this.id
+}
+
+output "id" {
+  value       = azurerm_cdn_endpoint.this.id
+  description = "Deprecated, use endpoint_id instead."
+}
+
+output "profile_id" {
+  value = azurerm_cdn_profile.this.id
 }
 
 locals {
@@ -12,6 +21,10 @@ output "hostname" {
 
 output "fqdn" {
   value = var.dns_zone_name == var.hostname ? trimsuffix(azurerm_dns_a_record.apex_hostname[0].fqdn, ".") : trimsuffix(azurerm_dns_cname_record.hostname[0].fqdn, ".")
+}
+
+output "storage_id" {
+  value = module.cdn_storage_account.id
 }
 
 output "storage_primary_connection_string" {

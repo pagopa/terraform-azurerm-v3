@@ -39,6 +39,12 @@ variable "delegated_subnet_id" {
   description = "(Optional) The ID of the virtual network subnet to create the PostgreSQL Flexible Server. The provided subnet should not have any other resource deployed in it and this subnet will be delegated to the PostgreSQL Flexible Server, if not already delegated."
 }
 
+variable "public_network_access_enabled" {
+  type        = bool
+  default     = false
+  description = "(Optional) Specifies whether this PostgreSQL Flexible Server is publicly accessible."
+}
+
 #
 # ♊️ High Availability
 #

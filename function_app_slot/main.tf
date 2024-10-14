@@ -1,17 +1,19 @@
 locals {
-  allowed_ips     = [for ip in var.allowed_ips : { ip_address = ip, virtual_network_subnet_id = null }]
-  allowed_subnets = [for s in var.allowed_subnets : { ip_address = null, virtual_network_subnet_id = s }]
-  ip_restrictions = concat(local.allowed_subnets, local.allowed_ips)
+  allowed_ips                   = [for ip in var.allowed_ips : { ip_address = ip, virtual_network_subnet_id = null }]
+  allowed_subnets               = [for s in var.allowed_subnets : { ip_address = null, virtual_network_subnet_id = s }]
+  ip_restrictions               = concat(local.allowed_subnets, local.allowed_ips)
+  ip_restriction_default_action = length(local.ip_restrictions) == 0 ? "Allow" : "Deny"
 }
 
 resource "azurerm_linux_function_app_slot" "this" {
-  name                        = var.name
-  function_app_id             = var.function_app_id
-  storage_account_name        = var.storage_account_name
-  storage_account_access_key  = var.storage_account_access_key
-  https_only                  = var.https_only
-  client_certificate_enabled  = var.client_certificate_enabled
-  functions_extension_version = var.runtime_version
+  name                          = var.name
+  function_app_id               = var.function_app_id
+  storage_account_name          = var.storage_account_name
+  storage_account_access_key    = var.storage_account_access_key
+  https_only                    = var.https_only
+  client_certificate_enabled    = var.client_certificate_enabled
+  functions_extension_version   = var.runtime_version
+  public_network_access_enabled = var.enable_function_app_public_network_access
 
   site_config {
     minimum_tls_version       = "1.2"
@@ -53,6 +55,16 @@ resource "azurerm_linux_function_app_slot" "this" {
       }
     }
 
+    dynamic "ip_restriction" {
+      for_each = var.allowed_service_tags
+      iterator = st
+
+      content {
+        service_tag = st.value
+        name        = "rule"
+      }
+    }
+
     dynamic "cors" {
       for_each = var.cors != null ? [var.cors] : []
       content {
@@ -60,16 +72,16 @@ resource "azurerm_linux_function_app_slot" "this" {
       }
     }
 
-    auto_swap_slot_name = var.auto_swap_slot_name
-    health_check_path   = var.health_check_path
+    auto_swap_slot_name               = var.auto_swap_slot_name
+    health_check_path                 = var.health_check_path
+    health_check_eviction_time_in_min = var.health_check_path != null ? var.health_check_maxpingfailures : null
+    ip_restriction_default_action     = var.ip_restriction_default_action != null ? var.ip_restriction_default_action : local.ip_restriction_default_action
   }
 
   app_settings = merge(
     {
       # No downtime on slots swap
       WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG = 1
-      # default value for health_check_path, override it in var.app_settings if needed
-      WEBSITE_HEALTHCHECK_MAXPINGFAILURES = var.health_check_path != null ? var.health_check_maxpingfailures : null
       # https://docs.microsoft.com/en-us/samples/azure-samples/azure-functions-private-endpoints/connect-to-private-endpoints-with-azure-functions/
       SLOT_TASK_HUBNAME        = format("%sTaskHub", title(var.name))
       WEBSITE_RUN_FROM_PACKAGE = 1

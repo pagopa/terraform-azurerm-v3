@@ -20,7 +20,7 @@ locals {
 
 module "web_test_availability_alert_rules_for_api" {
   for_each = { for v in local.test_urls : v.host => v if v != null }
-  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//application_insights_web_test_preview?ref=v3.15.0"
+  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//application_insights_web_test_preview?ref=v8.8.0"
 
   subscription_id                   = data.azurerm_subscription.current.subscription_id
   name                              = "${each.value.host}-test-avail"
@@ -50,7 +50,7 @@ module "web_test_availability_alert_rules_for_api" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.30 |
 
 ## Modules
 
@@ -67,7 +67,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_actions"></a> [actions](#input\_actions) | n/a | <pre>list(object({<br>    action_group_id = string<br>  }))</pre> | n/a | yes |
+| <a name="input_actions"></a> [actions](#input\_actions) | n/a | <pre>list(object({<br/>    action_group_id = string<br/>  }))</pre> | n/a | yes |
 | <a name="input_alert_description"></a> [alert\_description](#input\_alert\_description) | Web Availability Alert description | `string` | `"Web availability check alert triggered when it fails."` | no |
 | <a name="input_application_insight_id"></a> [application\_insight\_id](#input\_application\_insight\_id) | Application insight id. | `string` | n/a | yes |
 | <a name="input_application_insight_name"></a> [application\_insight\_name](#input\_application\_insight\_name) | Application insight instance name. | `string` | n/a | yes |

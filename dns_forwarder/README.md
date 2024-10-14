@@ -21,7 +21,7 @@ resource "azurerm_resource_group" "dns_forwarder" {
 module "dns_forwarder_snet" {
   count = var.dns_forwarder_enabled ? 1 : 0
 
-  source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v3.15.0"
+  source                                    = "git::https://github.com/pagopa/terraform-azurerm-v3.git//subnet?ref=v8.8.0"
   name                                      = "${local.project}-dnsforwarder-snet"
   address_prefixes                          = var.cidr_subnet_dnsforwarder
   resource_group_name                       = azurerm_resource_group.rg_vnet.name
@@ -38,7 +38,7 @@ module "dns_forwarder_snet" {
 }
 
 module "dns_forwarder" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder?ref=v3.15.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//dns_forwarder?ref=v8.8.0"
 
   name                = "${local.project}-dns-forwarder"
   location            = var.location
@@ -56,8 +56,8 @@ module "dns_forwarder" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
-| <a name="requirement_local"></a> [local](#requirement\_local) | <= 2.3.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.30 |
+| <a name="requirement_local"></a> [local](#requirement\_local) | ~> 2.3 |
 
 ## Modules
 
@@ -68,6 +68,7 @@ No modules.
 | Name | Type |
 |------|------|
 | [azurerm_container_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_group) | resource |
+| [null_resource.secret_trigger](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [local_file.corefile](https://registry.terraform.io/providers/hashicorp/local/latest/docs/data-sources/file) | data source |
 
 ## Inputs

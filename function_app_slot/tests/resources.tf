@@ -110,5 +110,7 @@ module "function_app_slot" {
     azurerm_subnet.function_app_subnet.id,
   ]
 
+  ip_restriction_default_action = "Deny"
+
   tags = var.tags
 }

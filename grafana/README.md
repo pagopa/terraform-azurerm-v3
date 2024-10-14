@@ -15,7 +15,7 @@ resource "azurerm_resource_group" "load_test" {
 }
 
 module "grafana_managed" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//grafana?ref=feature/new_output_grafana"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//grafana?ref=v8.8.0"
 
   name = "${local.product}-grafana"
 
@@ -36,7 +36,7 @@ module "grafana_managed" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.30 |
 
 ## Modules
 

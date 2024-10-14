@@ -6,7 +6,7 @@ This module simplified how to make the queries into a kv
 
 ```ts
 module "key_vault_secrets_query" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//key_vault_secrets_query?ref=v3.15.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//key_vault_secrets_query?ref=v8.8.0"
 
   resource_group = local.key_vault_resource_group
   key_vault_name = local.key_vault_name
@@ -24,7 +24,7 @@ module "key_vault_secrets_query" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.30 |
 
 ## Modules
 

@@ -32,7 +32,7 @@ locals {
 
 
 module "core_cosmosdb_containers" {
-  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_sql_container?ref=v3.15.0"
+  source   = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_sql_container?ref=v8.8.0"
   for_each = { for c in local.core_cosmosdb_containers : c.name => c }
 
   name                = each.value.name
@@ -55,7 +55,7 @@ module "core_cosmosdb_containers" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.30 |
 
 ## Modules
 
@@ -72,7 +72,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_account_name"></a> [account\_name](#input\_account\_name) | The name of the Cosmos DB Account to create the container within. | `string` | n/a | yes |
-| <a name="input_autoscale_settings"></a> [autoscale\_settings](#input\_autoscale\_settings) | Autoscale settings for collection | <pre>object({<br>    max_throughput = number<br>  })</pre> | `null` | no |
+| <a name="input_autoscale_settings"></a> [autoscale\_settings](#input\_autoscale\_settings) | Autoscale settings for collection | <pre>object({<br/>    max_throughput = number<br/>  })</pre> | `null` | no |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | The name of the Cosmos DB SQL Database to create the container within. | `string` | n/a | yes |
 | <a name="input_default_ttl"></a> [default\_ttl](#input\_default\_ttl) | The default time to live of SQL container. If missing, items are not expired automatically. | `number` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | The name of the Cosmos DB instance. | `string` | n/a | yes |

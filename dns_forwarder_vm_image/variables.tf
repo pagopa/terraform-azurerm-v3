@@ -37,12 +37,6 @@ variable "image_version" {
   description = "(Required) Version assigned to the generated image. Note that the pair <image_name, image_version> must be unique and not already existing"
 }
 
-variable "force_replacement" {
-  type        = bool
-  description = "(Optional) Wheather if the image should be deleted and recreated even if already existing"
-  default     = false
-}
-
 variable "base_image_offer" {
   type        = string
   default     = "0001-com-ubuntu-server-jammy"
@@ -63,11 +57,7 @@ variable "base_image_version" {
 variable "vm_sku" {
   type        = string
   description = "(Optional) Size of VMs in the scale set. Default to Standard_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info."
-  default     = "Standard_B2s"
-}
-
-variable "tags" {
-  type = map(any)
+  default     = "Standard_B2ms"
 }
 
 variable "prefix" {
@@ -78,5 +68,5 @@ variable "prefix" {
 variable "build_rg_name" {
   type        = string
   description = "(Optional) Packer build temporary resource group name"
-  default     = "tmp-packer-dnsforwarder-build"
+  default     = "tmp-packer-dnsforwarder-image-build"
 }

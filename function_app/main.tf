@@ -1,6 +1,6 @@
 #tfsec:ignore:azure-storage-default-action-deny
 module "storage_account" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.4.0"
+  source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.16.0"
 
   name                          = coalesce(var.storage_account_name, format("%sst", replace(var.name, "-", "")))
   account_kind                  = var.storage_account_info.account_kind
@@ -10,6 +10,7 @@ module "storage_account" {
   resource_group_name           = var.resource_group_name
   location                      = var.location
   advanced_threat_protection    = var.storage_account_info.advanced_threat_protection_enable
+  use_legacy_defender_version   = var.storage_account_info.use_legacy_defender_version
   public_network_access_enabled = true
 
   tags = var.tags
@@ -18,17 +19,18 @@ module "storage_account" {
 module "storage_account_durable_function" {
   count = var.internal_storage.enable ? 1 : 0
 
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v7.4.0"
+  source = "github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.16.0"
 
   name                          = coalesce(var.storage_account_durable_name, format("%ssdt", replace(var.name, "-", "")))
-  account_kind                  = var.storage_account_info.account_kind
-  account_tier                  = var.storage_account_info.account_tier
-  account_replication_type      = var.storage_account_info.account_replication_type
-  access_tier                   = var.storage_account_info.account_kind != "Storage" ? var.storage_account_info.access_tier : null
+  account_kind                  = var.internal_storage_account_info != null ? var.internal_storage_account_info.account_kind : var.storage_account_info.account_kind
+  account_tier                  = var.internal_storage_account_info != null ? var.internal_storage_account_info.account_tier : var.storage_account_info.account_tier
+  account_replication_type      = var.internal_storage_account_info != null ? var.internal_storage_account_info.account_replication_type : var.storage_account_info.account_replication_type
+  access_tier                   = var.internal_storage_account_info != null ? var.internal_storage_account_info.account_kind != "Storage" ? var.internal_storage_account_info.access_tier : null : var.storage_account_info.account_kind != "Storage" ? var.storage_account_info.access_tier : null
   resource_group_name           = var.resource_group_name
   location                      = var.location
-  advanced_threat_protection    = false
-  public_network_access_enabled = false
+  advanced_threat_protection    = var.internal_storage_account_info != null ? var.internal_storage_account_info.advanced_threat_protection_enable : var.storage_account_info.advanced_threat_protection_enable
+  use_legacy_defender_version   = var.internal_storage_account_info != null ? var.internal_storage_account_info.use_legacy_defender_version : var.storage_account_info.use_legacy_defender_version
+  public_network_access_enabled = var.internal_storage_account_info != null ? var.internal_storage_account_info.public_network_access_enabled : var.storage_account_info.public_network_access_enabled
 
   tags = var.tags
 }
@@ -148,6 +150,7 @@ locals {
   allowed_ips                                = [for ip in var.allowed_ips : { ip_address = ip, virtual_network_subnet_id = null }]
   allowed_subnets                            = [for s in var.allowed_subnets : { ip_address = null, virtual_network_subnet_id = s }]
   ip_restrictions                            = concat(local.allowed_subnets, local.allowed_ips)
+  ip_restriction_default_action              = length(local.ip_restrictions) == 0 ? "Allow" : "Deny"
   durable_function_storage_connection_string = var.internal_storage.enable ? module.storage_account_durable_function[0].primary_connection_string : "dummy"
 
   internal_queues     = var.internal_storage.enable ? var.internal_storage.queues : []
@@ -224,11 +227,12 @@ resource "azurerm_linux_function_app" "this" {
   functions_extension_version = var.runtime_version
   service_plan_id             = var.app_service_plan_id != null ? var.app_service_plan_id : azurerm_service_plan.this[0].id
   #  The backend storage account name which will be used by this Function App (such as the dashboard, logs)
-  storage_account_name       = module.storage_account.name
-  storage_account_access_key = module.storage_account.primary_access_key
-  https_only                 = var.https_only
-  client_certificate_enabled = var.client_certificate_enabled
-  client_certificate_mode    = var.client_certificate_mode
+  storage_account_name          = module.storage_account.name
+  storage_account_access_key    = module.storage_account.primary_access_key
+  https_only                    = var.https_only
+  client_certificate_enabled    = var.client_certificate_enabled
+  client_certificate_mode       = var.client_certificate_mode
+  public_network_access_enabled = var.enable_function_app_public_network_access
 
   site_config {
     minimum_tls_version               = "1.2"
@@ -241,6 +245,7 @@ resource "azurerm_linux_function_app" "this" {
     application_insights_key          = var.application_insights_instrumentation_key
     health_check_path                 = var.health_check_path
     health_check_eviction_time_in_min = var.health_check_path != null ? var.health_check_maxpingfailures : null
+    ip_restriction_default_action     = var.ip_restriction_default_action != null ? var.ip_restriction_default_action : local.ip_restriction_default_action
 
     dynamic "app_service_logs" {
       for_each = var.app_service_logs != null ? [var.app_service_logs] : []
@@ -278,6 +283,16 @@ resource "azurerm_linux_function_app" "this" {
         ip_address                = ip.value.ip_address
         virtual_network_subnet_id = ip.value.virtual_network_subnet_id
         name                      = "rule"
+      }
+    }
+
+    dynamic "ip_restriction" {
+      for_each = var.allowed_service_tags
+      iterator = st
+
+      content {
+        service_tag = st.value
+        name        = "rule"
       }
     }
 

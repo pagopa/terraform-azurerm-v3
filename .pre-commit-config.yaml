@@ -1,18 +1,19 @@
 repos:
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.83.2
+    rev: v1.89.0
     hooks:
       - id: terraform_fmt
       - id: terraform_docs
         args:
           - --args=--hide providers
-      - id: terraform_tfsec
+      #validate will exclude folders that contains xyz/test... and .utils that contains only scripts stuffs
       - id: terraform_validate
-        exclude: |
-            (?x)^(
-                ^fixme*|
-                ^tests*
-            )$
+        exclude: '(.*\/tests|.utils)'
         args:
           - --args=-json
           - --args=-no-color
+      # - id: terraform_trivy
+      #   args:
+      #     - >
+      #       --args=--format table
+      #       --skip-dirs="**/.terraform"

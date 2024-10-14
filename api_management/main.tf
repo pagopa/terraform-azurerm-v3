@@ -101,7 +101,7 @@ resource "azurerm_api_management" "this" {
 
 # only Premium sku support autoscaling
 resource "azurerm_monitor_autoscale_setting" "this" {
-  count               = var.sku_name == "Premium_1" && var.autoscale != null && var.autoscale.enabled ? 1 : 0
+  count               = startswith(var.sku_name, "Premium") && var.autoscale != null && var.autoscale.enabled ? 1 : 0
   name                = "${azurerm_api_management.this.name}-autoscale"
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -165,6 +165,7 @@ resource "azurerm_monitor_autoscale_setting" "this" {
 #
 # Diagnostic, Logs & Monitor
 #
+
 resource "azurerm_api_management_logger" "this" {
   count = var.application_insights.enabled ? 1 : 0
 
@@ -172,9 +173,13 @@ resource "azurerm_api_management_logger" "this" {
   api_management_name = azurerm_api_management.this.name
   resource_group_name = var.resource_group_name
 
-  application_insights {
-    instrumentation_key = var.application_insights.instrumentation_key
+  dynamic "application_insights" {
+    for_each = var.management_logger_applicaiton_insight_enabled ? [1] : []
+    content {
+      instrumentation_key = var.application_insights.instrumentation_key
+    }
   }
+
 }
 
 resource "azurerm_api_management_diagnostic" "this" {
@@ -306,13 +311,25 @@ resource "azurerm_monitor_metric_alert" "this" {
 # 🧺 REDIS
 #
 resource "azurerm_api_management_redis_cache" "this" {
-  count = var.redis_connection_string != null ? 1 : 0
+  count = var.redis_cache_enabled ? 1 : 0
 
   name              = format("%s-redis", var.name)
   api_management_id = azurerm_api_management.this.id
   connection_string = var.redis_connection_string
   redis_cache_id    = var.redis_cache_id
 }
+
+# Already apply forcing redis_connection_string on apim_module
+resource "azurerm_api_management_redis_cache" "this_region" {
+  count             = var.redis_cache_enabled ? 1 : 0
+  name              = "apim-external-cache-redis"
+  api_management_id = azurerm_api_management.this.id
+  connection_string = var.redis_connection_string
+  description       = "APIM external cache Redis"
+  redis_cache_id    = var.redis_cache_id
+  cache_location    = var.location
+}
+
 
 #
 # Certificate

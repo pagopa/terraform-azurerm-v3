@@ -25,6 +25,17 @@ resource "azurerm_application_gateway" "this" {
     public_ip_address_id = var.public_ip_id
   }
 
+  dynamic "frontend_ip_configuration" {
+    for_each = var.private_ip_address
+    iterator = private
+    content {
+      name                          = "${var.name}-private-ip-conf"
+      private_ip_address            = private.value
+      private_ip_address_allocation = "Static"
+      subnet_id                     = var.subnet_id
+    }
+  }
+
   dynamic "backend_address_pool" {
     for_each = var.backends
     iterator = backend
@@ -125,7 +136,7 @@ resource "azurerm_application_gateway" "this" {
 
     content {
       name                           = "${listener.key}-listener"
-      frontend_ip_configuration_name = "${var.name}-ip-conf"
+      frontend_ip_configuration_name = listener.value.type == "Private" ? "${var.name}-private-ip-conf" : "${var.name}-ip-conf"
       frontend_port_name             = "${var.name}-${listener.value.port}-port"
       protocol                       = "Https"
       ssl_certificate_name           = listener.value.certificate.name
@@ -237,6 +248,8 @@ resource "azurerm_application_gateway" "this" {
             content {
               path         = rewrite_rule.value.url.path
               query_string = rewrite_rule.value.url.query_string
+              reroute      = rewrite_rule.value.url.reroute
+              components   = rewrite_rule.value.url.components
             }
           }
         }

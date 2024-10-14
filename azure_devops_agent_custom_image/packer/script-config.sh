@@ -24,14 +24,17 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 check_command "az"
 
 # install helm
-az acr helm install-cli -y --client-version 3.12.0
+az acr helm install-cli -y --client-version 3.14.2
 
 check_command "helm"
 
 # install kubectl
-az aks install-cli --client-version 1.25.10 --kubelogin-version 0.0.29
+# https://kubernetes.io/releases/
+# https://github.com/Azure/kubelogin/releases
+az aks install-cli --client-version 1.29.7 --kubelogin-version 0.1.4
 
 check_command "kubectl"
+check_command "kubelogin"
 
 # setup DOCKER installation from https://docs.docker.com/engine/install/ubuntu/
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
@@ -42,7 +45,7 @@ echo \
   $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 apt-get -y update
-apt-get -y install  python3-pip
+apt-get -y install python3-pip
 
 check_command "python3"
 
@@ -52,7 +55,7 @@ apt-get -y --allow-unauthenticated install docker-ce docker-ce-cli containerd.io
 check_command "docker"
 
 # install YQ from https://github.com/mikefarah/yq#install
-YQ_VERSION="v4.33.3"
+YQ_VERSION="v4.43.1"
 YQ_BINARY="yq_linux_amd64"
 wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY}.tar.gz -O - |\
   tar xz && mv ${YQ_BINARY} /usr/bin/yq
@@ -60,19 +63,27 @@ wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY
 check_command "yq"
 
 # install SOPS from https://github.com/mozilla/sops
-SOPS_VERSION="3.7.3"
+SOPS_VERSION="3.9.0"
 wget "https://github.com/mozilla/sops/releases/download/v${SOPS_VERSION}/sops_${SOPS_VERSION}_amd64.deb"
 apt install -y "$PWD/sops_${SOPS_VERSION}_amd64.deb"
 
 check_command "sops"
 
 # install Velero
-VELERO_VERSION=v1.11.1
+VELERO_VERSION=v1.13.2
 wget https://github.com/vmware-tanzu/velero/releases/download/${VELERO_VERSION}/velero-${VELERO_VERSION}-linux-amd64.tar.gz && \
 tar -zxvf velero-${VELERO_VERSION}-linux-amd64.tar.gz && \
 sudo mv velero-${VELERO_VERSION}-linux-amd64/velero /usr/bin/velero
 
 check_command "velero"
+
+# install packer
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null && \
+sudo apt-get update && \
+sudo apt-get install -y packer
+
+check_command "packer"
 
 # prepare machine for k6 large load test
 

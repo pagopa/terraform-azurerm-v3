@@ -21,22 +21,28 @@ This module creates the infrastructure to host GitHub self hosted runners using 
 
 Before using the module, developer needs the following existing resources:
 
-- a resource group for the Container App Environment named `<prefix>-<short_env>-github-runner-rg`
+- a Container App Environment provisioned in a resource group named `<prefix>-<short_env>-github-runner-rg`
 - a VNet
 - a KeyVault
 - a Log Analytics Workspace
 - a secret in the mentioned KeyVault containing a GitHub PAT with access to the desired repos
   - PATs can be generated using [`bot` GitHub users](https://pagopa.atlassian.net/wiki/spaces/DEVOPS/pages/466716501/Github+-+bots+for+projects). An Admin must approve the request
   - PATs have an expiration date
+  - PAT must have [these permissions](https://keda.sh/docs/2.12/scalers/github-runner/#setting-up-the-github-app) on selected repositories
 
 ### What the module does
 
 The module creates:
 
 - a subnet (`/23`) in the specified VNet
-- a Container App Environment in that subnet with the name `<prefix>-<short_env>-github-runner-snet` (name is overridable)
-- a Container App job with the name `<prefix>-<short_env>-github-runner-job`
+- a Container App job with the name `<prefix>-<short_env>-github-runner-job` on the specified Container App Environment
 - a role assignment to allow the Container App Job to read secrets from the existing KeyVault (`Get` permission over KeyVault's secrets access policies)
+
+### Input variables
+
+Use `environment` and `key_vault` to specify name and resource group name of the Container App Environment and the KeyVault to use.
+`container` variable is optional but useful to customize the container properties such as CPU and memory limits and the container's image.
+Use `job` variable to specify target repository and optionally customize scaling rules.
 
 ### Example
 
@@ -54,12 +60,10 @@ To support GitHub Actions, you need to use `github-runner` [scale rule](https://
   - it supports multiple repositories but this module is designed to have a 1:1 match between containers and repositories
 - targetWorkflowQueueLength: `1`
   - indicates how many job requests are necessary to trigger the container
-- labels: the job name
-  - field is optional but useful to apply the event-driven rule to a single container and not to the entire Container App Job
 
-With the above settings, the scale rules start to poll the GitHub repositories (be careful to quota limits). When a job request is detected, it launches the container indicated in the `labels` metadata.
+With the above settings, the scale rules start to poll the GitHub repositories (be careful to quota limits). You can reduce the polling interval by using `polling_interval` module's variable. It defaults to 30 seconds.
 
-Containers needs these environment variables to connect to GitHub, [grab a registration token and register themself as runners](https://github.com/pagopa/github-self-hosted-runner-azure/blob/dockerfile-v2/github-runner-entrypoint.sh):
+Containers needs these environment variables to connect to GitHub, [grab a registration token and register themself as runners](https://github.com/pagopa/github-self-hosted-runner-azure/blob/main/github-runner-entrypoint.sh):
 
 - GITHUB_PAT: reference to the KeyVault secret (no Kubernetes secrets are used)
 - REPO_URL: GitHub repo URL
@@ -79,8 +83,8 @@ Containers needs these environment variables to connect to GitHub, [grab a regis
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | <= 1.11.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.50.0, <= 3.85.0 |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 1.12 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.50 |
 
 ## Modules
 
@@ -90,37 +94,32 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [azapi_resource.runner_job](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
-| [azurerm_container_app_environment.container_app_environment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_environment) | resource |
+| [azapi_resource.container_app_job](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
 | [azurerm_key_vault_access_policy.keyvault_containerapp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_access_policy) | resource |
-| [azurerm_subnet.runner_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
+| [azurerm_container_app_environment.container_app_environment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/container_app_environment) | data source |
 | [azurerm_key_vault.key_vault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/key_vault) | data source |
-| [azurerm_log_analytics_workspace.law](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/log_analytics_workspace) | data source |
-| [azurerm_resource_group.runner_rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
+| [azurerm_resource_group.rg_runner](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
 | [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_app"></a> [app](#input\_app) | Container App job configuration | <pre>object({<br>    repo_owner = optional(string, "pagopa")<br>    repos      = set(string)<br>    image      = optional(string, "ghcr.io/pagopa/github-self-hosted-runner-azure:beta-dockerfile-v2@sha256:c7ebe4453578c9df426b793366b8498c030ec0f47f753ea2c685a3c0ec0bb646")<br>  })</pre> | n/a | yes |
+| <a name="input_container"></a> [container](#input\_container) | Job Container configuration | <pre>object({<br>    cpu    = number<br>    memory = string<br>    image  = string<br>  })</pre> | <pre>{<br>  "cpu": 0.5,<br>  "image": "ghcr.io/pagopa/github-self-hosted-runner-azure:latest",<br>  "memory": "1Gi"<br>}</pre> | no |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
-| <a name="input_environment"></a> [environment](#input\_environment) | Container App Environment configuration (Log Analytics Workspace) | <pre>object({<br>    law_name                = string<br>    law_resource_group_name = string<br>  })</pre> | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | Container App Environment configuration (Log Analytics Workspace) | <pre>object({<br>    name                = string<br>    resource_group_name = string<br>  })</pre> | n/a | yes |
+| <a name="input_job"></a> [job](#input\_job) | Container App job configuration | <pre>object({<br>    name                 = string<br>    repo_owner           = optional(string, "pagopa")<br>    repo                 = string<br>    polling_interval     = optional(number, 30)<br>    scale_max_executions = optional(number, 5)<br>  })</pre> | n/a | yes |
 | <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Data of the KeyVault which stores PAT as secret | <pre>object({<br>    resource_group_name = string<br>    name                = string<br>    secret_name         = string<br>  })</pre> | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | Resource group and resources location | `string` | n/a | yes |
-| <a name="input_network"></a> [network](#input\_network) | Existing VNet information and subnet CIDR block to use (must be /23). Optionally specify the subnet name | <pre>object({<br>    vnet_resource_group_name = string<br>    vnet_name                = string<br>    subnet_name              = optional(string, "")<br>    subnet_cidr_block        = string<br>  })</pre> | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Project prefix | `string` | n/a | yes |
+| <a name="input_runner_labels"></a> [runner\_labels](#input\_runner\_labels) | Labels that allow a GH action to call a specific runner | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags for new resources | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
-| <a name="input_vm_size"></a> [vm\_size](#input\_vm\_size) | Job VM size | <pre>object({<br>    cpu    = number<br>    memory = string<br>  })</pre> | <pre>{<br>  "cpu": 1,<br>  "memory": "2Gi"<br>}</pre> | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_ca_id"></a> [ca\_id](#output\_ca\_id) | Container App job id |
-| <a name="output_ca_name"></a> [ca\_name](#output\_ca\_name) | Container App job name |
-| <a name="output_cae_id"></a> [cae\_id](#output\_cae\_id) | Container App Environment id |
-| <a name="output_cae_name"></a> [cae\_name](#output\_cae\_name) | Container App Environment name |
-| <a name="output_subnet_cidr"></a> [subnet\_cidr](#output\_subnet\_cidr) | Subnet CIDR blocks |
-| <a name="output_subnet_name"></a> [subnet\_name](#output\_subnet\_name) | Subnet name |
+| <a name="output_id"></a> [id](#output\_id) | Container App job id |
+| <a name="output_name"></a> [name](#output\_name) | Container App job name |
+| <a name="output_resource_group_name"></a> [resource\_group\_name](#output\_resource\_group\_name) | Container App job resource group name |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

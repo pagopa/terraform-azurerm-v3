@@ -38,6 +38,9 @@ resource "azurerm_private_dns_zone_virtual_network_link" "privatelink_redis_cach
   tags = var.tags
 }
 
+#
+# REDIS
+#
 module "redis_cache" {
   source = "../../redis_cache"
 

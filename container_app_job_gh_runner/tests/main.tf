@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "<= 3.85.0"
+      version = "<= 3.94.0"
     }
   }
 }
@@ -28,9 +28,11 @@ resource "random_id" "unique" {
 }
 
 locals {
-  project        = "${var.prefix}${random_id.unique.hex}"
-  env_short      = substr(random_id.unique.hex, 0, 1)
-  rg_name        = "${local.project}-${local.env_short}-github-runner-rg"
-  key_vault_name = "${local.project}-${local.env_short}-kv"
-  vnet_name      = "${local.project}-${local.env_short}-vnet"
+  project          = "${var.prefix}${substr(random_id.unique.hex, 0, 1)}"
+  rg_name          = "${local.project}-github-runner-rg"
+  key_vault_name   = "${local.project}-kv"
+  vnet_name        = "${local.project}-vnet"
+  subnet_name      = "${local.project}-subnet"
+  law_name         = "${local.project}-runner-law"
+  environment_name = "${local.project}-runner-cae"
 }

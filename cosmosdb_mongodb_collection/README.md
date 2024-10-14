@@ -10,7 +10,7 @@ This module allow the creation of a collection inside a MongoDB database
 
 ```ts
 module "mongdb_collection_name" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_mongodb_collection?ref=v3.15.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_mongodb_collection?ref=v8.8.0"
 
   name                = "collectionName"
   resource_group_name = azurerm_resource_group.cosmos_mongo_rg[0].name
@@ -44,7 +44,7 @@ module "mongdb_collection_name" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.30 |
 
 ## Modules
 
@@ -65,7 +65,7 @@ No modules.
 | <a name="input_cosmosdb_mongo_account_name"></a> [cosmosdb\_mongo\_account\_name](#input\_cosmosdb\_mongo\_account\_name) | The name of the Cosmos DB Mongo Account in which the Cosmos DB Mongo Database exists. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_cosmosdb_mongo_database_name"></a> [cosmosdb\_mongo\_database\_name](#input\_cosmosdb\_mongo\_database\_name) | The name of the Cosmos DB Mongo Database in which the Cosmos DB Mongo Collection is created. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_default_ttl_seconds"></a> [default\_ttl\_seconds](#input\_default\_ttl\_seconds) | The default Time To Live in seconds. If the value is -1 or 0, items are not automatically expired. | `number` | `null` | no |
-| <a name="input_indexes"></a> [indexes](#input\_indexes) | One or more indexes. An index with an "\_id" key must be specified. | <pre>list(object({<br>    keys   = list(string)<br>    unique = bool<br>  }))</pre> | n/a | yes |
+| <a name="input_indexes"></a> [indexes](#input\_indexes) | One or more indexes. An index with an "\_id" key must be specified. | <pre>list(object({<br/>    keys   = list(string)<br/>    unique = bool<br/>  }))</pre> | n/a | yes |
 | <a name="input_lock_enable"></a> [lock\_enable](#input\_lock\_enable) | Apply lock to block accidental deletions. | `bool` | `false` | no |
 | <a name="input_max_throughput"></a> [max\_throughput](#input\_max\_throughput) | It will activate the autoscale mode setting the maximum throughput of the MongoDB collection (RU/s). Must be between 4,000 and 1,000,000. Must be set in increments of 1,000. Conflicts with throughput. Switching between autoscale and manual throughput is not supported via Terraform and must be completed via the Azure Portal and refreshed. | `number` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Specifies the name of the Cosmos DB Mongo Collection. Changing this forces a new resource to be created. | `string` | n/a | yes |

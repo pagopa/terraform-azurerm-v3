@@ -6,7 +6,7 @@ This module allow the creation of a key vault
 
 ```ts
 module "key_vault_domain" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//key_vault?ref=v3.15.0"
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//key_vault?ref=v8.8.0"
 
   name                       = "${local.product}-${var.domain}-kv"
   location                   = azurerm_resource_group.sec_rg_domain.location
@@ -28,7 +28,7 @@ module "key_vault_domain" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.30 |
 
 ## Modules
 

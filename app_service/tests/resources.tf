@@ -79,6 +79,8 @@ module "web_app_service_docker" {
   health_check_path = "/status"
   sku_name          = "P1v2"
 
+  zone_balancing_enabled = true
+
   app_settings = {
     # Monitoring
     APPINSIGHTS_INSTRUMENTATIONKEY                  = azurerm_application_insights.ai.instrumentation_key
@@ -110,6 +112,8 @@ module "web_app_service_docker" {
   allowed_subnets = [
     azurerm_subnet.arm_subnet.id,
   ]
+
+  allowed_service_tags = ["ApplicationInsightsAvailability"]
 
   tags = var.tags
 }

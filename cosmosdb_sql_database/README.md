@@ -38,7 +38,7 @@ resource "azurerm_cosmosdb_mongo_database" "mongo_db" {
 ```ts
 ## Database
 module "core_cosmos_db" {
-  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_sql_database?ref=v3.15.0"
+  source              = "git::https://github.com/pagopa/terraform-azurerm-v3.git//cosmosdb_sql_database?ref=v8.8.0"
   name                = "db"
   resource_group_name = azurerm_resource_group.cosmos_rg[0].name
   account_name        = module.cosmos_core.name
@@ -52,7 +52,7 @@ module "core_cosmos_db" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.30 |
 
 ## Modules
 

@@ -1,15 +1,3 @@
-variable "location" {
-  type        = string
-  default     = "northeurope"
-  description = "(Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created."
-}
-
-
-variable "subscription" {
-  type        = string
-  description = "(Required) Azure subscription"
-}
-
 variable "target_resource_group_name" {
   type        = string
   description = "(string) - Resource group under which the final artifact will be stored."
@@ -37,7 +25,7 @@ variable "base_image_version" {
 variable "vm_sku" {
   type        = string
   description = "(Optional) Size of VMs in the scale set. Default to Standard_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info."
-  default     = "Standard_B1s"
+  default     = "Standard_B2ms"
 }
 
 variable "target_image_name" {
@@ -46,19 +34,27 @@ variable "target_image_name" {
 }
 
 
-variable "client_id" {
-  type        = string
-  description = "(Required) Service principal client id"
-}
-
-variable "client_secret" {
-  type        = string
-  description = "(Required) service principal client secret"
-}
 
 variable "build_rg_name" {
   type        = string
   description = "(Required) temporary build resource group name"
 }
 
-
+#
+# CUSTOM VNET
+#
+variable "build_vnet_name" {
+  type        = string
+  description = "(Optional) temporary build vnet name"
+  default = null
+}
+variable "build_vnet_subnet_name" {
+  type        = string
+  description = "(Optional) temporary build subnet name"
+  default = null
+}
+variable "build_vnet_rg_name" {
+  type        = string
+  description = "(Optional) temporary build vnet resource group name"
+  default = null
+}

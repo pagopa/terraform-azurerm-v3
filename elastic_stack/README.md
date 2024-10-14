@@ -15,9 +15,9 @@ TODO
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.30.0, <= 3.71.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.30 |
 | <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | ~> 2.0 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | <= 2.17.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.27 |
 
 ## Modules
 
@@ -57,7 +57,7 @@ No modules.
 | <a name="input_kibana_external_domain"></a> [kibana\_external\_domain](#input\_kibana\_external\_domain) | Kibana external domain | `string` | n/a | yes |
 | <a name="input_kibana_internal_hostname"></a> [kibana\_internal\_hostname](#input\_kibana\_internal\_hostname) | Kibana internal hostname | `string` | n/a | yes |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace for ECK Operator | `string` | `"elastic-system"` | no |
-| <a name="input_nodeset_config"></a> [nodeset\_config](#input\_nodeset\_config) | n/a | <pre>map(object({<br>    count            = string<br>    roles            = list(string)<br>    storage          = string<br>    storageClassName = string<br>  }))</pre> | <pre>{<br>  "default": {<br>    "count": 1,<br>    "roles": [<br>      "master",<br>      "data",<br>      "data_content",<br>      "data_hot",<br>      "data_warm",<br>      "data_cold",<br>      "data_frozen",<br>      "ingest",<br>      "ml",<br>      "remote_cluster_client",<br>      "transform"<br>    ],<br>    "storage": "5Gi",<br>    "storageClassName": "standard"<br>  }<br>}</pre> | no |
+| <a name="input_nodeset_config"></a> [nodeset\_config](#input\_nodeset\_config) | n/a | <pre>map(object({<br/>    count            = string<br/>    roles            = list(string)<br/>    storage          = string<br/>    storageClassName = string<br/>    requestMemory    = string<br/>    requestCPU       = string<br/>    limitsMemory     = string<br/>    limitsCPU        = string<br/>  }))</pre> | <pre>{<br/>  "default": {<br/>    "count": 1,<br/>    "limitsCPU": "1",<br/>    "limitsMemory": "2Gi",<br/>    "requestCPU": "1",<br/>    "requestMemory": "2Gi",<br/>    "roles": [<br/>      "master",<br/>      "data",<br/>      "data_content",<br/>      "data_hot",<br/>      "data_warm",<br/>      "data_cold",<br/>      "data_frozen",<br/>      "ingest",<br/>      "ml",<br/>      "remote_cluster_client",<br/>      "transform"<br/>    ],<br/>    "storage": "5Gi",<br/>    "storageClassName": "standard"<br/>  }<br/>}</pre> | no |
 | <a name="input_secret_name"></a> [secret\_name](#input\_secret\_name) | Secret certificate name | `string` | n/a | yes |
 | <a name="input_snapshot_secret_name"></a> [snapshot\_secret\_name](#input\_snapshot\_secret\_name) | n/a | `string` | n/a | yes |
 | <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id) | Tenant ID for azure | `string` | `"7788edaf-0346-4068-9d79-c868aed15b3d"` | no |
