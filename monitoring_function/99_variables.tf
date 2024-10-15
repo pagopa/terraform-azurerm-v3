@@ -17,6 +17,12 @@ variable "location" {
   description = "(Required) Resource location"
 }
 
+variable "legacy" {
+  type        = bool
+  default     = true
+  description = "(Optional) Enable new terraform resource features for container app job."
+}
+
 variable "storage_account_settings" {
   type = object({
     tier                      = optional(string, "Standard")  #(Optional) Tier used for the backup storage account
@@ -125,5 +131,11 @@ variable "self_alert_configuration" {
     operator    = "LessThan"
     aggregation = "Average"
   }
+}
+
+variable "alert_set_auto_mitigate" {
+  type        = bool
+  default     = true
+  description = "(Optional) Should the alerts in this Metric Alert be auto resolved? Defaults to true."
 }
 

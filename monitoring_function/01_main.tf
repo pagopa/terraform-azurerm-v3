@@ -68,7 +68,6 @@ resource "azurerm_storage_table_entity" "monitoring_configuration" {
     "tags"                = lookup(local.decoded_configuration[count.index], "tags", null) != null ? jsonencode(local.decoded_configuration[count.index].tags) : null
     "bodyCompareStrategy" = lookup(local.decoded_configuration[count.index], "bodyCompareStrategy", null) != null ? local.decoded_configuration[count.index].bodyCompareStrategy : null
     "expectedBody"        = lookup(local.decoded_configuration[count.index], "expectedBody", null) != null ? jsonencode(local.decoded_configuration[count.index].expectedBody) : null
-
   }
 }
 
@@ -81,8 +80,10 @@ resource "azurerm_private_endpoint" "synthetic_monitoring_storage_private_endpoi
   subnet_id           = var.private_endpoint_subnet_id
 
   private_dns_zone_group {
-    name                 = "${var.prefix}-synthetic-monitoring-private-dns-zone-group"
-    private_dns_zone_ids = [var.storage_account_settings.table_private_dns_zone_id]
+    name = "${var.prefix}-synthetic-monitoring-private-dns-zone-group"
+    private_dns_zone_ids = [
+      var.storage_account_settings.table_private_dns_zone_id
+    ]
   }
 
   private_service_connection {
@@ -95,8 +96,9 @@ resource "azurerm_private_endpoint" "synthetic_monitoring_storage_private_endpoi
   tags = var.tags
 }
 
-
 resource "azapi_resource" "monitoring_app_job" {
+  count = var.legacy == true ? 1 : 0
+
   type      = "Microsoft.App/jobs@2022-11-01-preview"
   name      = "${var.prefix}-monitoring-app-job"
   location  = var.location
@@ -178,14 +180,93 @@ resource "azapi_resource" "monitoring_app_job" {
   })
 }
 
+resource "azurerm_container_app_job" "monitoring_terraform_app_job" {
+  count = var.legacy == false ? 1 : 0
+
+  name                         = "${var.prefix}-monitoring-app-job"
+  resource_group_name          = var.resource_group_name
+  location                     = var.location
+  container_app_environment_id = var.job_settings.container_app_environment_id
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  schedule_trigger_config {
+    cron_expression          = var.job_settings.cron_scheduling
+    parallelism              = 1
+    replica_completion_count = 1
+  }
+
+
+  template {
+    container {
+      cpu    = var.job_settings.cpu_requirement
+      memory = var.job_settings.memory_requirement
+      name   = "synthetic-monitoring"
+      image  = "${var.docker_settings.registry_url}/${var.docker_settings.image_name}:${var.docker_settings.image_tag}"
+
+      env {
+        name  = "APP_INSIGHT_CONNECTION_STRING"
+        value = data.azurerm_application_insights.app_insight.connection_string
+      }
+      env {
+        name  = "STORAGE_ACCOUNT_NAME"
+        value = module.synthetic_monitoring_storage_account.name
+      }
+      env {
+        name  = "STORAGE_ACCOUNT_KEY"
+        value = module.synthetic_monitoring_storage_account.primary_access_key
+      }
+      env {
+        name  = "STORAGE_ACCOUNT_TABLE_NAME"
+        value = azurerm_storage_table.table_storage.name
+      }
+      env {
+        name  = "AVAILABILITY_PREFIX"
+        value = var.job_settings.availability_prefix
+      }
+      env {
+        name  = "HTTP_CLIENT_TIMEOUT"
+        value = tostring(var.job_settings.http_client_timeout)
+      }
+      env {
+        name  = "LOCATION"
+        value = var.location
+      }
+      env {
+        name  = "CERT_VALIDITY_RANGE_DAYS"
+        value = tostring(var.job_settings.cert_validity_range_days)
+      }
+    }
+  }
+
+  replica_retry_limit        = 1
+  replica_timeout_in_seconds = var.job_settings.execution_timeout_seconds
+
+  tags = var.tags
+
+  # Prevents non-sequential destruction of the legacy resource azapi_resource.monitoring_app_job.
+  # This configuration forces resources to be destroyed and created sequentially by
+  # avoiding the duplicate resource error and enabling a switch to a new or old version
+  # (in case rollback is needed).
+  lifecycle {
+    precondition {
+      condition     = length(azapi_resource.monitoring_app_job) == 0
+      error_message = "Warning: You cannot create the new resource. Perform legacy import before proceeding with changes."
+    }
+  }
+}
+
 locals {
   default_alert_configuration = {
-    enabled     = true,
-    severity    = 0,
-    frequency   = "PT1M"
-    threshold   = 100
-    operator    = "LessThan"
-    aggregation = "Average"
+    enabled       = true,
+    severity      = 0,
+    frequency     = "PT1M"
+    auto_mitigate = var.alert_set_auto_mitigate
+    threshold     = 100
+    operator      = "LessThan"
+    aggregation   = "Average"
   }
 
   default_custom_action_groups = []
@@ -201,7 +282,7 @@ resource "azurerm_monitor_metric_alert" "alert" {
   description         = "Monitors the availability of ${local.decoded_configuration[count.index].appName} ${local.decoded_configuration[count.index].apiName} from ${local.decoded_configuration[count.index].type}"
   severity            = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "severity", local.default_alert_configuration.severity)
   frequency           = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "frequency", local.default_alert_configuration.frequency)
-  auto_mitigate       = true
+  auto_mitigate       = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "auto_mitigate", local.default_alert_configuration.auto_mitigate)
   enabled             = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "enabled", local.default_alert_configuration.enabled)
 
   criteria {
@@ -213,7 +294,9 @@ resource "azurerm_monitor_metric_alert" "alert" {
     dimension {
       name     = "availabilityResult/name"
       operator = "Include"
-      values   = ["${var.job_settings.availability_prefix}-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"]
+      values = [
+        "${var.job_settings.availability_prefix}-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"
+      ]
     }
     dimension {
       name     = "availabilityResult/location"
@@ -232,7 +315,6 @@ resource "azurerm_monitor_metric_alert" "alert" {
   }
 
 }
-
 
 
 resource "azurerm_monitor_metric_alert" "self_alert" {
