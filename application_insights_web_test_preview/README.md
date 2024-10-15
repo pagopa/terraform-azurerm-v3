@@ -67,7 +67,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_actions"></a> [actions](#input\_actions) | n/a | <pre>list(object({<br/>    action_group_id = string<br/>  }))</pre> | n/a | yes |
+| <a name="input_actions"></a> [actions](#input\_actions) | n/a | <pre>list(object({<br>    action_group_id = string<br>  }))</pre> | n/a | yes |
 | <a name="input_alert_description"></a> [alert\_description](#input\_alert\_description) | Web Availability Alert description | `string` | `"Web availability check alert triggered when it fails."` | no |
 | <a name="input_application_insight_id"></a> [application\_insight\_id](#input\_application\_insight\_id) | Application insight id. | `string` | n/a | yes |
 | <a name="input_application_insight_name"></a> [application\_insight\_name](#input\_application\_insight\_name) | Application insight instance name. | `string` | n/a | yes |
