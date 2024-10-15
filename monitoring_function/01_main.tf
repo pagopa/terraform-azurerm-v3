@@ -260,12 +260,13 @@ resource "azurerm_container_app_job" "monitoring_terraform_app_job" {
 
 locals {
   default_alert_configuration = {
-    enabled     = true,
-    severity    = 0,
-    frequency   = "PT1M"
-    threshold   = 100
-    operator    = "LessThan"
-    aggregation = "Average"
+    enabled       = true,
+    severity      = 0,
+    frequency     = "PT1M"
+    auto_mitigate = var.alert_set_auto_mitigate
+    threshold     = 100
+    operator      = "LessThan"
+    aggregation   = "Average"
   }
 
   default_custom_action_groups = []
@@ -281,7 +282,7 @@ resource "azurerm_monitor_metric_alert" "alert" {
   description         = "Monitors the availability of ${local.decoded_configuration[count.index].appName} ${local.decoded_configuration[count.index].apiName} from ${local.decoded_configuration[count.index].type}"
   severity            = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "severity", local.default_alert_configuration.severity)
   frequency           = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "frequency", local.default_alert_configuration.frequency)
-  auto_mitigate       = var.alert_set_auto_mitigate
+  auto_mitigate       = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "auto_mitigate", local.default_alert_configuration.auto_mitigate)
   enabled             = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "enabled", local.default_alert_configuration.enabled)
 
   criteria {
