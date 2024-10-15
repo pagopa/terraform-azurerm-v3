@@ -22,10 +22,6 @@ locals {
   container = {
     env = [
       {
-        name  = "GITHUB_PAT"
-        value = "personal-access-token"
-      },
-      {
         name  = "REPO_URL"
         value = "https://github.com/${var.job_meta.repo_owner}/${var.job_meta.repo}"
       },
