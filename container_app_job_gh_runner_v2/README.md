@@ -34,7 +34,6 @@ Before using the module, developer needs the following existing resources:
 
 The module creates:
 
-- a subnet (`/23`) in the specified VNet
 - a Container App job with the name `<prefix>-<short_env>-github-runner-job` on the specified Container App Environment
 - a role assignment to allow the Container App Job to read secrets from the existing KeyVault (`Get` permission over KeyVault's secrets access policies)
 
@@ -69,13 +68,6 @@ Containers needs these environment variables to connect to GitHub, [grab a regis
 - REPO_URL: GitHub repo URL
 - REGISTRATION_TOKEN_API_URL: [GitHub API](https://docs.github.com/en/rest/actions/self-hosted-runners?apiVersion=2022-11-28#create-a-registration-token-for-a-repository) to get the registration token
 
-### Notes
-
-`azapi_resource` is required by CA because:
-
-- `azurerm` doesn't support Container App *jobs* ([feature request](https://github.com/hashicorp/terraform-provider-azurerm/issues/23165))
-- KeyVault reference not supported by `azurerm` ([feature request](https://github.com/hashicorp/terraform-provider-azurerm/issues/21739))
-
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -83,8 +75,7 @@ Containers needs these environment variables to connect to GitHub, [grab a regis
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 1.12 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.50 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.116.0 |
 
 ## Modules
 
@@ -94,10 +85,11 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [azapi_resource.container_app_job](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
+| [azurerm_container_app_job.container_app_job](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_job) | resource |
 | [azurerm_key_vault_access_policy.keyvault_containerapp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_access_policy) | resource |
 | [azurerm_container_app_environment.container_app_environment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/container_app_environment) | data source |
 | [azurerm_key_vault.key_vault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/key_vault) | data source |
+| [azurerm_key_vault_secret.github_pat](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/key_vault_secret) | data source |
 | [azurerm_resource_group.rg_runner](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
 | [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 
@@ -107,11 +99,21 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_container"></a> [container](#input\_container) | Job Container configuration | <pre>object({<br>    cpu    = number<br>    memory = string<br>    image  = string<br>  })</pre> | <pre>{<br>  "cpu": 0.5,<br>  "image": "ghcr.io/pagopa/github-self-hosted-runner-azure:latest",<br>  "memory": "1Gi"<br>}</pre> | no |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
-| <a name="input_environment"></a> [environment](#input\_environment) | Container App Environment configuration (Log Analytics Workspace) | <pre>object({<br>    name                = string<br>    resource_group_name = string<br>  })</pre> | n/a | yes |
-| <a name="input_job"></a> [job](#input\_job) | Container App job configuration | <pre>object({<br>    name                 = string<br>    repo_owner           = optional(string, "pagopa")<br>    repo                 = string<br>    polling_interval     = optional(number, 30)<br>    scale_max_executions = optional(number, 5)<br>  })</pre> | n/a | yes |
-| <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Data of the KeyVault which stores PAT as secret | <pre>object({<br>    resource_group_name = string<br>    name                = string<br>    secret_name         = string<br>  })</pre> | n/a | yes |
+| <a name="input_environment_name"></a> [environment\_name](#input\_environment\_name) | (Required) Container App Environment configuration (Log Analytics Workspace) | `string` | n/a | yes |
+| <a name="input_environment_rg"></a> [environment\_rg](#input\_environment\_rg) | (Required) Container App Environment configuration (Log Analytics Workspace) | `string` | n/a | yes |
+| <a name="input_job"></a> [job](#input\_job) | Container App job configuration | <pre>object({<br>    name                 = string<br>    scale_max_executions = optional(number, 5)<br>    scale_min_executions = optional(number, 0)<br>  })</pre> | n/a | yes |
+| <a name="input_job_meta"></a> [job\_meta](#input\_job\_meta) | Scaling rules metadata. | <pre>object({<br>    repo                         = string<br>    repo_owner                   = optional(string, "pagopa")<br>    runner_scope                 = optional(string, "repo")<br>    target_workflow_queue_length = optional(string, "1")<br>    github_runner                = optional(string, "https://api.github.com") #<br>  })</pre> | n/a | yes |
+| <a name="input_key_vault_name"></a> [key\_vault\_name](#input\_key\_vault\_name) | Name of the KeyVault which stores PAT as secret | `string` | n/a | yes |
+| <a name="input_key_vault_rg"></a> [key\_vault\_rg](#input\_key\_vault\_rg) | Resource group of the KeyVault which stores PAT as secret | `string` | n/a | yes |
+| <a name="input_key_vault_secret_name"></a> [key\_vault\_secret\_name](#input\_key\_vault\_secret\_name) | Data of the KeyVault which stores PAT as secret | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | Resource group and resources location | `string` | n/a | yes |
+| <a name="input_parallelism"></a> [parallelism](#input\_parallelism) | (Optional) Number of parallel replicas of a job that can run at a given time. | `number` | `1` | no |
+| <a name="input_polling_interval_in_seconds"></a> [polling\_interval\_in\_seconds](#input\_polling\_interval\_in\_seconds) | (Optional) Interval to check each event source in seconds. | `number` | `30` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Project prefix | `string` | n/a | yes |
+| <a name="input_replica_completion_count"></a> [replica\_completion\_count](#input\_replica\_completion\_count) | (Optional) Minimum number of successful replica completions before overall job completion. | `number` | `1` | no |
+| <a name="input_replica_retry_limit"></a> [replica\_retry\_limit](#input\_replica\_retry\_limit) | (Optional) The maximum number of times a replica is allowed to retry. | `number` | `1` | no |
+| <a name="input_replica_timeout_in_seconds"></a> [replica\_timeout\_in\_seconds](#input\_replica\_timeout\_in\_seconds) | (Required) The maximum number of seconds a replica is allowed to run. | `number` | `1800` | no |
+| <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Resource group name | `string` | n/a | yes |
 | <a name="input_runner_labels"></a> [runner\_labels](#input\_runner\_labels) | Labels that allow a GH action to call a specific runner | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags for new resources | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
 

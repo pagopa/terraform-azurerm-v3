@@ -5,11 +5,11 @@ locals {
     name = "${local.project}-${var.job.name}-github-runner-rule"
     type = "github-runner"
     metadata = {
-      owner                     = var.job.repo_owner
-      runnerScope               = "repo"
-      repos                     = "${var.job.repo}"
-      targetWorkflowQueueLength = "1"
-      github-runner             = "https://api.github.com"
+      owner                     = var.job_meta.repo_owner
+      runnerScope               = var.job_meta.runner_scope
+      repos                     = "${var.job_meta.repo}"
+      targetWorkflowQueueLength = var.job_meta.target_workflow_queue_length
+      github-runner             = var.job_meta.github_runner
     }
     auth = [
       {
@@ -22,16 +22,12 @@ locals {
   container = {
     env = [
       {
-        name      = "GITHUB_PAT"
-        secretRef = "personal-access-token"
-      },
-      {
         name  = "REPO_URL"
-        value = "https://github.com/${var.job.repo_owner}/${var.job.repo}"
+        value = "https://github.com/${var.job_meta.repo_owner}/${var.job_meta.repo}"
       },
       {
         name  = "REGISTRATION_TOKEN_API_URL"
-        value = "https://api.github.com/repos/${var.job.repo_owner}/${var.job.repo}/actions/runners/registration-token"
+        value = "https://api.github.com/repos/${var.job_meta.repo_owner}/${var.job_meta.repo}/actions/runners/registration-token"
       },
       {
         name  = "LABELS"
