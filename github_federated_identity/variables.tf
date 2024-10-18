@@ -41,6 +41,12 @@ variable "app_name" {
   default = ""
 }
 
+variable "location" {
+  type        = string
+  description = "Azure region for the Managed Identity"
+  default     = null
+}
+
 variable "identity_role" {
   type        = string
   description = "Identity role should be either ci or cd"
