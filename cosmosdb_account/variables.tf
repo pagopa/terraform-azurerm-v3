@@ -253,3 +253,10 @@ variable "action" {
   ))
   default = []
 }
+
+variable "analytical_storage_enabled" {
+  type = bool
+  # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/cosmosdb_account#analytical_storage_enabled
+  description = "Enable Analytical Storage option for this Cosmos DB account"
+  default     = false
+}

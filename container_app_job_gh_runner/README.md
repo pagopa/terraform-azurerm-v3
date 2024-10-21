@@ -77,6 +77,59 @@ Containers needs these environment variables to connect to GitHub, [grab a regis
 - KeyVault reference not supported by `azurerm` ([feature request](https://github.com/hashicorp/terraform-provider-azurerm/issues/21739))
 
 <!-- markdownlint-disable -->
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | ~> 1.12 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~>3.50 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | ~> 1.12 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~>3.50 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [azapi_resource.container_app_job](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
+| [azurerm_key_vault_access_policy.keyvault_containerapp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_access_policy) | resource |
+| [azurerm_container_app_environment.container_app_environment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/container_app_environment) | data source |
+| [azurerm_key_vault.key_vault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/key_vault) | data source |
+| [azurerm_resource_group.rg_runner](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
+| [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_container"></a> [container](#input\_container) | Job Container configuration | <pre>object({<br/>    cpu    = number<br/>    memory = string<br/>    image  = string<br/>  })</pre> | <pre>{<br/>  "cpu": 0.5,<br/>  "image": "ghcr.io/pagopa/github-self-hosted-runner-azure:latest",<br/>  "memory": "1Gi"<br/>}</pre> | no |
+| <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | Container App Environment configuration (Log Analytics Workspace) | <pre>object({<br/>    name                = string<br/>    resource_group_name = string<br/>  })</pre> | n/a | yes |
+| <a name="input_job"></a> [job](#input\_job) | Container App job configuration | <pre>object({<br/>    name                 = string<br/>    repo_owner           = optional(string, "pagopa")<br/>    repo                 = string<br/>    polling_interval     = optional(number, 30)<br/>    scale_max_executions = optional(number, 5)<br/>  })</pre> | n/a | yes |
+| <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Data of the KeyVault which stores PAT as secret | <pre>object({<br/>    resource_group_name = string<br/>    name                = string<br/>    secret_name         = string<br/>  })</pre> | n/a | yes |
+| <a name="input_location"></a> [location](#input\_location) | Resource group and resources location | `string` | n/a | yes |
+| <a name="input_prefix"></a> [prefix](#input\_prefix) | Project prefix | `string` | n/a | yes |
+| <a name="input_runner_labels"></a> [runner\_labels](#input\_runner\_labels) | Labels that allow a GH action to call a specific runner | `list(string)` | `[]` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags for new resources | `map(any)` | <pre>{<br/>  "CreatedBy": "Terraform"<br/>}</pre> | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_id"></a> [id](#output\_id) | Container App job id |
+| <a name="output_name"></a> [name](#output\_name) | Container App job name |
+| <a name="output_resource_group_name"></a> [resource\_group\_name](#output\_resource\_group\_name) | Container App job resource group name |
+<!-- END_TF_DOCS -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -105,15 +158,15 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_container"></a> [container](#input\_container) | Job Container configuration | <pre>object({<br>    cpu    = number<br>    memory = string<br>    image  = string<br>  })</pre> | <pre>{<br>  "cpu": 0.5,<br>  "image": "ghcr.io/pagopa/github-self-hosted-runner-azure:latest",<br>  "memory": "1Gi"<br>}</pre> | no |
+| <a name="input_container"></a> [container](#input\_container) | Job Container configuration | <pre>object({<br/>    cpu    = number<br/>    memory = string<br/>    image  = string<br/>  })</pre> | <pre>{<br/>  "cpu": 0.5,<br/>  "image": "ghcr.io/pagopa/github-self-hosted-runner-azure:latest",<br/>  "memory": "1Gi"<br/>}</pre> | no |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
-| <a name="input_environment"></a> [environment](#input\_environment) | Container App Environment configuration (Log Analytics Workspace) | <pre>object({<br>    name                = string<br>    resource_group_name = string<br>  })</pre> | n/a | yes |
-| <a name="input_job"></a> [job](#input\_job) | Container App job configuration | <pre>object({<br>    name                 = string<br>    repo_owner           = optional(string, "pagopa")<br>    repo                 = string<br>    polling_interval     = optional(number, 30)<br>    scale_max_executions = optional(number, 5)<br>  })</pre> | n/a | yes |
-| <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Data of the KeyVault which stores PAT as secret | <pre>object({<br>    resource_group_name = string<br>    name                = string<br>    secret_name         = string<br>  })</pre> | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | Container App Environment configuration (Log Analytics Workspace) | <pre>object({<br/>    name                = string<br/>    resource_group_name = string<br/>  })</pre> | n/a | yes |
+| <a name="input_job"></a> [job](#input\_job) | Container App job configuration | <pre>object({<br/>    name                 = string<br/>    repo_owner           = optional(string, "pagopa")<br/>    repo                 = string<br/>    polling_interval     = optional(number, 30)<br/>    scale_max_executions = optional(number, 5)<br/>  })</pre> | n/a | yes |
+| <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Data of the KeyVault which stores PAT as secret | <pre>object({<br/>    resource_group_name = string<br/>    name                = string<br/>    secret_name         = string<br/>  })</pre> | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | Resource group and resources location | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Project prefix | `string` | n/a | yes |
 | <a name="input_runner_labels"></a> [runner\_labels](#input\_runner\_labels) | Labels that allow a GH action to call a specific runner | `list(string)` | `[]` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags for new resources | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags for new resources | `map(any)` | <pre>{<br/>  "CreatedBy": "Terraform"<br/>}</pre> | no |
 
 ## Outputs
 
