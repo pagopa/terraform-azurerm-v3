@@ -661,7 +661,7 @@ resource "null_resource" "custom_hostname_kv_certificate" {
 # record APEX https://docs.microsoft.com/it-it/azure/dns/dns-zones-records#record-names
 resource "azurerm_dns_a_record" "apex_hostname" {
   # create this iff DNS zone name equal to HOST NAME azurerm_cdn_endpoint.this.fqdn
-  count = var.dns_zone_name == var.hostname ? 1 : 0
+  count = var.create_dns_record && var.dns_zone_name == var.hostname ? 1 : 0
 
   name                = "@"
   zone_name           = var.dns_zone_name
@@ -686,7 +686,7 @@ resource "azurerm_dns_cname_record" "apex_cdnverify" {
 }
 
 resource "azurerm_dns_cname_record" "hostname" {
-  count = var.dns_zone_name != var.hostname ? 1 : 0
+  count = var.create_dns_record && var.dns_zone_name != var.hostname ? 1 : 0
 
   name                = trimsuffix(replace(var.hostname, var.dns_zone_name, ""), ".")
   zone_name           = var.dns_zone_name
