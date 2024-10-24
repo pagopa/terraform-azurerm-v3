@@ -1,15 +1,5 @@
-# Test for Azure module
+# tests
 
-Terraform template to test the module.
-
-You need the access to DevOpsLab Subscription or change backend.ini value.
-
-`resources.tf` file contains all resources to test.
-
-## How to use it
-- ./terraform.sh plan
-- ./terraform.sh apply
-- ./terraform.sh destroy
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -23,16 +13,16 @@ You need the access to DevOpsLab Subscription or change backend.ini value.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_dns_forwarder_vmss"></a> [dns\_forwarder\_vmss](#module\_dns\_forwarder\_vmss) | ../../dns_forwarder_scale_set_vm | n/a |
+| <a name="module_dns_forwarder_lb_vmss"></a> [dns\_forwarder\_lb\_vmss](#module\_dns\_forwarder\_lb\_vmss) | ../../dns_forwarder_lb_vmss | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
+| [azurerm_key_vault.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault) | resource |
 | [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
-| [azurerm_subnet.subnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
 | [azurerm_virtual_network.vnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
-| [random_id.unique](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
+| [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 
 ## Inputs
@@ -43,12 +33,9 @@ You need the access to DevOpsLab Subscription or change backend.ini value.
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Resorce prefix | `string` | `"azrmtest"` | no |
 | <a name="input_source_image_name"></a> [source\_image\_name](#input\_source\_image\_name) | n/a | `string` | `"dns-forwarder-ubuntu2204-image-v1"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Azurerm test tags | `map(string)` | <pre>{<br/>  "CreatedBy": "Terraform",<br/>  "Source": "https://github.com/pagopa/terraform-azurerm-v3"<br/>}</pre> | no |
-| <a name="input_vms_subnet_cidr"></a> [vms\_subnet\_cidr](#input\_vms\_subnet\_cidr) | n/a | `list(string)` | <pre>[<br/>  "10.0.1.0/26"<br/>]</pre> | no |
 | <a name="input_vnet_address_space"></a> [vnet\_address\_space](#input\_vnet\_address\_space) | n/a | `list(string)` | <pre>[<br/>  "10.0.0.0/16"<br/>]</pre> | no |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_resource_group_name"></a> [resource\_group\_name](#output\_resource\_group\_name) | n/a |
+No outputs.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

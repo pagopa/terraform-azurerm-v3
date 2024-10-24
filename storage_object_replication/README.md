@@ -26,7 +26,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_destination_storage_account_id"></a> [destination\_storage\_account\_id](#input\_destination\_storage\_account\_id) | The ID of the destination storage account. | `string` | n/a | yes |
-| <a name="input_rules"></a> [rules](#input\_rules) | n/a | <pre>list(<br>    object({<br>      source_container_name      = string<br>      destination_container_name = string<br>      copy_blobs_created_after   = string<br>    })<br>  )</pre> | n/a | yes |
+| <a name="input_rules"></a> [rules](#input\_rules) | n/a | <pre>list(<br/>    object({<br/>      source_container_name      = string<br/>      destination_container_name = string<br/>      copy_blobs_created_after   = string<br/>    })<br/>  )</pre> | n/a | yes |
 | <a name="input_source_storage_account_id"></a> [source\_storage\_account\_id](#input\_source\_storage\_account\_id) | The ID of the source storage account. | `string` | n/a | yes |
 
 ## Outputs

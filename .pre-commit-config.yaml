@@ -1,19 +1,47 @@
 repos:
-  - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.89.0
-    hooks:
-      - id: terraform_fmt
-      - id: terraform_docs
-        args:
-          - --args=--hide providers
-      #validate will exclude folders that contains xyz/test... and .utils that contains only scripts stuffs
-      - id: terraform_validate
-        exclude: '(.*\/tests|.utils)'
-        args:
-          - --args=-json
-          - --args=-no-color
-      # - id: terraform_trivy
+- repo: https://github.com/antonbabenko/pre-commit-terraform
+  rev: v1.89.1 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
+  hooks:
+    - id: terraform_fmt
+    - id: terraform_docs
+      args:
+        - --hook-config=--path-to-file=README.md        # Valid UNIX path. I.e. ../TFDOC.md or docs/README.md etc.
+        - --hook-config=--add-to-existing-file=true     # Boolean. true or false
+        - --hook-config=--create-file-if-not-exist=true # Boolean. true or false
+        - --args=--hide providers
+    - id: terraform_validate
+      args:
+        - --init-args=-lockfile=readonly
+        - --hook-config=--retry-once-with-cleanup=true
+        - --init-args=-plugin-dir=/tmp/.terraform.d/plugin-cache
+        - --args=-json
+        - --args=-no-color
+        - --args=-compact-warnings
+      # - id: terraform_providers_lock
       #   args:
-      #     - >
-      #       --args=--format table
-      #       --skip-dirs="**/.terraform"
+      #     - --args=-platform=windows_amd64
+      #     - --args=-platform=darwin_amd64
+      #     - --args=-platform=darwin_arm64
+      #     - --args=-platform=linux_amd64
+      #     - --args=-platform=linux_arm64
+  ## general
+  # - repo: https://github.com/pre-commit/pre-commit-hooks
+  #   rev: v4.0.1
+  #   hooks:
+  #     # Common errors
+  #     - id: end-of-file-fixer
+  #       exclude_types: [sql]
+  #     - id: trailing-whitespace
+  #       args: [--markdown-linebreak-ext=md]
+  #       exclude_types: [sql]
+  #     - id: check-yaml
+  #     - id: check-executables-have-shebangs
+  #     # Cross platform
+  #     - id: check-case-conflict
+  #     - id: mixed-line-ending
+  #       args: [--fix=lf]
+  #       exclude_types: [sql]
+  #     # Security
+  #     - id: detect-aws-credentials
+  #       args: ['--allow-missing-credentials']
+  #     - id: detect-private-key
