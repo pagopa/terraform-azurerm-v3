@@ -52,7 +52,12 @@ variable "autoscale_settings" {
 
 variable "analytical_storage_ttl" { # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/cosmosdb_sql_container#analytical_storage_ttl
   type        = number
-  description = " (Optional) The default time to live of Analytical Storage for this SQL container."
+  description = "(Optional) The default time to live of Analytical Storage for this SQL container."
+  default     = null
+}
+variable "partition_key_version" { # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/cosmosdb_sql_container#partition_key_version
+  type        = number
+  description = "(Optional) Define a partition key version"
   default     = null
 }
 
