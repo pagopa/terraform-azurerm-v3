@@ -8,6 +8,7 @@ resource "azurerm_cosmosdb_sql_container" "this" {
   throughput             = var.throughput
   default_ttl            = var.default_ttl
   analytical_storage_ttl = var.analytical_storage_ttl
+  partition_key_version  = var.partition_key_version
 
   dynamic "unique_key" {
     for_each = var.unique_key_paths
