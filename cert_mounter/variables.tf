@@ -29,15 +29,15 @@ variable "cert_mounter_chart_version" {
 }
 
 variable "pod_ram" {
-  type = number
+  type        = number
   description = "Pod request and limit for RAM memory (in `Mi`)"
-  default = 30
+  default     = 30
 }
 
 variable "pod_cpu" {
-  type = number
+  type        = number
   description = "Pod request and limit for CPU (in `m`)"
-  default = 10
+  default     = 10
 }
 
 #
