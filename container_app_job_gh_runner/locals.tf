@@ -4,13 +4,13 @@ locals {
   rule = {
     name = "${local.project}-${var.job.name}-github-runner-rule"
     type = "github-runner"
-    metadata = {
+    metadata = merge({
       owner                     = var.job.repo_owner
       runnerScope               = "repo"
       repos                     = "${var.job.repo}"
       targetWorkflowQueueLength = "1"
       github-runner             = "https://api.github.com"
-    }
+    }, length(var.runner_labels) > 0 ? { labels = join(",", var.runner_labels) } : {})
     auth = [
       {
         secretRef        = "personal-access-token"
