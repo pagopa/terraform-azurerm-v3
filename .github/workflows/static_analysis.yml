@@ -17,10 +17,10 @@ jobs:
 
       - name: show_version
         run: |
-          TAG="v1.89.0@sha256:4d8faca2c8797fc9787fb3927084b403812a96e46536d9cf52103685a75b9d38"
+          TAG="v1.86.1@sha256:9ecf064c8d0d7c32ef19a703b3a6d1b4e1f8806cf697501f36c7790d25e849f2"
           docker run --rm --entrypoint cat ghcr.io/antonbabenko/pre-commit-terraform:$TAG /usr/bin/tools_versions_info
 
       - name: run_test
         run: |
-          TAG="v1.89.0@sha256:4d8faca2c8797fc9787fb3927084b403812a96e46536d9cf52103685a75b9d38"
+          TAG="v1.86.1@sha256:9ecf064c8d0d7c32ef19a703b3a6d1b4e1f8806cf697501f36c7790d25e849f2"
           docker run -v $(pwd):/lint -w /lint ghcr.io/antonbabenko/pre-commit-terraform:$TAG run -a
