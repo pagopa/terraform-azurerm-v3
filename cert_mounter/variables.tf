@@ -1,5 +1,5 @@
 locals {
-  chart_version = var.workload_identity_enabled ? "2.0.0" : "1.0.4"
+  chart_version = var.workload_identity_enabled ? var.cert_mounter_chart_version : "1.0.4"
 }
 
 variable "namespace" {
@@ -25,7 +25,19 @@ variable "tenant_id" {
 variable "cert_mounter_chart_version" {
   type        = string
   description = "(Optional) Cert mounter chart version"
-  default     = "1.0.4"
+  default     = "2.0.1"
+}
+
+variable "pod_ram" {
+  type        = number
+  description = "Pod request and limit for RAM memory (in `Mi`)"
+  default     = 30
+}
+
+variable "pod_cpu" {
+  type        = number
+  description = "Pod request and limit for CPU (in `m`)"
+  default     = 10
 }
 
 #

@@ -16,6 +16,8 @@ resource "helm_release" "cert_mounter" {
       TENANT_ID                   = var.tenant_id
       SERVICE_ACCOUNT_NAME        = var.workload_identity_service_account_name
       WORKLOAD_IDENTITY_CLIENT_ID = var.workload_identity_client_id
+      POD_RAM                     = var.pod_ram
+      POD_CPU                     = var.pod_cpu
     }) :
     templatefile("${path.module}/helm/cert-mounter-pod-identity.yaml.tpl", {
       NAMESPACE        = var.namespace,
