@@ -1,3 +1,3 @@
 #!/bin/bash
-TAG="v1.77.0@sha256:64ce1e4b99d85497fe646db0724669039b079b45fa8cd503b4dc23dbdca490ae"
+TAG="v1.86.1@sha256:9ecf064c8d0d7c32ef19a703b3a6d1b4e1f8806cf697501f36c7790d25e849f2"
 docker run -v "$(pwd):/lint" -w /lint ghcr.io/antonbabenko/pre-commit-terraform:$TAG run -a
