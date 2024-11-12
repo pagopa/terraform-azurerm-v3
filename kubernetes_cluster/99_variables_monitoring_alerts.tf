@@ -19,6 +19,9 @@ variable "default_metric_alerts" {
     frequency = string
     # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.
     window_size = string
+    # Skip metrics validation
+    skip_metric_validation = optional(bool, false)
+
 
     dimension = list(object(
       {
@@ -144,6 +147,8 @@ variable "custom_metric_alerts" {
     frequency = string
     # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.
     window_size = string
+    # Skip metrics validation
+    skip_metric_validation = optional(bool, false)
 
     dimension = list(object(
       {

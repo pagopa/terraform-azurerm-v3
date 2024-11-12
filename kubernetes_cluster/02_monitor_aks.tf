@@ -22,11 +22,12 @@ resource "azurerm_monitor_metric_alert" "this" {
   }
 
   criteria {
-    aggregation      = each.value.aggregation
-    metric_namespace = each.value.metric_namespace
-    metric_name      = each.value.metric_name
-    operator         = each.value.operator
-    threshold        = each.value.threshold
+    aggregation            = each.value.aggregation
+    metric_namespace       = each.value.metric_namespace
+    metric_name            = each.value.metric_name
+    operator               = each.value.operator
+    threshold              = each.value.threshold
+    skip_metric_validation = each.value.skip_metric_validation
 
     dynamic "dimension" {
       for_each = each.value.dimension
