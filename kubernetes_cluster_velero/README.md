@@ -90,6 +90,7 @@ In order to use this module you need Velero installed locally and/or on your dev
 | <a name="input_enable_sa_backup"></a> [enable\_sa\_backup](#input\_enable\_sa\_backup) | (Optional) enables storage account point in time recovery | `bool` | `false` | no |
 | <a name="input_key_vault_id"></a> [key\_vault\_id](#input\_key\_vault\_id) | (Required) Specifies the id of the Key Vault resource. Changing this forces a new resource to be created. | `any` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Resource location | `string` | n/a | yes |
+| <a name="input_namespace_name"></a> [namespace\_name](#input\_namespace\_name) | (Optional) The namespace name where to deploy the velero resources. It should already exist | `string` | `"velero"` | no |
 | <a name="input_plugin_version"></a> [plugin\_version](#input\_plugin\_version) | (Optional) Version for the velero plugin | `string` | `"v1.10.0"` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | (Required) Prefix used in the Velero dedicated resource names | `string` | n/a | yes |
 | <a name="input_private_endpoint_subnet_id"></a> [private\_endpoint\_subnet\_id](#input\_private\_endpoint\_subnet\_id) | (Optional) Subnet id where to create the private endpoint for backups storage account | `string` | `null` | no |
