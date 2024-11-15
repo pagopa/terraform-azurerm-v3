@@ -65,10 +65,9 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "this" {
     for_each = var.action
     content {
       # action_group_id - (required) is a type of string
-      action_group = action.value["action_group_id"]
-      # webhook_properties - (optional) is a type of map of string
-      email_subject          = each.value.email_subject
-      custom_webhook_payload = each.value.custom_webhook_payload
+      action_group           = action.value["action_group_id"]
+      email_subject          = lookup(each.value, "email_subject", "Alert triggered for: ${azurerm_kubernetes_cluster.this.name}-${upper(each.key)}")
+      custom_webhook_payload = lookup(each.value, "custom_webhook_payload", "{}")
     }
   }
 
