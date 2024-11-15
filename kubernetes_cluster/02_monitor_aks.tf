@@ -44,6 +44,44 @@ resource "azurerm_monitor_metric_alert" "this" {
   ]
 }
 
+resource "azurerm_monitor_scheduled_query_rules_alert" "this" {
+  for_each = local.log_alerts
+
+  name                = "${azurerm_kubernetes_cluster.this.name}-${upper(each.key)}"
+  resource_group_name = var.resource_group_name
+  data_source_id      = var.log_alerts_application_insight_id
+  location            = var.location
+  time_window         = each.value.time_window
+  enabled             = var.alerts_enabled
+  frequency           = each.value.frequency
+
+  # Assuming each.value includes this attribute for Kusto Query Language (KQL)
+  query = each.value.query
+
+  # Assuming each.value includes this attribute
+  severity = each.value.severity
+
+  dynamic "action" {
+    for_each = var.action
+    content {
+      # action_group_id - (required) is a type of string
+      action_group = action.value["action_group_id"]
+      # webhook_properties - (optional) is a type of map of string
+      email_subject          = each.value.email_subject
+      custom_webhook_payload = each.value.custom_webhook_payload
+    }
+  }
+
+  trigger {
+    operator  = each.value.operator
+    threshold = each.value.threshold
+  }
+
+  depends_on = [
+    azurerm_kubernetes_cluster.this
+  ]
+}
+
 resource "azurerm_monitor_diagnostic_setting" "aks" {
   count                      = var.sec_log_analytics_workspace_id != null ? 1 : 0
   name                       = "LogSecurity"

@@ -160,6 +160,34 @@ variable "custom_metric_alerts" {
   }))
 }
 
+variable "custom_log_alerts" {
+  description = <<EOD
+  Map of name = criteria objects
+  EOD
+
+  default = {}
+
+  type = map(object({
+    # Assuming each.value includes this attribute for Kusto Query Language (KQL)
+    query = string
+    # Severity of the alert. Possible values include: 0, 1, 2, 3, or 4.
+    severity = number
+    # Time window for which data needs to be fetched for query (must be greater than or equal to frequency). Values must be between 5 and 2880 (inclusive).
+    time_window = number
+    # Evaluation operation for rule - 'GreaterThan', GreaterThanOrEqual', 'LessThan', or 'LessThanOrEqual'.
+    operator = string
+    # Result or count threshold based on which rule should be triggered. Values must be between 0 and 10000 inclusive.
+    threshold = number
+    # Frequency (in minutes) at which rule condition should be evaluated. Values must be between 5 and 1440 (inclusive).
+    frequency = number
+    # Custom subject override for all email ids in Azure action group.
+    email_subject = string
+    # Custom payload to be sent for all webhook payloads in alerting action.
+    custom_webhook_payload = string
+  }))
+}
+
+
 variable "action" {
   description = "The ID of the Action Group and optional map of custom string properties to include with the post webhook operation."
   type = set(object(
@@ -179,4 +207,8 @@ variable "alerts_enabled" {
 
 locals {
   metric_alerts = merge(var.default_metric_alerts, var.custom_metric_alerts)
+}
+
+locals {
+  log_alerts = merge(var.custom_log_alerts)
 }

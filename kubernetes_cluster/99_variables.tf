@@ -402,3 +402,9 @@ variable "oms_agent_monitoring_metrics_role_assignment_enabled" {
   description = "Enabled oms agent monitoring metrics roles"
   default     = true
 }
+
+variable "log_alerts_application_insight_id" {
+  type        = string
+  description = "ID of the Application Insights used for log alerts."
+  default     = null
+}
