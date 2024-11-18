@@ -57,7 +57,7 @@ terraform state rm module.vpn.azurerm_virtual_network_gateway.gw
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -105,7 +105,7 @@ No modules.
 | <a name="input_sku"></a> [sku](#input\_sku) | Configuration of the size and capacity of the virtual network gateway. | `any` | n/a | yes |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | Id of subnet where gateway should be deployed, have to be names GatewaySubnet. | `any` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to all resources created. | `map(string)` | `{}` | no |
-| <a name="input_vpn_client_configuration"></a> [vpn\_client\_configuration](#input\_vpn\_client\_configuration) | If set it will activate point-to-site configuration. | <pre>list(object(<br>    {<br>      aad_audience          = string<br>      aad_issuer            = string<br>      aad_tenant            = string<br>      address_space         = list(string)<br>      radius_server_address = string<br>      radius_server_secret  = string<br>      revoked_certificate = list(object(<br>        {<br>          name       = string<br>          thumbprint = string<br>        }<br>      ))<br>      root_certificate = list(object(<br>        {<br>          name             = string<br>          public_cert_data = string<br>        }<br>      ))<br>      vpn_client_protocols = list(string)<br>    }<br>  ))</pre> | `[]` | no |
+| <a name="input_vpn_client_configuration"></a> [vpn\_client\_configuration](#input\_vpn\_client\_configuration) | If set it will activate point-to-site configuration. | <pre>list(object(<br/>    {<br/>      aad_audience          = string<br/>      aad_issuer            = string<br/>      aad_tenant            = string<br/>      address_space         = list(string)<br/>      radius_server_address = string<br/>      radius_server_secret  = string<br/>      revoked_certificate = list(object(<br/>        {<br/>          name       = string<br/>          thumbprint = string<br/>        }<br/>      ))<br/>      root_certificate = list(object(<br/>        {<br/>          name             = string<br/>          public_cert_data = string<br/>        }<br/>      ))<br/>      vpn_client_protocols = list(string)<br/>    }<br/>  ))</pre> | `[]` | no |
 
 ## Outputs
 
@@ -113,4 +113,4 @@ No modules.
 |------|-------------|
 | <a name="output_fqdn"></a> [fqdn](#output\_fqdn) | The fqdn for gateway. |
 | <a name="output_gateway_id"></a> [gateway\_id](#output\_gateway\_id) | The ID of the virtual network gateway. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

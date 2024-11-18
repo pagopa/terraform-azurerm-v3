@@ -24,7 +24,7 @@ module "aks_storage_class" {
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -67,4 +67,4 @@ No inputs.
 | <a name="output_managed_csi_zrs"></a> [managed\_csi\_zrs](#output\_managed\_csi\_zrs) | Managed CSI with ZRS storage class name |
 | <a name="output_managed_zrs"></a> [managed\_zrs](#output\_managed\_zrs) | Managed with ZRS storage class name |
 | <a name="output_standard_hdd"></a> [standard\_hdd](#output\_standard\_hdd) | Standard HDD storage class name |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
