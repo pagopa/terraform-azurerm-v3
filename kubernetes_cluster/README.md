@@ -658,7 +658,7 @@ sh terraform.sh import dev01 'module.aks[0].azurerm_kubernetes_cluster_node_pool
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -771,4 +771,4 @@ No modules.
 | <a name="output_managed_resource_group_name"></a> [managed\_resource\_group\_name](#output\_managed\_resource\_group\_name) | The auto-generated Resource Group which contains the resources for this Managed Kubernetes Cluster. |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 | <a name="output_private_fqdn"></a> [private\_fqdn](#output\_private\_fqdn) | The FQDN for the Kubernetes Cluster when private link has been enabled, which is only resolvable inside the Virtual Network used by the Kubernetes Cluster. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

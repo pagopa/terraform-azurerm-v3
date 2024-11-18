@@ -51,7 +51,7 @@ In order to use this module you need Velero installed locally and/or on your dev
 
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -109,4 +109,4 @@ In order to use this module you need Velero installed locally and/or on your dev
 ## Outputs
 
 No outputs.
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

@@ -29,7 +29,7 @@ module "dns_forwarder" {
 
 ```
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -89,4 +89,4 @@ module "dns_forwarder" {
 | <a name="output_subnet_lb_id"></a> [subnet\_lb\_id](#output\_subnet\_lb\_id) | n/a |
 | <a name="output_subnet_vmss_id"></a> [subnet\_vmss\_id](#output\_subnet\_vmss\_id) | n/a |
 | <a name="output_vmss_id"></a> [vmss\_id](#output\_vmss\_id) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

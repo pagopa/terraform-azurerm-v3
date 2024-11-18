@@ -21,7 +21,7 @@ module "my_jwt" {
 Nothing to change
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -63,7 +63,7 @@ No modules.
 | <a name="input_early_renewal_hours"></a> [early\_renewal\_hours](#input\_early\_renewal\_hours) | n/a | `number` | `720` | no |
 | <a name="input_jwt_name"></a> [jwt\_name](#input\_jwt\_name) | n/a | `string` | n/a | yes |
 | <a name="input_key_vault_id"></a> [key\_vault\_id](#input\_key\_vault\_id) | n/a | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | <pre>{<br>  "CreatedBy": "Terraform"<br>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | <pre>{<br/>  "CreatedBy": "Terraform"<br/>}</pre> | no |
 
 ## Outputs
 
@@ -73,4 +73,4 @@ No modules.
 | <a name="output_jwt_kid"></a> [jwt\_kid](#output\_jwt\_kid) | n/a |
 | <a name="output_jwt_private_key_pem"></a> [jwt\_private\_key\_pem](#output\_jwt\_private\_key\_pem) | n/a |
 | <a name="output_jwt_public_key_pem"></a> [jwt\_public\_key\_pem](#output\_jwt\_public\_key\_pem) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
