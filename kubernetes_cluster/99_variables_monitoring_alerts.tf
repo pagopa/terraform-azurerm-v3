@@ -131,7 +131,7 @@ locals {
         KubeNodeInventory
         | where ClusterId == "${azurerm_kubernetes_cluster.this.id}"
         | where TimeGenerated > ago(10m)
-        | where Status == \"NotReady\"
+        | where Status == "NotReady"
         | summarize count() by Computer, Status"
       KQL
       severity               = 1
@@ -147,8 +147,8 @@ locals {
         InsightsMetrics
         | where _ResourceId == "${lower(azurerm_kubernetes_cluster.this.id)}"
         | where TimeGenerated > ago(10m)
-        | where Namespace == \"container.azm.ms/disk\"
-        | where Name == \"used_percent\"
+        | where Namespace == "container.azm.ms/disk"
+        | where Name == "used_percent"
         | project TimeGenerated, Computer, Val, Origin
         | summarize AvgDiskUsage = avg(Val) by Computer
         | where AvgDiskUsage > 80"
