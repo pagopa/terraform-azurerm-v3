@@ -132,7 +132,7 @@ locals {
         | where ClusterId == "${azurerm_kubernetes_cluster.this.id}"
         | where TimeGenerated > ago(10m)
         | where Status == "NotReady"
-        | summarize count() by Computer, Status"
+        | summarize count() by Computer, Status
       KQL
       severity               = 1
       time_window            = 5
@@ -151,7 +151,7 @@ locals {
         | where Name == "used_percent"
         | project TimeGenerated, Computer, Val, Origin
         | summarize AvgDiskUsage = avg(Val) by Computer
-        | where AvgDiskUsage > 80"
+        | where AvgDiskUsage > 80
       KQL
       severity               = 1
       time_window            = 5
