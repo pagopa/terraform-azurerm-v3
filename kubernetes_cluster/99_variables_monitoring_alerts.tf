@@ -129,7 +129,7 @@ locals {
     node_not_ready = {
       query                  = <<-KQL
         KubeNodeInventory
-        | where ClusterId == \"${azurerm_kubernetes_cluster.this.id}\"
+        | where ClusterId == "${azurerm_kubernetes_cluster.this.id}"
         | where TimeGenerated > ago(10m)
         | where Status == \"NotReady\"
         | summarize count() by Computer, Status"
@@ -145,7 +145,7 @@ locals {
     node_disk_usage = {
       query                  = <<-KQL
         InsightsMetrics
-        | where _ResourceId == \"${lower(azurerm_kubernetes_cluster.this.id)}\"
+        | where _ResourceId == "${lower(azurerm_kubernetes_cluster.this.id)}"
         | where TimeGenerated > ago(10m)
         | where Namespace == \"container.azm.ms/disk\"
         | where Name == \"used_percent\"
