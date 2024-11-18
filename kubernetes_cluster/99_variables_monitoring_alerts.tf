@@ -160,7 +160,7 @@ variable "custom_metric_alerts" {
   }))
 }
 
-variable "custom_log_alerts" {
+variable "custom_logs_alerts" {
   description = <<EOD
   Map of name = criteria objects
   EOD
@@ -210,5 +210,5 @@ locals {
 }
 
 locals {
-  log_alerts = merge(var.custom_log_alerts)
+  log_alerts = merge(var.custom_logs_alerts)
 }
