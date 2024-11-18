@@ -126,24 +126,44 @@ variable "custom_metric_alerts" {
 # Setting locals logs alerts, because i need interpolation to set query correctly
 locals {
   default_logs_alerts = {
+    ### NODE NOT READY ALERT
     node_not_ready = {
-      query                  = <<-KQL
+      display_name            = "AKS Node not ready alert"
+      description             = "Detect nodes that is not ready on AKS cluster"
+      query                   = <<-KQL
         KubeNodeInventory
         | where ClusterId == "${azurerm_kubernetes_cluster.this.id}"
         | where TimeGenerated > ago(10m)
         | where Status == "NotReady"
         | summarize count() by Computer, Status
       KQL
-      severity               = 1
-      time_window            = 5
-      operator               = "GreaterThan"
-      threshold              = 1
-      frequency              = 5
-      email_subject          = "AKS node_not_ready"
-      custom_webhook_payload = "{}"
+      severity                = 1
+      window_duration         = "PT5M"
+      evaluation_frequency    = "PT10M"
+      operator                = "GreaterThan"
+      threshold               = 1
+      evaluation_frequency    = "PT10M"
+      time_aggregation_method = "Average"
+      resource_id_column      = "Status"
+      metric_measure_column   = "Status"
+      dimension = [
+        {
+          name     = "Status"
+          operator = "Include"
+          values   = ["*"]
+        }
+      ]
+      minimum_failing_periods_to_trigger_alert = 3
+      number_of_evaluation_periods             = 3
+      auto_mitigation_enabled                  = true
+      workspace_alerts_storage_enabled         = false
+      skip_query_validation                    = true
     }
+    ### NODE DISK ALERT
     node_disk_usage = {
-      query                  = <<-KQL
+      display_name            = "AKS Node disk usage alert"
+      description             = "Detect nodes disk is going to run out of space"
+      query                   = <<-KQL
         InsightsMetrics
         | where _ResourceId == "${lower(azurerm_kubernetes_cluster.this.id)}"
         | where TimeGenerated > ago(10m)
@@ -153,13 +173,27 @@ locals {
         | summarize AvgDiskUsage = avg(Val) by Computer
         | where AvgDiskUsage > 80
       KQL
-      severity               = 1
-      time_window            = 5
-      operator               = "GreaterThan"
-      threshold              = 1
-      frequency              = 5
-      email_subject          = "AKS node_disk_usage"
-      custom_webhook_payload = "{}"
+      severity                = 1
+      window_duration         = "PT5M"
+      evaluation_frequency    = "PT10M"
+      operator                = "GreaterThan"
+      threshold               = 1
+      evaluation_frequency    = "PT10M"
+      time_aggregation_method = "Average"
+      resource_id_column      = "AvgDiskUsage"
+      metric_measure_column   = "AvgDiskUsage"
+      dimension = [
+        {
+          name     = "AvgDiskUsage"
+          operator = "Include"
+          values   = ["*"]
+        }
+      ]
+      minimum_failing_periods_to_trigger_alert = 3
+      number_of_evaluation_periods             = 3
+      auto_mitigation_enabled                  = true
+      workspace_alerts_storage_enabled         = false
+      skip_query_validation                    = true
     }
   }
 }
@@ -172,22 +206,80 @@ variable "custom_logs_alerts" {
   default = {}
 
   type = map(object({
+    # (Optional) Specifies the display name of the alert rule.
+    display_name = string
+    # (Optional) Specifies the description of the scheduled query rule.
+    description = string
+    # (Required) Specifies the list of resource IDs that this scheduled query rule is scoped to.
+    # Changing this forces a new resource to be created. Currently, the API supports exactly 1
+    # resource ID in the scopes list.
+    scopes = string
     # Assuming each.value includes this attribute for Kusto Query Language (KQL)
     query = string
-    # Severity of the alert. Possible values include: 0, 1, 2, 3, or 4.
+    # (Required) Severity of the alert. Should be an integer between 0 and 4.
+    # Value of 0 is severest.
     severity = number
-    # Time window for which data needs to be fetched for query (must be greater than or equal to frequency). Values must be between 5 and 2880 (inclusive).
-    time_window = number
-    # Evaluation operation for rule - 'GreaterThan', GreaterThanOrEqual', 'LessThan', or 'LessThanOrEqual'.
+    # (Required) Specifies the period of time in ISO 8601 duration format on
+    # which the Scheduled Query Rule will be executed (bin size).
+    # If evaluation_frequency is PT1M, possible values are PT1M, PT5M, PT10M,
+    # PT15M, PT30M, PT45M, PT1H, PT2H, PT3H, PT4H, PT5H, and PT6H. Otherwise,
+    # possible values are PT5M, PT10M, PT15M, PT30M, PT45M, PT1H, PT2H, PT3H,
+    # PT4H, PT5H, PT6H, P1D, and P2D.
+    window_duration = number
+    # (Optional) How often the scheduled query rule is evaluated, represented
+    # in ISO 8601 duration format. Possible values are PT1M, PT5M, PT10M, PT15M,
+    # PT30M, PT45M, PT1H, PT2H, PT3H, PT4H, PT5H, PT6H, P1D.
+    evaluation_frequency = number
+    # Evaluation operation for rule - 'GreaterThan', GreaterThanOrEqual',
+    # 'LessThan', or 'LessThanOrEqual'.
     operator = string
-    # Result or count threshold based on which rule should be triggered. Values must be between 0 and 10000 inclusive.
+    # Result or count threshold based on which rule should be triggered.
+    # Values must be between 0 and 10000 inclusive.
     threshold = number
-    # Frequency (in minutes) at which rule condition should be evaluated. Values must be between 5 and 1440 (inclusive).
-    frequency = number
-    # Custom subject override for all email ids in Azure action group.
-    email_subject = string
-    # Custom payload to be sent for all webhook payloads in alerting action.
-    custom_webhook_payload = string
+    # (Required) The type of aggregation to apply to the data points in
+    # aggregation granularity. Possible values are Average, Count, Maximum,
+    # Minimum,and Total.
+    time_aggregation_method = string
+    # (Optional) Specifies the column containing the resource ID. The content
+    # of the column must be an uri formatted as resource ID.
+    resource_id_column = string
+
+    # (Optional) Specifies the column containing the metric measure number.
+    metric_measure_column = string
+
+    dimension = list(object(
+      {
+        # (Required) Name of the dimension.
+        name = string
+        # (Required) Operator for dimension values. Possible values are
+        # Exclude,and Include.
+        operator = string
+        # (Required) List of dimension values. Use a wildcard * to collect all.
+        values = list(string)
+      }
+    ))
+
+    # (Required) Specifies the number of violations to trigger an alert.
+    # Should be smaller or equal to number_of_evaluation_periods.
+    # Possible value is integer between 1 and 6.
+    minimum_failing_periods_to_trigger_alert = number
+    # (Required) Specifies the number of aggregated look-back points.
+    # The look-back time window is calculated based on the aggregation
+    # granularity window_duration and the selected number of aggregated points.
+    # Possible value is integer between 1 and 6.
+    number_of_evaluation_periods = number
+
+    # (Optional) Specifies the flag that indicates whether the alert should
+    # be automatically resolved or not. Value should be true or false.
+    # The default is false.
+    auto_mitigation_enabled = bool
+    # (Optional) Specifies the flag which indicates whether this scheduled
+    # query rule check if storage is configured. Value should be true or false.
+    # The default is false.
+    workspace_alerts_storage_enabled = bool
+    # (Optional) Specifies the flag which indicates whether the provided
+    # query should be validated or not. The default is false.
+    skip_query_validation = bool
   }))
 }
 

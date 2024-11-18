@@ -44,34 +44,58 @@ resource "azurerm_monitor_metric_alert" "this" {
   ]
 }
 
-resource "azurerm_monitor_scheduled_query_rules_alert" "this" {
+resource "azurerm_monitor_scheduled_query_rules_alert_v2" "this" {
   for_each = local.log_alerts
 
-  name                = "${azurerm_kubernetes_cluster.this.name}-${upper(each.key)}"
-  resource_group_name = var.resource_group_name
-  data_source_id      = var.log_alerts_application_insight_id
-  location            = var.location
-  time_window         = each.value.time_window
-  enabled             = var.alerts_enabled
-  frequency           = each.value.frequency
+  name         = "${azurerm_kubernetes_cluster.this.name}-${upper(each.key)}"
+  description  = each.value.description
+  display_name = each.value.display_name
+  enabled      = var.alerts_enabled
 
-  # Assuming each.value includes this attribute for Kusto Query Language (KQL)
-  query = each.value.query
+  resource_group_name  = var.resource_group_name
+  scopes               = [azurerm_kubernetes_cluster.this.id]
+  location             = var.location
+  evaluation_frequency = each.value.evaluation_frequency
+  window_duration      = each.value.window_duration
 
   # Assuming each.value includes this attribute
   severity = each.value.severity
 
-  action {
-    // Concatenazione di tutti gli ID dei gruppi d'azione in un singolo set di stringhe
-    action_group           = [for g in var.action : g.action_group_id]
-    email_subject          = lookup(each.value, "email_subject", "Alert triggered for: ${azurerm_kubernetes_cluster.this.name}-${upper(each.key)}")
-    custom_webhook_payload = lookup(each.value, "custom_webhook_payload", "{}")
+  criteria {
+    query                   = each.value.query
+    operator                = each.value.operator
+    threshold               = each.value.threshold
+    time_aggregation_method = each.value.time_aggregation_method
+
+    resource_id_column    = each.value.resource_id_column
+    metric_measure_column = each.value.metric_measure_column
+
+    dynamic "dimension" {
+      for_each = each.value.dimension
+      content {
+        name     = dimension.value.name
+        operator = dimension.value.operator
+        values   = dimension.value.values
+      }
+    }
+
+    failing_periods {
+      minimum_failing_periods_to_trigger_alert = each.value.minimum_failing_periods_to_trigger_alert
+      number_of_evaluation_periods             = each.value.number_of_evaluation_periods
+    }
   }
 
-  trigger {
-    operator  = each.value.operator
-    threshold = each.value.threshold
+  auto_mitigation_enabled          = each.value.auto_mitigation_enabled
+  workspace_alerts_storage_enabled = lookup(each.value.workspace_alerts_storage_enabled, false)
+  skip_query_validation            = each.value.skip_query_validation
+
+  action {
+    // Concatenazione di tutti gli ID dei gruppi d'azione in un singolo set di stringhe
+    action_groups     = [for g in var.action : g.action_group_id]
+    custom_properties = {}
   }
+
+  tags = var.tags
 
   depends_on = [
     azurerm_kubernetes_cluster.this
