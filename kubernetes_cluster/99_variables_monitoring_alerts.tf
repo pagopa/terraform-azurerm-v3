@@ -210,10 +210,6 @@ variable "custom_logs_alerts" {
     display_name = string
     # (Optional) Specifies the description of the scheduled query rule.
     description = string
-    # (Required) Specifies the list of resource IDs that this scheduled query rule is scoped to.
-    # Changing this forces a new resource to be created. Currently, the API supports exactly 1
-    # resource ID in the scopes list.
-    scopes = string
     # Assuming each.value includes this attribute for Kusto Query Language (KQL)
     query = string
     # (Required) Severity of the alert. Should be an integer between 0 and 4.
