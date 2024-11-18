@@ -66,43 +66,6 @@ variable "default_metric_alerts" {
         }
       ],
     }
-    node_disk = {
-      aggregation      = "Average"
-      metric_namespace = "Microsoft.ContainerService/managedClusters"
-      metric_name      = "node_disk_usage_percentage"
-      operator         = "GreaterThan"
-      threshold        = 80
-      frequency        = "PT15M"
-      window_size      = "PT1H"
-      dimension = [
-        {
-          name     = "node"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "device"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ]
-    }
-    node_not_ready = {
-      aggregation      = "Average"
-      metric_namespace = "Microsoft.ContainerService/managedClusters"
-      metric_name      = "kube_node_status_condition"
-      operator         = "GreaterThan"
-      threshold        = 0
-      frequency        = "PT15M"
-      window_size      = "PT1H"
-      dimension = [
-        {
-          name     = "status2"
-          operator = "Include"
-          values   = ["NotReady"]
-        }
-      ],
-    }
     pods_failed = {
       aggregation      = "Average"
       metric_namespace = "Microsoft.ContainerService/managedClusters"
@@ -160,6 +123,32 @@ variable "custom_metric_alerts" {
   }))
 }
 
+# Setting locals logs alerts, because i need interpolation to set query correctly
+locals {
+  default_logs_alerts = {
+    node_not_ready = {
+      query                  = "KubeNodeInventory | where ClusterId == \"${azurerm_kubernetes_cluster.this.id}\" | where TimeGenerated > ago(10m) | where Status == \"NotReady\" | summarize count() by Computer, Status"
+      severity               = 1
+      time_window            = 5
+      operator               = "GreaterThan"
+      threshold              = 1
+      frequency              = 5
+      email_subject          = "AKS node_not_ready"
+      custom_webhook_payload = "{}"
+    }
+    node_disk_usage = {
+      query                  = "InsightsMetrics | where _ResourceId == \"${lower(azurerm_kubernetes_cluster.this.id)}\" | where TimeGenerated > ago(10m) | where Namespace == \"container.azm.ms/disk\" | where Name == \"used_percent\" | project TimeGenerated, Computer, Val, Origin | summarize AvgDiskUsage = avg(Val) by Computer | where AvgDiskUsage > 80"
+      severity               = 1
+      time_window            = 5
+      operator               = "GreaterThan"
+      threshold              = 1
+      frequency              = 5
+      email_subject          = "AKS node_disk_usage"
+      custom_webhook_payload = "{}"
+    }
+  }
+}
+
 variable "custom_logs_alerts" {
   description = <<EOD
   Map of name = criteria objects
@@ -210,5 +199,5 @@ locals {
 }
 
 locals {
-  log_alerts = merge(var.custom_logs_alerts)
+  log_alerts = merge(var.custom_logs_alerts, local.default_logs_alerts)
 }
