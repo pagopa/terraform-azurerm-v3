@@ -127,7 +127,13 @@ variable "custom_metric_alerts" {
 locals {
   default_logs_alerts = {
     node_not_ready = {
-      query                  = "KubeNodeInventory | where ClusterId == \"${azurerm_kubernetes_cluster.this.id}\" | where TimeGenerated > ago(10m) | where Status == \"NotReady\" | summarize count() by Computer, Status"
+      query                  = <<-KQL
+        KubeNodeInventory
+        | where ClusterId == \"${azurerm_kubernetes_cluster.this.id}\"
+        | where TimeGenerated > ago(10m)
+        | where Status == \"NotReady\"
+        | summarize count() by Computer, Status"
+      KQL
       severity               = 1
       time_window            = 5
       operator               = "GreaterThan"
@@ -137,7 +143,16 @@ locals {
       custom_webhook_payload = "{}"
     }
     node_disk_usage = {
-      query                  = "InsightsMetrics | where _ResourceId == \"${lower(azurerm_kubernetes_cluster.this.id)}\" | where TimeGenerated > ago(10m) | where Namespace == \"container.azm.ms/disk\" | where Name == \"used_percent\" | project TimeGenerated, Computer, Val, Origin | summarize AvgDiskUsage = avg(Val) by Computer | where AvgDiskUsage > 80"
+      query                  = <<-KQL
+        InsightsMetrics
+        | where _ResourceId == \"${lower(azurerm_kubernetes_cluster.this.id)}\"
+        | where TimeGenerated > ago(10m)
+        | where Namespace == \"container.azm.ms/disk\"
+        | where Name == \"used_percent\"
+        | project TimeGenerated, Computer, Val, Origin
+        | summarize AvgDiskUsage = avg(Val) by Computer
+        | where AvgDiskUsage > 80"
+      KQL
       severity               = 1
       time_window            = 5
       operator               = "GreaterThan"
