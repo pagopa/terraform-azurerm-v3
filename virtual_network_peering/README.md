@@ -25,7 +25,7 @@ module "vnet_peering_core_2_aks" {
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -73,4 +73,4 @@ No modules.
 | <a name="output_source_name"></a> [source\_name](#output\_source\_name) | n/a |
 | <a name="output_target_id"></a> [target\_id](#output\_target\_id) | n/a |
 | <a name="output_target_name"></a> [target\_name](#output\_target\_name) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

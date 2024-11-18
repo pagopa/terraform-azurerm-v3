@@ -50,7 +50,7 @@ Now you need to specify **only** one variable of the following list:
 Of course, the values listed above may change in the future, so please check which ones are still valid.
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -82,7 +82,7 @@ No modules.
 | <a name="input_app_service_name"></a> [app\_service\_name](#input\_app\_service\_name) | (Required) The name of the App Service within which to create the App Service Slot. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_app_settings"></a> [app\_settings](#input\_app\_settings) | n/a | `map(string)` | `{}` | no |
 | <a name="input_auto_heal_enabled"></a> [auto\_heal\_enabled](#input\_auto\_heal\_enabled) | (Optional) True to enable the auto heal on the app service | `bool` | `false` | no |
-| <a name="input_auto_heal_settings"></a> [auto\_heal\_settings](#input\_auto\_heal\_settings) | (Optional) Auto heal settings | <pre>object({<br>    startup_time           = string<br>    slow_requests_count    = number<br>    slow_requests_interval = string<br>    slow_requests_time     = string<br>  })</pre> | `null` | no |
+| <a name="input_auto_heal_settings"></a> [auto\_heal\_settings](#input\_auto\_heal\_settings) | (Optional) Auto heal settings | <pre>object({<br/>    startup_time           = string<br/>    slow_requests_count    = number<br/>    slow_requests_interval = string<br/>    slow_requests_time     = string<br/>  })</pre> | `null` | no |
 | <a name="input_client_affinity_enabled"></a> [client\_affinity\_enabled](#input\_client\_affinity\_enabled) | (Optional) Should the App Service send session affinity cookies, which route client requests in the same session to the same instance? Defaults to false. | `bool` | `false` | no |
 | <a name="input_client_certificate_enabled"></a> [client\_certificate\_enabled](#input\_client\_certificate\_enabled) | Should the function app use Client Certificates | `bool` | `false` | no |
 | <a name="input_docker_image"></a> [docker\_image](#input\_docker\_image) | Framework choice | `string` | `null` | no |
@@ -117,4 +117,4 @@ No modules.
 | <a name="output_id"></a> [id](#output\_id) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 | <a name="output_principal_id"></a> [principal\_id](#output\_principal\_id) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

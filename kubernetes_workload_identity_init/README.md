@@ -20,7 +20,7 @@ module "workload_identity" {
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -60,4 +60,4 @@ No modules.
 | <a name="output_user_assigned_identity_resource_group_name"></a> [user\_assigned\_identity\_resource\_group\_name](#output\_user\_assigned\_identity\_resource\_group\_name) | n/a |
 | <a name="output_workload_identity_client_id"></a> [workload\_identity\_client\_id](#output\_workload\_identity\_client\_id) | n/a |
 | <a name="output_workload_identity_principal_id"></a> [workload\_identity\_principal\_id](#output\_workload\_identity\_principal\_id) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
