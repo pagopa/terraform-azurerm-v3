@@ -153,7 +153,7 @@ locals {
           values   = ["*"]
         }
       ]
-      minimum_failing_periods_to_trigger_alert = 3
+      minimum_failing_periods_to_trigger_alert = 1
       number_of_evaluation_periods             = 1
       auto_mitigation_enabled                  = true
       workspace_alerts_storage_enabled         = false
@@ -189,7 +189,7 @@ locals {
           values   = ["*"]
         }
       ]
-      minimum_failing_periods_to_trigger_alert = 3
+      minimum_failing_periods_to_trigger_alert = 1
       number_of_evaluation_periods             = 1
       auto_mitigation_enabled                  = true
       workspace_alerts_storage_enabled         = false
