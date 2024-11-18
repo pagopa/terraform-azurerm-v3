@@ -57,7 +57,7 @@ module "apim_devopslab_webapp_python_alpha_api_v1" {
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -83,7 +83,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_api_management_name"></a> [api\_management\_name](#input\_api\_management\_name) | n/a | `string` | n/a | yes |
-| <a name="input_api_operation_policies"></a> [api\_operation\_policies](#input\_api\_operation\_policies) | List of api policy for given operation. | <pre>list(object({<br>    operation_id = string<br>    xml_content  = string<br>    }<br>  ))</pre> | `[]` | no |
+| <a name="input_api_operation_policies"></a> [api\_operation\_policies](#input\_api\_operation\_policies) | List of api policy for given operation. | <pre>list(object({<br/>    operation_id = string<br/>    xml_content  = string<br/>    }<br/>  ))</pre> | `[]` | no |
 | <a name="input_api_type"></a> [api\_type](#input\_api\_type) | (Optional) Type of API. Possible values are graphql, http, soap, and websocket. Defaults to http. | `string` | `"http"` | no |
 | <a name="input_api_version"></a> [api\_version](#input\_api\_version) | The Version number of this API, if this API is versioned. | `string` | `null` | no |
 | <a name="input_content_format"></a> [content\_format](#input\_content\_format) | The format of the content from which the API Definition should be imported. | `string` | `"swagger-json"` | no |
@@ -91,7 +91,7 @@ No modules.
 | <a name="input_description"></a> [description](#input\_description) | n/a | `string` | n/a | yes |
 | <a name="input_display_name"></a> [display\_name](#input\_display\_name) | n/a | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | n/a | `string` | n/a | yes |
-| <a name="input_oauth2_authorization"></a> [oauth2\_authorization](#input\_oauth2\_authorization) | n/a | <pre>object({<br>    authorization_server_name = string<br>    }<br>  )</pre> | <pre>{<br>  "authorization_server_name": null<br>}</pre> | no |
+| <a name="input_oauth2_authorization"></a> [oauth2\_authorization](#input\_oauth2\_authorization) | n/a | <pre>object({<br/>    authorization_server_name = string<br/>    }<br/>  )</pre> | <pre>{<br/>  "authorization_server_name": null<br/>}</pre> | no |
 | <a name="input_path"></a> [path](#input\_path) | n/a | `string` | n/a | yes |
 | <a name="input_product_ids"></a> [product\_ids](#input\_product\_ids) | n/a | `list(string)` | `[]` | no |
 | <a name="input_protocols"></a> [protocols](#input\_protocols) | n/a | `list(string)` | n/a | yes |
@@ -99,7 +99,7 @@ No modules.
 | <a name="input_revision"></a> [revision](#input\_revision) | n/a | `string` | `"1"` | no |
 | <a name="input_revision_description"></a> [revision\_description](#input\_revision\_description) | n/a | `string` | `null` | no |
 | <a name="input_service_url"></a> [service\_url](#input\_service\_url) | n/a | `string` | n/a | yes |
-| <a name="input_subscription_key_names"></a> [subscription\_key\_names](#input\_subscription\_key\_names) | Override the default name of the header and query string containing the subscription key header | <pre>object({<br>    header = string<br>    query  = string<br>  })</pre> | `null` | no |
+| <a name="input_subscription_key_names"></a> [subscription\_key\_names](#input\_subscription\_key\_names) | Override the default name of the header and query string containing the subscription key header | <pre>object({<br/>    header = string<br/>    query  = string<br/>  })</pre> | `null` | no |
 | <a name="input_subscription_required"></a> [subscription\_required](#input\_subscription\_required) | Should this API require a subscription key? | `bool` | `false` | no |
 | <a name="input_version_set_id"></a> [version\_set\_id](#input\_version\_set\_id) | The ID of the Version Set which this API is associated with. | `string` | `null` | no |
 | <a name="input_xml_content"></a> [xml\_content](#input\_xml\_content) | The XML Content for this Policy as a string | `string` | `null` | no |
@@ -110,4 +110,4 @@ No modules.
 |------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

@@ -38,7 +38,7 @@ module "mongdb_collection_name" {
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -65,7 +65,7 @@ No modules.
 | <a name="input_cosmosdb_mongo_account_name"></a> [cosmosdb\_mongo\_account\_name](#input\_cosmosdb\_mongo\_account\_name) | The name of the Cosmos DB Mongo Account in which the Cosmos DB Mongo Database exists. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_cosmosdb_mongo_database_name"></a> [cosmosdb\_mongo\_database\_name](#input\_cosmosdb\_mongo\_database\_name) | The name of the Cosmos DB Mongo Database in which the Cosmos DB Mongo Collection is created. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_default_ttl_seconds"></a> [default\_ttl\_seconds](#input\_default\_ttl\_seconds) | The default Time To Live in seconds. If the value is -1 or 0, items are not automatically expired. | `number` | `null` | no |
-| <a name="input_indexes"></a> [indexes](#input\_indexes) | One or more indexes. An index with an "\_id" key must be specified. | <pre>list(object({<br>    keys   = list(string)<br>    unique = bool<br>  }))</pre> | n/a | yes |
+| <a name="input_indexes"></a> [indexes](#input\_indexes) | One or more indexes. An index with an "\_id" key must be specified. | <pre>list(object({<br/>    keys   = list(string)<br/>    unique = bool<br/>  }))</pre> | n/a | yes |
 | <a name="input_lock_enable"></a> [lock\_enable](#input\_lock\_enable) | Apply lock to block accidental deletions. | `bool` | `false` | no |
 | <a name="input_max_throughput"></a> [max\_throughput](#input\_max\_throughput) | It will activate the autoscale mode setting the maximum throughput of the MongoDB collection (RU/s). Must be between 4,000 and 1,000,000. Must be set in increments of 1,000. Conflicts with throughput. Switching between autoscale and manual throughput is not supported via Terraform and must be completed via the Azure Portal and refreshed. | `number` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Specifies the name of the Cosmos DB Mongo Collection. Changing this forces a new resource to be created. | `string` | n/a | yes |
@@ -83,4 +83,4 @@ No modules.
 |------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | The id of the collection |
 | <a name="output_lock_id"></a> [lock\_id](#output\_lock\_id) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
