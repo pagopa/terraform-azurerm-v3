@@ -221,11 +221,11 @@ variable "custom_logs_alerts" {
     # PT15M, PT30M, PT45M, PT1H, PT2H, PT3H, PT4H, PT5H, and PT6H. Otherwise,
     # possible values are PT5M, PT10M, PT15M, PT30M, PT45M, PT1H, PT2H, PT3H,
     # PT4H, PT5H, PT6H, P1D, and P2D.
-    window_duration = number
+    window_duration = string
     # (Optional) How often the scheduled query rule is evaluated, represented
     # in ISO 8601 duration format. Possible values are PT1M, PT5M, PT10M, PT15M,
     # PT30M, PT45M, PT1H, PT2H, PT3H, PT4H, PT5H, PT6H, P1D.
-    evaluation_frequency = number
+    evaluation_frequency = string
     # Evaluation operation for rule - 'GreaterThan', GreaterThanOrEqual',
     # 'LessThan', or 'LessThanOrEqual'.
     operator = string
