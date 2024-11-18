@@ -81,10 +81,16 @@ variable "job_meta" {
     repo_owner                   = optional(string, "pagopa")
     runner_scope                 = optional(string, "repo")
     target_workflow_queue_length = optional(string, "1")
-    github_runner                = optional(string, "https://api.github.com") #
+    github_runner                = optional(string, "https://api.github.com")
   })
 
   description = "Scaling rules metadata."
+  default = {
+    repo_owner                   = "pagopa"
+    runner_scope                 = "repo"
+    target_workflow_queue_length = "1"
+    github_runner                = "https://api.github.com"
+  }
 }
 
 variable "parallelism" {
