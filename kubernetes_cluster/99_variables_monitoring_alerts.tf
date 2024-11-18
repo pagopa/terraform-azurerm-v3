@@ -139,10 +139,9 @@ locals {
       KQL
       severity                = 1
       window_duration         = "PT5M"
-      evaluation_frequency    = "PT10M"
+      evaluation_frequency    = "PT5M"
       operator                = "GreaterThan"
       threshold               = 1
-      evaluation_frequency    = "PT10M"
       time_aggregation_method = "Average"
       resource_id_column      = "Status"
       metric_measure_column   = "Status"
@@ -175,10 +174,9 @@ locals {
       KQL
       severity                = 1
       window_duration         = "PT5M"
-      evaluation_frequency    = "PT10M"
+      evaluation_frequency    = "PT5M"
       operator                = "GreaterThan"
       threshold               = 1
-      evaluation_frequency    = "PT10M"
       time_aggregation_method = "Average"
       resource_id_column      = "AvgDiskUsage"
       metric_measure_column   = "AvgDiskUsage"
