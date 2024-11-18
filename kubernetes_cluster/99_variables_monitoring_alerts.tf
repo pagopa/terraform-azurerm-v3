@@ -144,7 +144,7 @@ locals {
       threshold               = 1
       time_aggregation_method = "Average"
       resource_id_column      = "Status"
-      metric_measure_column   = "count_Status"
+      metric_measure_column   = "count_"
       dimension = [
         {
           name     = "Status"
