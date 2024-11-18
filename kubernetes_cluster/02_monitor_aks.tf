@@ -86,7 +86,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "this" {
   }
 
   auto_mitigation_enabled          = each.value.auto_mitigation_enabled
-  workspace_alerts_storage_enabled = lookup(each.value.workspace_alerts_storage_enabled, false)
+  workspace_alerts_storage_enabled = lookup(each.value, "workspace_alerts_storage_enabled", false)
   skip_query_validation            = each.value.skip_query_validation
 
   action {
