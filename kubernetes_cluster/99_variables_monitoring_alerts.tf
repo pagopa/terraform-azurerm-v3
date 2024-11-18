@@ -181,9 +181,9 @@ variable "custom_logs_alerts" {
     # Frequency (in minutes) at which rule condition should be evaluated. Values must be between 5 and 1440 (inclusive).
     frequency = number
     # Custom subject override for all email ids in Azure action group.
-    email_subject = string
+    # email_subject = string
     # Custom payload to be sent for all webhook payloads in alerting action.
-    custom_webhook_payload = string
+    #     custom_webhook_payload = string
   }))
 }
 
