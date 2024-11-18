@@ -104,7 +104,7 @@ resource "helm_release" "prometheus_crds" {
   version    = var.prometheus_crds_release_version
   namespace  = var.prometheus_namespace
 
-  timeout = 300
+  timeout      = 300
   force_update = true
-  wait = true
+  wait         = true
 }

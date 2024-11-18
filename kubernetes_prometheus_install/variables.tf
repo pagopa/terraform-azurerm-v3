@@ -70,14 +70,17 @@ variable "prometheus_helm" {
   }
 }
 
+#
+# CRDS
+#
 variable "prometheus_crds_enabled" {
-  type = bool
+  type        = bool
   description = "Setup CRDS for prometheus"
-  default = false
+  default     = false
 }
 
 variable "prometheus_crds_release_version" {
-  type = string
+  type        = string
   description = "Prometheus CRDS helm release version. https://github.com/prometheus-community/helm-charts/pkgs/container/charts%2Fprometheus-operator-crds "
-  default = "16.0.0"
+  default     = "16.0.0"
 }
