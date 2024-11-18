@@ -144,7 +144,7 @@ locals {
       threshold               = 1
       time_aggregation_method = "Average"
       resource_id_column      = "Status"
-      metric_measure_column   = "Status"
+      metric_measure_column   = "count_Status"
       dimension = [
         {
           name     = "Status"
@@ -171,6 +171,7 @@ locals {
         | project TimeGenerated, Computer, Val, Origin
         | summarize AvgDiskUsage = avg(Val) by Computer
         | where AvgDiskUsage > 80
+        | summarize any(AvgDiskUsage)
       KQL
       severity                = 1
       window_duration         = "PT5M"
@@ -179,7 +180,7 @@ locals {
       threshold               = 1
       time_aggregation_method = "Average"
       resource_id_column      = "AvgDiskUsage"
-      metric_measure_column   = "AvgDiskUsage"
+      metric_measure_column   = "any_AvgDiskUsage"
       dimension = [
         {
           name     = "AvgDiskUsage"
