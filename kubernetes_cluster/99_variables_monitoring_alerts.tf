@@ -133,13 +133,13 @@ locals {
       query                   = <<-KQL
         KubeNodeInventory
         | where ClusterId == "${azurerm_kubernetes_cluster.this.id}"
-        | where TimeGenerated > ago(10m)
+        | where TimeGenerated > ago(15m)
         | where Status == "NotReady"
         | summarize count() by Computer, Status
       KQL
       severity                = 1
-      window_duration         = "PT5M"
-      evaluation_frequency    = "PT5M"
+      window_duration         = "PT1H"
+      evaluation_frequency    = "PT15M"
       operator                = "GreaterThan"
       threshold               = 1
       time_aggregation_method = "Average"
@@ -165,7 +165,7 @@ locals {
       query                   = <<-KQL
         InsightsMetrics
         | where _ResourceId == "${lower(azurerm_kubernetes_cluster.this.id)}"
-        | where TimeGenerated > ago(10m)
+        | where TimeGenerated > ago(15m)
         | where Namespace == "container.azm.ms/disk"
         | where Name == "used_percent"
         | project TimeGenerated, Computer, Val, Origin
@@ -174,8 +174,8 @@ locals {
         | summarize any(AvgDiskUsage)
       KQL
       severity                = 1
-      window_duration         = "PT5M"
-      evaluation_frequency    = "PT5M"
+      window_duration         = "PT1H"
+      evaluation_frequency    = "PT15M"
       operator                = "GreaterThan"
       threshold               = 1
       time_aggregation_method = "Average"
