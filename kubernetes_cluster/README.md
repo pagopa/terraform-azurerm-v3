@@ -705,7 +705,6 @@ No modules.
 | <a name="input_dns_prefix"></a> [dns\_prefix](#input\_dns\_prefix) | (Required) DNS prefix specified when creating the managed cluster. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | (Required) Version of Kubernetes specified when creating the AKS managed cluster. | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | n/a | `string` | n/a | yes |
-| <a name="input_log_alerts_application_insight_id"></a> [log\_alerts\_application\_insight\_id](#input\_log\_alerts\_application\_insight\_id) | ID of the Application Insights used for log alerts. | `string` | `null` | no |
 | <a name="input_log_analytics_workspace_id"></a> [log\_analytics\_workspace\_id](#input\_log\_analytics\_workspace\_id) | The ID of the Log Analytics Workspace which the OMS Agent should send data to. | `string` | `null` | no |
 | <a name="input_microsoft_defender_log_analytics_workspace_id"></a> [microsoft\_defender\_log\_analytics\_workspace\_id](#input\_microsoft\_defender\_log\_analytics\_workspace\_id) | Specifies the ID of the Log Analytics Workspace where the audit logs collected by Microsoft Defender should be sent to | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | (Required) Cluster name | `string` | n/a | yes |
