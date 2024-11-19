@@ -147,7 +147,7 @@ locals {
       metric_measure_column   = "count_"
       dimension = [
         {
-          name     = "Status"
+          name     = "Computer"
           operator = "Include"
           values   = ["*"]
         }
@@ -170,20 +170,18 @@ locals {
         | where Name == "used_percent"
         | project TimeGenerated, Computer, Val, Origin
         | summarize AvgDiskUsage = avg(Val) by Computer
-        | where AvgDiskUsage > 80
-        | summarize any(AvgDiskUsage)
       KQL
       severity                = 1
-      window_duration         = "PT1H"
-      evaluation_frequency    = "PT15M"
+      window_duration         = "PT30M"
+      evaluation_frequency    = "PT10M"
       operator                = "GreaterThan"
-      threshold               = 1
+      threshold               = 90
       time_aggregation_method = "Average"
       resource_id_column      = "AvgDiskUsage"
       metric_measure_column   = "any_AvgDiskUsage"
       dimension = [
         {
-          name     = "AvgDiskUsage"
+          name     = "Computer"
           operator = "Include"
           values   = ["*"]
         }
