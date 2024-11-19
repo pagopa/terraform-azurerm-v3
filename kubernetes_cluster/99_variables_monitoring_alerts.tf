@@ -220,7 +220,7 @@ variable "custom_logs_alerts" {
     # PT15M, PT30M, PT45M, PT1H, PT2H, PT3H, PT4H, PT5H, and PT6H. Otherwise,
     # possible values are PT5M, PT10M, PT15M, PT30M, PT45M, PT1H, PT2H, PT3H,
     # PT4H, PT5H, PT6H, P1D, and P2D.
-    window_duration = string
+    window_duration = optional(string)
     # (Optional) How often the scheduled query rule is evaluated, represented
     # in ISO 8601 duration format. Possible values are PT1M, PT5M, PT10M, PT15M,
     # PT30M, PT45M, PT1H, PT2H, PT3H, PT4H, PT5H, PT6H, P1D.
@@ -237,10 +237,10 @@ variable "custom_logs_alerts" {
     time_aggregation_method = string
     # (Optional) Specifies the column containing the resource ID. The content
     # of the column must be an uri formatted as resource ID.
-    resource_id_column = string
+    resource_id_column = optional(string)
 
     # (Optional) Specifies the column containing the metric measure number.
-    metric_measure_column = string
+    metric_measure_column = optional(string)
 
     dimension = list(object(
       {
@@ -267,14 +267,14 @@ variable "custom_logs_alerts" {
     # (Optional) Specifies the flag that indicates whether the alert should
     # be automatically resolved or not. Value should be true or false.
     # The default is false.
-    auto_mitigation_enabled = bool
+    auto_mitigation_enabled = optional(bool)
     # (Optional) Specifies the flag which indicates whether this scheduled
     # query rule check if storage is configured. Value should be true or false.
     # The default is false.
-    workspace_alerts_storage_enabled = bool
+    workspace_alerts_storage_enabled = optional(bool)
     # (Optional) Specifies the flag which indicates whether the provided
     # query should be validated or not. The default is false.
-    skip_query_validation = bool
+    skip_query_validation = optional(bool)
   }))
 }
 
