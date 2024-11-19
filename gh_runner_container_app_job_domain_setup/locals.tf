@@ -11,9 +11,9 @@ locals {
 
   aks_rg_permission = var.kubernetes_deploy.enabled ? {
     "${data.azurerm_kubernetes_cluster.aks[0].resource_group_name}" = [
-        "Reader",
-        "Azure Kubernetes Service Cluster User Role"
-      ]
+      "Reader",
+      "Azure Kubernetes Service Cluster User Role"
+    ]
   } : {}
 
   custom_permissions = { for perm in var.custom_rg_permissions : perm.rg_name => perm.permissions }

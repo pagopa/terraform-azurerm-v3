@@ -213,11 +213,11 @@ variable "function_deploy" {
 
 variable "custom_rg_permissions" {
   type = list(object({
-    rg_name = string #name of the resource group on which the permissions are given
+    rg_name     = string       #name of the resource group on which the permissions are given
     permissions = list(string) # list of permission assigned on with rg_name scope
   }))
   description = "(Optional) List of resource group permission assigned to the job identity"
-  default = []
+  default     = []
 }
 
 
