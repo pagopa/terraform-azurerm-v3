@@ -65,10 +65,10 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "this" {
     query                   = each.value.query
     operator                = each.value.operator
     threshold               = each.value.threshold
-    time_aggregation_method = each.value.time_aggregation_method
+    time_aggregation_method = lookup(each.value, "time_aggregation_method", "Average")
 
     resource_id_column    = each.value.resource_id_column
-    metric_measure_column = each.value.metric_measure_column
+    metric_measure_column = lookup(each.value, "metric_measure_column", null)
 
     dynamic "dimension" {
       for_each = each.value.dimension
@@ -80,14 +80,14 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "this" {
     }
 
     failing_periods {
-      minimum_failing_periods_to_trigger_alert = each.value.minimum_failing_periods_to_trigger_alert
-      number_of_evaluation_periods             = each.value.number_of_evaluation_periods
+      minimum_failing_periods_to_trigger_alert = lookup(each.value, "minimum_failing_periods_to_trigger_alert", 1)
+      number_of_evaluation_periods             = lookup(each.value, "number_of_evaluation_periods", 1)
     }
   }
 
-  auto_mitigation_enabled          = each.value.auto_mitigation_enabled
+  auto_mitigation_enabled          = lookup(each.value, "auto_mitigation_enabled", true)
   workspace_alerts_storage_enabled = lookup(each.value, "workspace_alerts_storage_enabled", false)
-  skip_query_validation            = each.value.skip_query_validation
+  skip_query_validation            = lookup(each.value, "skip_query_validation", false)
 
   action {
     // Concatenazione di tutti gli ID dei gruppi d'azione in un singolo set di stringhe
