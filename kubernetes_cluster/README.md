@@ -170,195 +170,50 @@ variable "aks_metric_alerts_default" {
         }
       ],
     }
-    node_disk = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/nodes"
-      metric_name      = "DiskUsedPercentage"
-      operator         = "GreaterThan"
-      threshold        = 80
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      dimension = [
-        {
-          name     = "host"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "device"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ],
-    }
-    node_not_ready = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/nodes"
-      metric_name      = "nodesCount"
-      operator         = "GreaterThan"
-      threshold        = 0
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      dimension = [
-        {
-          name     = "status"
-          operator = "Include"
-          values   = ["NotReady"]
-        }
-      ],
-    }
   }
 }
 
-variable "aks_metric_alerts_custom" {
-  description = <<EOD
-  Map of name = criteria objects
-  EOD
-
-  type = map(object({
-    # criteria.*.aggregation to be one of [Average Count Minimum Maximum Total]
-    aggregation = string
-    # "Insights.Container/pods" "Insights.Container/nodes"
-    metric_namespace = string
-    metric_name      = string
-    # criteria.0.operator to be one of [Equals NotEquals GreaterThan GreaterThanOrEqual LessThan LessThanOrEqual]
-    operator  = string
-    threshold = number
-    # Possible values are PT1M, PT5M, PT15M, PT30M and PT1H
-    frequency = string
-    # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.
-    window_size = string
-
-    dimension = list(object(
-      {
-        name     = string
-        operator = string
-        values   = list(string)
-      }
-    ))
-  }))
-
-  default = {
-    pods_failed = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/pods"
-      metric_name      = "podCount"
-      operator         = "GreaterThan"
-      threshold        = 0
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      dimension = [
-        {
-          name     = "phase"
-          operator = "Include"
-          values   = ["Failed"]
-        }
-      ]
-    }
-    pods_ready = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/pods"
-      metric_name      = "PodReadyPercentage"
-      operator         = "LessThan"
-      threshold        = 80
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      dimension = [
-        {
-          name     = "kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "controllerName"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ]
-    }
-    container_cpu = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/containers"
-      metric_name      = "cpuExceededPercentage"
-      operator         = "GreaterThan"
-      threshold        = 95
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      dimension = [
-        {
-          name     = "kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "controllerName"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ]
-    }
-    container_memory = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/containers"
-      metric_name      = "memoryWorkingSetExceededPercentage"
-      operator         = "GreaterThan"
-      threshold        = 95
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      dimension = [
-        {
-          name     = "kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "controllerName"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ]
-    }
-    container_oom = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/pods"
-      metric_name      = "oomKilledContainerCount"
-      operator         = "GreaterThan"
-      threshold        = 0
-      frequency        = "PT1M"
-      window_size      = "PT1M"
-      dimension = [
-        {
-          name     = "kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "controllerName"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ]
-    }
-    container_restart = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/pods"
-      metric_name      = "restartingContainerCount"
-      operator         = "GreaterThan"
-      threshold        = 0
-      frequency        = "PT1M"
-      window_size      = "PT1M"
-      dimension = [
-        {
-          name     = "kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "controllerName"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ]
+locals {
+    aks_logs_alerts = {
+      pods_oomkilled = {
+        display_name            = "${module.aks.name}-POD-OMMKILLED"
+        description             = "Detect if any pod is OOMKilled"
+        query                   = <<-KQL
+          KubePodInventory
+          | where PodStatus != "running"
+          | extend ContainerLastStatusJSON = parse_json(ContainerLastStatus)
+          | extend FinishedAt = todatetime(ContainerLastStatusJSON.finishedAt)
+          | where ContainerLastStatusJSON.reason == "OOMKilled"
+          | distinct PodUid, Namespace, ControllerName, ContainerLastStatus, FinishedAt
+          | order by FinishedAt asc
+        KQL
+        severity                = 1
+        window_duration         = "PT15M"
+        evaluation_frequency    = "PT5M"
+        operator                = "GreaterThan"
+        threshold               = 1
+        time_aggregation_method = "Count"
+        resource_id_column      = "ControllerName"
+        metric_measure_column   = null
+        dimension = [
+          {
+            name     = "ControllerName"
+            operator = "Include"
+            values   = ["*"]
+          },
+          {
+            name     = "Namespace"
+            operator = "Exclude"
+            values = [
+              "kube-system",
+              "default"
+            ]
+          }
+        ]
+        minimum_failing_periods_to_trigger_alert = 1
+        number_of_evaluation_periods             = 1
+        auto_mitigation_enabled                  = true
+        skip_query_validation                    = true
     }
   }
 }
@@ -573,6 +428,7 @@ keda_helm_version        = "2.6.2"
 
     default_metric_alerts = var.aks_metric_alerts_default
     custom_metric_alerts  = var.aks_metric_alerts_custom
+    custom_logs_alerts    = local.aks_logs_alerts
 
     alerts_enabled = var.aks_alerts_enabled
     action = [
