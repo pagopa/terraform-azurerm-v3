@@ -15,7 +15,7 @@ module "kubernetes_service_account" {
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -49,4 +49,4 @@ No modules.
 |------|-------------|
 | <a name="output_sa_ca_cert"></a> [sa\_ca\_cert](#output\_sa\_ca\_cert) | n/a |
 | <a name="output_sa_token"></a> [sa\_token](#output\_sa\_token) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

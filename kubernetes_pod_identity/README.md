@@ -32,7 +32,7 @@ module "domain_pod_identity" {
 * `certificate_permissions`, `key_permissions` and `secret_permissions` related to keyvault access policy, must start with a capitol letter. E.g [Backup Delete Get List Purge Recover Restore Set]
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -73,4 +73,4 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_identity"></a> [identity](#output\_identity) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

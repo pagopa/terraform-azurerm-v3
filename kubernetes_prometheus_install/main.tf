@@ -7,9 +7,7 @@ resource "null_resource" "trigger_helm_release" {
   }
 }
 
-
 resource "helm_release" "prometheus" {
-
 
   name       = "prometheus"
   repository = "https://prometheus-community.github.io/helm-charts"
@@ -86,10 +84,27 @@ resource "helm_release" "prometheus" {
     value = var.storage_class_name
   }
 
-
   lifecycle {
     replace_triggered_by = [
       null_resource.trigger_helm_release
     ]
   }
+}
+
+#
+# CRDS
+#
+resource "helm_release" "prometheus_crds" {
+
+  count = var.prometheus_crds_enabled ? 1 : 0
+
+  name       = "prometheus-crds"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "prometheus-operator-crds"
+  version    = var.prometheus_crds_release_version
+  namespace  = var.prometheus_namespace
+
+  timeout      = 300
+  force_update = true
+  wait         = true
 }
