@@ -5,7 +5,7 @@ locals {
 module "container_app_job" {
   source = "../container_app_job_gh_runner_v2"
 
-  for_each = var.gh_repositories
+  for_each = var.repositories
 
   env_short        = var.env_short
   environment_name = var.environment_name
