@@ -177,7 +177,14 @@ variable "kubernetes_deploy" {
     rg           = optional(string, "")
   })
 
-  description = "(Optional) enables and specifies the kubernetes deply permissions"
+  description = "(Optional) Enables and specifies the kubernetes deply permissions"
+
+  default = {
+    enabled      = false
+    namespace    = ""
+    cluster_name = ""
+    rg           = ""
+  }
 
   validation {
     condition     = var.kubernetes_deploy.enabled ? length(var.kubernetes_deploy.namespace) > 0 : true
@@ -191,6 +198,26 @@ variable "kubernetes_deploy" {
     condition     = var.kubernetes_deploy.enabled ? length(var.kubernetes_deploy.rg) > 0 : true
     error_message = "Kubernetes cluster rg name not defined"
   }
+}
+
+
+variable "function_deploy" {
+  type = object({
+    enabled = optional(bool, false)
+  })
+  description = "(Optional) Enables and specifies the function app deploy permissions"
+  default = {
+    enabled = false
+  }
+}
+
+variable "custom_rg_permissions" {
+  type = list(object({
+    rg_name = string #name of the resource group on which the permissions are given
+    permissions = list(string) # list of permission assigned on with rg_name scope
+  }))
+  description = "(Optional) List of resource group permission assigned to the job identity"
+  default = []
 }
 
 

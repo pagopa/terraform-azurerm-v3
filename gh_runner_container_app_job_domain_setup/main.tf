@@ -1,5 +1,5 @@
 locals {
-  repositories = { for r in var.gh_repositories : r.name => r.short_name }
+
 }
 
 module "container_app_job" {
@@ -77,7 +77,7 @@ resource "azurerm_key_vault_access_policy" "gha_iac_managed_identities" {
   storage_permissions = []
 }
 
-resource "null_resource" "github_runner_app_permissions_to_namespace_cd_01" {
+resource "null_resource" "github_runner_app_permissions_to_namespace_cd" {
   count = var.kubernetes_deploy.enabled ? 1 : 0
 
   triggers = {
