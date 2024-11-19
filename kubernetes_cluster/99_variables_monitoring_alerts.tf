@@ -171,7 +171,7 @@ locals {
         | project TimeGenerated, Computer, Val, Origin
         | summarize AvgDiskUsage = avg(Val) by Computer
       KQL
-      severity                = 1
+      severity                = 2
       window_duration         = "PT30M"
       evaluation_frequency    = "PT10M"
       operator                = "GreaterThan"
