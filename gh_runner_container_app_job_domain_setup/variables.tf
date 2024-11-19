@@ -218,6 +218,21 @@ variable "custom_rg_permissions" {
   }))
   description = "(Optional) List of resource group permission assigned to the job identity"
   default     = []
+
+ validation {
+    condition = alltrue([
+      for p in var.custom_rg_permissions : (length(p.rg_name) > 0)
+    ])
+    error_message = "rg_name cannot be empty"
+  }
+
+  validation {
+    condition = alltrue([
+      for p in var.custom_rg_permissions : (length(p.permissions) > 0)
+    ])
+    error_message = "permissions cannot be empty"
+  }
+
 }
 
 
