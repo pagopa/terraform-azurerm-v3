@@ -178,7 +178,7 @@ locals {
       threshold               = 90
       time_aggregation_method = "Average"
       resource_id_column      = "AvgDiskUsage"
-      metric_measure_column   = "any_AvgDiskUsage"
+      metric_measure_column   = "AvgDiskUsage"
       dimension = [
         {
           name     = "Computer"
