@@ -13,7 +13,16 @@ By default the modules have a default set of metric alerts.
 * If you want is possible to add new **custom metrics alerts** using the varible: `custom_metric_alerts`
 * Or override the **default metrics alert** using the variable: `default_metric_alerts`. (is prefered to add new metrics)
 
+After **v8.57.0**:
+* If you want is possible to add new **custom metrics alerts** using the varible: `custom_logs_alerts`
+* Or override the **default logs alert** using the variable: `default_logs_alerts`. (is prefered to add new metrics)
 
+This changes is mandatory for the decommissioned metrics alert resource on Azure from May, 2024: [read_more](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/kubernetes-metric-alerts?tabs=portal#legacy-container-insights-metric-alerts-preview).
+
+List of our metrics alert decommissioned on this module after **v8.57.0**:
+
+- node_disk
+- node_not_ready
 
 ## How to use it
 
