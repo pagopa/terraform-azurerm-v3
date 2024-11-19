@@ -138,8 +138,8 @@ locals {
         | summarize count() by Computer, Status
       KQL
       severity                = 1
-      window_duration         = "PT1H"
-      evaluation_frequency    = "PT15M"
+      window_duration         = "PT30M"
+      evaluation_frequency    = "PT10M"
       operator                = "GreaterThan"
       threshold               = 1
       time_aggregation_method = "Average"
