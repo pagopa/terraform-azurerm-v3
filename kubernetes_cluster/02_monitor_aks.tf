@@ -87,7 +87,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "this" {
 
   auto_mitigation_enabled          = lookup(each.value, "auto_mitigation_enabled", true)
   workspace_alerts_storage_enabled = lookup(each.value, "workspace_alerts_storage_enabled", false)
-  skip_query_validation            = lookup(each.value, "skip_query_validation", false)
+  skip_query_validation            = lookup(each.value, "skip_query_validation", true)
 
   action {
     // Concatenazione di tutti gli ID dei gruppi d'azione in un singolo set di stringhe
