@@ -128,7 +128,7 @@ locals {
   default_logs_alerts = {
     ### NODE NOT READY ALERT
     node_not_ready = {
-      display_name            = "AKS Node not ready alert"
+      display_name            = "${azurerm_kubernetes_cluster.this.name}-NODE-NOT-READY"
       description             = "Detect nodes that is not ready on AKS cluster"
       query                   = <<-KQL
         KubeNodeInventory
@@ -160,7 +160,7 @@ locals {
     }
     ### NODE DISK ALERT
     node_disk_usage = {
-      display_name            = "AKS Node disk usage alert"
+      display_name            = "${azurerm_kubernetes_cluster.this.name}-NODE-DISK-USAGE"
       description             = "Detect nodes disk is going to run out of space"
       query                   = <<-KQL
         InsightsMetrics
