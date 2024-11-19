@@ -1,3 +1,7 @@
+locals {
+  repositories = { for r in var.gh_repositories : r.name => r.short_name }
+}
+
 module "container_app_job" {
   source = "../container_app_job_gh_runner_v2"
 
@@ -7,12 +11,12 @@ module "container_app_job" {
   environment_name = var.environment_name
   environment_rg   = var.environment_rg
   job = {
-    name                 = each.value.short_name
+    name                 = each.value #short_name
     scale_max_executions = 1
     scale_min_executions = 1
   }
   job_meta = {
-    repo                         = each.value.name
+    repo                         = each.key #name
     repo_owner                   = var.job_meta.repo_owner
     runner_scope                 = var.job_meta.runner_scope
     target_workflow_queue_length = var.job_meta.target_workflow_queue_length
