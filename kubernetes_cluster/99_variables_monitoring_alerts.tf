@@ -15,6 +15,8 @@ variable "default_metric_alerts" {
     # criteria.0.operator to be one of [Equals NotEquals GreaterThan GreaterThanOrEqual LessThan LessThanOrEqual]
     operator  = string
     threshold = number
+    # Possible values are 0, 1, 2, 3 and 4. Defaults to 3.
+    severity = optional(number)
     # Possible values are PT1M, PT5M, PT15M, PT30M and PT1H
     frequency = string
     # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.
@@ -39,6 +41,7 @@ variable "default_metric_alerts" {
       metric_name      = "node_cpu_usage_percentage"
       operator         = "GreaterThan"
       threshold        = 80
+      severity         = 2
       frequency        = "PT15M"
       window_size      = "PT1H"
       dimension = [
@@ -56,6 +59,7 @@ variable "default_metric_alerts" {
       metric_name      = "node_memory_working_set_percentage"
       operator         = "GreaterThan"
       threshold        = 80
+      severity         = 2
       frequency        = "PT15M"
       window_size      = "PT1H"
       dimension = [
@@ -72,6 +76,7 @@ variable "default_metric_alerts" {
       metric_name      = "kube_pod_status_phase"
       operator         = "GreaterThan"
       threshold        = 0
+      severity         = 1
       frequency        = "PT15M"
       window_size      = "PT1H"
       dimension = [

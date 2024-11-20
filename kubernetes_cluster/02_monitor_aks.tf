@@ -10,6 +10,7 @@ resource "azurerm_monitor_metric_alert" "this" {
   frequency           = each.value.frequency
   window_size         = each.value.window_size
   enabled             = var.alerts_enabled
+  severity            = lookup(each.value, "severity", 3)
 
   dynamic "action" {
     for_each = var.action
