@@ -13,7 +13,16 @@ By default the modules have a default set of metric alerts.
 * If you want is possible to add new **custom metrics alerts** using the varible: `custom_metric_alerts`
 * Or override the **default metrics alert** using the variable: `default_metric_alerts`. (is prefered to add new metrics)
 
+After **v8.57.0**:
+* If you want is possible to add new **custom metrics alerts** using the varible: `custom_logs_alerts`
+* Or override the **default logs alert** using the variable: `default_logs_alerts`. (is prefered to add new metrics)
 
+This changes is mandatory for the decommissioned metrics alert resource on Azure from May, 2024: [read_more](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/kubernetes-metric-alerts?tabs=portal#legacy-container-insights-metric-alerts-preview).
+
+List of our metrics alert decommissioned on this module after **v8.57.0**:
+
+- node_disk
+- node_not_ready
 
 ## How to use it
 
@@ -161,195 +170,50 @@ variable "aks_metric_alerts_default" {
         }
       ],
     }
-    node_disk = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/nodes"
-      metric_name      = "DiskUsedPercentage"
-      operator         = "GreaterThan"
-      threshold        = 80
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      dimension = [
-        {
-          name     = "host"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "device"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ],
-    }
-    node_not_ready = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/nodes"
-      metric_name      = "nodesCount"
-      operator         = "GreaterThan"
-      threshold        = 0
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      dimension = [
-        {
-          name     = "status"
-          operator = "Include"
-          values   = ["NotReady"]
-        }
-      ],
-    }
   }
 }
 
-variable "aks_metric_alerts_custom" {
-  description = <<EOD
-  Map of name = criteria objects
-  EOD
-
-  type = map(object({
-    # criteria.*.aggregation to be one of [Average Count Minimum Maximum Total]
-    aggregation = string
-    # "Insights.Container/pods" "Insights.Container/nodes"
-    metric_namespace = string
-    metric_name      = string
-    # criteria.0.operator to be one of [Equals NotEquals GreaterThan GreaterThanOrEqual LessThan LessThanOrEqual]
-    operator  = string
-    threshold = number
-    # Possible values are PT1M, PT5M, PT15M, PT30M and PT1H
-    frequency = string
-    # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.
-    window_size = string
-
-    dimension = list(object(
-      {
-        name     = string
-        operator = string
-        values   = list(string)
-      }
-    ))
-  }))
-
-  default = {
-    pods_failed = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/pods"
-      metric_name      = "podCount"
-      operator         = "GreaterThan"
-      threshold        = 0
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      dimension = [
-        {
-          name     = "phase"
-          operator = "Include"
-          values   = ["Failed"]
-        }
-      ]
-    }
-    pods_ready = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/pods"
-      metric_name      = "PodReadyPercentage"
-      operator         = "LessThan"
-      threshold        = 80
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      dimension = [
-        {
-          name     = "kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "controllerName"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ]
-    }
-    container_cpu = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/containers"
-      metric_name      = "cpuExceededPercentage"
-      operator         = "GreaterThan"
-      threshold        = 95
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      dimension = [
-        {
-          name     = "kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "controllerName"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ]
-    }
-    container_memory = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/containers"
-      metric_name      = "memoryWorkingSetExceededPercentage"
-      operator         = "GreaterThan"
-      threshold        = 95
-      frequency        = "PT1M"
-      window_size      = "PT5M"
-      dimension = [
-        {
-          name     = "kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "controllerName"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ]
-    }
-    container_oom = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/pods"
-      metric_name      = "oomKilledContainerCount"
-      operator         = "GreaterThan"
-      threshold        = 0
-      frequency        = "PT1M"
-      window_size      = "PT1M"
-      dimension = [
-        {
-          name     = "kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "controllerName"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ]
-    }
-    container_restart = {
-      aggregation      = "Average"
-      metric_namespace = "Insights.Container/pods"
-      metric_name      = "restartingContainerCount"
-      operator         = "GreaterThan"
-      threshold        = 0
-      frequency        = "PT1M"
-      window_size      = "PT1M"
-      dimension = [
-        {
-          name     = "kubernetes namespace"
-          operator = "Include"
-          values   = ["*"]
-        },
-        {
-          name     = "controllerName"
-          operator = "Include"
-          values   = ["*"]
-        }
-      ]
+locals {
+    aks_logs_alerts = {
+      pods_oomkilled = {
+        display_name            = "${module.aks.name}-POD-OMMKILLED"
+        description             = "Detect if any pod is OOMKilled"
+        query                   = <<-KQL
+          KubePodInventory
+          | where PodStatus != "running"
+          | extend ContainerLastStatusJSON = parse_json(ContainerLastStatus)
+          | extend FinishedAt = todatetime(ContainerLastStatusJSON.finishedAt)
+          | where ContainerLastStatusJSON.reason == "OOMKilled"
+          | distinct PodUid, Namespace, ControllerName, ContainerLastStatus, FinishedAt
+          | order by FinishedAt asc
+        KQL
+        severity                = 1
+        window_duration         = "PT15M"
+        evaluation_frequency    = "PT5M"
+        operator                = "GreaterThan"
+        threshold               = 1
+        time_aggregation_method = "Count"
+        resource_id_column      = "ControllerName"
+        metric_measure_column   = null
+        dimension = [
+          {
+            name     = "ControllerName"
+            operator = "Include"
+            values   = ["*"]
+          },
+          {
+            name     = "Namespace"
+            operator = "Exclude"
+            values = [
+              "kube-system",
+              "default"
+            ]
+          }
+        ]
+        minimum_failing_periods_to_trigger_alert = 1
+        number_of_evaluation_periods             = 1
+        auto_mitigation_enabled                  = true
+        skip_query_validation                    = true
     }
   }
 }
@@ -564,6 +428,7 @@ keda_helm_version        = "2.6.2"
 
     default_metric_alerts = var.aks_metric_alerts_default
     custom_metric_alerts  = var.aks_metric_alerts_custom
+    custom_logs_alerts    = local.aks_logs_alerts
 
     alerts_enabled = var.aks_alerts_enabled
     action = [
@@ -679,6 +544,7 @@ No modules.
 | [azurerm_kubernetes_cluster_node_pool.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster_node_pool) | resource |
 | [azurerm_monitor_diagnostic_setting.aks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
 | [azurerm_monitor_metric_alert.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
+| [azurerm_monitor_scheduled_query_rules_alert_v2.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_scheduled_query_rules_alert_v2) | resource |
 | [azurerm_role_assignment.oms_agent_monitoring_metrics](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.vnet_outbound_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.vnet_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
@@ -698,8 +564,9 @@ No modules.
 | <a name="input_addon_azure_policy_enabled"></a> [addon\_azure\_policy\_enabled](#input\_addon\_azure\_policy\_enabled) | Should the Azure Policy addon be enabled for this Node Pool? | `bool` | `false` | no |
 | <a name="input_alerts_enabled"></a> [alerts\_enabled](#input\_alerts\_enabled) | Should Metrics Alert be enabled? | `bool` | `true` | no |
 | <a name="input_automatic_channel_upgrade"></a> [automatic\_channel\_upgrade](#input\_automatic\_channel\_upgrade) | (Optional) The upgrade channel for this Kubernetes Cluster. Possible values are patch, rapid, node-image and stable. Omitting this field sets this value to none. | `string` | `null` | no |
+| <a name="input_custom_logs_alerts"></a> [custom\_logs\_alerts](#input\_custom\_logs\_alerts) | Map of name = criteria objects | <pre>map(object({<br/>    # (Optional) Specifies the display name of the alert rule.<br/>    display_name = string<br/>    # (Optional) Specifies the description of the scheduled query rule.<br/>    description = string<br/>    # Assuming each.value includes this attribute for Kusto Query Language (KQL)<br/>    query = string<br/>    # (Required) Severity of the alert. Should be an integer between 0 and 4.<br/>    # Value of 0 is severest.<br/>    severity = number<br/>    # (Required) Specifies the period of time in ISO 8601 duration format on<br/>    # which the Scheduled Query Rule will be executed (bin size).<br/>    # If evaluation_frequency is PT1M, possible values are PT1M, PT5M, PT10M,<br/>    # PT15M, PT30M, PT45M, PT1H, PT2H, PT3H, PT4H, PT5H, and PT6H. Otherwise,<br/>    # possible values are PT5M, PT10M, PT15M, PT30M, PT45M, PT1H, PT2H, PT3H,<br/>    # PT4H, PT5H, PT6H, P1D, and P2D.<br/>    window_duration = optional(string)<br/>    # (Optional) How often the scheduled query rule is evaluated, represented<br/>    # in ISO 8601 duration format. Possible values are PT1M, PT5M, PT10M, PT15M,<br/>    # PT30M, PT45M, PT1H, PT2H, PT3H, PT4H, PT5H, PT6H, P1D.<br/>    evaluation_frequency = string<br/>    # Evaluation operation for rule - 'GreaterThan', GreaterThanOrEqual',<br/>    # 'LessThan', or 'LessThanOrEqual'.<br/>    operator = string<br/>    # Result or count threshold based on which rule should be triggered.<br/>    # Values must be between 0 and 10000 inclusive.<br/>    threshold = number<br/>    # (Required) The type of aggregation to apply to the data points in<br/>    # aggregation granularity. Possible values are Average, Count, Maximum,<br/>    # Minimum,and Total.<br/>    time_aggregation_method = string<br/>    # (Optional) Specifies the column containing the resource ID. The content<br/>    # of the column must be an uri formatted as resource ID.<br/>    resource_id_column = optional(string)<br/><br/>    # (Optional) Specifies the column containing the metric measure number.<br/>    metric_measure_column = optional(string)<br/><br/>    dimension = list(object(<br/>      {<br/>        # (Required) Name of the dimension.<br/>        name = string<br/>        # (Required) Operator for dimension values. Possible values are<br/>        # Exclude,and Include.<br/>        operator = string<br/>        # (Required) List of dimension values. Use a wildcard * to collect all.<br/>        values = list(string)<br/>      }<br/>    ))<br/><br/>    # (Required) Specifies the number of violations to trigger an alert.<br/>    # Should be smaller or equal to number_of_evaluation_periods.<br/>    # Possible value is integer between 1 and 6.<br/>    minimum_failing_periods_to_trigger_alert = number<br/>    # (Required) Specifies the number of aggregated look-back points.<br/>    # The look-back time window is calculated based on the aggregation<br/>    # granularity window_duration and the selected number of aggregated points.<br/>    # Possible value is integer between 1 and 6.<br/>    number_of_evaluation_periods = number<br/><br/>    # (Optional) Specifies the flag that indicates whether the alert should<br/>    # be automatically resolved or not. Value should be true or false.<br/>    # The default is false.<br/>    auto_mitigation_enabled = optional(bool)<br/>    # (Optional) Specifies the flag which indicates whether this scheduled<br/>    # query rule check if storage is configured. Value should be true or false.<br/>    # The default is false.<br/>    workspace_alerts_storage_enabled = optional(bool)<br/>    # (Optional) Specifies the flag which indicates whether the provided<br/>    # query should be validated or not. The default is false.<br/>    skip_query_validation = optional(bool)<br/>  }))</pre> | `{}` | no |
 | <a name="input_custom_metric_alerts"></a> [custom\_metric\_alerts](#input\_custom\_metric\_alerts) | Map of name = criteria objects | <pre>map(object({<br/>    # criteria.*.aggregation to be one of [Average Count Minimum Maximum Total]<br/>    aggregation = string<br/>    # "Insights.Container/pods" "Insights.Container/nodes"<br/>    metric_namespace = string<br/>    metric_name      = string<br/>    # criteria.0.operator to be one of [Equals NotEquals GreaterThan GreaterThanOrEqual LessThan LessThanOrEqual]<br/>    operator  = string<br/>    threshold = number<br/>    # Possible values are PT1M, PT5M, PT15M, PT30M and PT1H<br/>    frequency = string<br/>    # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.<br/>    window_size = string<br/>    # Skip metrics validation<br/>    skip_metric_validation = optional(bool, false)<br/><br/>    dimension = list(object(<br/>      {<br/>        name     = string<br/>        operator = string<br/>        values   = list(string)<br/>      }<br/>    ))<br/>  }))</pre> | `{}` | no |
-| <a name="input_default_metric_alerts"></a> [default\_metric\_alerts](#input\_default\_metric\_alerts) | Map of name = criteria objects | <pre>map(object({<br/>    # criteria.*.aggregation to be one of [Average Count Minimum Maximum Total]<br/>    aggregation = string<br/>    # "Insights.Container/pods" "Insights.Container/nodes"<br/>    metric_namespace = string<br/>    metric_name      = string<br/>    # criteria.0.operator to be one of [Equals NotEquals GreaterThan GreaterThanOrEqual LessThan LessThanOrEqual]<br/>    operator  = string<br/>    threshold = number<br/>    # Possible values are PT1M, PT5M, PT15M, PT30M and PT1H<br/>    frequency = string<br/>    # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.<br/>    window_size = string<br/>    # Skip metrics validation<br/>    skip_metric_validation = optional(bool, false)<br/><br/><br/>    dimension = list(object(<br/>      {<br/>        name     = string<br/>        operator = string<br/>        values   = list(string)<br/>      }<br/>    ))<br/>  }))</pre> | <pre>{<br/>  "node_cpu_usage_percentage": {<br/>    "aggregation": "Average",<br/>    "dimension": [<br/>      {<br/>        "name": "node",<br/>        "operator": "Include",<br/>        "values": [<br/>          "*"<br/>        ]<br/>      }<br/>    ],<br/>    "frequency": "PT15M",<br/>    "metric_name": "node_cpu_usage_percentage",<br/>    "metric_namespace": "Microsoft.ContainerService/managedClusters",<br/>    "operator": "GreaterThan",<br/>    "threshold": 80,<br/>    "window_size": "PT1H"<br/>  },<br/>  "node_disk": {<br/>    "aggregation": "Average",<br/>    "dimension": [<br/>      {<br/>        "name": "node",<br/>        "operator": "Include",<br/>        "values": [<br/>          "*"<br/>        ]<br/>      },<br/>      {<br/>        "name": "device",<br/>        "operator": "Include",<br/>        "values": [<br/>          "*"<br/>        ]<br/>      }<br/>    ],<br/>    "frequency": "PT15M",<br/>    "metric_name": "node_disk_usage_percentage",<br/>    "metric_namespace": "Microsoft.ContainerService/managedClusters",<br/>    "operator": "GreaterThan",<br/>    "threshold": 80,<br/>    "window_size": "PT1H"<br/>  },<br/>  "node_memory_working_set_percentage": {<br/>    "aggregation": "Average",<br/>    "dimension": [<br/>      {<br/>        "name": "node",<br/>        "operator": "Include",<br/>        "values": [<br/>          "*"<br/>        ]<br/>      }<br/>    ],<br/>    "frequency": "PT15M",<br/>    "metric_name": "node_memory_working_set_percentage",<br/>    "metric_namespace": "Microsoft.ContainerService/managedClusters",<br/>    "operator": "GreaterThan",<br/>    "threshold": 80,<br/>    "window_size": "PT1H"<br/>  },<br/>  "node_not_ready": {<br/>    "aggregation": "Average",<br/>    "dimension": [<br/>      {<br/>        "name": "status2",<br/>        "operator": "Include",<br/>        "values": [<br/>          "NotReady"<br/>        ]<br/>      }<br/>    ],<br/>    "frequency": "PT15M",<br/>    "metric_name": "kube_node_status_condition",<br/>    "metric_namespace": "Microsoft.ContainerService/managedClusters",<br/>    "operator": "GreaterThan",<br/>    "threshold": 0,<br/>    "window_size": "PT1H"<br/>  },<br/>  "pods_failed": {<br/>    "aggregation": "Average",<br/>    "dimension": [<br/>      {<br/>        "name": "phase",<br/>        "operator": "Include",<br/>        "values": [<br/>          "Failed"<br/>        ]<br/>      },<br/>      {<br/>        "name": "namespace",<br/>        "operator": "Include",<br/>        "values": [<br/>          "*"<br/>        ]<br/>      }<br/>    ],<br/>    "frequency": "PT15M",<br/>    "metric_name": "kube_pod_status_phase",<br/>    "metric_namespace": "Microsoft.ContainerService/managedClusters",<br/>    "operator": "GreaterThan",<br/>    "threshold": 0,<br/>    "window_size": "PT1H"<br/>  }<br/>}</pre> | no |
+| <a name="input_default_metric_alerts"></a> [default\_metric\_alerts](#input\_default\_metric\_alerts) | Map of name = criteria objects | <pre>map(object({<br/>    # criteria.*.aggregation to be one of [Average Count Minimum Maximum Total]<br/>    aggregation = string<br/>    # "Insights.Container/pods" "Insights.Container/nodes"<br/>    metric_namespace = string<br/>    metric_name      = string<br/>    # criteria.0.operator to be one of [Equals NotEquals GreaterThan GreaterThanOrEqual LessThan LessThanOrEqual]<br/>    operator  = string<br/>    threshold = number<br/>    # Possible values are 0, 1, 2, 3 and 4. Defaults to 3.<br/>    severity = optional(number)<br/>    # Possible values are PT1M, PT5M, PT15M, PT30M and PT1H<br/>    frequency = string<br/>    # Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D.<br/>    window_size = string<br/>    # Skip metrics validation<br/>    skip_metric_validation = optional(bool, false)<br/><br/><br/>    dimension = list(object(<br/>      {<br/>        name     = string<br/>        operator = string<br/>        values   = list(string)<br/>      }<br/>    ))<br/>  }))</pre> | <pre>{<br/>  "node_cpu_usage_percentage": {<br/>    "aggregation": "Average",<br/>    "dimension": [<br/>      {<br/>        "name": "node",<br/>        "operator": "Include",<br/>        "values": [<br/>          "*"<br/>        ]<br/>      }<br/>    ],<br/>    "frequency": "PT15M",<br/>    "metric_name": "node_cpu_usage_percentage",<br/>    "metric_namespace": "Microsoft.ContainerService/managedClusters",<br/>    "operator": "GreaterThan",<br/>    "severity": 2,<br/>    "threshold": 80,<br/>    "window_size": "PT1H"<br/>  },<br/>  "node_memory_working_set_percentage": {<br/>    "aggregation": "Average",<br/>    "dimension": [<br/>      {<br/>        "name": "node",<br/>        "operator": "Include",<br/>        "values": [<br/>          "*"<br/>        ]<br/>      }<br/>    ],<br/>    "frequency": "PT15M",<br/>    "metric_name": "node_memory_working_set_percentage",<br/>    "metric_namespace": "Microsoft.ContainerService/managedClusters",<br/>    "operator": "GreaterThan",<br/>    "severity": 2,<br/>    "threshold": 80,<br/>    "window_size": "PT1H"<br/>  },<br/>  "pods_failed": {<br/>    "aggregation": "Average",<br/>    "dimension": [<br/>      {<br/>        "name": "phase",<br/>        "operator": "Include",<br/>        "values": [<br/>          "Failed"<br/>        ]<br/>      },<br/>      {<br/>        "name": "namespace",<br/>        "operator": "Include",<br/>        "values": [<br/>          "*"<br/>        ]<br/>      }<br/>    ],<br/>    "frequency": "PT15M",<br/>    "metric_name": "kube_pod_status_phase",<br/>    "metric_namespace": "Microsoft.ContainerService/managedClusters",<br/>    "operator": "GreaterThan",<br/>    "severity": 1,<br/>    "threshold": 0,<br/>    "window_size": "PT1H"<br/>  }<br/>}</pre> | no |
 | <a name="input_dns_prefix"></a> [dns\_prefix](#input\_dns\_prefix) | (Required) DNS prefix specified when creating the managed cluster. Changing this forces a new resource to be created. | `string` | n/a | yes |
 | <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | (Required) Version of Kubernetes specified when creating the AKS managed cluster. | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | n/a | `string` | n/a | yes |
