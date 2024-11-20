@@ -172,7 +172,7 @@ variable "gh_identity_suffix" {
 variable "kubernetes_deploy" {
   type = object({
     enabled      = optional(bool, false)
-    namespace    = optional(string, "")
+    namespaces    = optional(list(string), [])
     cluster_name = optional(string, "")
     rg           = optional(string, "")
   })
@@ -181,14 +181,14 @@ variable "kubernetes_deploy" {
 
   default = {
     enabled      = false
-    namespace    = ""
+    namespaces    = []
     cluster_name = ""
     rg           = ""
   }
 
   validation {
-    condition     = var.kubernetes_deploy.enabled ? length(var.kubernetes_deploy.namespace) > 0 : true
-    error_message = "Kubernetes namespace not defined"
+    condition     = var.kubernetes_deploy.enabled ? length(var.kubernetes_deploy.namespaces) > 0 : true
+    error_message = "Kubernetes namespaces not defined"
   }
   validation {
     condition     = var.kubernetes_deploy.enabled ? length(var.kubernetes_deploy.cluster_name) > 0 : true

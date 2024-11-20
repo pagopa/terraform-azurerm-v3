@@ -78,12 +78,12 @@ resource "azurerm_key_vault_access_policy" "gha_iac_managed_identities" {
 }
 
 resource "null_resource" "github_runner_app_permissions_to_namespace_cd" {
-  count = var.kubernetes_deploy.enabled ? 1 : 0
+  for_each = var.kubernetes_deploy.enabled ? var.kubernetes_deploy.namespaces : []
 
   triggers = {
     aks_id               = data.azurerm_kubernetes_cluster.aks[0].id
     service_principal_id = module.identity_cd.identity_client_id
-    namespace            = var.kubernetes_deploy.namespace
+    namespace            = each.value
     version              = "v2"
   }
 
