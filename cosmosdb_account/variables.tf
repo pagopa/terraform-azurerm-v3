@@ -44,6 +44,12 @@ variable "enable_automatic_failover" {
   description = "Enable automatic fail over for this Cosmos DB account."
 }
 
+variable "burst_capacity_enabled" {
+  type        = bool
+  default     = true
+  description = "Enable burst capacity for this Cosmos DB account. Defaults to false."
+}
+
 variable "key_vault_key_id" {
   type        = string
   description = "(Optional) A versionless Key Vault Key ID for CMK encryption. Changing this forces a new resource to be created. When referencing an azurerm_key_vault_key resource, use versionless_id instead of id"
