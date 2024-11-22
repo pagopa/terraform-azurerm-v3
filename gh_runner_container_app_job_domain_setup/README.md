@@ -41,7 +41,7 @@ module "gh_runner_job" {
   # optional
   kubernetes_deploy = {
     enabled      = true
-    namespace    = "payopt"
+    namespaces    = ["payopt"]
     cluster_name = "${local.product}-${var.location_short}-${var.instance}-aks"
     rg           = "${local.product}-${var.location_short}-${var.instance}-aks-rg"
   }
