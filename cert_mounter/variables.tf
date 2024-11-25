@@ -2,6 +2,12 @@ locals {
   chart_version = var.workload_identity_enabled ? var.cert_mounter_chart_version : "1.0.4"
 }
 
+variable "helm_release_name" {
+  type        = string
+  description = "(Optional) Cert Mounter release name. Changed this field force the helm destroy and re-install"
+  default     = "cert-mounter-blueprint"
+}
+
 variable "namespace" {
   type        = string
   description = "(Required) Namespace where the cert secret will be created"

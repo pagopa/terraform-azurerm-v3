@@ -14,6 +14,7 @@ module "aks_prometheus_install" {
   
   prometheus_namespace = "monitoring"
   storage_class_name = "default-zrs" #example of ZRS storage class created by kubernetes_storage_class
+  prometheus_crds_enabled = true
 }
 ```
 
