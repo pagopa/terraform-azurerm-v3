@@ -1,5 +1,5 @@
 resource "helm_release" "cert_mounter" {
-  name         = var.helm_release_name
+  name         = replace(substr(var.helm_release_name, 0, 53), ".", "-")
   repository   = "https://pagopa.github.io/aks-helm-cert-mounter-blueprint"
   chart        = "cert-mounter-blueprint"
   version      = local.chart_version
