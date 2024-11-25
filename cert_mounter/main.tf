@@ -1,5 +1,5 @@
 resource "helm_release" "cert_mounter" {
-  name         = "cert-mounter-blueprint"
+  name         = var.helm_release_name
   repository   = "https://pagopa.github.io/aks-helm-cert-mounter-blueprint"
   chart        = "cert-mounter-blueprint"
   version      = local.chart_version
