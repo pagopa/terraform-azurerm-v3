@@ -46,6 +46,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_cert_mounter_chart_version"></a> [cert\_mounter\_chart\_version](#input\_cert\_mounter\_chart\_version) | (Optional) Cert mounter chart version | `string` | `"2.0.1"` | no |
 | <a name="input_certificate_name"></a> [certificate\_name](#input\_certificate\_name) | (Required) Name of the certificate stored in the keyvault, that will be installed as a secret in aks | `string` | n/a | yes |
+| <a name="input_helm_release_name"></a> [helm\_release\_name](#input\_helm\_release\_name) | (Optional) Cert Mounter release name. Changed this field force the helm destroy and re-install | `string` | `"cert-mounter-blueprint"` | no |
 | <a name="input_kv_name"></a> [kv\_name](#input\_kv\_name) | (Required) Key vault name where to retrieve the certificate | `string` | n/a | yes |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | (Required) Namespace where the cert secret will be created | `string` | n/a | yes |
 | <a name="input_pod_cpu"></a> [pod\_cpu](#input\_pod\_cpu) | Pod request and limit for CPU (in `m`) | `number` | `10` | no |

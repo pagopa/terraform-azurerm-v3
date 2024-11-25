@@ -3,9 +3,9 @@ locals {
 }
 
 variable "helm_release_name" {
-  type = string
+  type        = string
   description = "(Optional) Cert Mounter release name. Changed this field force the helm destroy and re-install"
-  default = "cert-mounter-blueprint"
+  default     = "cert-mounter-blueprint"
 }
 
 variable "namespace" {
