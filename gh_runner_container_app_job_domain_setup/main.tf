@@ -44,8 +44,7 @@ module "container_app_job" {
 
 # create a module for each 20 repos
 module "identity_cd" {
-  source = "github.com/pagopa/terraform-azurerm-v3//github_federated_identity?ref=v8.22.0"
-  # pagopa-<ENV><DOMAIN>-<COUNTER>-github-<PERMS>-identity
+  source    = "github.com/pagopa/terraform-azurerm-v3//github_federated_identity?ref=v8.22.0"
   prefix    = var.prefix
   env_short = var.env_short
   domain    = "${var.domain_name}-${var.gh_identity_suffix}"

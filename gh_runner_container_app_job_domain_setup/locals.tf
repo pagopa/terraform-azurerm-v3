@@ -18,6 +18,7 @@ locals {
 
   custom_permissions = { for perm in var.custom_rg_permissions : perm.rg_name => perm.permissions }
 
+  function_deploy_permission = var.function_deploy.enabled ? { for rg in var.function_deploy.function_rg : rg => ["Contributor"] } : {}
 
   # to avoid subscription Contributor -> https://github.com/microsoft/azure-container-apps/issues/35
   environment_cd_roles = {
@@ -26,7 +27,6 @@ locals {
     ]
     resource_groups = merge(
       {
-        # TODO pèacchetto permission per function
         "${data.azurerm_resource_group.gh_runner_rg.name}" = [
           "Key Vault Reader"
         ],
@@ -35,7 +35,8 @@ locals {
         ]
       },
       local.aks_rg_permission,
-      local.custom_permissions
+      local.custom_permissions,
+      local.function_deploy_permission
     )
   }
 }

@@ -171,17 +171,21 @@ variable "gh_identity_suffix" {
 
 variable "kubernetes_deploy" {
   type = object({
-    enabled      = optional(bool, false)
-    namespaces    = optional(list(string), [])
+    # enables the permission handling for AKS deploy
+    enabled = optional(bool, false)
+    # list of namespaces where this identity will be able to operate
+    namespaces = optional(list(string), [])
+    # AKS cluster name
     cluster_name = optional(string, "")
-    rg           = optional(string, "")
+    # AKS cluster rg name
+    rg = optional(string, "")
   })
 
   description = "(Optional) Enables and specifies the kubernetes deply permissions"
 
   default = {
     enabled      = false
-    namespaces    = []
+    namespaces   = []
     cluster_name = ""
     rg           = ""
   }
@@ -203,23 +207,34 @@ variable "kubernetes_deploy" {
 
 variable "function_deploy" {
   type = object({
+    # enables the permission handdling for azure function deploy
     enabled = optional(bool, false)
+    # list of function resource group names
+    function_rg = optional(list(string), [])
   })
   description = "(Optional) Enables and specifies the function app deploy permissions"
   default = {
-    enabled = false
+    enabled     = false
+    function_rg = []
+  }
+
+  validation {
+    condition     = var.function_deploy.enabled ? length(var.function_deploy.function_rg) > 0 : true
+    error_message = "Function rg not defined"
   }
 }
 
 variable "custom_rg_permissions" {
   type = list(object({
-    rg_name     = string       #name of the resource group on which the permissions are given
-    permissions = list(string) # list of permission assigned on with rg_name scope
+    # name of the resource group on which the permissions are given
+    rg_name = string
+    # list of permission assigned on with rg_name scope
+    permissions = list(string)
   }))
   description = "(Optional) List of resource group permission assigned to the job identity"
   default     = []
 
- validation {
+  validation {
     condition = alltrue([
       for p in var.custom_rg_permissions : (length(p.rg_name) > 0)
     ])
