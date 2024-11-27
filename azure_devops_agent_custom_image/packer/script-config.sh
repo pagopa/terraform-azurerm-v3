@@ -93,6 +93,14 @@ sudo mv temporal /usr/bin/temporal
 
 check_command "temporal"
 
+### ARGOCD
+ARGOCD_VERSION=2.13.1
+wget https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-amd64 && \
+chmod +x argocd-linux-amd64 && \
+sudo mv argocd-linux-amd64 /usr/bin/argocd
+
+check_command "argocd"
+
 ### prepare machine for k6 large load test
 sysctl -w net.ipv4.ip_local_port_range="1024 65535"
 sysctl -w net.ipv4.tcp_tw_reuse=1
