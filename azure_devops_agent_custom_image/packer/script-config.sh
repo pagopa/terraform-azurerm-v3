@@ -24,14 +24,14 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 check_command "az"
 
 ### HELM
-az acr helm install-cli -y --client-version 3.14.2
+az acr helm install-cli -y --client-version 3.16.3
 
 check_command "helm"
 
 ### KUBECTL
 # https://kubernetes.io/releases/
 # https://github.com/Azure/kubelogin/releases
-az aks install-cli --client-version 1.29.7 --kubelogin-version 0.1.4
+az aks install-cli --client-version 1.29.11 --kubelogin-version 0.1.4
 
 check_command "kubectl"
 check_command "kubelogin"
@@ -55,7 +55,7 @@ apt-get -y --allow-unauthenticated install docker-ce docker-ce-cli containerd.io
 check_command "docker"
 
 ### YQ from https://github.com/mikefarah/yq#install
-YQ_VERSION="v4.43.1"
+YQ_VERSION="v4.44.5"
 YQ_BINARY="yq_linux_amd64"
 wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY}.tar.gz -O - |\
   tar xz && mv ${YQ_BINARY} /usr/bin/yq
@@ -63,7 +63,7 @@ wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY
 check_command "yq"
 
 ### SOPS from https://github.com/mozilla/sops
-SOPS_VERSION="3.9.0"
+SOPS_VERSION="3.9.1"
 wget "https://github.com/mozilla/sops/releases/download/v${SOPS_VERSION}/sops_${SOPS_VERSION}_amd64.deb"
 apt install -y "$PWD/sops_${SOPS_VERSION}_amd64.deb"
 
@@ -100,6 +100,32 @@ chmod +x argocd-linux-amd64 && \
 sudo mv argocd-linux-amd64 /usr/bin/argocd
 
 check_command "argocd"
+
+### NodeJS 20.x
+if [ -f /usr/share/keyrings/nodesource.gpg ]; then
+    echo "Removing existing NodeSource GPG key..."
+    rm -f /usr/share/keyrings/nodesource.gpg
+fi
+
+if [ -f /etc/apt/sources.list.d/nodesource.list ]; then
+    echo "Removing existing NodeSource repository configuration..."
+    rm -f /etc/apt/sources.list.d/nodesource.list
+fi
+
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | \
+    gpg --dearmor -o /usr/share/keyrings/nodesource.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | \
+    tee /etc/apt/sources.list.d/nodesource.list > /dev/null
+
+apt-get update
+apt-get install -y nodejs
+
+check_command "node"
+check_command "npm"
+
+echo "Node.js version: $(node --version)"
+echo "npm version: $(npm --version)"
 
 ### prepare machine for k6 large load test
 sysctl -w net.ipv4.ip_local_port_range="1024 65535"
