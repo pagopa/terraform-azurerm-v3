@@ -85,6 +85,13 @@ sudo apt-get install -y packer
 
 check_command "packer"
 
+### TEMPORAL
+TEMPORAL_VERSION=1.1.2
+wget https://github.com/temporalio/cli/releases/download/v${TEMPORAL_VERSION}/temporal_cli_${TEMPORAL_VERSION}_linux_amd64.tar.gz && \
+tar -zxvf temporal_cli_${TEMPORAL_VERSION}_linux_amd64.tar.gz && \
+sudo mv temporal /usr/bin/temporal
+
+check_command "temporal"
 
 ### prepare machine for k6 large load test
 sysctl -w net.ipv4.ip_local_port_range="1024 65535"
