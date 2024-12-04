@@ -74,7 +74,11 @@ variable "sku_name" {
   description = "The SKU Name for the PostgreSQL Flexible Server. The name of the SKU, follows the tier + name pattern (e.g. B_Standard_B1ms, GP_Standard_D2s_v3, MO_Standard_E4s_v3)."
 }
 
-
+variable "storage_mb" {
+  type        = number
+  description = "The max storage allowed for the PostgreSQL Flexible Server. Possible values are 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, and 33554432."
+  default     = null
+}
 
 
 variable "zone" {
