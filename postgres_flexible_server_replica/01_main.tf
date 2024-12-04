@@ -20,8 +20,8 @@ resource "azurerm_postgresql_flexible_server" "this" {
   #  private_dns_zobe_id will be required when setting a delegated_subnet_id
   private_dns_zone_id = var.private_endpoint_enabled ? var.private_dns_zone_id : null
 
-  sku_name = var.sku_name
-  storage_mb = var.storage_mb
+  sku_name         = var.sku_name
+  storage_mb       = var.storage_mb
   source_server_id = var.source_server_id
 
   dynamic "high_availability" {
