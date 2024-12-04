@@ -9,6 +9,7 @@ resource "azurerm_application_gateway" "this" {
   resource_group_name = var.resource_group_name
   location            = var.location
   zones               = var.zones
+  firewall_policy_id  = var.firewall_policy_id
 
   sku {
     name = var.sku_name
