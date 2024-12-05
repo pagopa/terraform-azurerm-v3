@@ -209,26 +209,6 @@ variable "kubernetes_deploy" {
   }
 }
 
-
-variable "function_deploy" {
-  type = object({
-    # enables the permission handdling for azure function deploy
-    enabled = optional(bool, false)
-    # list of function resource group names
-    function_rg = optional(list(string), [])
-  })
-  description = "(Optional) Enables and specifies the function app deploy permissions"
-  default = {
-    enabled     = false
-    function_rg = []
-  }
-
-  validation {
-    condition     = var.function_deploy.enabled ? length(var.function_deploy.function_rg) > 0 : true
-    error_message = "Function rg not defined"
-  }
-}
-
 variable "custom_rg_permissions" {
   type = list(object({
     # name of the resource group on which the permissions are given
@@ -259,4 +239,9 @@ variable "custom_rg_permissions" {
 variable "domain_name" {
   type        = string
   description = "(Required) Domain name for the configured repositories"
+}
+
+variable "domain_security_rg_name" {
+  type        = string
+  description = "(Optional) Security rg name for the domain"
 }
