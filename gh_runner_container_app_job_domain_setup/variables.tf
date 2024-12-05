@@ -40,6 +40,11 @@ variable "env_short" {
   }
 }
 
+variable "gh_env" {
+  type        = string
+  description = "Github environment name"
+}
+
 variable "environment_name" {
   type        = string
   description = "(Required) Container App Environment configuration (Log Analytics Workspace)"
