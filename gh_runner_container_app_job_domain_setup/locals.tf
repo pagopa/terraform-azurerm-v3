@@ -17,13 +17,11 @@ locals {
   } : {}
 
   custom_permissions = { for perm in var.custom_rg_permissions : perm.rg_name => perm.permissions }
+  domain_sec_rg_name = var.domain_security_rg_name == null ? "${var.prefix}-${var.domain_name}-sec-rg" : var.domain_security_rg_name
 
-  function_deploy_permission = var.function_deploy.enabled ? { for rg in var.function_deploy.function_rg : rg => ["Contributor"] } : {}
-
-  # to avoid subscription Contributor -> https://github.com/microsoft/azure-container-apps/issues/35
   environment_cd_roles = {
     subscription = [
-      "Reader"
+      "Contributor"
     ]
     resource_groups = merge(
       {
@@ -32,11 +30,13 @@ locals {
         ],
         "${data.azurerm_resource_group.gh_runner_rg.name}" = [
           "Reader"
+        ],
+        "${local.domain_sec_rg_name}" = [
+          "Key Vault Reader"
         ]
       },
       local.aks_rg_permission,
       local.custom_permissions,
-      local.function_deploy_permission
     )
   }
 }

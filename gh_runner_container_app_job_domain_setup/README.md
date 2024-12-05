@@ -47,12 +47,6 @@ module "gh_runner_job" {
     rg           = "${local.product}-${var.location_short}-${var.instance}-aks-rg"
   }
   
-  # optional
-  function_deploy = {
-    enabled      = true
-    function_rg  = ["<rg name 1>", "<rg name 2>"]
-  }
-  
   #optional
   custom_rg_permissions = [
     {
@@ -112,10 +106,10 @@ This module provides the appropriate permissions to the GH runner identity to de
 | <a name="input_container"></a> [container](#input\_container) | Job Container configuration | <pre>object({<br/>    cpu    = number<br/>    memory = string<br/>    image  = string<br/>  })</pre> | <pre>{<br/>  "cpu": 0.5,<br/>  "image": "ghcr.io/pagopa/github-self-hosted-runner-azure:latest",<br/>  "memory": "1Gi"<br/>}</pre> | no |
 | <a name="input_custom_rg_permissions"></a> [custom\_rg\_permissions](#input\_custom\_rg\_permissions) | (Optional) List of resource group permission assigned to the job identity | <pre>list(object({<br/>    # name of the resource group on which the permissions are given<br/>    rg_name = string<br/>    # list of permission assigned on with rg_name scope<br/>    permissions = list(string)<br/>  }))</pre> | `[]` | no |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | (Required) Domain name for the configured repositories | `string` | n/a | yes |
+| <a name="input_domain_security_rg_name"></a> [domain\_security\_rg\_name](#input\_domain\_security\_rg\_name) | (Optional) Security rg name for the domain. defaults to prefix-domain-sec-rg | `string` | `null` | no |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
 | <a name="input_environment_name"></a> [environment\_name](#input\_environment\_name) | (Required) Container App Environment configuration (Log Analytics Workspace) | `string` | n/a | yes |
 | <a name="input_environment_rg"></a> [environment\_rg](#input\_environment\_rg) | (Required) Container App Environment configuration (Log Analytics Workspace) | `string` | n/a | yes |
-| <a name="input_function_deploy"></a> [function\_deploy](#input\_function\_deploy) | (Optional) Enables and specifies the function app deploy permissions | <pre>object({<br/>    # enables the permission handdling for azure function deploy<br/>    enabled = optional(bool, false)<br/>    # list of function resource group names<br/>    function_rg = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "enabled": false,<br/>  "function_rg": []<br/>}</pre> | no |
 | <a name="input_gh_env"></a> [gh\_env](#input\_gh\_env) | Github environment name | `string` | n/a | yes |
 | <a name="input_gh_identity_suffix"></a> [gh\_identity\_suffix](#input\_gh\_identity\_suffix) | (Optional) Suffix used in the gh identity name. Necessary to distinguish the identities when more than 20 repos are used | `string` | `"01"` | no |
 | <a name="input_gh_repositories"></a> [gh\_repositories](#input\_gh\_repositories) | (Required) List of gh repository names and short names on which the managed identity will have permission. Max 20 repos. All repos must belong to the same organization, check `job_meta` variable | <pre>list(object({<br/>    name       = string<br/>    short_name = string<br/>  }))</pre> | n/a | yes |
