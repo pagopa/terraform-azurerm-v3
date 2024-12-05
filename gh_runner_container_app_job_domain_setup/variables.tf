@@ -243,6 +243,5 @@ variable "domain_name" {
 
 variable "domain_security_rg_name" {
   type        = string
-  description = "(Optional) Security rg name for the domain. defaults to prefix-domain-sec-rg"
-  default     = null
+  description = "(Optional) Security rg name for the domain"
 }

@@ -17,7 +17,12 @@ locals {
   } : {}
 
   custom_permissions = { for perm in var.custom_rg_permissions : perm.rg_name => perm.permissions }
-  domain_sec_rg_name = var.domain_security_rg_name == null ? "${var.prefix}-${var.env_short}-${var.domain_name}-sec-rg" : var.domain_security_rg_name
+  domain_sec_rg_permission = var.domain_security_rg_name != null ? {
+    "${var.domain_security_rg_name}" = [
+      "Key Vault Reader"
+    ]
+  } : {}
+
 
   environment_cd_roles = {
     subscription = [
@@ -30,13 +35,11 @@ locals {
         ],
         "${data.azurerm_resource_group.gh_runner_rg.name}" = [
           "Reader"
-        ],
-        "${local.domain_sec_rg_name}" = [
-          "Key Vault Reader"
         ]
       },
       local.aks_rg_permission,
       local.custom_permissions,
+      local.domain_sec_rg_permission
     )
   }
 }
