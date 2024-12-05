@@ -17,7 +17,7 @@ locals {
   } : {}
 
   custom_permissions = { for perm in var.custom_rg_permissions : perm.rg_name => perm.permissions }
-  domain_sec_rg_name = var.domain_security_rg_name == null ? "${var.prefix}-${var.domain_name}-sec-rg" : var.domain_security_rg_name
+  domain_sec_rg_name = var.domain_security_rg_name == null ? "${var.prefix}-${var.env_short}-${var.domain_name}-sec-rg" : var.domain_security_rg_name
 
   environment_cd_roles = {
     subscription = [
