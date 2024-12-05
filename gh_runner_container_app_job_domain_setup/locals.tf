@@ -5,7 +5,7 @@ locals {
   federations = [
     for repo in var.gh_repositories : {
       repository = repo.name
-      subject    = "github-${var.environment_name}"
+      subject    = var.gh_env
     }
   ]
 
