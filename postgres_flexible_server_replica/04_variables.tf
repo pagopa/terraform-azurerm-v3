@@ -96,6 +96,18 @@ variable "pgbouncer_enabled" {
   description = "Is PgBouncer enabled into configurations?"
 }
 
+variable "max_connections" {
+  type        = number
+  description = "The max number of connections allowed for the PostgreSQL Flexible Server. Possible values depends on sku (https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-limits#maximum-connections)."
+  default     = null
+}
+
+variable "max_worker_process" {
+  type        = number
+  description = "The max number of background processes that the PostgreSQL Flexible Server can support. https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-logical."
+  default     = null
+}
+
 
 #
 # Monitoring & Alert

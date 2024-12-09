@@ -20,6 +20,9 @@ resource "azurerm_postgresql_flexible_server" "this" {
   #  private_dns_zobe_id will be required when setting a delegated_subnet_id
   private_dns_zone_id = var.private_endpoint_enabled ? var.private_dns_zone_id : null
 
+  # public_network_access_enabled must be set to false when delegated_subnet_id and private_dns_zone_id have a value.
+  public_network_access_enabled = var.private_endpoint_enabled ? false : true
+
   sku_name         = var.sku_name
   storage_mb       = var.storage_mb
   source_server_id = var.source_server_id
@@ -56,5 +59,21 @@ resource "azurerm_postgresql_flexible_server_configuration" "pgbouncer_enabled" 
   name      = "pgbouncer.enabled"
   server_id = azurerm_postgresql_flexible_server.this.id
   value     = "True"
+}
+
+resource "azurerm_postgresql_flexible_server_configuration" "max_connection" {
+  count = var.max_connections != null ? 1 : 0
+
+  name      = "max_connections"
+  server_id = azurerm_postgresql_flexible_server.this.id
+  value     = var.max_connections
+}
+
+resource "azurerm_postgresql_flexible_server_configuration" "max_worker_process" {
+  count = var.max_worker_process != null ? 1 : 0
+
+  name      = "max_worker_processes"
+  server_id = azurerm_postgresql_flexible_server.this.id
+  value     = var.max_worker_process
 }
 
