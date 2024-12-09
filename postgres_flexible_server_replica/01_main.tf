@@ -62,7 +62,7 @@ resource "azurerm_postgresql_flexible_server_configuration" "pgbouncer_enabled" 
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "max_connection" {
-  count = var.max_connections > 0 ? 1 : 0
+  count = var.max_connections != null ? 1 : 0
 
   name      = "max_connections"
   server_id = azurerm_postgresql_flexible_server.this.id
@@ -70,7 +70,7 @@ resource "azurerm_postgresql_flexible_server_configuration" "max_connection" {
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "max_worker_process" {
-  count = var.max_worker_process > 0 ? 1 : 0
+  count = var.max_worker_process != null ? 1 : 0
 
   name      = "max_worker_processes"
   server_id = azurerm_postgresql_flexible_server.this.id
