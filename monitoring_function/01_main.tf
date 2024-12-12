@@ -12,7 +12,7 @@ data "azurerm_application_insights" "app_insight" {
 }
 
 module "synthetic_monitoring_storage_account" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.16.0"
+  source = "../storage_account"
 
   name                            = "${local.sa_prefix}synthmon"
   account_kind                    = var.storage_account_settings.kind
@@ -46,32 +46,14 @@ resource "azurerm_storage_table" "table_storage" {
 }
 
 locals {
-  decoded_configuration = jsondecode(var.monitoring_configuration_encoded)
-  monitoring_configuration = { for c in local.decoded_configuration: "${c.appName}-${c.apiName}-${c.type}" => c}
+  decoded_configuration    = jsondecode(var.monitoring_configuration_encoded)
+  monitoring_configuration = { for c in local.decoded_configuration : "${c.appName}-${c.apiName}-${c.type}" => c }
 }
 
 resource "azurerm_storage_table_entity" "monitoring_configuration" {
-  # count                = length(local.decoded_configuration)
-  for_each = local.monitoring_configuration
-  # storage_account_name = module.synthetic_monitoring_storage_account.name
-  # table_name           = azurerm_storage_table.table_storage.name
-  storage_table_id     = azurerm_storage_table.table_storage.id
+  for_each         = local.monitoring_configuration
+  storage_table_id = azurerm_storage_table.table_storage.id
 
-  # partition_key = "${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"
-  # row_key       = local.decoded_configuration[count.index].type
-  # entity = {
-  #   "url"                 = local.decoded_configuration[count.index].url,
-  #   "type"                = local.decoded_configuration[count.index].type,
-  #   "checkCertificate"    = local.decoded_configuration[count.index].checkCertificate,
-  #   "method"              = local.decoded_configuration[count.index].method,
-  #   "expectedCodes"       = jsonencode(local.decoded_configuration[count.index].expectedCodes),
-  #   "durationLimit"       = lookup(local.decoded_configuration[count.index], "durationLimit", null) != null ? local.decoded_configuration[count.index].durationLimit : var.job_settings.default_duration_limit,
-  #   "headers"             = lookup(local.decoded_configuration[count.index], "headers", null) != null ? jsonencode(local.decoded_configuration[count.index].headers) : null,
-  #   "body"                = lookup(local.decoded_configuration[count.index], "body", null) != null ? jsonencode(local.decoded_configuration[count.index].body) : null
-  #   "tags"                = lookup(local.decoded_configuration[count.index], "tags", null) != null ? jsonencode(local.decoded_configuration[count.index].tags) : null
-  #   "bodyCompareStrategy" = lookup(local.decoded_configuration[count.index], "bodyCompareStrategy", null) != null ? local.decoded_configuration[count.index].bodyCompareStrategy : null
-  #   "expectedBody"        = lookup(local.decoded_configuration[count.index], "expectedBody", null) != null ? jsonencode(local.decoded_configuration[count.index].expectedBody) : null
-  # }
 
   partition_key = "${each.value.appName}-${each.value.apiName}"
   row_key       = each.value.type
@@ -293,7 +275,6 @@ locals {
 
 
 resource "azurerm_monitor_metric_alert" "alert" {
-  # count = length(local.decoded_configuration)
   for_each = local.monitoring_configuration
 
   name                = "availability-${each.value.appName}-${each.value.apiName}-${each.value.type}"
