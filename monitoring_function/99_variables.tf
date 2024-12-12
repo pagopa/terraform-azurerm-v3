@@ -110,6 +110,14 @@ variable "application_insights_action_group_ids" {
 variable "monitoring_configuration_encoded" {
   type        = string
   description = "(Required) monitoring configuration provided in JSON string format (use jsonencode)"
+
+
+
+  validation {
+     condition = allfalse([
+      for c in jsondecode(var.monitoring_configuration_encoded) : (strcontains(c.apiName, "-") && strcontains(c.appName, "-"))
+    ])
+  }
 }
 
 
