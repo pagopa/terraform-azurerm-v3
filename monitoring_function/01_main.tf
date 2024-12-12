@@ -12,7 +12,7 @@ data "azurerm_application_insights" "app_insight" {
 }
 
 module "synthetic_monitoring_storage_account" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.16.0"
+  source = "../storage_account"
 
   name                            = "${local.sa_prefix}synthmon"
   account_kind                    = var.storage_account_settings.kind
@@ -46,28 +46,29 @@ resource "azurerm_storage_table" "table_storage" {
 }
 
 locals {
-  decoded_configuration = jsondecode(var.monitoring_configuration_encoded)
+  decoded_configuration    = jsondecode(var.monitoring_configuration_encoded)
+  monitoring_configuration = { for c in local.decoded_configuration : "${c.appName}-${c.apiName}-${c.type}" => c }
 }
 
 resource "azurerm_storage_table_entity" "monitoring_configuration" {
-  count                = length(local.decoded_configuration)
-  storage_account_name = module.synthetic_monitoring_storage_account.name
-  table_name           = azurerm_storage_table.table_storage.name
+  for_each         = local.monitoring_configuration
+  storage_table_id = azurerm_storage_table.table_storage.id
 
-  partition_key = "${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"
-  row_key       = local.decoded_configuration[count.index].type
+
+  partition_key = "${each.value.appName}-${each.value.apiName}"
+  row_key       = each.value.type
   entity = {
-    "url"                 = local.decoded_configuration[count.index].url,
-    "type"                = local.decoded_configuration[count.index].type,
-    "checkCertificate"    = local.decoded_configuration[count.index].checkCertificate,
-    "method"              = local.decoded_configuration[count.index].method,
-    "expectedCodes"       = jsonencode(local.decoded_configuration[count.index].expectedCodes),
-    "durationLimit"       = lookup(local.decoded_configuration[count.index], "durationLimit", null) != null ? local.decoded_configuration[count.index].durationLimit : var.job_settings.default_duration_limit,
-    "headers"             = lookup(local.decoded_configuration[count.index], "headers", null) != null ? jsonencode(local.decoded_configuration[count.index].headers) : null,
-    "body"                = lookup(local.decoded_configuration[count.index], "body", null) != null ? jsonencode(local.decoded_configuration[count.index].body) : null
-    "tags"                = lookup(local.decoded_configuration[count.index], "tags", null) != null ? jsonencode(local.decoded_configuration[count.index].tags) : null
-    "bodyCompareStrategy" = lookup(local.decoded_configuration[count.index], "bodyCompareStrategy", null) != null ? local.decoded_configuration[count.index].bodyCompareStrategy : null
-    "expectedBody"        = lookup(local.decoded_configuration[count.index], "expectedBody", null) != null ? jsonencode(local.decoded_configuration[count.index].expectedBody) : null
+    "url"                 = each.value.url,
+    "type"                = each.value.type,
+    "checkCertificate"    = each.value.checkCertificate,
+    "method"              = each.value.method,
+    "expectedCodes"       = jsonencode(each.value.expectedCodes),
+    "durationLimit"       = lookup(each.value, "durationLimit", null) != null ? each.value.durationLimit : var.job_settings.default_duration_limit,
+    "headers"             = lookup(each.value, "headers", null) != null ? jsonencode(each.value.headers) : null,
+    "body"                = lookup(each.value, "body", null) != null ? jsonencode(each.value.body) : null
+    "tags"                = lookup(each.value, "tags", null) != null ? jsonencode(each.value.tags) : null
+    "bodyCompareStrategy" = lookup(each.value, "bodyCompareStrategy", null) != null ? each.value.bodyCompareStrategy : null
+    "expectedBody"        = lookup(each.value, "expectedBody", null) != null ? jsonencode(each.value.expectedBody) : null
   }
 }
 
@@ -274,40 +275,40 @@ locals {
 
 
 resource "azurerm_monitor_metric_alert" "alert" {
-  count = length(local.decoded_configuration)
+  for_each = local.monitoring_configuration
 
-  name                = "availability-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}-${local.decoded_configuration[count.index].type}"
+  name                = "availability-${each.value.appName}-${each.value.apiName}-${each.value.type}"
   resource_group_name = var.resource_group_name
   scopes              = [data.azurerm_application_insights.app_insight.id]
-  description         = "Monitors the availability of ${local.decoded_configuration[count.index].appName} ${local.decoded_configuration[count.index].apiName} from ${local.decoded_configuration[count.index].type}"
-  severity            = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "severity", local.default_alert_configuration.severity)
-  frequency           = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "frequency", local.default_alert_configuration.frequency)
-  auto_mitigate       = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "auto_mitigate", local.default_alert_configuration.auto_mitigate)
-  enabled             = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "enabled", local.default_alert_configuration.enabled)
+  description         = "Monitors the availability of ${each.value.appName} ${each.value.apiName} from ${each.value.type}"
+  severity            = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "severity", local.default_alert_configuration.severity)
+  frequency           = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "frequency", local.default_alert_configuration.frequency)
+  auto_mitigate       = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "auto_mitigate", local.default_alert_configuration.auto_mitigate)
+  enabled             = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "enabled", local.default_alert_configuration.enabled)
 
   criteria {
-    aggregation      = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "aggregation", local.default_alert_configuration.aggregation)
+    aggregation      = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "aggregation", local.default_alert_configuration.aggregation)
     metric_name      = "availabilityResults/availabilityPercentage"
     metric_namespace = "microsoft.insights/components"
-    operator         = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "operator", local.default_alert_configuration.operator)
-    threshold        = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "threshold", local.default_alert_configuration.threshold)
+    operator         = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "operator", local.default_alert_configuration.operator)
+    threshold        = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "threshold", local.default_alert_configuration.threshold)
     dimension {
       name     = "availabilityResult/name"
       operator = "Include"
       values = [
-        "${var.job_settings.availability_prefix}-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"
+        "${var.job_settings.availability_prefix}-${each.value.appName}-${each.value.apiName}"
       ]
     }
     dimension {
       name     = "availabilityResult/location"
       operator = "Include"
-      values   = [local.decoded_configuration[count.index].type]
+      values   = [each.value.type]
     }
   }
 
 
   dynamic "action" {
-    for_each = concat(var.application_insights_action_group_ids, lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "customActionGroupIds", local.default_custom_action_groups))
+    for_each = concat(var.application_insights_action_group_ids, lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "customActionGroupIds", local.default_custom_action_groups))
 
     content {
       action_group_id = action.value
