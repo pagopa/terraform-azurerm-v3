@@ -74,7 +74,7 @@ resource "azurerm_storage_table_entity" "monitoring_configuration" {
   # }
 
   partition_key = "${each.value.appName}-${each.value.apiName}"
-  row_key       = local.decoded_configuration[count.index].type
+  row_key       = each.value.type
   entity = {
     "url"                 = each.value.url,
     "type"                = each.value.type,
