@@ -114,9 +114,10 @@ variable "monitoring_configuration_encoded" {
 
 
   validation {
-     condition = allfalse([
+    condition = allfalse([
       for c in jsondecode(var.monitoring_configuration_encoded) : (strcontains(c.apiName, "-") && strcontains(c.appName, "-"))
     ])
+    error_message = "apiName and appName must not contain '-' symbol"
   }
 }
 
