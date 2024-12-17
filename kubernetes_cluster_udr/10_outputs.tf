@@ -30,3 +30,8 @@ output "managed_resource_group_name" {
   value       = azurerm_kubernetes_cluster.this.node_resource_group
   description = " The auto-generated Resource Group which contains the resources for this Managed Kubernetes Cluster."
 }
+
+output "managed_private_dns_zone_name" {
+  value       = local.managed_private_dns_zone_name
+  description = "The managed private dns zone name for the Kubernetes Cluster when private link has been enabled. Derived from private_fqdn"
+}

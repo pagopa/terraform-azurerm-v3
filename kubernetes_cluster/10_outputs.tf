@@ -16,6 +16,11 @@ output "private_fqdn" {
   description = "The FQDN for the Kubernetes Cluster when private link has been enabled, which is only resolvable inside the Virtual Network used by the Kubernetes Cluster."
 }
 
+output "managed_private_dns_zone_name" {
+  value       = local.managed_private_dns_zone_name
+  description = "The managed private dns zone name for the Kubernetes Cluster when private link has been enabled. Derived from private_fqdn"
+}
+
 output "kubelet_identity_id" {
   value       = azurerm_kubernetes_cluster.this.kubelet_identity[0].object_id
   description = "The Object ID of the user-defined Managed Identity assigned to the Kubelets.If not specified a Managed Identity is created automatically. Changing this forces a new resource to be created."

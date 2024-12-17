@@ -22,7 +22,7 @@ module "vmss" {
 
 ```
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -71,4 +71,4 @@ No modules.
 |------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | n/a |
 | <a name="output_unique_id"></a> [unique\_id](#output\_unique\_id) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

@@ -13,5 +13,19 @@ keyvault:
 serviceAccount:
   name: ${SERVICE_ACCOUNT_NAME}
 
+resources:
+  # -- request is mandatory
+  requests:
+    # -- memory
+    memory: "${POD_RAM}Mi"
+    # -- cpu
+    cpu: "${POD_CPU}m"
+  # -- limits is mandatory
+  limits:
+    # -- memory
+    memory: "${POD_RAM}Mi"
+    # -- cpu
+    cpu: "${POD_CPU}m"
+
 azure:
   workloadIdentityClientId: ${WORKLOAD_IDENTITY_CLIENT_ID}

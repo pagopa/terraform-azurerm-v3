@@ -33,7 +33,7 @@ module "workload_identity" {
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -95,4 +95,4 @@ No modules.
 | <a name="output_workload_identity_principal_id"></a> [workload\_identity\_principal\_id](#output\_workload\_identity\_principal\_id) | n/a |
 | <a name="output_workload_identity_service_account_name"></a> [workload\_identity\_service\_account\_name](#output\_workload\_identity\_service\_account\_name) | n/a |
 | <a name="output_workload_identity_service_account_namespace"></a> [workload\_identity\_service\_account\_namespace](#output\_workload\_identity\_service\_account\_namespace) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

@@ -4,7 +4,7 @@ data "azurerm_resource_group" "identity_rg" {
 
 resource "azurerm_user_assigned_identity" "identity" {
   resource_group_name = data.azurerm_resource_group.identity_rg.name
-  location            = data.azurerm_resource_group.identity_rg.location
+  location            = var.location == null ? data.azurerm_resource_group.identity_rg.location : var.location
   name                = local.identity_name
 
   tags = var.tags

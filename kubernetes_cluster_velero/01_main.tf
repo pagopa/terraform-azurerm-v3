@@ -68,7 +68,7 @@ module "velero_workload_identity" {
 
   aks_name                              = var.aks_cluster_name
   aks_resource_group_name               = var.aks_cluster_rg
-  namespace                             = "velero"
+  namespace                             = var.namespace_name
   workload_identity_name                = var.workload_identity_name
   workload_identity_resource_group_name = var.workload_identity_resource_group_name
 
@@ -90,7 +90,7 @@ resource "kubernetes_cluster_role_binding" "velero_binding" {
   }
 
   subject {
-    namespace = "velero"
+    namespace = var.namespace_name
     kind      = "ServiceAccount"
     name      = var.workload_identity_name
   }

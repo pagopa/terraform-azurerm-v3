@@ -30,7 +30,7 @@ module "grafana_managed" {
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -74,4 +74,4 @@ No modules.
 | <a name="output_outbound_ip"></a> [outbound\_ip](#output\_outbound\_ip) | n/a |
 | <a name="output_principal_id"></a> [principal\_id](#output\_principal\_id) | n/a |
 | <a name="output_version"></a> [version](#output\_version) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
