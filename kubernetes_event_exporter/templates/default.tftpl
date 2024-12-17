@@ -50,5 +50,5 @@ config:
           - type: "Normal"
         match:
           - kind: "Pod|Deployment|ReplicaSet"
-            receiver: "alert"
+            receiver: "${opsgenie_receiver_name}"
       %{ endif }
