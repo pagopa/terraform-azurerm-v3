@@ -280,7 +280,7 @@ resource "azurerm_monitor_metric_alert" "alert" {
   name                = "availability-${each.value.appName}-${each.value.apiName}-${each.value.type}"
   resource_group_name = var.resource_group_name
   scopes              = [data.azurerm_application_insights.app_insight.id]
-  description         = "Monitors the availability of ${each.value.appName} ${each.value.apiName} from ${each.value.type}"
+  description         = "Availability of ${each.value.appName} ${each.value.apiName} from ${each.value.type} degraded"
   severity            = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "severity", local.default_alert_configuration.severity)
   frequency           = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "frequency", local.default_alert_configuration.frequency)
   auto_mitigate       = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "auto_mitigate", local.default_alert_configuration.auto_mitigate)
