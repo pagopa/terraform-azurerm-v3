@@ -4,9 +4,10 @@ resource "azurerm_cosmosdb_account" "this" {
   resource_group_name       = var.resource_group_name
   offer_type                = var.offer_type
   kind                      = var.kind
-  enable_free_tier          = var.enable_free_tier
-  enable_automatic_failover = var.enable_automatic_failover
+  free_tier_enabled          = var.enable_free_tier
+  automatic_failover_enabled = var.enable_automatic_failover
   key_vault_key_id          = var.key_vault_key_id
+  burst_capacity_enabled    = var.burst_capacity_enabled
 
   mongo_server_version = var.mongo_server_version
 
