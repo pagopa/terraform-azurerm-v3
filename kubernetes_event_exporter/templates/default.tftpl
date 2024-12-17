@@ -22,8 +22,8 @@ config:
     - name: "${opsgenie_receiver_name}"
       opsgenie:
         apiKey: "${opsgenie_api_key}"
-        priority: "P3"
-        message: "Event {{ .Reason }} for {{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }} on K8s cluster"
+        priority: "P2"
+        message: "[INFRA-pagoPa][AKS Sev1] {{ .Reason }} for {{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }} on K8s cluster"
         alias: "{{ .UID }}"
         description: "<pre>{{ toPrettyJson . }}</pre>"
         tags:
