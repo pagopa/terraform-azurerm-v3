@@ -253,3 +253,10 @@ variable "action" {
   ))
   default = []
 }
+
+
+variable "burst_capacity_enabled" {
+  type        = bool
+  description = "(Optional) Enable burst capacity for this Cosmos DB account. Defaults to false."
+  default     = false
+}
