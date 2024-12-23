@@ -1,0 +1,91 @@
+variable "prefix" {
+  type    = string
+  default = "cstar"
+  validation {
+    condition = (
+      length(var.prefix) <= 6
+    )
+    error_message = "Max length is 6 chars."
+  }
+}
+
+variable "env" {
+  type = string
+  validation {
+    condition = (
+      length(var.env) <= 3
+    )
+    error_message = "Max length is 3 chars."
+  }
+}
+
+variable "env_short" {
+  type = string
+  validation {
+    condition = (
+      length(var.env_short) <= 1
+    )
+    error_message = "Max length is 1 chars."
+  }
+}
+
+variable "location" {
+  type = string
+}
+
+variable "location_short" {
+  type        = string
+  description = "Location short like eg: weu, weu.."
+}
+
+variable "domain" {
+  type = string
+  validation {
+    condition = (
+      length(var.domain) <= 12
+    )
+    error_message = "Max length is 12 chars."
+  }
+}
+
+
+# AKS Variables
+###################
+
+variable "aks_name" {
+  type        = string
+  description = "(Required) Name of AKS cluster in Azure"
+}
+
+variable "aks_rg_name" {
+  type        = string
+  description = "(Required) Name of AKS cluster resource group in Azure"
+}
+
+variable "kubernetes_namespace" {
+  type    = string
+  default = "monitoring"
+}
+
+# Prometheus variables
+########################
+variable "prometheus_chart_version" {
+  type        = string
+  default     = "1.42.3"
+  description = "(Optional) The prometheus chart version to use."
+}
+
+variable "prometheus_namespace" {
+  type        = string
+  description = "(Required) The prometheus namespace."
+}
+
+variable "prometheus_service_name" {
+  type        = string
+  description = "(Required) The prometheus service name."
+}
+
+variable "prometheus_service_port" {
+  type        = string
+  description = "(Required) The prometheus service port."
+}
