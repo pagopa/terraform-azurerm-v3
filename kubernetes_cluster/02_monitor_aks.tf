@@ -7,6 +7,7 @@ resource "azurerm_monitor_metric_alert" "this" {
   name                = "${azurerm_kubernetes_cluster.this.name}-${upper(each.key)}"
   resource_group_name = var.resource_group_name
   scopes              = [azurerm_kubernetes_cluster.this.id]
+  description         = each.value.description
   frequency           = each.value.frequency
   window_size         = each.value.window_size
   enabled             = var.alerts_enabled
