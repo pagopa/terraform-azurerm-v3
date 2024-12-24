@@ -42,11 +42,11 @@ variable "kubernetes_namespace" {
 
 variable "prometheus_config" {
   type = object({
-    chart_version = string
+    service_port  = string
     external_url  = optional(string, "")
     namespace     = string
     service_name  = string
-    service_port  = optional(string, "1.42.3")
+    chart_version = optional(string, "1.42.3")
   })
   description = "Configuration object for Prometheus deployment, including chart version, optional external URL, namespace, service name, service port, and other related settings."
   default = {
