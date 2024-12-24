@@ -67,13 +67,67 @@ resource "kubernetes_secret" "azure_managed_identity_refs" {
 
 
 # Helm deployment using Terraform
-resource "helm_release" "opencost" {
-  name       = "opencost"
-  namespace  = data.kubernetes_namespace.monitoring.metadata[0].name
-  chart      = "opencost"
-  repository = "https://opencost.github.io/opencost-helm-chart"
-  version    = var.prometheus_config.chart_version
+# resource "helm_release" "opencost" {
+#   name       = "opencost"
+#   namespace  = data.kubernetes_namespace.monitoring.metadata[0].name
+#   chart      = "opencost"
+#   repository = "https://opencost.github.io/opencost-helm-chart"
+#   version    = var.prometheus_config.chart_version
+#
+#   set {
+#     name  = "extraVolumes[0].name"
+#     value = "azure-managed-identity-secret"
+#   }
+#
+#   set {
+#     name  = "extraVolumes[0].secret.secretName"
+#     value = kubernetes_secret.azure_managed_identity_refs.metadata[0].name
+#   }
+#
+#   set {
+#     name  = "opencost.exporter.extraVolumeMounts[0].mountPath"
+#     value = "/var/secrets"
+#   }
+#
+#   set {
+#     name  = "opencost.exporter.extraVolumeMounts[0].name"
+#     value = "azure-managed-identity-secret"
+#   }
+#
+#   set {
+#     name  = "opencost.prometheus.external.url"
+#     value = var.prometheus_config.external_url
+#   }
+#
+#   set {
+#     name  = "opencost.prometheus.internal.namespaceName"
+#     value = var.prometheus_config.namespace
+#   }
+#   set {
+#     name  = "opencost.prometheus.internal.port"
+#     value = var.prometheus_config.service_port
+#   }
+#   set {
+#     name  = "opencost.prometheus.internal.serviceName"
+#     value = var.prometheus_config.service_name
+#   }
+#
+#   set {
+#     name  = "metrics.serviceMonitor.enabled"
+#     value = "true"
+#   }
+# }
 
+
+# # Helm deployment for "prometheus-opencost-exporter"
+resource "helm_release" "prometheus_opencost_exporter" {
+  name       = "prometheus-opencost-exporter"
+  namespace  = data.kubernetes_namespace.monitoring.metadata[0].name
+  chart      = "prometheus-opencost-exporter"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  version    = "0.1.1" # Adjust the version as needed
+
+  # Set additional values for the Helm chart if required
   set {
     name  = "extraVolumes[0].name"
     value = "azure-managed-identity-secret"
@@ -117,29 +171,3 @@ resource "helm_release" "opencost" {
     value = "true"
   }
 }
-
-
-# # Helm deployment for "prometheus-opencost-exporter"
-# resource "helm_release" "prometheus_opencost_exporter" {
-#   name       = "prometheus-opencost-exporter"
-#   namespace  = data.kubernetes_namespace.monitoring.metadata[0].name
-#   chart      = "prometheus-opencost-exporter"
-#   repository = "https://prometheus-community.github.io/helm-charts"
-#   version    = "0.1.1" # Adjust the version as needed
-#
-#   # Set additional values for the Helm chart if required
-#   set {
-#     name  = "opencost.prometheus.internal.serviceName"
-#     value = var.prometheus_config.service_name
-#   }
-#
-#   set {
-#     name  = "opencost.prometheus.internal.namespaceName"
-#     value = var.prometheus_config.namespace
-#   }
-#
-#   set {
-#     name  = "opencost.prometheus.internal.port"
-#     value = var.prometheus_config.service_port
-#   }
-# }
