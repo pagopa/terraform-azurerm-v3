@@ -39,23 +39,21 @@ variable "kubernetes_namespace" {
 
 # Prometheus variables
 ########################
-variable "prometheus_chart_version" {
-  type        = string
-  default     = "1.42.3"
-  description = "(Optional) The prometheus chart version to use."
-}
 
-variable "prometheus_namespace" {
-  type        = string
-  description = "(Required) The prometheus namespace."
-}
-
-variable "prometheus_service_name" {
-  type        = string
-  description = "(Required) The prometheus service name."
-}
-
-variable "prometheus_service_port" {
-  type        = string
-  description = "(Required) The prometheus service port."
+variable "prometheus_config" {
+  type = object({
+    chart_version = string
+    external_url  = optional(string, "")
+    namespace     = string
+    service_name  = string
+    service_port  = optional(string, "1.42.3")
+  })
+  description = "Configuration object for Prometheus deployment, including chart version, optional external URL, namespace, service name, service port, and other related settings."
+  default = {
+    namespace     = "monitoring"
+    service_name  = "prometheus-service"
+    service_port  = 9090
+    chart_version = "1.42.3"
+    external_url  = ""
+  }
 }

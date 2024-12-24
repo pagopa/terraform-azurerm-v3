@@ -72,7 +72,7 @@ resource "helm_release" "opencost" {
   namespace  = data.kubernetes_namespace.monitoring.metadata[0].name
   chart      = "opencost"
   repository = "https://opencost.github.io/opencost-helm-chart"
-  version    = var.prometheus_chart_version
+  version    = var.prometheus_config.chart_version
 
   set {
     name  = "extraVolumes[0].name"
@@ -96,20 +96,20 @@ resource "helm_release" "opencost" {
 
   set {
     name  = "opencost.prometheus.external.url"
-    value = "http://${var.prometheus_service_name}.${var.prometheus_namespace}.svc.cluster.local:${var.prometheus_service_port}"
+    value = var.prometheus_config.external_url
   }
 
   set {
     name  = "opencost.prometheus.internal.namespaceName"
-    value = var.prometheus_namespace
+    value = var.prometheus_config.namespace
   }
   set {
     name  = "opencost.prometheus.internal.port"
-    value = var.prometheus_service_port
+    value = var.prometheus_config.service_port
   }
   set {
     name  = "opencost.prometheus.internal.serviceName"
-    value = var.prometheus_service_name
+    value = var.prometheus_config.service_name
   }
 }
 
@@ -125,16 +125,16 @@ resource "helm_release" "prometheus_opencost_exporter" {
   # Set additional values for the Helm chart if required
   set {
     name  = "opencost.prometheus.internal.serviceName"
-    value = var.prometheus_service_name
+    value = var.prometheus_config.service_name
   }
 
   set {
     name  = "opencost.prometheus.internal.namespaceName"
-    value = var.prometheus_namespace
+    value = var.prometheus_config.namespace
   }
 
   set {
     name  = "opencost.prometheus.internal.port"
-    value = var.prometheus_service_port
+    value = var.prometheus_config.service_port
   }
 }
