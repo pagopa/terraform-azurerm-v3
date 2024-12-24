@@ -95,6 +95,11 @@ resource "helm_release" "opencost" {
   }
 
   set {
+    name  = "opencost.prometheus.external.url"
+    value = "http://${var.prometheus_service_name}.${var.prometheus_namespace}.svc.cluster.local:${var.prometheus_service_port}"
+  }
+
+  set {
     name  = "opencost.prometheus.internal.namespaceName"
     value = var.prometheus_namespace
   }
