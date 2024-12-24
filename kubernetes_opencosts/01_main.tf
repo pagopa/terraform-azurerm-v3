@@ -1,5 +1,10 @@
+locals {
+  env_short = substr(var.env, 0, 1)
+  location  = data.azurerm_kubernetes_cluster.aks.location
+}
+
 resource "azurerm_role_definition" "open_cost_role" {
-  name        = "${var.prefix}-${var.env_short}-${var.location}-OpenCostRole"
+  name        = "${var.project}-${local.env_short}-${local.location}-OpenCostRole"
   scope       = data.azurerm_subscription.current.id
   description = "Rate Card query role"
   permissions {
@@ -19,8 +24,8 @@ resource "azurerm_role_definition" "open_cost_role" {
 
 # Crea un'Azure User-Assigned Managed Identity (UAMI)
 resource "azurerm_user_assigned_identity" "opencost_identity" {
-  name                = "${var.prefix}-${var.env_short}-${var.location}-opencost-managed-identity"
-  location            = var.location
+  name                = "${var.project}-${local.env_short}-${local.location}-opencost-managed-identity"
+  location            = local.location
   resource_group_name = data.azurerm_kubernetes_cluster.aks.resource_group_name
 }
 
