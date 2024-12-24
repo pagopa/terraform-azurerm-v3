@@ -111,6 +111,11 @@ resource "helm_release" "opencost" {
     name  = "opencost.prometheus.internal.serviceName"
     value = var.prometheus_config.service_name
   }
+
+  set {
+    name  = "metrics.serviceMonitor.enabled"
+    value = "true"
+  }
 }
 
 
