@@ -114,27 +114,27 @@ resource "helm_release" "opencost" {
 }
 
 
-# Helm deployment for "prometheus-opencost-exporter"
-resource "helm_release" "prometheus_opencost_exporter" {
-  name       = "prometheus-opencost-exporter"
-  namespace  = data.kubernetes_namespace.monitoring.metadata[0].name
-  chart      = "prometheus-opencost-exporter"
-  repository = "https://prometheus-community.github.io/helm-charts"
-  version    = "0.1.1" # Adjust the version as needed
-
-  # Set additional values for the Helm chart if required
-  set {
-    name  = "opencost.prometheus.internal.serviceName"
-    value = var.prometheus_config.service_name
-  }
-
-  set {
-    name  = "opencost.prometheus.internal.namespaceName"
-    value = var.prometheus_config.namespace
-  }
-
-  set {
-    name  = "opencost.prometheus.internal.port"
-    value = var.prometheus_config.service_port
-  }
-}
+# # Helm deployment for "prometheus-opencost-exporter"
+# resource "helm_release" "prometheus_opencost_exporter" {
+#   name       = "prometheus-opencost-exporter"
+#   namespace  = data.kubernetes_namespace.monitoring.metadata[0].name
+#   chart      = "prometheus-opencost-exporter"
+#   repository = "https://prometheus-community.github.io/helm-charts"
+#   version    = "0.1.1" # Adjust the version as needed
+#
+#   # Set additional values for the Helm chart if required
+#   set {
+#     name  = "opencost.prometheus.internal.serviceName"
+#     value = var.prometheus_config.service_name
+#   }
+#
+#   set {
+#     name  = "opencost.prometheus.internal.namespaceName"
+#     value = var.prometheus_config.namespace
+#   }
+#
+#   set {
+#     name  = "opencost.prometheus.internal.port"
+#     value = var.prometheus_config.service_port
+#   }
+# }
