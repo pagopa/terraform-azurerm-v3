@@ -19,6 +19,12 @@ variable "env" {
   }
 }
 
+variable "enable_opencost" {
+  type        = bool
+  default     = false
+  description = "Enable OpenCosts deployment in the cluster"
+}
+
 # AKS Variables
 ###################
 

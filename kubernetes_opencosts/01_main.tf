@@ -4,6 +4,7 @@ locals {
 }
 
 resource "azurerm_role_definition" "open_cost_role" {
+  count       = var.enable_opencost ? 1 : 0
   name        = "${var.project}-${local.env_short}-${local.location}-OpenCostRole"
   scope       = data.azurerm_subscription.current.id
   description = "Rate Card query role"
@@ -24,6 +25,7 @@ resource "azurerm_role_definition" "open_cost_role" {
 
 # Create an Azure User-Assigned Managed Identity (UAMI)
 resource "azurerm_user_assigned_identity" "opencost_identity" {
+  count               = var.enable_opencost ? 1 : 0
   name                = "${var.project}-${local.env_short}-${local.location}-opencost-managed-identity"
   location            = local.location
   resource_group_name = data.azurerm_kubernetes_cluster.aks.resource_group_name
@@ -31,8 +33,10 @@ resource "azurerm_user_assigned_identity" "opencost_identity" {
 
 # Assign role to UAMI
 resource "azurerm_role_assignment" "opencost_identity_role" {
-  principal_id         = azurerm_user_assigned_identity.opencost_identity.principal_id
-  role_definition_name = azurerm_role_definition.open_cost_role.name
+  count = var.enable_opencost ? 1 : 0
+
+  principal_id         = azurerm_user_assigned_identity.opencost_identity.0.principal_id
+  role_definition_name = azurerm_role_definition.open_cost_role.0.name
   scope                = data.azurerm_subscription.current.id
 }
 
@@ -40,9 +44,9 @@ resource "azurerm_role_assignment" "opencost_identity_role" {
 output "managed_identity_details" {
   description = "Dettagli dell'identità gestita User-Assigned per OpenCost"
   value = jsonencode({
-    identity_id  = azurerm_user_assigned_identity.opencost_identity.id
-    principal_id = azurerm_user_assigned_identity.opencost_identity.principal_id
-    client_id    = azurerm_user_assigned_identity.opencost_identity.client_id
+    identity_id  = azurerm_user_assigned_identity.opencost_identity.0.id
+    principal_id = azurerm_user_assigned_identity.opencost_identity.0.principal_id
+    client_id    = azurerm_user_assigned_identity.opencost_identity.0.client_id
     subscription = data.azurerm_subscription.current.id
     tenant       = data.azurerm_client_config.current.tenant_id
   })
@@ -50,15 +54,17 @@ output "managed_identity_details" {
 
 # Kubernetes Secret configs and identity
 resource "kubernetes_secret" "azure_managed_identity_refs" {
+  count = var.enable_opencost ? 1 : 0
+
   metadata {
     name      = "azure-managed-identity"
     namespace = data.kubernetes_namespace.monitoring.metadata[0].name
   }
 
   data = {
-    "client-id"    = azurerm_user_assigned_identity.opencost_identity.client_id
-    "principal-id" = azurerm_user_assigned_identity.opencost_identity.principal_id
-    "identity-id"  = azurerm_user_assigned_identity.opencost_identity.id
+    "client-id"    = azurerm_user_assigned_identity.opencost_identity.0.client_id
+    "principal-id" = azurerm_user_assigned_identity.opencost_identity.0.principal_id
+    "identity-id"  = azurerm_user_assigned_identity.opencost_identity.0.id
     "tenant-id"    = data.azurerm_client_config.current.tenant_id
   }
 
@@ -67,6 +73,8 @@ resource "kubernetes_secret" "azure_managed_identity_refs" {
 
 # # Helm deployment for "prometheus-opencost-exporter"
 resource "helm_release" "prometheus_opencost_exporter" {
+  count = var.enable_opencost ? 1 : 0
+
   name       = "prometheus-opencost-exporter"
   namespace  = data.kubernetes_namespace.monitoring.metadata[0].name
   chart      = "prometheus-opencost-exporter"
@@ -81,7 +89,7 @@ resource "helm_release" "prometheus_opencost_exporter" {
 
   set {
     name  = "extraVolumes[0].secret.secretName"
-    value = kubernetes_secret.azure_managed_identity_refs.metadata[0].name
+    value = kubernetes_secret.azure_managed_identity_refs.0.metadata[0].name
   }
 
   set {
