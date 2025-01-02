@@ -44,9 +44,9 @@ resource "azurerm_role_assignment" "opencost_identity_role" {
 output "managed_identity_details" {
   description = "Dettagli dell'identità gestita User-Assigned per OpenCost"
   value = jsonencode({
-    identity_id  = azurerm_user_assigned_identity.opencost_identity.0.id
-    principal_id = azurerm_user_assigned_identity.opencost_identity.0.principal_id
-    client_id    = azurerm_user_assigned_identity.opencost_identity.0.client_id
+    identity_id  = var.enable_opencost ? azurerm_user_assigned_identity.opencost_identity.0.id : "N/A"
+    principal_id = var.enable_opencost ? azurerm_user_assigned_identity.opencost_identity.0.principal_id : "N/A"
+    client_id    = var.enable_opencost ? azurerm_user_assigned_identity.opencost_identity.0.client_id : "N/A"
     subscription = data.azurerm_subscription.current.id
     tenant       = data.azurerm_client_config.current.tenant_id
   })
