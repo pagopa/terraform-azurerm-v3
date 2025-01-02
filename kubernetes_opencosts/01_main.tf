@@ -22,21 +22,21 @@ resource "azurerm_role_definition" "open_cost_role" {
   ]
 }
 
-# Crea un'Azure User-Assigned Managed Identity (UAMI)
+# Create an Azure User-Assigned Managed Identity (UAMI)
 resource "azurerm_user_assigned_identity" "opencost_identity" {
   name                = "${var.project}-${local.env_short}-${local.location}-opencost-managed-identity"
   location            = local.location
   resource_group_name = data.azurerm_kubernetes_cluster.aks.resource_group_name
 }
 
-# Assegna il ruolo alla UAMI
+# Assign role to UAMI
 resource "azurerm_role_assignment" "opencost_identity_role" {
   principal_id         = azurerm_user_assigned_identity.opencost_identity.principal_id
   role_definition_name = azurerm_role_definition.open_cost_role.name
   scope                = data.azurerm_subscription.current.id
 }
 
-# Output per dettagli sull'identità
+# Identity Details
 output "managed_identity_details" {
   description = "Dettagli dell'identità gestita User-Assigned per OpenCost"
   value = jsonencode({
@@ -48,7 +48,7 @@ output "managed_identity_details" {
   })
 }
 
-# Kubernetes Secret per salvare riferimenti o configurazioni dell'identità (se necessario)
+# Kubernetes Secret configs and identity
 resource "kubernetes_secret" "azure_managed_identity_refs" {
   metadata {
     name      = "azure-managed-identity"
@@ -64,60 +64,6 @@ resource "kubernetes_secret" "azure_managed_identity_refs" {
 
   type = "Opaque"
 }
-
-
-# Helm deployment using Terraform
-# resource "helm_release" "opencost" {
-#   name       = "opencost"
-#   namespace  = data.kubernetes_namespace.monitoring.metadata[0].name
-#   chart      = "opencost"
-#   repository = "https://opencost.github.io/opencost-helm-chart"
-#   version    = var.prometheus_config.chart_version
-#
-#   set {
-#     name  = "extraVolumes[0].name"
-#     value = "azure-managed-identity-secret"
-#   }
-#
-#   set {
-#     name  = "extraVolumes[0].secret.secretName"
-#     value = kubernetes_secret.azure_managed_identity_refs.metadata[0].name
-#   }
-#
-#   set {
-#     name  = "opencost.exporter.extraVolumeMounts[0].mountPath"
-#     value = "/var/secrets"
-#   }
-#
-#   set {
-#     name  = "opencost.exporter.extraVolumeMounts[0].name"
-#     value = "azure-managed-identity-secret"
-#   }
-#
-#   set {
-#     name  = "opencost.prometheus.external.url"
-#     value = var.prometheus_config.external_url
-#   }
-#
-#   set {
-#     name  = "opencost.prometheus.internal.namespaceName"
-#     value = var.prometheus_config.namespace
-#   }
-#   set {
-#     name  = "opencost.prometheus.internal.port"
-#     value = var.prometheus_config.service_port
-#   }
-#   set {
-#     name  = "opencost.prometheus.internal.serviceName"
-#     value = var.prometheus_config.service_name
-#   }
-#
-#   set {
-#     name  = "metrics.serviceMonitor.enabled"
-#     value = "true"
-#   }
-# }
-
 
 # # Helm deployment for "prometheus-opencost-exporter"
 resource "helm_release" "prometheus_opencost_exporter" {
@@ -171,3 +117,32 @@ resource "helm_release" "prometheus_opencost_exporter" {
     value = "true"
   }
 }
+
+# Service Monitor
+resource "kubernetes_manifest" "opencost_service_monitor" {
+  manifest = {
+    "apiVersion" : "monitoring.coreos.com/v1"
+    "kind" : "ServiceMonitor"
+    "metadata" : {
+      "name" : "prometheus-opencosts"
+      "namespace" : data.kubernetes_namespace.monitoring.metadata[0].name
+    }
+    "spec" : {
+      "selector" : {
+        "matchLabels" : {
+          "app.kubernetes.io/instance" : "prometheus-opencost-exporter"
+          "app.kubernetes.io/name" : "prometheus-opencost-exporter"
+        }
+      }
+      "endpoints" : [
+        {
+          "port" : "http"
+          "interval" : "30s"
+          "path" : "/metrics"
+        }
+      ]
+      jobLabel : "opencost"
+    }
+  }
+}
+
