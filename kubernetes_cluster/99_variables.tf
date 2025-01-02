@@ -311,6 +311,14 @@ variable "addon_azure_pod_identity_enabled" {
   default     = false
 }
 
+# The sku_tier must be set to Standard or Premium to enable this feature.
+# Enabling this will add Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal.
+variable "cost_analysis_enabled" {
+  type        = bool
+  default     = false
+  description = "(Optional) Should cost analysis be enabled for this Kubernetes Cluster? Defaults to false."
+}
+
 #
 # 📄 Logs
 #
