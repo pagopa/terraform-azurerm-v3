@@ -117,32 +117,3 @@ resource "helm_release" "prometheus_opencost_exporter" {
     value = "true"
   }
 }
-
-# # Service Monitor
-# resource "kubernetes_manifest" "opencost_service_monitor" {
-#   manifest = {
-#     "apiVersion" : "monitoring.coreos.com/v1"
-#     "kind" : "ServiceMonitor"
-#     "metadata" : {
-#       "name" : "prometheus-opencosts"
-#       "namespace" : data.kubernetes_namespace.monitoring.metadata[0].name
-#     }
-#     "spec" : {
-#       "selector" : {
-#         "matchLabels" : {
-#           "app.kubernetes.io/instance" : "prometheus-opencost-exporter"
-#           "app.kubernetes.io/name" : "prometheus-opencost-exporter"
-#         }
-#       }
-#       "endpoints" : [
-#         {
-#           "port" : "http"
-#           "interval" : "30s"
-#           "path" : "/metrics"
-#         }
-#       ]
-#       jobLabel : "opencost"
-#     }
-#   }
-# }
-#
