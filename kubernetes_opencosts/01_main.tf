@@ -83,6 +83,11 @@ resource "helm_release" "prometheus_opencost_exporter" {
 
   # Set additional values for the Helm chart if required
   set {
+    name  = "opencost.defaultClusterId"
+    value = data.azurerm_kubernetes_cluster.aks.name
+  }
+
+  set {
     name  = "extraVolumes[0].name"
     value = "azure-managed-identity-secret"
   }
