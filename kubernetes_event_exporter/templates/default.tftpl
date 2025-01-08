@@ -1,4 +1,5 @@
 config:
+  logLevel: "info"
   receivers:
     - file:
         layout: {}
@@ -37,18 +38,64 @@ config:
       - match:
         - receiver: dump
       %{ if enable_slack }
-      - drop:
-          - namespace: "*test*"
-          - type: "Normal"
-        match:
-          - kind: "Pod|Deployment|ReplicaSet"
-            receiver: "slack"
+      - match:
+        - reason: "Unhealthy"
+          message: ".*OOMKilled.*"
+          type: "Warning|Error"
+        route:
+          - receiver: "slack"
+
+      - match:
+        - reason: "Unhealthy"
+          message: ".*CrashLoopBackOff.*"
+          type: "Warning|Error"
+        route:
+          - receiver: "slack"
+
+      - match:
+        - drop:
+            - reason: "Unhealthy"
+              message: ".*Readiness probe failed.*"
+
+      - match:
+        - drop:
+          - reason: "Unhealthy"
+            message: ".*Liveness probe failed.*"
+
+      - match:
+        - reason: "Failed"
+          type: "Warning|Error"
+        route:
+          - receiver:
       %{ endif }
       %{ if enable_opsgenie }
-      - drop:
-          - namespace: "*test*"
-          - type: "Normal"
-        match:
-          - kind: "Pod|Deployment|ReplicaSet"
-            receiver: "${opsgenie_receiver_name}"
+      - match:
+        - reason: "Unhealthy"
+          message: ".*CrashLoopBackOff.*"
+          type: "Warning|Error"
+        route:
+          - receiver: "${opsgenie_receiver_name}"
+
+      - match:
+        - reason: "Unhealthy"
+          message: ".*OOMKilled.*"
+          type: "Warning|Error"
+        route:
+          - receiver: "${opsgenie_receiver_name}"
+
+      - match:
+        - drop:
+            - reason: "Unhealthy"
+              message: ".*Readiness probe failed.*"
+
+      - match:
+        - drop:
+          - reason: "Unhealthy"
+            message: ".*Liveness probe failed.*"
+
+      - match:
+        - reason: "Failed"
+          type: "Warning|Error"
+        route:
+          - receiver: "${opsgenie_receiver_name}"
       %{ endif }
