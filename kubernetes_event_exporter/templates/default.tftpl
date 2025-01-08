@@ -39,62 +39,62 @@ config:
         - receiver: dump
       %{ if enable_slack }
       - match:
-          reason: "Unhealthy"
+        - reason: "Unhealthy"
           message: ".*OOMKilled.*"
           type: "Warning|Error"
         route:
           - receiver: "slack"
 
       - match:
-          reason: "Unhealthy"
+        - reason: "Unhealthy"
           message: ".*CrashLoopBackOff.*"
           type: "Warning|Error"
         route:
           - receiver: "slack"
 
       - match:
-          reason: "Unhealthy"
+        - reason: "Unhealthy"
           message: ".*Readiness probe failed.*"
         drop: true
 
       - match:
-          reason: "Unhealthy"
+        - reason: "Unhealthy"
           message: ".*Liveness probe failed.*"
         drop: true
 
       - match:
-          reason: "Failed"
+        - reason: "Failed"
           type: "Warning|Error"
         route:
           - receiver:
       %{ endif }
       %{ if enable_opsgenie }
       - match:
-          reason: "Unhealthy"
+        - reason: "Unhealthy"
           message: ".*CrashLoopBackOff.*"
           type: "Warning|Error"
         route:
           - receiver: "${opsgenie_receiver_name}"
 
       - match:
-          reason: "Unhealthy"
+        - reason: "Unhealthy"
           message: ".*OOMKilled.*"
           type: "Warning|Error"
         route:
           - receiver: "${opsgenie_receiver_name}"
 
       - match:
-          reason: "Unhealthy"
+        - reason: "Unhealthy"
           message: ".*Readiness probe failed.*"
         drop: true
 
       - match:
-          reason: "Unhealthy"
+        - reason: "Unhealthy"
           message: ".*Liveness probe failed.*"
         drop: true
 
       - match:
-          reason: "Failed"
+        - reason: "Failed"
           type: "Warning|Error"
         route:
           - receiver: "${opsgenie_receiver_name}"
