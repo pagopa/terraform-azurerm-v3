@@ -121,7 +121,7 @@ resource "helm_release" "prometheus_opencost_exporter" {
   }
 
   set {
-    name  = "metrics.serviceMonitor.enabled"
+    name  = "opencost.metrics.serviceMonitor.enabled"
     value = "true"
   }
 

@@ -1,6 +1,6 @@
 variable "project" {
   type    = string
-  default = "cstar"
+  default = "pagopa"
   validation {
     condition = (
       length(var.project) <= 6
