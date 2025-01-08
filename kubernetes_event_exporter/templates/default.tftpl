@@ -1,4 +1,5 @@
 config:
+  logLevel: "info"
   receivers:
     - file:
         layout: {}
@@ -37,18 +38,54 @@ config:
       - match:
         - receiver: dump
       %{ if enable_slack }
-      - drop:
-          - namespace: "*test*"
-          - type: "Normal"
-        match:
-          - kind: "Pod|Deployment|ReplicaSet"
-            receiver: "slack"
+      - match:
+          reason:
+            - Unhealthy
+          message: ".*CrashLoopBackOff.*|.*OOMKilled.*"
+          type:
+            - Warning
+            - Error
+        route:
+          - receiver: opsgenie
+
+      - match:
+          reason:
+            - Unhealthy
+          message: ".*Liveness probe failed.*|.*Readiness probe failed.*"
+        drop: true
+
+      - match:
+          reason:
+            - Failed
+          type:
+            - Warning
+            - Error
+        route:
+          - receiver: "slack"
       %{ endif }
       %{ if enable_opsgenie }
-      - drop:
-          - namespace: "*test*"
-          - type: "Normal"
-        match:
-          - kind: "Pod|Deployment|ReplicaSet"
-            receiver: "${opsgenie_receiver_name}"
+      - match:
+          reason:
+            - Unhealthy
+          message: ".*CrashLoopBackOff.*|.*OOMKilled.*"
+          type:
+            - Warning
+            - Error
+        route:
+          - receiver: opsgenie
+
+      - match:
+          reason:
+            - Unhealthy
+          message: ".*Liveness probe failed.*|.*Readiness probe failed.*"
+        drop: true
+
+      - match:
+          reason:
+            - Failed
+          type:
+            - Warning
+            - Error
+        route:
+          - receiver: "${opsgenie_receiver_name}"
       %{ endif }
