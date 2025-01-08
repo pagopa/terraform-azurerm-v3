@@ -41,7 +41,9 @@ config:
       - match:
           reason:
             - Unhealthy
-          message: ".*CrashLoopBackOff.*|.*OOMKilled.*"
+          message:
+            - ".*CrashLoopBackOff.*"
+            - ".*OOMKilled.*"
           type:
             - Warning
             - Error
@@ -51,7 +53,9 @@ config:
       - match:
           reason:
             - Unhealthy
-          message: ".*Liveness probe failed.*|.*Readiness probe failed.*"
+          message:
+            - ".*Liveness probe failed.*"
+            - ".*Readiness probe failed.*"
         drop: true
 
       - match:
@@ -67,7 +71,9 @@ config:
       - match:
           reason:
             - Unhealthy
-          message: ".*CrashLoopBackOff.*|.*OOMKilled.*"
+          message:
+            - ".*CrashLoopBackOff.*"
+            - ".*OOMKilled.*"
           type:
             - Warning
             - Error
@@ -77,7 +83,9 @@ config:
       - match:
           reason:
             - Unhealthy
-          message: ".*Liveness probe failed.*|.*Readiness probe failed.*"
+          message:
+            - ".*Liveness probe failed.*"
+            - ".*Readiness probe failed.*"
         drop: true
 
       - match:
