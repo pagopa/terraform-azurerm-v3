@@ -53,14 +53,14 @@ config:
           - receiver: "slack"
 
       - match:
-        - reason: "Unhealthy"
-          message: ".*Readiness probe failed.*"
-        drop: true
+        - drop:
+            - reason: "Unhealthy"
+              message: ".*Readiness probe failed.*"
 
       - match:
-        - reason: "Unhealthy"
-          message: ".*Liveness probe failed.*"
-        drop: true
+        - drop:
+          - reason: "Unhealthy"
+            message: ".*Liveness probe failed.*"
 
       - match:
         - reason: "Failed"
@@ -84,14 +84,14 @@ config:
           - receiver: "${opsgenie_receiver_name}"
 
       - match:
-        - reason: "Unhealthy"
-          message: ".*Readiness probe failed.*"
-        drop: true
+        - drop:
+            - reason: "Unhealthy"
+              message: ".*Readiness probe failed.*"
 
       - match:
-        - reason: "Unhealthy"
-          message: ".*Liveness probe failed.*"
-        drop: true
+        - drop:
+          - reason: "Unhealthy"
+            message: ".*Liveness probe failed.*"
 
       - match:
         - reason: "Failed"
