@@ -124,4 +124,14 @@ resource "helm_release" "prometheus_opencost_exporter" {
     name  = "metrics.serviceMonitor.enabled"
     value = "true"
   }
+
+  set {
+    name  = "opencost.metrics.kubeStateMetrics.emitKsmV1Metrics"
+    value = "false"
+  }
+
+  set {
+    name  = "opencost.metrics.kubeStateMetrics.emitKsmV1MetricsOnly	"
+    value = "true"
+  }
 }
