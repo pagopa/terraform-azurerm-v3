@@ -79,7 +79,7 @@ resource "helm_release" "prometheus_opencost_exporter" {
   namespace  = data.kubernetes_namespace.monitoring.metadata[0].name
   chart      = "opencost"
   repository = "https://opencost.github.io/opencost-helm-chart/"
-  version    = "1.40.0" # Adjust the version as needed
+  version    = "1.43.0" # Adjust the version as needed
 
   # Set additional values for the Helm chart if required
   set {
