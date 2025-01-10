@@ -132,7 +132,7 @@ resource "helm_release" "prometheus_opencost_exporter" {
 
   set {
     name  = "opencost.metrics.kubeStateMetrics.emitKsmV1Metrics"
-    value = "false"
+    value = "true"
   }
 
   set {
