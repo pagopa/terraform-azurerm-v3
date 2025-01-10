@@ -1,6 +1,6 @@
 variable "project" {
   type    = string
-  default = "cstar"
+  default = "pagopa"
   validation {
     condition = (
       length(var.project) <= 6
@@ -62,4 +62,13 @@ variable "prometheus_config" {
     chart_version = "1.42.3"
     external_url  = ""
   }
+}
+
+# Opencost Variables
+#####################
+
+variable "opencost_helm_chart_version" {
+  type        = string
+  default     = "1.43.0"
+  description = "Helm version of Opencost chart"
 }

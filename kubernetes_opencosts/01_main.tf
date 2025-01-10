@@ -71,17 +71,22 @@ resource "kubernetes_secret" "azure_managed_identity_refs" {
   type = "Opaque"
 }
 
-# # Helm deployment for "prometheus-opencost-exporter"
+# Helm deployment for "prometheus-opencost-exporter"
 resource "helm_release" "prometheus_opencost_exporter" {
   count = var.enable_opencost ? 1 : 0
 
   name       = "prometheus-opencost-exporter"
   namespace  = data.kubernetes_namespace.monitoring.metadata[0].name
-  chart      = "prometheus-opencost-exporter"
-  repository = "https://prometheus-community.github.io/helm-charts"
-  version    = "0.1.1" # Adjust the version as needed
+  chart      = "opencost"
+  repository = "https://opencost.github.io/opencost-helm-chart/"
+  version    = var.opencost_helm_chart_version
 
   # Set additional values for the Helm chart if required
+  set {
+    name  = "opencost.defaultClusterId"
+    value = data.azurerm_kubernetes_cluster.aks.name
+  }
+
   set {
     name  = "extraVolumes[0].name"
     value = "azure-managed-identity-secret"
@@ -121,7 +126,22 @@ resource "helm_release" "prometheus_opencost_exporter" {
   }
 
   set {
-    name  = "metrics.serviceMonitor.enabled"
+    name  = "opencost.metrics.serviceMonitor.enabled"
     value = "true"
+  }
+
+  set {
+    name  = "opencost.metrics.kubeStateMetrics.emitKsmV1Metrics"
+    value = "true"
+  }
+
+  set {
+    name  = "opencost.metrics.kubeStateMetrics.emitKsmV1MetricsOnly"
+    value = "false"
+  }
+
+  set {
+    name  = "opencost.ui.enabled"
+    value = "false"
   }
 }
