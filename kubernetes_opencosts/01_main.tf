@@ -136,7 +136,7 @@ resource "helm_release" "prometheus_opencost_exporter" {
   }
 
   set {
-    name  = "opencost.metrics.kubeStateMetrics.emitKsmV1MetricsOnly	"
+    name  = "opencost.metrics.kubeStateMetrics.emitKsmV1MetricsOnly"
     value = "false"
   }
 
