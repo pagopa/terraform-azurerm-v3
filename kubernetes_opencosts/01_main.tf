@@ -71,7 +71,7 @@ resource "kubernetes_secret" "azure_managed_identity_refs" {
   type = "Opaque"
 }
 
-# # Helm deployment for "prometheus-opencost-exporter"
+# Helm deployment for "prometheus-opencost-exporter"
 resource "helm_release" "prometheus_opencost_exporter" {
   count = var.enable_opencost ? 1 : 0
 
@@ -79,7 +79,7 @@ resource "helm_release" "prometheus_opencost_exporter" {
   namespace  = data.kubernetes_namespace.monitoring.metadata[0].name
   chart      = "opencost"
   repository = "https://opencost.github.io/opencost-helm-chart/"
-  version    = "1.43.0" # Adjust the version as needed
+  version    = var.opencost_helm_chart_version
 
   # Set additional values for the Helm chart if required
   set {

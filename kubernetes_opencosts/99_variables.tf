@@ -63,3 +63,12 @@ variable "prometheus_config" {
     external_url  = ""
   }
 }
+
+# Opencost Variables
+#####################
+
+variable "opencost_helm_chart_version" {
+  type        = string
+  default     = "1.43.0"
+  description = "Helm version of Opencost chart"
+}
