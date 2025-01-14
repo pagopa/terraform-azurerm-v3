@@ -38,64 +38,34 @@ config:
       - match:
         - receiver: dump
       %{ if enable_slack }
-      - match:
+      - drop:
         - reason: "Unhealthy"
-          message: ".*OOMKilled.*"
-          type: "Warning|Error"
-        route:
+        - reason: "FailedToUpdateEndpoint"
+        - reason: "FailedScheduling"
+        - reason: "EgressBlocked"
+        - kind: "HorizontalPodAutoscaler"
+        - kind: "ScaledObjectCheckFailed"
+        match:
           - receiver: "slack"
-
-      - match:
-        - reason: "Unhealthy"
-          message: ".*CrashLoopBackOff.*"
-          type: "Warning|Error"
-        route:
+            type: "Warning"
           - receiver: "slack"
-
-      - match:
-        - drop:
-            - reason: "Unhealthy"
-              message: ".*Readiness probe failed.*"
-
-      - match:
-        - drop:
-          - reason: "Unhealthy"
-            message: ".*Liveness probe failed.*"
-
-      - match:
-        - reason: "Failed"
-          type: "Warning|Error"
-        route:
-          - receiver:
+            reason: "*Failed*"
+          - receiver: "slack"
+            reason: "NotTriggerScaleUp"
       %{ endif }
       %{ if enable_opsgenie }
-      - match:
+      - drop:
         - reason: "Unhealthy"
-          message: ".*CrashLoopBackOff.*"
-          type: "Warning|Error"
-        route:
+        - reason: "FailedToUpdateEndpoint"
+        - reason: "FailedScheduling"
+        - reason: "EgressBlocked"
+        - kind: "HorizontalPodAutoscaler"
+        - kind: "ScaledObjectCheckFailed"
+        match:
           - receiver: "${opsgenie_receiver_name}"
-
-      - match:
-        - reason: "Unhealthy"
-          message: ".*OOMKilled.*"
-          type: "Warning|Error"
-        route:
+            type: "Warning"
           - receiver: "${opsgenie_receiver_name}"
-
-      - match:
-        - drop:
-            - reason: "Unhealthy"
-              message: ".*Readiness probe failed.*"
-
-      - match:
-        - drop:
-          - reason: "Unhealthy"
-            message: ".*Liveness probe failed.*"
-
-      - match:
-        - reason: "Failed"
-          type: "Warning|Error"
-        route:
+            reason: "*Failed*"
           - receiver: "${opsgenie_receiver_name}"
+            reason: "NotTriggerScaleUp"
       %{ endif }
