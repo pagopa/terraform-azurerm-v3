@@ -70,9 +70,8 @@ config:
         - reason: "Unhealthy"
         - kind: "HorizontalPodAutoscaler"
         - kind: "ScaledObjectCheckFailed"
+        - reason: "FailedToUpdateEndpoint"
         match:
-          - receiver: ${opsgenie_receiver_name}-warning
-            reason: "FailedToUpdateEndpoint"
           - receiver: ${opsgenie_receiver_name}-warning
             reason: "FailedScheduling"
           - receiver: ${opsgenie_receiver_name}-warning
