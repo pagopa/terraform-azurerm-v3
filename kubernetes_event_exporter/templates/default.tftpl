@@ -76,6 +76,8 @@ config:
         match:
           - receiver: ${opsgenie_receiver_name}-warning
             reason: "OOMKilling"
+          - receiver: ${opsgenie_receiver_name}-warning
+            reason: "*Scheduled"
           - receiver: "${opsgenie_receiver_name}-critical"
             type: "Warning"
           - receiver: "${opsgenie_receiver_name}-critical"
