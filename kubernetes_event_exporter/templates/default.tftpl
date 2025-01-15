@@ -71,11 +71,9 @@ config:
         - kind: "HorizontalPodAutoscaler"
         - kind: "ScaledObjectCheckFailed"
         - reason: "FailedToUpdateEndpoint"
+        - reason: "FailedScheduling"
+        - reason: "EgressBlocked"
         match:
-          - receiver: ${opsgenie_receiver_name}-warning
-            reason: "FailedScheduling"
-          - receiver: ${opsgenie_receiver_name}-warning
-            reason: "EgressBlocked"
           - receiver: ${opsgenie_receiver_name}-warning
             reason: "OOMKilling"
           - receiver: "${opsgenie_receiver_name}-critical"
