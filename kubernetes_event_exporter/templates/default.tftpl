@@ -20,10 +20,22 @@ config:
           createdAt: "{{ .GetTimestampISO8601 }}"
     %{ endif }
     %{ if enable_opsgenie }
-    - name: "${opsgenie_receiver_name}"
+    - name: "${opsgenie_receiver_name}-warning"
       opsgenie:
         apiKey: "${opsgenie_api_key}"
-        priority: "P2"
+        priority: "P3"
+        message: "[INFRA-pagoPa][AKS Sev3] {{ .Reason }} for {{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }} on K8s cluster"
+        alias: "{{ .UID }}"
+        description: "<pre>{{ toPrettyJson . }}</pre>"
+        tags:
+          - "event"
+          - "{{ .Reason }}"
+          - "{{ .InvolvedObject.Kind }}"
+          - "{{ .InvolvedObject.Name }}"
+    - name: "${opsgenie_receiver_name}-critical"
+      opsgenie:
+        apiKey: "${opsgenie_api_key}"
+        priority: "P1"
         message: "[INFRA-pagoPa][AKS Sev1] {{ .Reason }} for {{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }} on K8s cluster"
         alias: "{{ .UID }}"
         description: "<pre>{{ toPrettyJson . }}</pre>"
@@ -56,16 +68,21 @@ config:
       %{ if enable_opsgenie }
       - drop:
         - reason: "Unhealthy"
-        - reason: "FailedToUpdateEndpoint"
-        - reason: "FailedScheduling"
-        - reason: "EgressBlocked"
         - kind: "HorizontalPodAutoscaler"
         - kind: "ScaledObjectCheckFailed"
         match:
-          - receiver: "${opsgenie_receiver_name}"
+          - receiver: ${opsgenie_receiver_name}-warning
+            reason: "FailedToUpdateEndpoint"
+          - receiver: ${opsgenie_receiver_name}-warning
+            reason: "FailedScheduling"
+          - receiver: ${opsgenie_receiver_name}-warning
+            reason: "EgressBlocked"
+          - receiver: ${opsgenie_receiver_name}-warning
+            reason: "OOMKilling"
+          - receiver: "${opsgenie_receiver_name}-critical"
             type: "Warning"
-          - receiver: "${opsgenie_receiver_name}"
+          - receiver: "${opsgenie_receiver_name}-critical"
             reason: "*Failed*"
-          - receiver: "${opsgenie_receiver_name}"
+          - receiver: "${opsgenie_receiver_name}-critical"
             reason: "NotTriggerScaleUp"
       %{ endif }
