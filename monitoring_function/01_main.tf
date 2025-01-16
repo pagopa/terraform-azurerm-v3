@@ -47,7 +47,7 @@ resource "azurerm_storage_table" "table_storage" {
 
 locals {
   decoded_configuration    = jsondecode(var.monitoring_configuration_encoded)
-  monitoring_configuration = { for c in local.decoded_configuration : "${c.appName}-${c.apiName}-${c.type}" => c }
+  monitoring_configuration = { for c in local.decoded_configuration : "${c.appName}-${c.apiName}-${c.type}" => c if lookup(c, "enabled", true) }
 }
 
 resource "azurerm_storage_table_entity" "monitoring_configuration" {

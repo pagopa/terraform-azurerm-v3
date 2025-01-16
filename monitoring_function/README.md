@@ -11,6 +11,13 @@ This is the minimum configuration required to use the monitoring function
 Field `monitoring_configuration_encoded` is required to be passed as a string, using  `jsonencode(<json content>)` function or `file(<json_file_path>)` function
 details on its content can be found [here](https://github.com/pagopa/azure-synthetic-monitoring)
 
+In addition to the fields required by the monitoring function, you can specify the followings:
+
+| Field Name | Description                                                                    | Default value |
+|------------|--------------------------------------------------------------------------------|---------------|
+| enabled    | enables the monitoring of that specific `appName`-`apiName`-`type` combination | true          |
+
+
 ### Alert configuration
 
 In addition to the properties defined above, `alertConfiguration` can be specified to customize the alert associated to the monitored api
