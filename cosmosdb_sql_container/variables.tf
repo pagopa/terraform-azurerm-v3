@@ -49,3 +49,28 @@ variable "autoscale_settings" {
   default     = null
   description = "Autoscale settings for collection"
 }
+
+variable "indexing_policy" {
+  type = object({
+    # The indexing strategy. Valid options are: consistent, none
+    indexing_mode = optional(string, "consistent"),
+
+    # One or more paths for which the indexing behaviour applies to. Either included_path or excluded_path must contain the path '/*'
+    included_paths = optional(list(string), ["/*"]),
+
+    # One or more paths that are excluded from indexing. Either included_path or excluded_path must contain the path '/*'
+    excluded_paths = optional(list(string), []),
+
+    # One or more path that define complex indexes. There can be multiple composite indexes on same indexing policy
+    composite_indexes = optional(list(list(object({
+
+      # The path of the field to be included in the composite index
+      path = string
+
+      # The sort of single field in indexing structure. Valid options are: ascending, descending
+      order = optional(string, "ascending")
+    }))), []),
+  })
+  default     = null
+  description = "The configuration of indexes on collection"
+}
