@@ -9,6 +9,8 @@ variable "default_metric_alerts" {
   type = map(object({
     # criteria.*.aggregation to be one of [Average Count Minimum Maximum Total]
     aggregation = string
+    # (Optional) Specifies the description of the scheduled metric rule.
+    description = optional(string)
     # "Insights.Container/pods" "Insights.Container/nodes"
     metric_namespace = string
     metric_name      = string
@@ -38,6 +40,7 @@ variable "default_metric_alerts" {
     node_cpu_usage_percentage = {
       aggregation      = "Average"
       metric_namespace = "Microsoft.ContainerService/managedClusters"
+      description      = "High node cpu usage"
       metric_name      = "node_cpu_usage_percentage"
       operator         = "GreaterThan"
       threshold        = 80
@@ -56,6 +59,7 @@ variable "default_metric_alerts" {
     node_memory_working_set_percentage = {
       aggregation      = "Average"
       metric_namespace = "Microsoft.ContainerService/managedClusters"
+      description      = "High node memory usage"
       metric_name      = "node_memory_working_set_percentage"
       operator         = "GreaterThan"
       threshold        = 80
@@ -73,6 +77,7 @@ variable "default_metric_alerts" {
     pods_failed = {
       aggregation      = "Average"
       metric_namespace = "Microsoft.ContainerService/managedClusters"
+      description      = "Pod state phase failed"
       metric_name      = "kube_pod_status_phase"
       operator         = "GreaterThan"
       threshold        = 0
