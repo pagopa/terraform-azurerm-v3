@@ -55,10 +55,10 @@ variable "indexing_policy" {
     # The indexing strategy. Valid options are: consistent, none
     indexing_mode = optional(string, "consistent"),
 
-    # One or more paths for which the indexing behaviour applies to. Either included_path or excluded_path must contain the path '/*'
+    # One or more paths for which the indexing behaviour applies to. Either included_path or excluded_path must contain the all-path string ('/*')
     included_paths = optional(list(string), ["/*"]),
 
-    # One or more paths that are excluded from indexing. Either included_path or excluded_path must contain the path '/*'
+    # One or more paths that are excluded from indexing. Either included_path or excluded_path must contain the all-path string ('/*')
     excluded_paths = optional(list(string), []),
 
     # One or more path that define complex indexes. There can be multiple composite indexes on same indexing policy
