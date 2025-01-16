@@ -5,7 +5,7 @@ locals {
   federations = [
     for repo in var.gh_repositories : {
       repository = repo.name
-      subject    = "github-${var.environment_name}"
+      subject    = var.gh_env
     }
   ]
 
@@ -17,13 +17,16 @@ locals {
   } : {}
 
   custom_permissions = { for perm in var.custom_rg_permissions : perm.rg_name => perm.permissions }
+  domain_sec_rg_permission = var.domain_security_rg_name != null ? {
+    "${var.domain_security_rg_name}" = [
+      "Key Vault Reader"
+    ]
+  } : {}
 
-  function_deploy_permission = var.function_deploy.enabled ? { for rg in var.function_deploy.function_rg : rg => ["Contributor"] } : {}
 
-  # to avoid subscription Contributor -> https://github.com/microsoft/azure-container-apps/issues/35
   environment_cd_roles = {
     subscription = [
-      "Reader"
+      "Contributor"
     ]
     resource_groups = merge(
       {
@@ -36,7 +39,7 @@ locals {
       },
       local.aks_rg_permission,
       local.custom_permissions,
-      local.function_deploy_permission
+      local.domain_sec_rg_permission
     )
   }
 }
