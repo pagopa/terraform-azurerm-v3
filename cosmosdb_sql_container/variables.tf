@@ -62,14 +62,15 @@ variable "indexing_policy" {
     excluded_paths = optional(list(string), []),
 
     # One or more path that define complex indexes. There can be multiple composite indexes on same indexing policy
-    composite_indexes = optional(list(list(object({
+    composite_indexes = optional(list(list(object(
+      {
+        # The path of the field to be included in the composite index
+        path = string
 
-      # The path of the field to be included in the composite index
-      path = string
-
-      # The sort of single field in indexing structure. Valid options are: ascending, descending
-      order = optional(string, "ascending")
-    }))), []),
+        # The sort of single field in indexing structure. Valid options are: ascending, descending
+        order = optional(string, "ascending")
+      }
+    ))), []),
   })
   default     = null
   description = "The configuration of indexes on collection"
