@@ -10,7 +10,7 @@ config:
       slack:
         token: "${slack_token}"
         channel: "${slack_channel}"
-        message: "${slack_message_prefix} {{ .Message }}"
+        message: "${alert_prefix} {{ .Message }}"
         title: "${slack_title}"
         author_name: "${slack_author}"
         fields:
@@ -24,7 +24,7 @@ config:
       opsgenie:
         apiKey: "${opsgenie_api_key}"
         priority: "P3"
-        message: "[INFRA-pagoPa][AKS Sev3] {{ .Reason }} for {{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }} on K8s cluster"
+        message: "${alert_prefix}[Sev3] {{ .Reason }} for {{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }} on K8s cluster"
         alias: "{{ .UID }}"
         description: "<pre>{{ toPrettyJson . }}</pre>"
         tags:
@@ -36,7 +36,7 @@ config:
       opsgenie:
         apiKey: "${opsgenie_api_key}"
         priority: "P1"
-        message: "[INFRA-pagoPa][AKS Sev1] {{ .Reason }} for {{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }} on K8s cluster"
+        message: "${alert_prefix}[Sev1] {{ .Reason }} for {{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }} on K8s cluster"
         alias: "{{ .UID }}"
         description: "<pre>{{ toPrettyJson . }}</pre>"
         tags:
@@ -52,11 +52,17 @@ config:
       %{ if enable_slack }
       - drop:
         - reason: "Unhealthy"
+        - kind: "HorizontalPodAutoscaler"
+        - kind: "ScaledObjectCheckFailed"
         - reason: "FailedToUpdateEndpoint"
         - reason: "FailedScheduling"
         - reason: "EgressBlocked"
-        - kind: "HorizontalPodAutoscaler"
-        - kind: "ScaledObjectCheckFailed"
+        - reason: "OOMKilling"
+        - reason: "RebootScheduled"
+        - reason: "RedeployScheduled"
+        - reason: "FreezeScheduled"
+        - reason: "TerminateScheduled"
+        - reason: "PreemptScheduled"
         match:
           - receiver: "slack"
             type: "Warning"
@@ -73,15 +79,37 @@ config:
         - reason: "FailedToUpdateEndpoint"
         - reason: "FailedScheduling"
         - reason: "EgressBlocked"
+        - reason: "OOMKilling"
+        - reason: "RebootScheduled"
+        - reason: "RedeployScheduled"
+        - reason: "FreezeScheduled"
+        - reason: "TerminateScheduled"
+        - reason: "PreemptScheduled"
+        match:
+          - receiver: "${opsgenie_receiver_name}-critical"
+            type: "Warning"
+          - receiver: "${opsgenie_receiver_name}-critical"
+            reason: "Failed"
+      - drop:
+        - reason: "Unhealthy"
+        - kind: "HorizontalPodAutoscaler"
+        - kind: "ScaledObjectCheckFailed"
+        - reason: "FailedToUpdateEndpoint"
+        - reason: "FailedScheduling"
+        - reason: "EgressBlocked"
         match:
           - receiver: ${opsgenie_receiver_name}-warning
             reason: "OOMKilling"
           - receiver: ${opsgenie_receiver_name}-warning
-            reason: "*Scheduled"
-          - receiver: "${opsgenie_receiver_name}-critical"
-            type: "Warning"
-          - receiver: "${opsgenie_receiver_name}-critical"
-            reason: "*Failed*"
-          - receiver: "${opsgenie_receiver_name}-critical"
+            reason: "RebootScheduled"
+          - receiver: ${opsgenie_receiver_name}-warning
+            reason: "RedeployScheduled"
+          - receiver: ${opsgenie_receiver_name}-warning
+            reason: "FreezeScheduled"
+          - receiver: ${opsgenie_receiver_name}-warning
+            reason: "TerminateScheduled"
+          - receiver: ${opsgenie_receiver_name}-warning
+            reason: "PreemptScheduled"
+          - receiver: "${opsgenie_receiver_name}-warning"
             reason: "NotTriggerScaleUp"
-      %{ endif }
+        %{ endif }
