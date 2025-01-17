@@ -31,6 +31,15 @@ variable "custom_variables" {
 }
 
 #
+# ⚠️ General alert parameters
+#
+variable "alert_prefix" {
+  type        = string
+  description = "(Optional) Formatting the message prefix of your alert."
+  default     = "pagoPa"
+}
+
+#
 # 💬 SLACK Parameters
 #
 
@@ -54,12 +63,6 @@ variable "slack_token" {
 variable "slack_channel" {
   type        = string
   description = "(Optional) Slack channel for receive messages from exporter."
-}
-
-variable "slack_message_prefix" {
-  type        = string
-  description = "(Optional) Formatting the message prefix of your slack alert."
-  default     = "Received a Kubernetes Event:"
 }
 
 variable "slack_title" {
