@@ -24,7 +24,7 @@ config:
       opsgenie:
         apiKey: "${opsgenie_api_key}"
         priority: "P3"
-        message: "[${alert_prefix}][AKS Sev3] {{ .Reason }} for {{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }} on K8s cluster"
+        message: "${alert_prefix}[Sev3] {{ .Reason }} for {{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }} on K8s cluster"
         alias: "{{ .UID }}"
         description: "<pre>{{ toPrettyJson . }}</pre>"
         tags:
@@ -36,7 +36,7 @@ config:
       opsgenie:
         apiKey: "${opsgenie_api_key}"
         priority: "P1"
-        message: "[${alert_prefix}][AKS Sev1] {{ .Reason }} for {{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }} on K8s cluster"
+        message: "${alert_prefix}[Sev1] {{ .Reason }} for {{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }} on K8s cluster"
         alias: "{{ .UID }}"
         description: "<pre>{{ toPrettyJson . }}</pre>"
         tags:
