@@ -292,10 +292,10 @@ resource "azurerm_monitor_metric_alert" "alert" {
   window_size         = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "window_size", local.default_alert_configuration.window_size)
 
   dynamic_criteria {
-    metric_namespace = "microsoft.insights/components"
-    metric_name      = "availabilityResults/availabilityPercentage"
-    aggregation      = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "aggregation", local.default_alert_configuration.aggregation)
-    operator         = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "operator", local.default_alert_configuration.operator)
+    metric_namespace  = "microsoft.insights/components"
+    metric_name       = "availabilityResults/availabilityPercentage"
+    aggregation       = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "aggregation", local.default_alert_configuration.aggregation)
+    operator          = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "operator", local.default_alert_configuration.operator)
     alert_sensitivity = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "sensitivity", local.default_alert_configuration.sensitivity)
     dimension {
       name     = "availabilityResult/name"
@@ -310,7 +310,7 @@ resource "azurerm_monitor_metric_alert" "alert" {
       values   = [each.value.type]
     }
 
-    evaluation_total_count = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "total_count", local.default_alert_configuration.total_count)
+    evaluation_total_count   = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "total_count", local.default_alert_configuration.total_count)
     evaluation_failure_count = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "failure_count", local.default_alert_configuration.failure_count)
   }
 
