@@ -269,7 +269,7 @@ locals {
     operator      = "LessThan"
     aggregation   = "Average"
     sensitivity   = "Medium"
-    window_size   = "PT15M"
+    window_size   = "PT5M"
     total_count   = 3
     failure_count = 2
   }
