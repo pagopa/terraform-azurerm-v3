@@ -58,11 +58,13 @@ variable "slack_receiver_name" {
 variable "slack_token" {
   type        = string
   description = "(Optional) Slack app token to be able to connect on your workspace and send messages."
+  default     = ""
 }
 
 variable "slack_channel" {
   type        = string
   description = "(Optional) Slack channel for receive messages from exporter."
+  default     = "#alerts"
 }
 
 variable "slack_title" {
