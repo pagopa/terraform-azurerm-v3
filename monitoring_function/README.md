@@ -32,7 +32,10 @@ That's an example of the properties that can be specified, containing the defaul
     "threshold" : 100, # (Optional) The criteria threshold value that activates the alert
     "operator" : "LessThan" # (Optional) The criteria operator. Possible values are Equals, GreaterThan, GreaterThanOrEqual, LessThan and LessThanOrEqual
     "aggregation": "Average" # (Required) The statistic that runs over the metric values. Possible values are Average, Count, Minimum, Maximum and Total.
-    "customActionGroupIds": [] # (OPtional) List of additional action group ids associated to this specific alert
+    "customActionGroupIds": [] # (Optional) List of additional action group ids associated to this specific alert
+    "window_size": "PT15M" # (Optional) The period of time that is used to monitor alert activity, represented in ISO 8601 duration format. This value must be greater than frequency. Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D. Defaults to PT15M
+    "total_count": 3 # (Optional) The number of aggregated lookback points. The lookback time window is calculated based on the aggregation granularity (window_size) and the selected number of aggregated points. Defaults to 3
+    "failure_count": 2 # (Optional) The number of violations to trigger an alert. Should be smaller or equal to evaluation_total_count. Defaults to 2
 }
 ```
 

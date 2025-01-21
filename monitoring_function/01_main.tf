@@ -268,6 +268,10 @@ locals {
     threshold     = 100
     operator      = "LessThan"
     aggregation   = "Average"
+    sensitivity   = "Medium"
+    window_size   = "PT15M"
+    total_count   = 3
+    failure_count = 2
   }
 
   default_custom_action_groups = []
@@ -285,13 +289,14 @@ resource "azurerm_monitor_metric_alert" "alert" {
   frequency           = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "frequency", local.default_alert_configuration.frequency)
   auto_mitigate       = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "auto_mitigate", local.default_alert_configuration.auto_mitigate)
   enabled             = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "enabled", local.default_alert_configuration.enabled)
+  window_size         = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "window_size", local.default_alert_configuration.window_size)
 
-  criteria {
-    aggregation      = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "aggregation", local.default_alert_configuration.aggregation)
-    metric_name      = "availabilityResults/availabilityPercentage"
+  dynamic_criteria {
     metric_namespace = "microsoft.insights/components"
+    metric_name      = "availabilityResults/availabilityPercentage"
+    aggregation      = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "aggregation", local.default_alert_configuration.aggregation)
     operator         = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "operator", local.default_alert_configuration.operator)
-    threshold        = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "threshold", local.default_alert_configuration.threshold)
+    alert_sensitivity = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "sensitivity", local.default_alert_configuration.sensitivity)
     dimension {
       name     = "availabilityResult/name"
       operator = "Include"
@@ -304,6 +309,9 @@ resource "azurerm_monitor_metric_alert" "alert" {
       operator = "Include"
       values   = [each.value.type]
     }
+
+    evaluation_total_count = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "total_count", local.default_alert_configuration.total_count)
+    evaluation_failure_count = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "failure_count", local.default_alert_configuration.failure_count)
   }
 
 
