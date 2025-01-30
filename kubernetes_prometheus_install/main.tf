@@ -38,22 +38,22 @@ resource "helm_release" "prometheus" {
 
   values = [
     templatefile("${path.module}/helm/values.yaml", {
-      storage_class_name = var.storage_class_name
-      server_storage_size = var.prometheus_helm.server_storage_size
+      storage_class_name        = var.storage_class_name
+      server_storage_size       = var.prometheus_helm.server_storage_size
       alertmanager_storage_size = var.prometheus_helm.alertmanager_storage_size
 
-      server_replicas = var.prometheus_helm.replicas
-      alertmanager_replicas = var.prometheus_helm.replicas
-      pushgateway_replicas = var.prometheus_helm.replicas
+      server_replicas             = var.prometheus_helm.replicas
+      alertmanager_replicas       = var.prometheus_helm.replicas
+      pushgateway_replicas        = var.prometheus_helm.replicas
       kube_state_metrics_replicas = var.prometheus_helm.replicas
 
-      node_selector = jsonencode(var.prometheus_node_selector)
-      tolerations = jsonencode(var.prometheus_tolerations)
+      node_selector             = jsonencode(var.prometheus_node_selector)
+      tolerations               = jsonencode(var.prometheus_tolerations)
       node_exporter_tolerations = jsonencode(var.prometheus_tolerations)
 
       node_selector = jsonencode(var.prometheus_node_selector)
-      tolerations = jsonencode(var.prometheus_tolerations)
-      affinity = jsonencode(var.prometheus_affinity != null ? var.prometheus_affinity : local.default_affinity)
+      tolerations   = jsonencode(var.prometheus_tolerations)
+      affinity      = jsonencode(var.prometheus_affinity != null ? var.prometheus_affinity : local.default_affinity)
     })
   ]
 

@@ -4,9 +4,9 @@ locals {
       requiredDuringSchedulingIgnoredDuringExecution = {
         nodeSelectorTerms = [{
           matchExpressions = [{
-            key = "kubernetes.azure.com/mode"
+            key      = "kubernetes.azure.com/mode"
             operator = "NotIn"
-            values = ["system"]
+            values   = ["system"]
           }]
         }]
       }
@@ -27,20 +27,20 @@ variable "storage_class_name" {
 
 variable "prometheus_helm" {
   type = object({
-    chart_version = optional(string, "27.1.0")
-    server_storage_size = optional(string, "128Gi")
+    chart_version             = optional(string, "27.1.0")
+    server_storage_size       = optional(string, "128Gi")
     alertmanager_storage_size = optional(string, "32Gi")
-    replicas = optional(number, 1)
+    replicas                  = optional(number, 1)
   })
 
   description = "Prometheus helm chart configuration"
 
 
   default = {
-    chart_version = "27.1.0"
-    server_storage_size = "128Gi"
+    chart_version             = "27.1.0"
+    server_storage_size       = "128Gi"
     alertmanager_storage_size = "32Gi"
-    replicas = 1
+    replicas                  = 1
   }
 }
 
@@ -52,30 +52,30 @@ variable "prometheus_affinity" {
       requiredDuringSchedulingIgnoredDuringExecution = object({
         nodeSelectorTerms = list(object({
           matchExpressions = list(object({
-            key = string
+            key      = string
             operator = string
-            values = list(string)
+            values   = list(string)
           }))
         }))
       })
     })
   })
-  default = null  # Usiamo null per permettere l'uso del default locale
+  default = null # Usiamo null per permettere l'uso del default locale
 }
 
 variable "prometheus_node_selector" {
   description = "Global node selector for all Prometheus components"
-  type = map(string)
-  default = {}
+  type        = map(string)
+  default     = {}
 }
 
 variable "prometheus_tolerations" {
   description = "Global tolerations for all Prometheus components"
   type = list(object({
-    key = string
+    key      = string
     operator = string
-    value = string
-    effect = string
+    value    = string
+    effect   = string
   }))
   default = []
 }
