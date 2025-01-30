@@ -1,142 +1,168 @@
-# values.yaml
-global:
-  scrape_interval: 30s
-  evaluation_interval: 30s
-  scrape_timeout: 20s
+# Configurazione di base per RBAC e sicurezza
+rbac:
+  create: true
 
-# Common Configurations
-commonConfig:
-  nodeSelector: ${node_selector}
-  tolerations: ${tolerations}
-  defaultNodeAffinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.azure.com/mode
-            operator: NotIn
-            values:
-            - system
+podSecurityPolicy:
+  enabled: false
 
-# AlertManager Configuration
-alertmanager:
-  enabled: true
-  replicaCount: ${alertmanager_replicas}
-
-  persistentVolume:
-    enabled: true
-    storageClass: ${storage_class_name}
-    size: ${alertmanager_storage_size}
-
-  # Security Context
-  podSecurityContext:
-    runAsUser: 65534
-    runAsNonRoot: true
-    fsGroup: 65534
-
-  # Production Resource Requirements
-  resources:
-    requests:
-      cpu: 200m      # Increased for production
-      memory: 512Mi  # Increased for production
-    limits:
-      cpu: 500m      # Increased for production
-      memory: 1Gi    # Increased for production
-
-  # Configurable Affinity Rules
-  affinity: ${alertmanager_affinity}
-
-# Kube State Metrics Configuration
-kube-state-metrics:
-  enabled: true
-  replicaCount: ${kube_state_metrics_replicas}
-
-  # Production Resource Requirements
-  resources:
-    requests:
-      cpu: 200m      # Increased for production
-      memory: 256Mi  # Increased for production
-    limits:
-      cpu: 400m      # Increased for production
-      memory: 512Mi  # Increased for production
-
-  affinity: ${kube_state_metrics_affinity}
-
-# Server Configuration
+# Configurazione principale del server Prometheus
 server:
   enabled: true
   replicaCount: ${server_replicas}
 
-  configmapReload:
-    enabled: true
+  # Configurazione globale dello scraping
+  global:
+    scrape_interval: 30s
+    scrape_timeout: 20s
+    evaluation_interval: 30s
 
+  # Configurazione della persistenza
+  persistentVolume:
+    enabled: true
+    size: ${server_storage_size}
+    storageClass: ${storage_class_name}
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+
+  # Configurazione della retention
   retention: "15d"
   retentionSize: "80GB"
 
-  persistentVolume:
-    enabled: true
-    storageClass: ${storage_class_name}
-    size: ${server_storage_size}
+  # Configurazione del deployment
+  nodeSelector: ${node_selector}
+  tolerations: ${tolerations}
+  affinity: ${affinity}
 
-  # Security Context
-  podSecurityContext:
+  # Configurazione della sicurezza
+  securityContext:
     runAsUser: 65534
     runAsNonRoot: true
+    runAsGroup: 65534
     fsGroup: 65534
 
-  # Production Resource Requirements
+  # Configurazione delle risorse
   resources:
     requests:
-      cpu: 1000m     # Increased for production
-      memory: 4Gi    # Increased for production
+      cpu: 300m
+      memory: 300Mi
     limits:
-      cpu: 2000m     # Increased for production
-      memory: 8Gi    # Increased for production
+      cpu: 2000m
+      memory: 4Gi
 
-  affinity: ${server_affinity}
+  # Configurazione degli alert
+  alertmanagers: []
 
-# Node Exporter Configuration
-nodeExporter:
+  # Service configuration
+  service:
+    type: ClusterIP
+    servicePort: 80
+    annotations: {}
+
+# Configurazione di AlertManager come subchart
+alertmanager:
   enabled: true
+  replicaCount: ${alertmanager_replicas}
 
-  podSecurityContext:
+  persistence:
+    enabled: true
+    size: ${alertmanager_storage_size}
+    storageClass: ${storage_class_name}
+
+  nodeSelector: ${node_selector}
+  tolerations: ${tolerations}
+  affinity: ${affinity}
+
+  securityContext:
     runAsUser: 65534
     runAsNonRoot: true
+    runAsGroup: 65534
     fsGroup: 65534
 
-  # Production Resource Requirements
   resources:
     requests:
-      cpu: 200m      # Increased for production
-      memory: 256Mi  # Increased for production
+      cpu: 100m
+      memory: 128Mi
     limits:
-      cpu: 400m      # Increased for production
-      memory: 512Mi  # Increased for production
+      cpu: 500m
+      memory: 256Mi
+
+# Configurazione di kube-state-metrics come subchart
+kube-state-metrics:
+  enabled: true
+  replicaCount: ${kube_state_metrics_replicas}
+
+  nodeSelector: ${node_selector}
+  tolerations: ${tolerations}
+  affinity: ${affinity}
+
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+  prometheus:
+    monitor:
+      enabled: true
+      interval: "30s"
+
+# Configurazione di node-exporter come subchart
+prometheus-node-exporter:
+  enabled: true
 
   tolerations: ${node_exporter_tolerations}
 
-# Pushgateway Configuration
-pushgateway:
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    fsGroup: 65534
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+  prometheus:
+    monitor:
+      enabled: true
+      interval: "30s"
+
+# Configurazione di pushgateway come subchart
+prometheus-pushgateway:
   enabled: true
   replicaCount: ${pushgateway_replicas}
 
-  # Production Resource Requirements
+  nodeSelector: ${node_selector}
+  tolerations: ${tolerations}
+  affinity: ${affinity}
+
+  persistentVolume:
+    enabled: true
+    size: "2Gi"
+    storageClass: ${storage_class_name}
+
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    fsGroup: 65534
+
   resources:
     requests:
-      cpu: 200m      # Increased for production
-      memory: 256Mi  # Increased for production
+      cpu: 50m
+      memory: 64Mi
     limits:
-      cpu: 400m      # Increased for production
-      memory: 512Mi  # Increased for production
+      cpu: 200m
+      memory: 128Mi
 
-  affinity: ${pushgateway_affinity}
-
-# Security Configurations
-rbac:
-  create: true
-
-networkPolicy:
-  enabled: true
-
-# Storage Configurations
-storageClass: ${storage_class_name}
+  serviceAnnotations:
+    prometheus.io/probe: pushgateway

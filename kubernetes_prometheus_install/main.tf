@@ -7,6 +7,28 @@ resource "null_resource" "trigger_helm_release" {
   }
 }
 
+#
+# CRDS
+#
+resource "helm_release" "prometheus_crds" {
+
+  count = var.prometheus_crds_enabled ? 1 : 0
+
+  name       = "prometheus-crds"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "prometheus-operator-crds"
+  version    = var.prometheus_crds_release_version
+  namespace  = var.prometheus_namespace
+
+  timeout      = 300
+  force_update = true
+  wait         = true
+
+  depends_on = [
+    null_resource.trigger_helm_release
+  ]
+}
+
 resource "helm_release" "prometheus" {
   name       = "prometheus"
   repository = "https://prometheus-community.github.io/helm-charts"
@@ -27,36 +49,17 @@ resource "helm_release" "prometheus" {
 
       node_selector = jsonencode(var.prometheus_node_selector)
       tolerations = jsonencode(var.prometheus_tolerations)
-
-      server_affinity = lookup(var.prometheus_affinity, "server", local.default_affinity)
-      alertmanager_affinity = lookup(var.prometheus_affinity, "alertmanager", local.default_affinity)
-      pushgateway_affinity = lookup(var.prometheus_affinity, "pushgateway", local.default_affinity)
-      kube_state_metrics_affinity = lookup(var.prometheus_affinity, "kube_state_metrics", local.default_affinity)
       node_exporter_tolerations = jsonencode(var.prometheus_tolerations)
+
+      node_selector = jsonencode(var.prometheus_node_selector)
+      tolerations = jsonencode(var.prometheus_tolerations)
+      affinity = jsonencode(var.prometheus_affinity != null ? var.prometheus_affinity : local.default_affinity)
     })
   ]
 
   lifecycle {
     replace_triggered_by = [
-      null_resource.trigger_helm_release
+      helm_release.prometheus_crds
     ]
   }
-}
-
-#
-# CRDS
-#
-resource "helm_release" "prometheus_crds" {
-
-  count = var.prometheus_crds_enabled ? 1 : 0
-
-  name       = "prometheus-crds"
-  repository = "https://prometheus-community.github.io/helm-charts"
-  chart      = "prometheus-operator-crds"
-  version    = var.prometheus_crds_release_version
-  namespace  = var.prometheus_namespace
-
-  timeout      = 300
-  force_update = true
-  wait         = true
 }

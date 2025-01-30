@@ -27,7 +27,7 @@ variable "storage_class_name" {
 
 variable "prometheus_helm" {
   type = object({
-    chart_version = optional(string, "25.24.1")
+    chart_version = optional(string, "27.1.0")
     server_storage_size = optional(string, "128Gi")
     alertmanager_storage_size = optional(string, "32Gi")
     replicas = optional(number, 1)
@@ -37,30 +37,17 @@ variable "prometheus_helm" {
 
 
   default = {
-    chart_version = "25.24.1"
+    chart_version = "27.1.0"
+    server_storage_size = "128Gi"
+    alertmanager_storage_size = "32Gi"
+    replicas = 1
   }
 }
 
-variable "prometheus_node_selector" {
-  description = "Node selector for Prometheus components"
-  type = map(string)
-  default = {}
-}
-
-variable "prometheus_tolerations" {
-  description = "Tolerations for Prometheus components"
-  type = list(object({
-    key = string
-    operator = string
-    value = string
-    effect = string
-  }))
-  default = []
-}
-
+# Semplifichiamo le variabili
 variable "prometheus_affinity" {
-  description = "Custom affinity rules for each component"
-  type = map(object({
+  description = "Global affinity rules for all Prometheus components"
+  type = object({
     nodeAffinity = object({
       requiredDuringSchedulingIgnoredDuringExecution = object({
         nodeSelectorTerms = list(object({
@@ -72,8 +59,25 @@ variable "prometheus_affinity" {
         }))
       })
     })
-  }))
+  })
+  default = null  # Usiamo null per permettere l'uso del default locale
+}
+
+variable "prometheus_node_selector" {
+  description = "Global node selector for all Prometheus components"
+  type = map(string)
   default = {}
+}
+
+variable "prometheus_tolerations" {
+  description = "Global tolerations for all Prometheus components"
+  type = list(object({
+    key = string
+    operator = string
+    value = string
+    effect = string
+  }))
+  default = []
 }
 
 #
@@ -88,5 +92,5 @@ variable "prometheus_crds_enabled" {
 variable "prometheus_crds_release_version" {
   type        = string
   description = "Prometheus CRDS helm release version. https://github.com/prometheus-community/helm-charts/pkgs/container/charts%2Fprometheus-operator-crds "
-  default     = "16.0.0"
+  default     = "17.0.2"
 }
