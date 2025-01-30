@@ -4,17 +4,29 @@ global:
   evaluation_interval: 30s
   scrape_timeout: 20s
 
+# Common Configurations
+commonConfig:
+  nodeSelector: ${node_selector}
+  tolerations: ${tolerations}
+  defaultNodeAffinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.azure.com/mode
+            operator: NotIn
+            values:
+            - system
+
 # AlertManager Configuration
 alertmanager:
   enabled: true
-
-  # Single replica as per current setup
-  replicaCount: 1
+  replicaCount: ${alertmanager_replicas}
 
   persistentVolume:
     enabled: true
     storageClass: ${storage_class_name}
-    size: 10Gi
+    size: ${alertmanager_storage_size}
 
   # Security Context
   podSecurityContext:
@@ -22,70 +34,49 @@ alertmanager:
     runAsNonRoot: true
     fsGroup: 65534
 
-  # Resource Requirements
+  # Production Resource Requirements
   resources:
     requests:
-      cpu: 100m
-      memory: 256Mi
+      cpu: 200m      # Increased for production
+      memory: 512Mi  # Increased for production
     limits:
-      cpu: 200m
-      memory: 512Mi
+      cpu: 500m      # Increased for production
+      memory: 1Gi    # Increased for production
 
-  # Affinity Rules for AKS
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.azure.com/mode
-            operator: NotIn
-            values:
-            - system
+  # Configurable Affinity Rules
+  affinity: ${alertmanager_affinity}
 
 # Kube State Metrics Configuration
 kube-state-metrics:
   enabled: true
-  replicaCount: 1
+  replicaCount: ${kube_state_metrics_replicas}
 
-  # Resource Requirements
+  # Production Resource Requirements
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 200m      # Increased for production
+      memory: 256Mi  # Increased for production
     limits:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 400m      # Increased for production
+      memory: 512Mi  # Increased for production
 
-  # Affinity Rules for AKS
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.azure.com/mode
-            operator: NotIn
-            values:
-            - system
+  affinity: ${kube_state_metrics_affinity}
 
 # Server Configuration
 server:
   enabled: true
+  replicaCount: ${server_replicas}
 
-  # Single replica with sidecar as per current setup
-  replicaCount: 1
-
-  # Enable config reload sidecar
   configmapReload:
     enabled: true
 
-  # Retention Configuration
   retention: "15d"
   retentionSize: "80GB"
 
   persistentVolume:
     enabled: true
     storageClass: ${storage_class_name}
-    size: 50Gi
+    size: ${server_storage_size}
 
   # Security Context
   podSecurityContext:
@@ -93,78 +84,52 @@ server:
     runAsNonRoot: true
     fsGroup: 65534
 
-  # Resource Requirements
+  # Production Resource Requirements
   resources:
     requests:
-      cpu: 500m
-      memory: 2Gi
+      cpu: 1000m     # Increased for production
+      memory: 4Gi    # Increased for production
     limits:
-      cpu: 1000m
-      memory: 4Gi
+      cpu: 2000m     # Increased for production
+      memory: 8Gi    # Increased for production
 
-  # Affinity Rules for AKS
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.azure.com/mode
-            operator: NotIn
-            values:
-            - system
-
+  affinity: ${server_affinity}
 
 # Node Exporter Configuration
 nodeExporter:
   enabled: true
 
-  # Security Context
   podSecurityContext:
     runAsUser: 65534
     runAsNonRoot: true
     fsGroup: 65534
 
-  # Resource Requirements
+  # Production Resource Requirements
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 200m      # Increased for production
+      memory: 256Mi  # Increased for production
     limits:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 400m      # Increased for production
+      memory: 512Mi  # Increased for production
 
-  # Tolerations to run on system nodes
-  tolerations:
-    - key: "kubernetes.azure.com/mode"
-      operator: "Equal"
-      value: "system"
-      effect: "NoSchedule"
+  tolerations: ${node_exporter_tolerations}
 
 # Pushgateway Configuration
 pushgateway:
   enabled: true
+  replicaCount: ${pushgateway_replicas}
 
-  replicaCount: 1
-
-  # Resource Requirements
+  # Production Resource Requirements
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 200m      # Increased for production
+      memory: 256Mi  # Increased for production
     limits:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 400m      # Increased for production
+      memory: 512Mi  # Increased for production
 
-  # Affinity Rules for AKS
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.azure.com/mode
-            operator: NotIn
-            values:
-            - system
+  affinity: ${pushgateway_affinity}
 
 # Security Configurations
 rbac:

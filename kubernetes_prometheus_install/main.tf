@@ -15,12 +15,27 @@ resource "helm_release" "prometheus" {
   namespace  = var.prometheus_namespace
 
   values = [
-    templatefile("${path.module}/values.yaml", {
-    storage_class_name = var.storage_class_name
-  })
+    templatefile("${path.module}/helm/values.yaml", {
+      storage_class_name = var.storage_class_name
+      server_storage_size = var.prometheus_helm.server_storage_size
+      alertmanager_storage_size = var.prometheus_helm.alertmanager_storage_size
+
+      server_replicas = var.prometheus_helm.replicas
+      alertmanager_replicas = var.prometheus_helm.replicas
+      pushgateway_replicas = var.prometheus_helm.replicas
+      kube_state_metrics_replicas = var.prometheus_helm.replicas
+
+      node_selector = jsonencode(var.prometheus_node_selector)
+      tolerations = jsonencode(var.prometheus_tolerations)
+
+      server_affinity = lookup(var.prometheus_affinity, "server", local.default_affinity)
+      alertmanager_affinity = lookup(var.prometheus_affinity, "alertmanager", local.default_affinity)
+      pushgateway_affinity = lookup(var.prometheus_affinity, "pushgateway", local.default_affinity)
+      kube_state_metrics_affinity = lookup(var.prometheus_affinity, "kube_state_metrics", local.default_affinity)
+      node_exporter_tolerations = jsonencode(var.prometheus_tolerations)
+    })
   ]
 
-  # Lifecycle policy to handle updates
   lifecycle {
     replace_triggered_by = [
       null_resource.trigger_helm_release
