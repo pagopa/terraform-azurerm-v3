@@ -1,0 +1,177 @@
+# values.yaml
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+  scrape_timeout: 20s
+
+# AlertManager Configuration
+alertmanager:
+  enabled: true
+
+  # Single replica as per current setup
+  replicaCount: 1
+
+  persistentVolume:
+    enabled: true
+    storageClass: ${storage_class_name}
+    size: 10Gi
+
+  # Security Context
+  podSecurityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    fsGroup: 65534
+
+  # Resource Requirements
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+
+  # Affinity Rules for AKS
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.azure.com/mode
+            operator: NotIn
+            values:
+            - system
+
+# Kube State Metrics Configuration
+kube-state-metrics:
+  enabled: true
+  replicaCount: 1
+
+  # Resource Requirements
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+  # Affinity Rules for AKS
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.azure.com/mode
+            operator: NotIn
+            values:
+            - system
+
+# Server Configuration
+server:
+  enabled: true
+
+  # Single replica with sidecar as per current setup
+  replicaCount: 1
+
+  # Enable config reload sidecar
+  configmapReload:
+    enabled: true
+
+  # Retention Configuration
+  retention: "15d"
+  retentionSize: "80GB"
+
+  persistentVolume:
+    enabled: true
+    storageClass: ${storage_class_name}
+    size: 50Gi
+
+  # Security Context
+  podSecurityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    fsGroup: 65534
+
+  # Resource Requirements
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: 1000m
+      memory: 4Gi
+
+  # Affinity Rules for AKS
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.azure.com/mode
+            operator: NotIn
+            values:
+            - system
+
+
+# Node Exporter Configuration
+nodeExporter:
+  enabled: true
+
+  # Security Context
+  podSecurityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    fsGroup: 65534
+
+  # Resource Requirements
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+  # Tolerations to run on system nodes
+  tolerations:
+    - key: "kubernetes.azure.com/mode"
+      operator: "Equal"
+      value: "system"
+      effect: "NoSchedule"
+
+# Pushgateway Configuration
+pushgateway:
+  enabled: true
+
+  replicaCount: 1
+
+  # Resource Requirements
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+  # Affinity Rules for AKS
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.azure.com/mode
+            operator: NotIn
+            values:
+            - system
+
+# Security Configurations
+rbac:
+  create: true
+
+networkPolicy:
+  enabled: true
+
+# Storage Configurations
+storageClass: ${storage_class_name}
