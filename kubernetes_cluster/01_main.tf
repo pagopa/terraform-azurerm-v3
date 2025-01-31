@@ -154,6 +154,9 @@ resource "azurerm_kubernetes_cluster" "this" {
     }
   }
 
+  ### Prometheus managed metrics
+  monitor_metrics {}
+
   storage_profile {
     file_driver_enabled         = var.storage_profile_file_driver_enabled
     disk_driver_enabled         = var.storage_profile_disk_driver_enabled
