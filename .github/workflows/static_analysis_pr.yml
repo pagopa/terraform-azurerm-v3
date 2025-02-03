@@ -17,7 +17,7 @@ jobs:
         id: get-paths
         uses: pagopa/eng-github-actions-iac-template/global/get-modifed-folders@v1.19.0
         with:
-          default_end_folder_depth: 0
+          default_end_folder_depth: 1
 
       - name: 👀 See folders downloaded
         if: env.dir_changes_detected == 'true'
