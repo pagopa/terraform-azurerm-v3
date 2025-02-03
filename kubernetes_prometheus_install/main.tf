@@ -59,7 +59,11 @@ resource "helm_release" "prometheus" {
 
   lifecycle {
     replace_triggered_by = [
-      helm_release.prometheus_crds
+      null_resource.trigger_helm_release
     ]
   }
+
+  depends_on = [
+    helm_release.prometheus_crds
+  ]
 }

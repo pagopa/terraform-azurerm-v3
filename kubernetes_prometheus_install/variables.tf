@@ -86,7 +86,7 @@ variable "prometheus_tolerations" {
 variable "prometheus_crds_enabled" {
   type        = bool
   description = "Setup CRDS for prometheus"
-  default     = false
+  default     = true
 }
 
 variable "prometheus_crds_release_version" {
