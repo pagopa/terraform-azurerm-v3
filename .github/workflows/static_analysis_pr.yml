@@ -1,0 +1,35 @@
+name: 🛃 Static Analysis PR
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  static_analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          rm -rf *
+
+      - name: 🔨 Get Modified Paths
+        id: get-paths
+        uses: pagopa/eng-github-actions-iac-template/global/get-modifed-folders@v1.19.0
+        with:
+          default_end_folder_depth: 2
+          include_patterns: "."
+
+      - name: 👀 See folders downloaded
+        if: env.dir_changes_detected == 'true'
+        id: see
+        shell: bash
+        run: |
+          ls -la
+          du -h -d 3 .
+
+      - name: Static Analysis
+        if: env.dir_changes_detected == 'true'
+        uses: pagopa/eng-github-actions-iac-template/azure/terraform-static-analysis@v1.14.1
+        with:
+          precommit_version: 'v1.96.2@sha256:01f870b7689b5a09c1a370914fcddcac42c4b6478c9d369e1d2590dd0a66ffd0'
