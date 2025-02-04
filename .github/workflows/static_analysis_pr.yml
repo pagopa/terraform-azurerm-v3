@@ -18,7 +18,7 @@ jobs:
         uses: pagopa/eng-github-actions-iac-template/global/get-modifed-folders@v1.19.0
         with:
           start_folder: "kubernetes_prometheus_managed"
-          default_end_folder_depth: 1
+          default_end_folder_depth: 0
           include_patterns: "/"
 
       - name: 👀 See folders downloaded
