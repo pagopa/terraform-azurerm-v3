@@ -7,7 +7,7 @@ on:
 
 jobs:
   static_analysis:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - run: |
@@ -15,7 +15,7 @@ jobs:
 
       - name: 🔨 Get Modified Paths
         id: get-paths
-        uses: pagopa/eng-github-actions-iac-template/global/get-modifed-folders@v1.19.0
+        uses: pagopa/eng-github-actions-iac-template/global/get-modifed-folders@get-modified-folder-root-path-patch
         with:
           start_folder: "/"
           default_end_folder_depth: 2
