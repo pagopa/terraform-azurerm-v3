@@ -20,6 +20,7 @@ jobs:
           start_folder: "/"
           default_end_folder_depth: 2
           include_patterns: "/"
+          ignore_patterns: "".github,.devops,.vscode"
 
       - name: 👀 See folders downloaded
         if: env.dir_changes_detected == 'true'
