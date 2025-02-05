@@ -29,8 +29,19 @@ jobs:
           ls -la
           du -h -d 3 .
 
-      - name: Static Analysis
+      - name: run_init
         if: env.dir_changes_detected == 'true'
-        uses: pagopa/eng-github-actions-iac-template/azure/terraform-static-analysis@v1.14.1
-        with:
-          precommit_version: 'v1.96.2@sha256:01f870b7689b5a09c1a370914fcddcac42c4b6478c9d369e1d2590dd0a66ffd0'
+        run: |
+          bash .utils/terraform_run_all.sh init docker
+
+      - name: show_version
+        if: env.dir_changes_detected == 'true'
+        run: |
+          TAG="v1.96.2@sha256:01f870b7689b5a09c1a370914fcddcac42c4b6478c9d369e1d2590dd0a66ffd0"
+          docker run --rm --entrypoint cat ghcr.io/antonbabenko/pre-commit-terraform:$TAG /usr/bin/tools_versions_info
+
+      - name: run_test
+        if: env.dir_changes_detected == 'true'
+        run: |
+          TAG="v1.96.2@sha256:01f870b7689b5a09c1a370914fcddcac42c4b6478c9d369e1d2590dd0a66ffd0"
+          docker run -v $(pwd):/lint -w /lint ghcr.io/antonbabenko/pre-commit-terraform:$TAG run -a
