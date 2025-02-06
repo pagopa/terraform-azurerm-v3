@@ -314,12 +314,12 @@ variable "addon_azure_pod_identity_enabled" {
 
 variable "monitor_metrics" {
   type = object({
-    annotations_allowed = optional(string, "")
-    labels_allowed      = optional(string, "")
+    annotations_allowed = optional(string, null)
+    labels_allowed      = optional(string, null)
   })
   default = {
-    annotations_allowed = ""
-    labels_allowed      = ""
+    annotations_allowed = null
+    labels_allowed      = null
   }
   description = "(Optional) Specifies a comma-separated list of Kubernetes annotation keys that will be used in the resource's labels metric."
 }
