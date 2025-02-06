@@ -311,6 +311,21 @@ variable "addon_azure_pod_identity_enabled" {
   default     = false
 }
 
+
+variable "monitor_metrics" {
+  type = object({
+    annotations_allowed = string
+    # Specifies if monitoring metrics are enabled.
+    labels_allowed = string
+    # The name of the specific metrics to monitor.
+  })
+  default = {
+    annotations_allowed = ""
+    labels_allowed      = ""
+  }
+  description = "(Optional) Specifies a comma-separated list of Kubernetes annotation keys that will be used in the resource's labels metric."
+}
+
 # The sku_tier must be set to Standard or Premium to enable this feature.
 # Enabling this will add Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal.
 variable "cost_analysis_enabled" {

@@ -155,7 +155,10 @@ resource "azurerm_kubernetes_cluster" "this" {
   }
 
   ### Prometheus managed metrics
-  monitor_metrics {}
+  monitor_metrics {
+    annotations_allowed = var.monitor_metrics.annotations_allowed
+    labels_allowed      = var.monitor_metrics.labels_allowed
+  }
 
   storage_profile {
     file_driver_enabled         = var.storage_profile_file_driver_enabled
