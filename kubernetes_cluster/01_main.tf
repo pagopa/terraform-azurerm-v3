@@ -232,7 +232,7 @@ moved {
 }
 
 resource "azurerm_role_assignment" "oms_agent_monitoring_metrics" {
-  count = var.log_analytics_workspace_id != null && var.oms_agent_msi_auth_for_monitoring_enabled ? 1 : 0
+  count = var.log_analytics_workspace_id != null && var.oms_agent_monitoring_metrics_role_assignment_enabled ? 1 : 0
 
   scope                = azurerm_kubernetes_cluster.this.id
   role_definition_name = "Monitoring Metrics Publisher"
