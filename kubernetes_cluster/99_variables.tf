@@ -314,10 +314,8 @@ variable "addon_azure_pod_identity_enabled" {
 
 variable "monitor_metrics" {
   type = object({
-    annotations_allowed = string
-    # Specifies if monitoring metrics are enabled.
-    labels_allowed = string
-    # The name of the specific metrics to monitor.
+    annotations_allowed = optional(string, "")
+    labels_allowed      = optional(string, "")
   })
   default = {
     annotations_allowed = ""
