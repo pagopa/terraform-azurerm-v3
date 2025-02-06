@@ -423,3 +423,11 @@ variable "oms_agent_monitoring_metrics_role_assignment_enabled" {
   description = "Enabled oms agent monitoring metrics roles"
   default     = true
 }
+
+### Prometheus managed
+variable "enable_prometheus_monitor_metrics" {
+  description = "Enable or disable Prometheus managed metrics"
+  type        = bool
+  default     = false
+}
+
