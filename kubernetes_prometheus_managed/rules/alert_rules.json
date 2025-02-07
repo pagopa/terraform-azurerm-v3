@@ -11,14 +11,46 @@
       "time_to_resolve": "PT10M"
     },
     "annotations": {
-      "summary": "Elevato utilizzo della CPU del nodo rilevato",
-      "description": "L'utilizzo medio della CPU per il nodo {{ $labels.instance }} ha superato l'80% per più di 10 minuti."
+      "summary": "High node CPU usage detected",
+      "description": "The average CPU usage for node {{ $labels.instance }} has exceeded 80% for more than 10 minutes."
     }
   },
   {
     "alert": "HighMemoryUsage",
     "enabled": true,
-    "expression": "avg by (instance) (rate(node_memory_Active_bytes[5m])) > 0.08",
+    "expression": "avg by (instance) (rate(node_memory_Active_bytes[5m])) > 0.75",
+    "for": "PT5M",
+    "severity": 3,
+    "severity_label": "critical",
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT15M"
+    },
+    "annotations": {
+      "summary": "High node memory usage detected",
+      "description": "The average memory usage for node {{ $labels.instance }} has exceeded 75% for more than 15 minutes."
+    }
+  },
+  {
+    "alert": "HighDiskUsage",
+    "enabled": true,
+    "expression": "avg by (instance) (node_filesystem_avail_bytes{fstype!~'tmpfs|overlay'} / node_filesystem_size_bytes{fstype!~'tmpfs|overlay'}) < 0.15",
+    "for": "PT10M",
+    "severity": 3,
+    "severity_label": "critical",
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT20M"
+    },
+    "annotations": {
+      "summary": "High disk usage detected",
+      "description": "Available disk space on node {{ $labels.instance }} is below 15% for more than 20 minutes."
+    }
+  },
+  {
+    "alert": "HighNetworkTraffic",
+    "enabled": true,
+    "expression": "rate(node_network_transmit_bytes_total[5m]) > 1000000",
     "for": "PT5M",
     "severity": 2,
     "severity_label": "warning",
@@ -27,8 +59,88 @@
       "time_to_resolve": "PT10M"
     },
     "annotations": {
-      "summary": "Elevato utilizzo della memoria del nodo rilevato",
-      "description": "L'utilizzo medio della memoria per il nodo {{ $labels.instance }} ha superato il 80% per più di 10 minuti."
+      "summary": "High network traffic detected",
+      "description": "Network transmit traffic for node {{ $labels.instance }} has exceeded 1MB/s for more than 10 minutes."
+    }
+  },
+  {
+    "alert": "HighErrorRate",
+    "enabled": true,
+    "expression": "rate(http_requests_total{status=~'5..'}[5m]) / rate(http_requests_total[5m]) > 0.05",
+    "for": "PT5M",
+    "severity": 3,
+    "severity_label": "critical",
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT15M"
+    },
+    "annotations": {
+      "summary": "High HTTP error rate detected",
+      "description": "The HTTP 5xx error rate for node {{ $labels.instance }} has exceeded 5% in the last 15 minutes."
+    }
+  },
+  {
+    "alert": "LowDiskSpace",
+    "enabled": true,
+    "expression": "node_filesystem_avail_bytes{mountpoint=\"/\"} < 5000000000",
+    "for": "PT5M",
+    "severity": 2,
+    "severity_label": "warning",
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    },
+    "annotations": {
+      "summary": "Low disk space detected",
+      "description": "Available disk space on the main disk for node {{ $labels.instance }} is below 5GB for more than 10 minutes."
+    }
+  },
+  {
+    "alert": "HighLoadAverage",
+    "enabled": true,
+    "expression": "node_load1{job=\"node\"} > 5",
+    "for": "PT5M",
+    "severity": 2,
+    "severity_label": "warning",
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    },
+    "annotations": {
+      "summary": "High load average detected",
+      "description": "The 1-minute load average for node {{ $labels.instance }} has exceeded 5 for more than 10 minutes."
+    }
+  },
+  {
+    "alert": "PodCrashLooping",
+    "enabled": true,
+    "expression": "kube_pod_container_status_restarts_total > 5",
+    "for": "PT5M",
+    "severity": 1,
+    "severity_label": "critical",
+    "alert_resolution": {
+      "auto_resolved": false,
+      "time_to_resolve": "PT30M"
+    },
+    "annotations": {
+      "summary": "Pod crash looping detected",
+      "description": "The pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has restarted more than 5 times in the last 30 minutes."
+    }
+  },
+  {
+    "alert": "NodeDown",
+    "enabled": true,
+    "expression": "up{job=\"node\"} == 0",
+    "for": "PT2M",
+    "severity": 1,
+    "severity_label": "critical",
+    "alert_resolution": {
+      "auto_resolved": false,
+      "time_to_resolve": "PT5M"
+    },
+    "annotations": {
+      "summary": "Node is down",
+      "description": "Node {{ $labels.instance }} has been unresponsive for more than 2 minutes. Check the node status and associated services."
     }
   }
 ]

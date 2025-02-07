@@ -50,3 +50,9 @@ variable "grafana_resource_group" {
   description = "(Required) Name of the resource group where resource belongs to."
   type        = string
 }
+
+variable "action_groups_id" {
+  description = "The ID of the Action Group to use for the Alerts."
+  type        = list(string)
+  default     = []
+}

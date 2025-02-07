@@ -1,5 +1,6 @@
 locals {
-  alert_rules = jsondecode(file("${path.module}/rules/alert_rules.json"))
+  alert_rules      = jsondecode(file("${path.module}/rules/alert_rules.json"))
+  action_groups_id = var.action_groups_id
 }
 
 
@@ -29,6 +30,13 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "recording_rules_alert_gr
 
       labels = {
         severity = rule.value.severity_label
+      }
+
+      dynamic "action" {
+        for_each = local.action_groups_id
+        content {
+          action_group_id = action.value
+        }
       }
 
       alert_resolution {
