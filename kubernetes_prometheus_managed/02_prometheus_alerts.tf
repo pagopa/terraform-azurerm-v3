@@ -12,14 +12,19 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "node_recording_rules_ale
   tags = var.tags
 
   rule {
-    alert      = "HighNodeCPUUsage"
+    alert   = "HighNodeCPUUsage"
+    enabled = true
+
     expression = "avg by (instance) (rate(node_cpu_seconds_total{mode!='idle'}[5m])) > 0.08"
     for        = "PT5M"
+    severity   = 2
+
     labels = {
       severity = "warning"
     }
     alert_resolution {
-      auto_resolved = true
+      auto_resolved   = true
+      time_to_resolve = "PT10M"
     }
     annotations = {
       summary     = "Elevato utilizzo della CPU del nodo rilevato"
