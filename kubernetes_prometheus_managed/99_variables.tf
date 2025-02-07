@@ -56,3 +56,9 @@ variable "action_groups_id" {
   type        = list(string)
   default     = []
 }
+
+variable "enable_prometheus_alerts" {
+  description = "Enable/Disable Prometheus Alerts."
+  type        = bool
+  default     = true
+}

@@ -6,6 +6,7 @@ locals {
 
 
 resource "azurerm_monitor_alert_prometheus_rule_group" "recording_rules_alert_group_cluster_nodes" {
+  count               = var.enable_prometheus_alerts ? 1 : 0
   name                = "MProm-ClusterNodes-Alerts-${var.cluster_name}"
   location            = data.azurerm_resource_group.this.location
   resource_group_name = data.azurerm_resource_group.this.name
@@ -54,6 +55,7 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "recording_rules_alert_gr
 }
 
 resource "azurerm_monitor_alert_prometheus_rule_group" "recording_rules_alert_group_pods" {
+  count               = var.enable_prometheus_alerts ? 1 : 0
   name                = "MProm-Pods-Alerts-${var.cluster_name}"
   location            = data.azurerm_resource_group.this.location
   resource_group_name = data.azurerm_resource_group.this.name
