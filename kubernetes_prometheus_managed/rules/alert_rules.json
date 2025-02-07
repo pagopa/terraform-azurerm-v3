@@ -71,6 +71,7 @@
     "severity_label": "warning",
     "for": "PT60M",
     "annotations": {
+      "summary": "PersistentVolume claimed is expected to fill up within 4 days",
       "description": "Based on recent sampling, the PersistentVolume claimed by {{ $labels.persistentvolumeclaim }} in Namespace {{ $labels.namespace }} is expected to fill up within four days. Currently {{ $value | humanizePercentage }} is available. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
     },
     "alert_resolution": {
@@ -102,7 +103,8 @@
     "severity_label": "warning",
     "for": "PT5M",
     "annotations": {
-      "description": "The persistent volume {{ $labels.persistentvolume }} has status {{ $labels.phase }}. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+      "summary": "The persistent volume {{ $labels.persistentvolume }} has status {{ $labels.phase }}.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -133,7 +135,8 @@
     "severity_label": "info",
     "for": "PT15M",
     "annotations": {
-      "description": "{{ $value }} Pods of DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} are not scheduled. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+      "summary": "{{ $value }} Pods of DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} are not scheduled.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -148,7 +151,8 @@
     "severity_label": "warning",
     "for": "PT15M",
     "annotations": {
-      "description": "{{ $value }} Pods of DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} are running where they are not supposed to run. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+      "summary": "{{ $value }} Pods of DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} are running where they are not supposed to run.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -163,7 +167,8 @@
     "severity_label": "warning",
     "for": "PT15M",
     "annotations": {
-      "description": "{{ $value | humanizePercentage }} usage of {{ $labels.resource }} in namespace {{ $labels.namespace }} in {{ $labels.cluster}}. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+      "summary": "{{ $value | humanizePercentage }} usage of {{ $labels.resource }} in namespace {{ $labels.namespace }} in {{ $labels.cluster}}.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -178,7 +183,8 @@
     "severity_label": "warning",
     "for": "PT5M",
     "annotations": {
-      "description": "PersistentVolumeClaim {{ $labels.pvc }} in namespace {{ $labels.namespace }} is not bound. Please check the status of the PVC and the associated PV."
+      "summary": "PersistentVolumeClaim {{ $labels.pvc }} in namespace {{ $labels.namespace }} is not bound.",
+      "description": "Please check the status of the PVC and the associated PV."
     },
     "alert_resolution": {
       "auto_resolved": false,
@@ -193,7 +199,8 @@
     "severity_label": "error",
     "for": "PT15M",
     "annotations": {
-      "description": "{{ $labels.node }} in {{ $labels.cluster}} is unreachable and some workloads may be rescheduled. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/node-level-recommended-alerts)."
+      "summary": "{{ $labels.node }} in {{ $labels.cluster}} is unreachable and some workloads may be rescheduled.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/node-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -208,6 +215,7 @@
     "severity_label": "error",
     "for": "PT15M",
     "annotations": {
+      "summary": "Node {{ $labels.node }} readiness status change multiple times.",
       "description": "The readiness status of node {{ $labels.node }} in {{ $labels.cluster}} has changed more than 2 times in the last 15 minutes. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/node-level-recommended-alerts)."
     },
     "alert_resolution": {
@@ -223,6 +231,7 @@
     "severity_label": "warning",
     "for": "PT15M",
     "annotations": {
+      "summary": "Average PV usage on pod {{ $labels.pod }} is over 80%.",
       "description": "Average PV usage on pod {{ $labels.pod }} in container {{ $labels.container }}  is greater than 80%. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
@@ -238,7 +247,8 @@
     "severity_label": "error",
     "for": "PT15M",
     "annotations": {
-      "description": "Deployment {{ $labels.namespace }}/{{ $labels.deployment }} in {{ $labels.cluster}} replica mismatch. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+      "summary": "Deployment {{ $labels.namespace }}/{{ $labels.deployment }} in {{ $labels.cluster}} replica mismatch.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -253,7 +263,8 @@
     "severity_label": "error",
     "for": "PT15M",
     "annotations": {
-      "description": "StatefulSet {{ $labels.namespace }}/{{ $labels.statefulset }} in {{ $labels.cluster}} replica mismatch. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+      "summary": "StatefulSet {{ $labels.namespace }}/{{ $labels.statefulset }} in {{ $labels.cluster}} replica mismatch.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -268,6 +279,7 @@
     "severity_label": "error",
     "for": "PT15M",
     "annotations": {
+      "summary": "Horizontal Pod Autoscaler for {{ $labels.statefulset }} not matched the desired number of replicas.",
       "description": "Horizontal Pod Autoscaler in {{ $labels.cluster}} has not matched the desired number of replicas for longer than 15 minutes. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
@@ -283,6 +295,7 @@
     "severity_label": "warning",
     "for": "PT15M",
     "annotations": {
+      "summary": "Horizontal Pod Autoscaler for {{ $labels.statefulset }} reach the maximum scaling.",
       "description": "Horizontal Pod Autoscaler in {{ $labels.cluster}} has been running at max replicas for longer than 15 minutes. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
@@ -298,6 +311,7 @@
     "severity_label": "error",
     "for": "PT15M",
     "annotations": {
+      "summary": "{{ $labels.namespace }}/{{ $labels.pod }} crash looping in {{ printf \"%.2f\" $value }} / second.",
       "description": "{{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) in {{ $labels.cluster}} is restarting {{ printf \"%.2f\" $value }} / second. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
@@ -313,7 +327,8 @@
     "severity_label": "warning",
     "for": "PT360M",
     "annotations": {
-      "description": "Number of stale jobs older than six hours is greater than 0. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+      "summary": "Number of stale jobs older than six hours is greater than 0.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -323,12 +338,13 @@
   {
     "alert": "KubePodContainerRestart",
     "enabled": true,
-    "expression": "sum by (namespace, controller, container, cluster)(increase(kube_pod_container_status_restarts_total{job=\"kube-state-metrics\"}[1h])* on(namespace, pod, cluster) group_left(controller) label_replace(kube_pod_owner, \"controller\", \"$1\", \"owner_name\", \"(.*)\")) > 0",
+    "expression": "sum by (namespace, controller, container, cluster)(increase(kube_pod_container_status_restarts_total{job=\"kube-state-metrics\"}[1h])* on(namespace, pod, cluster) group_left(controller) label_replace(kube_pod_owner, \"controller\", \"$1\", \"owner_name\", \"(.*)\")) > 2",
     "severity": 2,
     "severity_label": "warning",
     "for": "PT15M",
     "annotations": {
-      "description": "Pod container restarted in last 1 hour. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+      "summary": "Pod container restarted more of 2 times in last 1 hour.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -343,7 +359,8 @@
     "severity_label": "error",
     "for": "PT5M",
     "annotations": {
-      "description": "Ready state of pods is less than 80%. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+      "summary": "Ready state of pods is less than 80%.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -358,7 +375,8 @@
     "severity_label": "error",
     "for": "PT5M",
     "annotations": {
-      "description": "Number of pods in failed state are greater than 0. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+      "summary": "Number of pods in failed state are greater than 0.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -373,7 +391,8 @@
     "severity_label": "warning",
     "for": "PT15M",
     "annotations": {
-      "description": "{{ $labels.namespace }}/{{ $labels.pod }} in {{ $labels.cluster}} by controller is not ready. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+      "summary": "{{ $labels.namespace }}/{{ $labels.pod }} in {{ $labels.cluster}} by controller is not ready.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -388,6 +407,7 @@
     "severity_label": "error",
     "for": "PT15M",
     "annotations": {
+      "summary": "StatefulSet has failed but has not been rolled back.",
       "description": "StatefulSet generation for {{ $labels.namespace }}/{{ $labels.statefulset }} does not match, this indicates that the StatefulSet has failed but has not been rolled back. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
@@ -403,7 +423,8 @@
     "severity_label": "warning",
     "for": "PT15M",
     "annotations": {
-      "description": "Job {{ $labels.namespace }}/{{ $labels.job_name }} in {{ $labels.cluster}} failed to complete. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+      "summary": "Job {{ $labels.namespace }}/{{ $labels.job_name }} in {{ $labels.cluster}} failed to complete.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -418,7 +439,8 @@
     "severity_label": "warning",
     "for": "PT5M",
     "annotations": {
-      "description": "Average CPU usage per container is greater than 95%. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+      "summary": "Average CPU usage per container is greater than 95%.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -433,7 +455,8 @@
     "severity_label": "warning",
     "for": "PT10M",
     "annotations": {
-      "description": "Average Memory usage per container is greater than 95%. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+      "summary": "Average Memory usage per container is greater than 95%.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
@@ -448,7 +471,8 @@
     "severity_label": "warning",
     "for": "PT10M",
     "annotations": {
-      "description": "Kubelet Pod startup latency is too high. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+      "summary": "Kubelet Pod startup latency is too high.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
     },
     "alert_resolution": {
       "auto_resolved": true,
