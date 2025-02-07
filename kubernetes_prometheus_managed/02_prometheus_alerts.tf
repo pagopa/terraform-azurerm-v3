@@ -3,12 +3,12 @@ locals {
 }
 
 
-resource "azurerm_monitor_alert_prometheus_rule_group" "node_recording_rules_alert_group" {
+resource "azurerm_monitor_alert_prometheus_rule_group" "recording_rules_alert_group" {
   name                = "MProm-Alerts-${var.cluster_name}"
   location            = data.azurerm_resource_group.this.location
   resource_group_name = data.azurerm_resource_group.this.name
   cluster_name        = var.cluster_name
-  description         = "Node Recording Alerts Rule Group"
+  description         = "Alerts Rule Group"
   rule_group_enabled  = true
   interval            = "PT1M"
   scopes = [
