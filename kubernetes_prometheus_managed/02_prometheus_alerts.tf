@@ -4,7 +4,7 @@ locals {
 
 
 resource "azurerm_monitor_alert_prometheus_rule_group" "node_recording_rules_alert_group" {
-  name                = "NodeRecordingRulesRuleGroup-Alerts-${var.cluster_name}"
+  name                = "MProm-Alerts-${var.cluster_name}"
   location            = data.azurerm_resource_group.this.location
   resource_group_name = data.azurerm_resource_group.this.name
   cluster_name        = var.cluster_name
