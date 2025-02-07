@@ -12,6 +12,10 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "tags" {
+  type = map(any)
+}
+
 variable "monitor_workspace_name" {
   description = "Name for the Azure Monitor Log Analytics Workspace."
   type        = string
