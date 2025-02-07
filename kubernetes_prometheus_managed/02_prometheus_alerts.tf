@@ -1,3 +1,8 @@
+locals {
+  alert_rules = jsondecode(file("${path.module}/rules/alert_rules.json"))
+}
+
+
 resource "azurerm_monitor_alert_prometheus_rule_group" "node_recording_rules_alert_group" {
   name                = "NodeRecordingRulesRuleGroup-Alerts-${var.cluster_name}"
   location            = data.azurerm_resource_group.this.location
@@ -7,28 +12,34 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "node_recording_rules_ale
   rule_group_enabled  = true
   interval            = "PT1M"
   scopes = [
-    azurerm_monitor_workspace.this.id, data.azurerm_kubernetes_cluster.this.id
+    azurerm_monitor_workspace.this.id,
+    data.azurerm_kubernetes_cluster.this.id
   ]
   tags = var.tags
 
-  rule {
-    alert   = "HighNodeCPUUsage"
-    enabled = true
+  dynamic "rule" {
+    for_each = local.alert_rules
+    content {
+      alert   = rule.value.alert
+      enabled = rule.value.enabled
 
-    expression = "avg by (instance) (rate(node_cpu_seconds_total{mode!='idle'}[5m])) > 0.08"
-    for        = "PT5M"
-    severity   = 2
+      expression = rule.value.expression
+      for        = rule.value.for
+      severity   = rule.value.severity
 
-    labels = {
-      severity = "warning"
-    }
-    alert_resolution {
-      auto_resolved   = true
-      time_to_resolve = "PT10M"
-    }
-    annotations = {
-      summary     = "Elevato utilizzo della CPU del nodo rilevato"
-      description = "L'utilizzo medio della CPU per il nodo {{ $labels.instance }} ha superato l'80% per più di 10 minuti."
+      labels = {
+        severity = rule.value.severity_label
+      }
+
+      alert_resolution {
+        auto_resolved   = rule.value.alert_resolution.auto_resolved
+        time_to_resolve = rule.value.alert_resolution.time_to_resolve
+      }
+
+      annotations = {
+        summary     = rule.value.annotations.summary
+        description = rule.value.annotations.description
+      }
     }
   }
 }

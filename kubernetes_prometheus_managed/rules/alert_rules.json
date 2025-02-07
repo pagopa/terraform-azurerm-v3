@@ -1,0 +1,34 @@
+[
+  {
+    "alert": "HighNodeCPUUsage",
+    "enabled": true,
+    "expression": "avg by (instance) (rate(node_cpu_seconds_total{mode!='idle'}[5m])) > 0.08",
+    "for": "PT5M",
+    "severity": 2,
+    "severity_label": "warning",
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    },
+    "annotations": {
+      "summary": "Elevato utilizzo della CPU del nodo rilevato",
+      "description": "L'utilizzo medio della CPU per il nodo {{ $labels.instance }} ha superato l'80% per più di 10 minuti."
+    }
+  },
+  {
+    "alert": "HighMemoryUsage",
+    "enabled": true,
+    "expression": "avg by (instance) (rate(node_memory_Active_bytes[5m])) > 0.08",
+    "for": "PT5M",
+    "severity": 2,
+    "severity_label": "warning",
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    },
+    "annotations": {
+      "summary": "Elevato utilizzo della memoria del nodo rilevato",
+      "description": "L'utilizzo medio della memoria per il nodo {{ $labels.instance }} ha superato il 80% per più di 10 minuti."
+    }
+  }
+]
