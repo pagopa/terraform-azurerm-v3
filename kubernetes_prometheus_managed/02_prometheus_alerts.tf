@@ -12,6 +12,7 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "node_recording_rules_ale
   tags = var.tags
 
   rule {
+    alert      = "HighNodeCPUUsage"
     expression = "avg by (instance) (rate(node_cpu_seconds_total{mode!='idle'}[5m])) > 0.08"
     for        = "15m"
     labels = {
