@@ -13,7 +13,8 @@ variable "cluster_name" {
 }
 
 variable "tags" {
-  type = map(any)
+  type    = map(any)
+  default = {}
 }
 
 variable "monitor_workspace_name" {
