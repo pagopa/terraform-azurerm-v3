@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 function check_command(){
   if command -v "$1";
@@ -31,8 +32,10 @@ check_command "helm"
 ### KUBECTL
 # https://kubernetes.io/releases/
 # https://github.com/Azure/kubelogin/releases
-az aks install-cli --client-version 1.29.11 --kubelogin-version 0.1.4
-
+# Define variables
+KUBECTL_VERSION="${KUBECTL_VERSION:-1.31.5}"
+KUBELOGIN_VERSION="${KUBELOGIN_VERSION:-0.1.7}"
+az aks install-cli --client-version "${KUBECTL_VERSION}" --kubelogin-version "${KUBELOGIN_VERSION}"
 check_command "kubectl"
 check_command "kubelogin"
 
@@ -55,25 +58,25 @@ apt-get -y --allow-unauthenticated install docker-ce docker-ce-cli containerd.io
 check_command "docker"
 
 ### YQ from https://github.com/mikefarah/yq#install
-YQ_VERSION="v4.44.5"
+YQ_VERSION="${YQ_VERSION:-v4.45.1}"
 YQ_BINARY="yq_linux_amd64"
-wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY}.tar.gz -O - |\
+wget "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY}.tar.gz" -O - |\
   tar xz && mv ${YQ_BINARY} /usr/bin/yq
 
 check_command "yq"
 
 ### SOPS from https://github.com/mozilla/sops
-SOPS_VERSION="3.9.1"
+SOPS_VERSION="${SOPS_VERSION:-3.9.4}"
 wget "https://github.com/mozilla/sops/releases/download/v${SOPS_VERSION}/sops_${SOPS_VERSION}_amd64.deb"
 apt install -y "$PWD/sops_${SOPS_VERSION}_amd64.deb"
 
 check_command "sops"
 
 ### Velero
-VELERO_VERSION=v1.13.2
-wget https://github.com/vmware-tanzu/velero/releases/download/${VELERO_VERSION}/velero-${VELERO_VERSION}-linux-amd64.tar.gz && \
-tar -zxvf velero-${VELERO_VERSION}-linux-amd64.tar.gz && \
-sudo mv velero-${VELERO_VERSION}-linux-amd64/velero /usr/bin/velero
+VELERO_VERSION="${VELERO_VERSION:-v1.13.2}"
+wget "https://github.com/vmware-tanzu/velero/releases/download/${VELERO_VERSION}/velero-${VELERO_VERSION}-linux-amd64.tar.gz" && \
+tar -zxvf "velero-${VELERO_VERSION}-linux-amd64.tar.gz" && \
+sudo mv "velero-${VELERO_VERSION}-linux-amd64/velero" /usr/bin/velero
 
 check_command "velero"
 
@@ -86,16 +89,16 @@ sudo apt-get install -y packer
 check_command "packer"
 
 ### TEMPORAL
-TEMPORAL_VERSION=1.1.2
-wget https://github.com/temporalio/cli/releases/download/v${TEMPORAL_VERSION}/temporal_cli_${TEMPORAL_VERSION}_linux_amd64.tar.gz && \
-tar -zxvf temporal_cli_${TEMPORAL_VERSION}_linux_amd64.tar.gz && \
+TEMPORAL_VERSION="${TEMPORAL_VERSION:-1.1.2}"
+wget "https://github.com/temporalio/cli/releases/download/v${TEMPORAL_VERSION}/temporal_cli_${TEMPORAL_VERSION}_linux_amd64.tar.gz" && \
+tar -zxvf "temporal_cli_${TEMPORAL_VERSION}_linux_amd64.tar.gz" && \
 sudo mv temporal /usr/bin/temporal
 
 check_command "temporal"
 
 ### ARGOCD
-ARGOCD_VERSION=2.13.1
-wget https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-amd64 && \
+ARGOCD_VERSION="${ARGOCD_VERSION:-2.13.5}"
+wget "https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-amd64" && \
 chmod +x argocd-linux-amd64 && \
 sudo mv argocd-linux-amd64 /usr/bin/argocd
 
