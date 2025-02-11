@@ -15,7 +15,7 @@ data "azurerm_kubernetes_cluster" "this" {
 #
 data "azurerm_monitor_workspace" "this" {
   name                = var.monitor_workspace_name
-  resource_group_name = data.azurerm_resource_group.this.name
+  resource_group_name = var.monitor_workspace_rg
 }
 
 resource "azurerm_monitor_data_collection_endpoint" "dce" {

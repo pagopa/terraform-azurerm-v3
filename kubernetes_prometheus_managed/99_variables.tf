@@ -18,9 +18,15 @@ variable "tags" {
 }
 
 variable "monitor_workspace_name" {
-  description = "Name for the Azure Monitor Log Analytics Workspace."
+  description = "Name for the Azure Monitor Workspace."
   type        = string
   default     = "MonitorWorkspace"
+}
+
+variable "monitor_workspace_rg" {
+  description = "Name for the Azure Monitor Workspace Resource Group."
+  type        = string
+  default     = "MonitorWorkspaceRG"
 }
 
 variable "cluster_region" {
