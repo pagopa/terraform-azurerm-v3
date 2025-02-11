@@ -6,7 +6,7 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "node_recording_rules_rul
   description         = "Node Recording Rules Rule Group"
   rule_group_enabled  = true
   interval            = "PT1M"
-  scopes              = [azurerm_monitor_workspace.this.id, data.azurerm_kubernetes_cluster.this.id]
+  scopes              = [data.azurerm_monitor_workspace.this.id, data.azurerm_kubernetes_cluster.this.id]
   tags                = var.tags
 
   rule {
@@ -97,7 +97,7 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "kubernetes_recording_rul
   description         = "Kubernetes Recording Rules Rule Group"
   rule_group_enabled  = true
   interval            = "PT1M"
-  scopes              = [azurerm_monitor_workspace.this.id, data.azurerm_kubernetes_cluster.this.id]
+  scopes              = [data.azurerm_monitor_workspace.this.id, data.azurerm_kubernetes_cluster.this.id]
   tags                = var.tags
 
   rule {
@@ -255,7 +255,7 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "node_and_kubernetes_reco
   description         = "Node and Kubernetes Recording Rules Rule Group for Windows Nodes"
   rule_group_enabled  = true
   interval            = "PT1M"
-  scopes              = [azurerm_monitor_workspace.this.id, data.azurerm_kubernetes_cluster.this.id]
+  scopes              = [data.azurerm_monitor_workspace.this.id, data.azurerm_kubernetes_cluster.this.id]
   tags                = var.tags
 
   rule {
@@ -387,7 +387,7 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "node_recording_rules_rul
   description         = "Node and Kubernetes Recording Rules Rule Group for Windows Nodes"
   rule_group_enabled  = true
   interval            = "PT1M"
-  scopes              = [azurerm_monitor_workspace.this.id, data.azurerm_kubernetes_cluster.this.id]
+  scopes              = [data.azurerm_monitor_workspace.this.id, data.azurerm_kubernetes_cluster.this.id]
   tags                = var.tags
 
   rule {

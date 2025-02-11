@@ -20,7 +20,7 @@ variable "tags" {
 variable "monitor_workspace_name" {
   description = "Name for the Azure Monitor Log Analytics Workspace."
   type        = string
-  default     = "myMonitorWorkspace"
+  default     = "MonitorWorkspace"
 }
 
 variable "cluster_region" {

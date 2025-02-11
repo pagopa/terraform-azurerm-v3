@@ -13,11 +13,9 @@ data "azurerm_kubernetes_cluster" "this" {
 #
 # Azure Monitor Workspace
 #
-resource "azurerm_monitor_workspace" "this" {
+data "azurerm_monitor_workspace" "this" {
   name                = var.monitor_workspace_name
   resource_group_name = data.azurerm_resource_group.this.name
-  location            = data.azurerm_resource_group.this.location
-  tags                = var.tags
 }
 
 resource "azurerm_monitor_data_collection_endpoint" "dce" {
@@ -52,7 +50,7 @@ resource "azurerm_monitor_data_collection_rule" "dcr" {
 
   destinations {
     monitor_account {
-      monitor_account_id = azurerm_monitor_workspace.this.id
+      monitor_account_id = data.azurerm_monitor_workspace.this.id
       name               = "MonitoringAccount1"
     }
   }
@@ -103,7 +101,7 @@ data "azurerm_dashboard_grafana" "grafana" {
 }
 
 resource "azurerm_role_assignment" "datareaderrole" {
-  scope              = azurerm_monitor_workspace.this.id
-  role_definition_id = "/subscriptions/${split("/", azurerm_monitor_workspace.this.id)[2]}/providers/Microsoft.Authorization/roleDefinitions/b0d8363b-8ddd-447d-831f-62ca05bff136"
+  scope              = data.azurerm_monitor_workspace.this.id
+  role_definition_id = "/subscriptions/${split("/", data.azurerm_monitor_workspace.this.id)[2]}/providers/Microsoft.Authorization/roleDefinitions/b0d8363b-8ddd-447d-831f-62ca05bff136"
   principal_id       = data.azurerm_dashboard_grafana.grafana.identity.0.principal_id
 }

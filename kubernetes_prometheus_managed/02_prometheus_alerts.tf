@@ -15,7 +15,7 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "recording_rules_alert_gr
   rule_group_enabled  = true
   interval            = "PT1M"
   scopes = [
-    azurerm_monitor_workspace.this.id,
+    data.azurerm_monitor_workspace.this.id,
     data.azurerm_kubernetes_cluster.this.id
   ]
   tags = var.tags
@@ -64,7 +64,7 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "recording_rules_alert_gr
   rule_group_enabled  = true
   interval            = "PT1M"
   scopes = [
-    azurerm_monitor_workspace.this.id,
+    data.azurerm_monitor_workspace.this.id,
     data.azurerm_kubernetes_cluster.this.id
   ]
   tags = var.tags
