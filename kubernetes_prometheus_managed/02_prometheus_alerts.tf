@@ -12,7 +12,7 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "recording_rules_alert_gr
   resource_group_name = data.azurerm_resource_group.this.name
   cluster_name        = var.cluster_name
   description         = "Cluster And Nodes Alerts Rule Group"
-  rule_group_enabled  = true
+  rule_group_enabled  = var.enable_alerts
   interval            = "PT1M"
   scopes = [
     data.azurerm_monitor_workspace.this.id,
@@ -61,7 +61,7 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "recording_rules_alert_gr
   resource_group_name = data.azurerm_resource_group.this.name
   cluster_name        = var.cluster_name
   description         = "Pods Alerts Rule Group"
-  rule_group_enabled  = true
+  rule_group_enabled  = var.enable_alerts
   interval            = "PT1M"
   scopes = [
     data.azurerm_monitor_workspace.this.id,
