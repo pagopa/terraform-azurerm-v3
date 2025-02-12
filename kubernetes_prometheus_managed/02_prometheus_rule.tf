@@ -640,11 +640,11 @@ EOF
 }
 
 resource "azurerm_monitor_alert_prometheus_rule_group" "ux_win_recording_rules_rule_group_win" {
-  name                = "UXRecordingRulesRuleGroup-${var.cluster_name}"
+  name                = "UXRecordingRulesRuleGroup-Win-${var.cluster_name}"
   location            = data.azurerm_resource_group.this.location
   resource_group_name = data.azurerm_resource_group.this.name
   cluster_name        = var.cluster_name
-  description         = "UX Recording Rules for Linux"
+  description         = "UX Recording Rules for Windows"
   rule_group_enabled  = false
   interval            = "PT1M"
   scopes = [
