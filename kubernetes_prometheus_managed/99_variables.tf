@@ -68,3 +68,9 @@ variable "enable_prometheus_alerts" {
   type        = bool
   default     = true
 }
+
+variable "enable_alerts" {
+  description = "Enable/Disable Alerts Rules on Azure Monitor."
+  type        = bool
+  default     = true
+}

@@ -496,3 +496,263 @@ avg by (instance) ((irate(windows_logical_disk_read_seconds_total{job="windows-e
 EOF
   }
 }
+
+resource "azurerm_monitor_alert_prometheus_rule_group" "ux_recording_rules_rule_group_win" {
+  name                = "UXRecordingRulesRuleGroup-${var.cluster_name}"
+  location            = data.azurerm_resource_group.this.location
+  resource_group_name = data.azurerm_resource_group.this.name
+  cluster_name        = var.cluster_name
+  description         = "UX Recording Rules for Linux"
+  rule_group_enabled  = true
+  interval            = "PT1M"
+  scopes              = [data.azurerm_monitor_workspace.this.id, data.azurerm_kubernetes_cluster.this.id]
+  tags                = var.tags
+
+  rule {
+    enabled    = true
+    record     = "ux:pod_cpu_usage:sum_irate"
+    expression = <<EOF
+(sum by (namespace, pod, cluster, microsoft_resourceid) (
+  irate(container_cpu_usage_seconds_total{container != "", pod != "", job = "cadvisor"}[5m])
+)) * on (pod, namespace, cluster, microsoft_resourceid) group_left (node, created_by_name, created_by_kind)
+(max by (node, created_by_name, created_by_kind, pod, namespace, cluster, microsoft_resourceid) (kube_pod_info{pod != "", job = "kube-state-metrics"}))
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:controller_cpu_usage:sum_irate"
+    expression = <<EOF
+sum by (namespace, node, cluster, created_by_name, created_by_kind, microsoft_resourceid) (
+  ux:pod_cpu_usage:sum_irate
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:pod_workingset_memory:sum"
+    expression = <<EOF
+(
+  sum by (namespace, pod, cluster, microsoft_resourceid) (
+    container_memory_working_set_bytes{container != "", pod != "", job = "cadvisor"}
+  )
+) * on (pod, namespace, cluster, microsoft_resourceid) group_left (node, created_by_name, created_by_kind)
+(max by (node, created_by_name, created_by_kind, pod, namespace, cluster, microsoft_resourceid) (kube_pod_info{pod != "", job = "kube-state-metrics"}))
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:controller_workingset_memory:sum"
+    expression = <<EOF
+sum by (namespace, node, cluster, created_by_name, created_by_kind, microsoft_resourceid) (
+  ux:pod_workingset_memory:sum
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:pod_rss_memory:sum"
+    expression = <<EOF
+(
+  sum by (namespace, pod, cluster, microsoft_resourceid) (
+    container_memory_rss{container != "", pod != "", job = "cadvisor"}
+  )
+) * on (pod, namespace, cluster, microsoft_resourceid) group_left (node, created_by_name, created_by_kind)
+(max by (node, created_by_name, created_by_kind, pod, namespace, cluster, microsoft_resourceid) (kube_pod_info{pod != "", job = "kube-state-metrics"}))
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:controller_rss_memory:sum"
+    expression = <<EOF
+sum by (namespace, node, cluster, created_by_name, created_by_kind, microsoft_resourceid) (
+  ux:pod_rss_memory:sum
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:pod_container_count:sum"
+    expression = <<EOF
+sum by (node, created_by_name, created_by_kind, namespace, cluster, pod, microsoft_resourceid) (
+(
+(
+  sum by (container, pod, namespace, cluster, microsoft_resourceid) (kube_pod_container_info{container != "", pod != "", container_id != "", job = "kube-state-metrics"})
+  or sum by (container, pod, namespace, cluster, microsoft_resourceid) (kube_pod_init_container_info{container != "", pod != "", container_id != "", job = "kube-state-metrics"})
+)
+* on (pod, namespace, cluster, microsoft_resourceid) group_left (node, created_by_name, created_by_kind)
+(
+  max by (node, created_by_name, created_by_kind, pod, namespace, cluster, microsoft_resourceid) (
+    kube_pod_info{pod != "", job = "kube-state-metrics"}
+  )
+)
+)
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:controller_container_count:sum"
+    expression = <<EOF
+sum by (node, created_by_name, created_by_kind, namespace, cluster, microsoft_resourceid) (
+  ux:pod_container_count:sum
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:pod_container_restarts:max"
+    expression = <<EOF
+max by (node, created_by_name, created_by_kind, namespace, cluster, pod, microsoft_resourceid) (
+(
+(
+  max by (container, pod, namespace, cluster, microsoft_resourceid) (kube_pod_container_status_restarts_total{container != "", pod != "", job = "kube-state-metrics"})
+  or sum by (container, pod, namespace, cluster, microsoft_resourceid) (kube_pod_init_status_restarts_total{container != "", pod != "", job = "kube-state-metrics"})
+)
+* on (pod, namespace, cluster, microsoft_resourceid) group_left (node, created_by_name, created_by_kind)
+(
+  max by (node, created_by_name, created_by_kind, pod, namespace, cluster, microsoft_resourceid) (
+    kube_pod_info{pod != "", job = "kube-state-metrics"}
+  )
+)
+)
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:controller_container_restarts:max"
+    expression = <<EOF
+max by (node, created_by_name, created_by_kind, namespace, cluster, microsoft_resourceid) (
+  ux:pod_container_restarts:max
+)
+EOF
+  }
+}
+
+resource "azurerm_monitor_alert_prometheus_rule_group" "ux_win_recording_rules_rule_group_win" {
+  name                = "UXRecordingRulesRuleGroup-Win-${var.cluster_name}"
+  location            = data.azurerm_resource_group.this.location
+  resource_group_name = data.azurerm_resource_group.this.name
+  cluster_name        = var.cluster_name
+  description         = "UX Recording Rules for Windows"
+  rule_group_enabled  = false
+  interval            = "PT1M"
+  scopes = [
+    data.azurerm_monitor_workspace.this.id,
+    data.azurerm_kubernetes_cluster.this.id
+  ]
+  tags = var.tags
+
+  rule {
+    enabled    = true
+    record     = "ux:pod_cpu_usage_windows:sum_irate"
+    expression = <<EOF
+sum by (cluster, pod, namespace, node, created_by_kind, created_by_name, microsoft_resourceid) (
+	(
+		max by (instance, container_id, cluster, microsoft_resourceid) (
+			irate(windows_container_cpu_usage_seconds_total{ container_id != "", job = "windows-exporter"}[5m])
+		) * on (container_id, cluster, microsoft_resourceid) group_left (container, pod, namespace) (
+			max by (container, container_id, pod, namespace, cluster, microsoft_resourceid) (
+				kube_pod_container_info{container != "", pod != "", container_id != "", job = "kube-state-metrics"}
+			)
+		)
+	) * on (pod, namespace, cluster, microsoft_resourceid) group_left (node, created_by_name, created_by_kind)
+	(
+		max by (node, created_by_name, created_by_kind, pod, namespace, cluster, microsoft_resourceid) (
+		  kube_pod_info{ pod != "", job = "kube-state-metrics"}
+		)
+	)
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:controller_cpu_usage_windows:sum_irate"
+    expression = <<EOF
+sum by (namespace, node, cluster, created_by_name, created_by_kind, microsoft_resourceid) (
+  ux:pod_cpu_usage_windows:sum_irate
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:pod_workingset_memory_windows:sum"
+    expression = <<EOF
+sum by (cluster, pod, namespace, node, created_by_kind, created_by_name, microsoft_resourceid) (
+	(
+		max by (instance, container_id, cluster, microsoft_resourceid) (
+			windows_container_memory_usage_private_working_set_bytes{ container_id != "", job = "windows-exporter"}
+		) * on (container_id, cluster, microsoft_resourceid) group_left (container, pod, namespace) (
+			max by (container, container_id, pod, namespace, cluster, microsoft_resourceid) (
+				kube_pod_container_info{container != "", pod != "", container_id != "", job = "kube-state-metrics"}
+			)
+		)
+	) * on (pod, namespace, cluster, microsoft_resourceid) group_left (node, created_by_name, created_by_kind)
+	(
+		max by (node, created_by_name, created_by_kind, pod, namespace, cluster, microsoft_resourceid) (
+		  kube_pod_info{ pod != "", job = "kube-state-metrics"}
+		)
+	)
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:controller_workingset_memory_windows:sum"
+    expression = <<EOF
+sum by (namespace, node, cluster, created_by_name, created_by_kind, microsoft_resourceid) (
+  ux:pod_workingset_memory_windows:sum
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:node_cpu_usage_windows:sum_irate"
+    expression = <<EOF
+sum by (instance, cluster, microsoft_resourceid) (
+  (1 - irate(windows_cpu_time_total{job="windows-exporter", mode="idle"}[5m]))
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:node_memory_usage_windows:sum"
+    expression = <<EOF
+sum by (instance, cluster, microsoft_resourceid) ((
+  windows_os_visible_memory_bytes{job = "windows-exporter"}
+  - windows_memory_available_bytes{job = "windows-exporter"}
+))
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:node_network_packets_received_drop_total_windows:sum_irate"
+    expression = <<EOF
+sum by (instance, cluster, microsoft_resourceid) (irate(windows_net_packets_received_discarded_total{job="windows-exporter", device!="lo"}[5m]))
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:node_network_packets_outbound_drop_total_windows:sum_irate"
+    expression = <<EOF
+sum by (instance, cluster, microsoft_resourceid) (irate(windows_net_packets_outbound_discarded_total{job="windows-exporter", device!="lo"}[5m]))
+EOF
+  }
+
+}
