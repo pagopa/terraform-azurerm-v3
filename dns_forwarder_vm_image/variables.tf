@@ -56,7 +56,7 @@ variable "base_image_version" {
 
 variable "vm_sku" {
   type        = string
-  description = "(Optional) Size of VMs in the scale set. Default to Standard_B1s. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info."
+  description = "(Optional) Size of VMs in the scale set dedicated to build packer image. Default to Standard_B2ms. See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info."
   default     = "Standard_B2ms"
 }
 
