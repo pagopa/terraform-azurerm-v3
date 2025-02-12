@@ -42,6 +42,15 @@ variable "unique_key_paths" {
   default     = []
 }
 
+variable "conflict_resolution_policy" {
+  description = "Container conflict resolution policy"
+  type        = object({
+    mode      = string
+    path      = string
+    procedure = string })
+  default     = { mode = "LastWriterWins", path = "/_ts", procedure = null }
+}
+
 variable "autoscale_settings" {
   type = object({
     max_throughput = number
