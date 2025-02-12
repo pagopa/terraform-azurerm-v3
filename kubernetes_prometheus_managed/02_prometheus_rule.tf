@@ -508,7 +508,6 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "ux_recording_rules_rule_
   scopes              = [data.azurerm_monitor_workspace.this.id, data.azurerm_kubernetes_cluster.this.id]
   tags                = var.tags
 
-
   rule {
     enabled    = true
     record     = "ux:pod_cpu_usage:sum_irate"
@@ -652,8 +651,6 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "ux_win_recording_rules_r
     data.azurerm_kubernetes_cluster.this.id
   ]
   tags = var.tags
-
-
 
   rule {
     enabled    = true
