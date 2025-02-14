@@ -110,7 +110,7 @@ resource "azurerm_role_assignment" "datareaderrole" {
 # https://registry.terraform.io/providers/hashicorp/azurerm/4.9.0/docs/resources/dashboard_grafana_managed_private_endpoint
 resource "azapi_resource" "grafana_managed_private_endpoint_ma" {
   type      = "Microsoft.Dashboard/grafana/managedPrivateEndpoints@2023-10-01-preview"
-  name      = "pagopa${var.tags["Environment"]}${var.location_short}GrafanaPam"
+  name      = "pagopa${var.tags["Environment"]}${var.location_short}GrafPam"
   location  = var.location
   tags      = var.tags
   parent_id = data.azurerm_dashboard_grafana.grafana.id
