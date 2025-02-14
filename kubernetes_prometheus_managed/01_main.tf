@@ -131,22 +131,3 @@ resource "azapi_resource" "grafana_managed_private_endpoint_ma" {
 
   depends_on = [data.azurerm_monitor_workspace.this]
 }
-
-# # Approve the private endpoint
-resource "azapi_update_resource" "approval" {
-  type      = "Microsoft.Network/privateEndpoints/privateEndpointConnections@2023-09-01"
-  name      = "grafana-${data.azurerm_dashboard_grafana.grafana.name}-pagopa${var.tags["Environment"]}${var.location_short}GrafPam"
-  parent_id = azapi_resource.grafana_managed_private_endpoint_ma.body.properties.privateLinkResourceId
-
-  body = {
-    properties = {
-      privateLinkServiceConnectionState = {
-        description = "Approved via Terraform"
-        status      = "Approved"
-      }
-    }
-  }
-  lifecycle {
-    ignore_changes = all
-  }
-}
