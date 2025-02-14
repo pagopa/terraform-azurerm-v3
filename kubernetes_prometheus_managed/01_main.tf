@@ -106,13 +106,15 @@ resource "azurerm_role_assignment" "datareaderrole" {
   principal_id       = data.azurerm_dashboard_grafana.grafana.identity.0.principal_id
 }
 
+# TODO Azure azurerm_dashboard_grafana_managed_private_endpoint release after v4.9.0 of azurerm provider
+# https://registry.terraform.io/providers/hashicorp/azurerm/4.9.0/docs/resources/dashboard_grafana_managed_private_endpoint
 resource "azapi_resource" "grafana_managed_private_endpoint_ma" {
   type      = "Microsoft.Dashboard/grafana/managedPrivateEndpoints@2024-10-01"
   name      = "pagopa${var.tags["Environment"]}${var.location_short}GrafanaPam"
   location  = var.location
   tags      = var.tags
   parent_id = data.azurerm_dashboard_grafana.grafana.id
-  body = jsonencode({
+  body = {
     properties = {
       groupIds = [
         "prometheusMetrics"
@@ -122,7 +124,7 @@ resource "azapi_resource" "grafana_managed_private_endpoint_ma" {
       privateLinkServiceUrl     = data.azurerm_monitor_workspace.this.query_endpoint
       requestMessage            = "approval"
     }
-  })
+  }
 
   depends_on = [data.azurerm_monitor_workspace.this]
 }
