@@ -140,11 +140,13 @@ resource "azapi_update_resource" "auto_approve_private_endpoint" {
 
   body = {
     properties = {
-      autoApproval = {
-        subscriptionId = data.azurerm_dashboard_grafana.grafana.id
+      privateLinkServiceConnectionState = {
+        status      = "Approved"
+        description = "Auto-approved managed private endpoint"
       }
     }
   }
+
   lifecycle {
     ignore_changes = all
   }
