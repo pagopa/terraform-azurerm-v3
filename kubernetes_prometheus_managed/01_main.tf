@@ -135,7 +135,7 @@ resource "azapi_resource" "grafana_managed_private_endpoint_ma" {
 
 # Auto Approve il Private Endpoint
 resource "azapi_update_resource" "auto_approve_private_endpoint" {
-  type        = "Microsoft.Dashboard/grafana/privateLinkResources@2023-10-01-preview"
+  type        = "Microsoft.Dashboard/grafana/managedPrivateEndpoints@2023-10-01-preview"
   resource_id = azapi_resource.grafana_managed_private_endpoint_ma.id
 
   body = {
