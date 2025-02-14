@@ -636,6 +636,94 @@ max by (node, created_by_name, created_by_kind, namespace, cluster, microsoft_re
 )
 EOF
   }
+
+  rule {
+    enabled    = true
+    record     = "ux:pod_resource_limit:sum"
+    expression = <<EOF
+(sum by (cluster, pod, namespace, resource, microsoft_resourceid) (
+(
+	max by (cluster, microsoft_resourceid, pod, container, namespace, resource)
+	 (kube_pod_container_resource_limits{container != "", pod != "", job = "kube-state-metrics"})
+)
+)unless (count by (pod, namespace, cluster, resource, microsoft_resourceid)
+	(kube_pod_container_resource_limits{container != "", pod != "", job = "kube-state-metrics"})
+!= on (pod, namespace, cluster, microsoft_resourceid) group_left()
+ sum by (pod, namespace, cluster, microsoft_resourceid)
+ (kube_pod_container_info{container != "", pod != "", job = "kube-state-metrics"})
+)
+
+)* on (namespace, pod, cluster, microsoft_resourceid) group_left (node, created_by_kind, created_by_name)
+(
+	kube_pod_info{pod != "", job = "kube-state-metrics"}
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:controller_resource_limit:sum"
+    expression = <<EOF
+sum by (cluster, namespace, created_by_name, created_by_kind, node, resource, microsoft_resourceid) (
+ux:pod_resource_limit:sum
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:controller_pod_phase_count:sum"
+    expression = <<EOF
+sum by (cluster, phase, node, created_by_kind, created_by_name, namespace, microsoft_resourceid) ( (
+(kube_pod_status_phase{job="kube-state-metrics",pod!=""})
+ or (label_replace((count(kube_pod_deletion_timestamp{job="kube-state-metrics",pod!=""}) by (namespace, pod, cluster, microsoft_resourceid) * count(kube_pod_status_reason{reason="NodeLost", job="kube-state-metrics"} == 0) by (namespace, pod, cluster, microsoft_resourceid)), "phase", "terminating", "", ""))) * on (pod, namespace, cluster, microsoft_resourceid) group_left (node, created_by_name, created_by_kind)
+(
+max by (node, created_by_name, created_by_kind, pod, namespace, cluster, microsoft_resourceid) (
+kube_pod_info{job="kube-state-metrics",pod!=""}
+)
+)
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:node_cpu_usage:sum_irate"
+    expression = <<EOF
+sum by (instance, cluster, microsoft_resourceid) (
+(1 - irate(node_cpu_seconds_total{job="node", mode="idle"}[5m]))
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:node_memory_usage:sum"
+    expression = <<EOF
+sum by (instance, cluster, microsoft_resourceid) ((
+node_memory_MemTotal_bytes{job = "node"}
+- node_memory_MemFree_bytes{job = "node"}
+- node_memory_cached_bytes{job = "node"}
+- node_memory_buffers_bytes{job = "node"}
+))
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:node_network_receive_drop_total:sum_irate"
+    expression = <<EOF
+sum by (instance, cluster, microsoft_resourceid) (irate(node_network_receive_drop_total{job="node", device!="lo"}[5m]))
+EOF
+  }
+
+  rule {
+    enabled    = true
+    record     = "ux:node_network_transmit_drop_total:sum_irate"
+    expression = <<EOF
+sum by (instance, cluster, microsoft_resourceid) (irate(node_network_transmit_drop_total{job="node", device!="lo"}[5m]))
+EOF
+  }
 }
 
 resource "azurerm_monitor_alert_prometheus_rule_group" "ux_win_recording_rules_rule_group_win" {
