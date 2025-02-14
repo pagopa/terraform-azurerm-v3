@@ -134,7 +134,7 @@ resource "azapi_resource" "grafana_managed_private_endpoint_ma" {
 
 # # Approve the private endpoint
 resource "azapi_update_resource" "approval" {
-  type      = "Microsoft.Network/privateEndpoints/privateEndpointConnections@2023-10-01-preview"
+  type      = "Microsoft.Network/privateEndpoints/privateEndpointConnections@2023-09-01"
   name      = "grafana-${data.azurerm_dashboard_grafana.grafana.name}-pagopa${var.tags["Environment"]}${var.location_short}GrafPam"
   parent_id = azapi_resource.grafana_managed_private_endpoint_ma.body.properties.privateLinkResourceId
 
