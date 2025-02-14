@@ -123,6 +123,10 @@ resource "azapi_resource" "grafana_managed_private_endpoint_ma" {
       privateLinkResourceRegion = data.azurerm_monitor_workspace.this.location
       requestMessage            = "Approved"
     }
+
+  }
+  lifecycle {
+    ignore_changes = [tags]
   }
 
   depends_on = [data.azurerm_monitor_workspace.this]
@@ -132,7 +136,7 @@ resource "azapi_resource" "grafana_managed_private_endpoint_ma" {
 resource "azapi_update_resource" "approval" {
   type      = "Microsoft.Dashboard/grafana/privateEndpointConnections@2023-10-01-preview"
   name      = "grafana-${data.azurerm_dashboard_grafana.grafana.name}-pagopa${var.tags["Environment"]}${var.location_short}GrafPam"
-  parent_id = azapi_resource.grafana_managed_private_endpoint_ma.parent_id
+  parent_id = azapi_resource.grafana_managed_private_endpoint_ma.id
 
   body = {
     properties = {
@@ -141,5 +145,8 @@ resource "azapi_update_resource" "approval" {
         status      = "Approved"
       }
     }
+  }
+  lifecycle {
+    ignore_changes = all
   }
 }
