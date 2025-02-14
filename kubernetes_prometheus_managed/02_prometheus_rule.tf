@@ -688,6 +688,16 @@ EOF
 
   rule {
     enabled    = true
+    record     = "ux:cluster_pod_phase_count:sum"
+    expression = <<EOF
+sum by (cluster, phase, node, namespace, microsoft_resourceid) (
+ux:controller_pod_phase_count:sum
+)
+EOF
+  }
+
+  rule {
+    enabled    = true
     record     = "ux:node_cpu_usage:sum_irate"
     expression = <<EOF
 sum by (instance, cluster, microsoft_resourceid) (
