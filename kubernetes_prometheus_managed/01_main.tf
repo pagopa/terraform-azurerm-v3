@@ -109,7 +109,7 @@ resource "azurerm_role_assignment" "datareaderrole" {
 # TODO Azure azurerm_dashboard_grafana_managed_private_endpoint release after v4.9.0 of azurerm provider
 # https://registry.terraform.io/providers/hashicorp/azurerm/4.9.0/docs/resources/dashboard_grafana_managed_private_endpoint
 resource "azapi_resource" "grafana_managed_private_endpoint_ma" {
-  type      = "Microsoft.Dashboard/grafana/managedPrivateEndpoints@2024-10-01"
+  type      = "Microsoft.Dashboard/grafana/managedPrivateEndpoints@2023-10-01-preview"
   name      = "pagopa${var.tags["Environment"]}${var.location_short}GrafanaPam"
   location  = var.location
   tags      = var.tags
