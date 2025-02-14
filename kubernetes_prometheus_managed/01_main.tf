@@ -131,3 +131,21 @@ resource "azapi_resource" "grafana_managed_private_endpoint_ma" {
 
   depends_on = [data.azurerm_monitor_workspace.this]
 }
+
+
+# Auto Approve il Private Endpoint
+resource "azapi_update_resource" "auto_approve_private_endpoint" {
+  type        = "Microsoft.Dashboard/grafana/privateLinkResources@2023-10-01-preview"
+  resource_id = azapi_resource.grafana_managed_private_endpoint_ma.id
+
+  body = {
+    properties = {
+      autoApproval = {
+        subscriptionId = data.azurerm_dashboard_grafana.grafana.id
+      }
+    }
+  }
+  lifecycle {
+    ignore_changes = all
+  }
+}
