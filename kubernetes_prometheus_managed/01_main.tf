@@ -121,7 +121,7 @@ resource "azapi_resource" "grafana_managed_private_endpoint_ma" {
       ]
       privateLinkResourceId     = data.azurerm_monitor_workspace.this.id
       privateLinkResourceRegion = data.azurerm_monitor_workspace.this.location
-      privateLinkServiceUrl     = data.azurerm_monitor_workspace.this.query_endpoint
+      privateLinkServiceUrl     = replace(data.azurerm_monitor_workspace.this.query_endpoint, "https://", "")
       requestMessage            = "approval"
     }
   }
