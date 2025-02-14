@@ -147,7 +147,7 @@ resource "azapi_update_resource" "auto_approve_private_endpoint" {
     }
   }
 
-  lifecycle {
-    ignore_changes = all
-  }
+  # lifecycle {
+  #   ignore_changes = all
+  # }
 }
