@@ -105,3 +105,24 @@ resource "azurerm_role_assignment" "datareaderrole" {
   role_definition_id = "/subscriptions/${split("/", data.azurerm_monitor_workspace.this.id)[2]}/providers/Microsoft.Authorization/roleDefinitions/b0d8363b-8ddd-447d-831f-62ca05bff136"
   principal_id       = data.azurerm_dashboard_grafana.grafana.identity.0.principal_id
 }
+
+resource "azapi_resource" "grafana_managed_private_endpoint_ma" {
+  type      = "Microsoft.Dashboard/grafana/managedPrivateEndpoints@2024-10-01"
+  name      = "pagopa${var.tags["Environment"]}${var.location_short}GrafanaPam"
+  location  = var.location
+  tags      = var.tags
+  parent_id = data.azurerm_dashboard_grafana.grafana.id
+  body = jsonencode({
+    properties = {
+      groupIds = [
+        "prometheusMetrics"
+      ]
+      privateLinkResourceId     = data.azurerm_monitor_workspace.this.id
+      privateLinkResourceRegion = data.azurerm_monitor_workspace.this.location
+      privateLinkServiceUrl     = data.azurerm_monitor_workspace.this.query_endpoint
+      requestMessage            = "approval"
+    }
+  })
+
+  depends_on = [data.azurerm_monitor_workspace.this]
+}
