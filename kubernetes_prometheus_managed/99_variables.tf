@@ -68,6 +68,12 @@ variable "grafana_resource_group" {
   type        = string
 }
 
+variable "custom_gf_location" {
+  description = "The Azure region where Grafana is deployed."
+  type        = string
+  default     = null
+}
+
 variable "action_groups_id" {
   description = "The ID of the Action Group to use for the Alerts."
   type        = list(string)
