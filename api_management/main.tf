@@ -8,6 +8,7 @@ resource "azurerm_api_management" "this" {
   sku_name                  = var.sku_name
   zones                     = var.zones
   public_ip_address_id      = var.public_ip_address_id
+  min_api_version           = var.min_api_version
 
   # deprecated var.policy_path use xml_content
   dynamic "policy" {
