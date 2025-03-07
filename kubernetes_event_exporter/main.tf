@@ -13,11 +13,11 @@ resource "helm_release" "helm_this" {
     var.custom_config == null ?
     templatefile("${path.module}/templates/default.tftpl",
       {
+        alert_prefix           = var.alert_prefix
         enable_slack           = var.enable_slack, # SLACK PARAM BELOW
         slack_receiver_name    = var.slack_receiver_name,
         slack_token            = var.slack_token,
         slack_channel          = var.slack_channel,
-        slack_message_prefix   = var.slack_message_prefix,
         slack_title            = var.slack_title,
         slack_author           = var.slack_author,
         enable_opsgenie        = var.enable_opsgenie, # OPSGENIE PARAM BELOW
