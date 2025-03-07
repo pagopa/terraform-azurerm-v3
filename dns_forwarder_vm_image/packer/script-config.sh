@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 function check_command(){
   if command -v "$1";
@@ -37,7 +38,7 @@ apt-get -y --allow-unauthenticated install docker-ce docker-ce-cli containerd.io
 check_command "docker"
 
 # install YQ from https://github.com/mikefarah/yq#install
-YQ_VERSION="v4.33.3"
+YQ_VERSION="v4.45.1"
 YQ_BINARY="yq_linux_amd64"
 wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY}.tar.gz -O - |\
   tar xz && mv ${YQ_BINARY} /usr/bin/yq

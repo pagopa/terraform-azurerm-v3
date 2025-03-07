@@ -55,6 +55,24 @@ variable "default_metric_alerts" {
         }
       ]
     }
+    node_cpu_usage_percentage_critical = {
+      aggregation      = "Average"
+      metric_namespace = "Microsoft.ContainerService/managedClusters"
+      description      = "Critical node cpu usage"
+      metric_name      = "node_cpu_usage_percentage"
+      operator         = "GreaterThan"
+      threshold        = 96
+      severity         = 1
+      frequency        = "PT15M"
+      window_size      = "PT1H"
+      dimension = [
+        {
+          name     = "node"
+          operator = "Include"
+          values   = ["*"]
+        }
+      ]
+    }
 
     node_memory_working_set_percentage = {
       aggregation      = "Average"
@@ -74,28 +92,23 @@ variable "default_metric_alerts" {
         }
       ],
     }
-    pods_failed = {
+    node_memory_working_set_percentage_critical = {
       aggregation      = "Average"
       metric_namespace = "Microsoft.ContainerService/managedClusters"
-      description      = "Pod state phase failed"
-      metric_name      = "kube_pod_status_phase"
+      description      = "Critical node memory usage"
+      metric_name      = "node_memory_working_set_percentage"
       operator         = "GreaterThan"
-      threshold        = 0
+      threshold        = 96
       severity         = 1
       frequency        = "PT15M"
       window_size      = "PT1H"
       dimension = [
         {
-          name     = "phase"
-          operator = "Include"
-          values   = ["Failed"]
-        },
-        {
-          name     = "namespace"
+          name     = "node"
           operator = "Include"
           values   = ["*"]
         }
-      ]
+      ],
     }
   }
 }
