@@ -367,3 +367,9 @@ variable "management_logger_applicaiton_insight_enabled" {
   description = "(Optional) if false, disables management logger application insight block"
   default     = true
 }
+
+variable "min_api_version" {
+  type        = string
+  description = "(Optional) The minimum API version"
+  default     = null
+}

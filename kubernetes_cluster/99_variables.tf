@@ -311,6 +311,19 @@ variable "addon_azure_pod_identity_enabled" {
   default     = false
 }
 
+
+variable "monitor_metrics" {
+  type = object({
+    annotations_allowed = optional(string, null)
+    labels_allowed      = optional(string, null)
+  })
+  default = {
+    annotations_allowed = null
+    labels_allowed      = null
+  }
+  description = "(Optional) Specifies a comma-separated list of Kubernetes annotation keys that will be used in the resource's labels metric."
+}
+
 # The sku_tier must be set to Standard or Premium to enable this feature.
 # Enabling this will add Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal.
 variable "cost_analysis_enabled" {
@@ -410,3 +423,11 @@ variable "oms_agent_monitoring_metrics_role_assignment_enabled" {
   description = "Enabled oms agent monitoring metrics roles"
   default     = true
 }
+
+### Prometheus managed
+variable "enable_prometheus_monitor_metrics" {
+  description = "Enable or disable Prometheus managed metrics"
+  type        = bool
+  default     = false
+}
+

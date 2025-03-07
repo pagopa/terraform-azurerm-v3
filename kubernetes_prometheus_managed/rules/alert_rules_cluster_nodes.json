@@ -1,0 +1,226 @@
+[
+  {
+    "alert": "KubeCPUQuotaOvercommit",
+    "enabled": true,
+    "expression": "sum(min without(resource) (kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\", resource=~\"(cpu|requests.cpu)\"}))  /sum(kube_node_status_allocatable{resource=\"cpu\", job=\"kube-state-metrics\"})  > 1.5",
+    "severity": 4,
+    "for": "PT5M",
+    "severity_label": "info",
+    "annotations": {
+      "summary": "Cluster CPU Quota Overcommitted",
+      "description": "Cluster {{ $labels.cluster}} has overcommitted CPU resource requests for Namespaces. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeMemoryQuotaOvercommit",
+    "enabled": true,
+    "expression": "sum(min without(resource) (kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\", resource=~\"(memory|requests.memory)\"}))  /sum(kube_node_status_allocatable{resource=\"memory\", job=\"kube-state-metrics\"})  > 1.5",
+    "severity": 4,
+    "for": "PT5M",
+    "severity_label": "info",
+    "annotations": {
+      "summary": "Cluster MEMORY Quota Overcommitted",
+      "description": "Cluster {{ $labels.cluster}} has overcommitted memory resource requests for Namespaces. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeContainerOOMKilledCount",
+    "enabled": true,
+    "expression": "sum by (cluster,container,controller,namespace)(kube_pod_container_status_last_terminated_reason{reason=\"OOMKilled\"} * on(cluster,namespace,pod) group_left(controller) label_replace(kube_pod_owner, \"controller\", \"$1\", \"owner_name\", \"(.*)\")) > 0",
+    "severity": 3,
+    "for": "PT5M",
+    "severity_label": "info",
+    "annotations": {
+      "summary": "Number of OOM killed containers is greater than 0",
+      "description": "Number of OOM killed containers is greater than 0. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeClientErrors",
+    "enabled": true,
+    "expression": "(sum(rate(rest_client_requests_total{code=~\"5..\"}[5m])) by (cluster, instance, job, namespace)  / sum(rate(rest_client_requests_total[5m])) by (cluster, instance, job, namespace)) > 0.01",
+    "severity": 1,
+    "severity_label": "critical",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "Kubernetes API server client",
+      "description": "Kubernetes API server client '{{ $labels.job }}/{{ $labels.instance }}' is experiencing {{ $value | humanizePercentage }} errors. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubePersistentVolumeFillingUp",
+    "enabled": true,
+    "expression": "kubelet_volume_stats_available_bytes{job=\"kubelet\"}/kubelet_volume_stats_capacity_bytes{job=\"kubelet\"} < 0.15 and kubelet_volume_stats_used_bytes{job=\"kubelet\"} > 0 and predict_linear(kubelet_volume_stats_available_bytes{job=\"kubelet\"}[6h], 4 * 24 * 3600) < 0 unless on(namespace, persistentvolumeclaim) kube_persistentvolumeclaim_access_mode{ access_mode=\"ReadOnlyMany\"} == 1 unless on(namespace, persistentvolumeclaim) kube_persistentvolumeclaim_labels{label_excluded_from_alerts=\"true\"} == 1",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT60M",
+    "annotations": {
+      "summary": "PersistentVolume claimed is expected to fill up within 4 days",
+      "description": "Based on recent sampling, the PersistentVolume claimed by {{ $labels.persistentvolumeclaim }} in Namespace {{ $labels.namespace }} is expected to fill up within four days. Currently {{ $value | humanizePercentage }} is available. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT15M"
+    }
+  },
+  {
+    "alert": "KubePersistentVolumeInodesFillingUp",
+    "enabled": true,
+    "expression": "kubelet_volume_stats_inodes_free{job=\"kubelet\"} / kubelet_volume_stats_inodes{job=\"kubelet\"} < 0.03",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "PersistentVolume claimed inodes threshold",
+      "description": "The PersistentVolume claimed by {{ $labels.persistentvolumeclaim }} in Namespace {{ $labels.namespace }} only has {{ $value | humanizePercentage }} free inodes. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubePersistentVolumeErrors",
+    "enabled": true,
+    "expression": "kube_persistentvolume_status_phase{phase=~\"Failed|Pending\",job=\"kube-state-metrics\"} > 0",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT5M",
+    "annotations": {
+      "summary": "The persistent volume {{ $labels.persistentvolume }} has status {{ $labels.phase }}.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeContainerWaiting",
+    "enabled": true,
+    "expression": "sum by (namespace, pod, container, cluster) (kube_pod_container_status_waiting_reason{job=\"kube-state-metrics\"}) > 0",
+    "severity": 1,
+    "severity_label": "error",
+    "for": "PT60M",
+    "annotations": {
+      "summary": "Container waiting state for longer than 1 hour.",
+      "description": "pod/{{ $labels.pod }} in namespace {{ $labels.namespace }} on container {{ $labels.container}} has been in waiting state for longer than 1 hour. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeDaemonSetNotScheduled",
+    "enabled": true,
+    "expression": "kube_daemonset_status_desired_number_scheduled{job=\"kube-state-metrics\"} - kube_daemonset_status_current_number_scheduled{job=\"kube-state-metrics\"} > 0",
+    "severity": 3,
+    "severity_label": "info",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "{{ $value }} Pods of DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} are not scheduled.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeDaemonSetMisScheduled",
+    "enabled": true,
+    "expression": "kube_daemonset_status_number_misscheduled{job=\"kube-state-metrics\"} > 0",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "{{ $value }} Pods of DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} are running where they are not supposed to run.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeQuotaAlmostFull",
+    "enabled": true,
+    "expression": "kube_resourcequota{job=\"kube-state-metrics\", type=\"used\"}  / ignoring(instance, job, type)(kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\"} > 0)  > 0.9 < 1",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "{{ $value | humanizePercentage }} usage of {{ $labels.resource }} in namespace {{ $labels.namespace }} in {{ $labels.cluster}}.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/cluster-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubePersistentVolumeClaimNotBound",
+    "enabled": true,
+    "expression": "kube_persistentvolumeclaim_status_condition{condition='Bound',status='false'} == 1",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT5M",
+    "annotations": {
+      "summary": "PersistentVolumeClaim {{ $labels.pvc }} in namespace {{ $labels.namespace }} is not bound.",
+      "description": "Please check the status of the PVC and the associated PV."
+    },
+    "alert_resolution": {
+      "auto_resolved": false,
+      "time_to_resolve": "PT15M"
+    }
+  },
+  {
+    "alert": "KubeNodeUnreachable",
+    "enabled": true,
+    "expression": "(kube_node_spec_taint{job=\"kube-state-metrics\",key=\"node.kubernetes.io/unreachable\",effect=\"NoSchedule\"} unless ignoring(key,value) kube_node_spec_taint{job=\"kube-state-metrics\",key=~\"ToBeDeletedByClusterAutoscaler|cloud.google.com/impending-node-termination|aws-node-termination-handler/spot-itn\"}) == 1",
+    "severity": 1,
+    "severity_label": "error",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "{{ $labels.node }} in {{ $labels.cluster}} is unreachable and some workloads may be rescheduled.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/node-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeNodeReadinessFlapping",
+    "enabled": true,
+    "expression": "sum(changes(kube_node_status_condition{status=\"true\",condition=\"Ready\"}[15m])) by (cluster, node) > 2",
+    "severity": 1,
+    "severity_label": "error",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "Node {{ $labels.node }} readiness status change multiple times.",
+      "description": "The readiness status of node {{ $labels.node }} in {{ $labels.cluster}} has changed more than 2 times in the last 15 minutes. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/node-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  }
+]
