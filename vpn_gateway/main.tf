@@ -188,6 +188,17 @@ resource "azurerm_virtual_network_gateway_connection" "local" {
   virtual_network_gateway_id = azurerm_virtual_network_gateway.gw.id
   local_network_gateway_id   = azurerm_local_network_gateway.local[count.index].id
 
+  use_policy_based_traffic_selectors = var.local_networks[count.index].use_policy_based_traffic_selectors
+
+  dynamic "traffic_selector_policy" {
+    for_each = var.local_networks[count.index].traffic_selector_policies
+    iterator = ts_policy
+    content {
+      local_address_cidrs  = ts_policy.value.local_address_cidrs
+      remote_address_cidrs = ts_policy.value.remote_address_cidrs
+    }
+  }
+
   shared_key = var.local_networks[count.index].shared_key
 
   dynamic "ipsec_policy" {
