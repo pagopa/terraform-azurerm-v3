@@ -47,19 +47,14 @@ variable "pod_cpu" {
 }
 
 variable "tolerations" {
-  type = list(object({
-    key      = string
-    operator = string
-    value    = string
-    effect   = string
-  }))
+  type        = string
   description = "Tolerations for the pod"
-  default     = []
+  default     = ""
 }
 
 variable "affinity" {
-  type    = map(any)
-  default = {}
+  type    = string
+  default = ""
 }
 
 #
