@@ -11,3 +11,7 @@ kvCertificatesName:
 keyvault:
   name: ${KEY_VAULT_NAME}
   tenantId: ${TENANT_ID}
+
+tolerations: ${TOLERATIONS}
+
+affinity: ${AFFINITY}

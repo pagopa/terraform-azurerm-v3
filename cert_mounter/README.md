@@ -44,7 +44,8 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_cert_mounter_chart_version"></a> [cert\_mounter\_chart\_version](#input\_cert\_mounter\_chart\_version) | (Optional) Cert mounter chart version | `string` | `"2.0.1"` | no |
+| <a name="input_affinity"></a> [affinity](#input\_affinity) | n/a | `map(any)` | `{}` | no |
+| <a name="input_cert_mounter_chart_version"></a> [cert\_mounter\_chart\_version](#input\_cert\_mounter\_chart\_version) | (Optional) Cert mounter chart version | `string` | `"2.0.2"` | no |
 | <a name="input_certificate_name"></a> [certificate\_name](#input\_certificate\_name) | (Required) Name of the certificate stored in the keyvault, that will be installed as a secret in aks | `string` | n/a | yes |
 | <a name="input_helm_release_name"></a> [helm\_release\_name](#input\_helm\_release\_name) | (Optional) Cert Mounter release name. Changed this field force the helm destroy and re-install | `string` | `"cert-mounter-blueprint"` | no |
 | <a name="input_kv_name"></a> [kv\_name](#input\_kv\_name) | (Required) Key vault name where to retrieve the certificate | `string` | n/a | yes |
@@ -52,6 +53,7 @@ No modules.
 | <a name="input_pod_cpu"></a> [pod\_cpu](#input\_pod\_cpu) | Pod request and limit for CPU (in `m`) | `number` | `10` | no |
 | <a name="input_pod_ram"></a> [pod\_ram](#input\_pod\_ram) | Pod request and limit for RAM memory (in `Mi`) | `number` | `30` | no |
 | <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id) | (Required) Tenant identifier | `string` | n/a | yes |
+| <a name="input_tolerations"></a> [tolerations](#input\_tolerations) | Tolerations for the pod | <pre>list(object({<br/>    key      = string<br/>    operator = string<br/>    value    = string<br/>    effect   = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_workload_identity_client_id"></a> [workload\_identity\_client\_id](#input\_workload\_identity\_client\_id) | ClientID in form of 'qwerty123-a1aa-1234-xyza-qwerty123' linked to workload identity | `string` | `null` | no |
 | <a name="input_workload_identity_enabled"></a> [workload\_identity\_enabled](#input\_workload\_identity\_enabled) | Enable workload identity chart | `bool` | `false` | no |
 | <a name="input_workload_identity_service_account_name"></a> [workload\_identity\_service\_account\_name](#input\_workload\_identity\_service\_account\_name) | Service account name linked to workload identity | `string` | `null` | no |

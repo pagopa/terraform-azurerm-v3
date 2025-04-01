@@ -29,3 +29,7 @@ resources:
 
 azure:
   workloadIdentityClientId: ${WORKLOAD_IDENTITY_CLIENT_ID}
+
+tolerations: ${TOLERATIONS}
+
+affinity: ${AFFINITY}
