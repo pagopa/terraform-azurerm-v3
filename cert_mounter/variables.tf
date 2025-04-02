@@ -31,7 +31,7 @@ variable "tenant_id" {
 variable "cert_mounter_chart_version" {
   type        = string
   description = "(Optional) Cert mounter chart version"
-  default     = "2.0.1"
+  default     = "2.0.2"
 }
 
 variable "pod_ram" {
@@ -44,6 +44,18 @@ variable "pod_cpu" {
   type        = number
   description = "Pod request and limit for CPU (in `m`)"
   default     = 10
+}
+
+variable "tolerations" {
+  type        = string
+  description = "Pod tolerations"
+  default     = ""
+}
+
+variable "affinity" {
+  type        = string
+  description = "Pod Affinity and Anti-Affinity"
+  default     = ""
 }
 
 #
