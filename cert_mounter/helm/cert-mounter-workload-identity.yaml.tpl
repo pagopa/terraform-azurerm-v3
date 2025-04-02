@@ -30,6 +30,8 @@ resources:
 azure:
   workloadIdentityClientId: ${WORKLOAD_IDENTITY_CLIENT_ID}
 
-tolerations: ${TOLERATIONS}
+tolerations:
+  ${TOLERATIONS}
 
-affinity: ${AFFINITY}
+affinity:
+  ${AFFINITY}
