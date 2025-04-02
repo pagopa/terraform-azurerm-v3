@@ -48,13 +48,14 @@ variable "pod_cpu" {
 
 variable "tolerations" {
   type        = string
-  description = "Tolerations for the pod"
+  description = "Pod tolerations"
   default     = ""
 }
 
 variable "affinity" {
-  type    = string
-  default = ""
+  type        = string
+  description = "Pod Affinity and Anti-Affinity"
+  default     = ""
 }
 
 #
