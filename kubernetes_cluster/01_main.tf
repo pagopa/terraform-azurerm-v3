@@ -33,7 +33,7 @@ resource "azurerm_kubernetes_cluster" "this" {
   #
   default_node_pool {
     name = var.system_node_pool_name
-    temporary_name_for_rotation = "${var.system_node_pool_name}-temporary"
+    temporary_name_for_rotation = substr("${var.system_node_pool_name}temporary", 0, 12)
 
     ### vm configuration
     vm_size = var.system_node_pool_vm_size
