@@ -446,8 +446,7 @@ variable "maintenance_windows_node_os" {
     duration     = optional(number, 4)
     frequency    = optional(string, "Weekly")
     interval     = optional(number, 1)
-     # today + 20 years
-    start_date   = optional(string, formatdate("YYYY-MM-DDThh:mm:ssZ", timeadd(timestamp(), "175320h")))
+    start_date   = optional(string, "2060-03-12T00:00:00Z")
     start_time   = optional(string, "00:00")
     utc_offset   = optional(string, "+00:00")
     week_index   = optional(string, "First")
