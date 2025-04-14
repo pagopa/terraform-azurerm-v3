@@ -437,3 +437,19 @@ variable "enable_prometheus_monitor_metrics" {
   default     = false
 }
 
+# node os maintenance window. if disabled, schedules a maintenance window for a very far away date
+variable "maintenance_windows_node_os" {
+  type = object({
+    enabled = bool
+    day_of_month = optional(number, 0)
+    day_of_week  = optional(string, "Sunday")
+    duration     = optional(number, 4)
+    frequency    = optional(string, "Weekly")
+    interval     = optional(number, 1)
+     # today + 20 years
+    start_date   = optional(string, formatdate("YYYY-MM-DDThh:mm:ssZ", timeadd(timestamp(), "175320h")))
+    start_time   = optional(string, "00:00")
+    utc_offset   = optional(string, "+00:00")
+    week_index   = optional(string, "First")
+  })
+}
