@@ -77,7 +77,7 @@ locals {
     [
       for subnet in vnet.subnets :
       {
-        name = subnet.name
+        name = subnet
         vnet_name = vnet.name
         rg_name = vnet.resource_group_name
       }
