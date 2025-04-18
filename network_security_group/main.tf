@@ -93,51 +93,47 @@ data "azurerm_subnet" "subnet" {
   resource_group_name = each.value.rg_name
 }
 
-output "test" {
-  value = data.azurerm_subnet.subnet
-}
+resource "azurerm_network_security_group" "custom_nsg" {
+  for_each = var.custom_security_group
 
-# resource "azurerm_network_security_group" "custom_nsg" {
-#   for_each = var.custom_security_group
-#
-#   name                = "${var.prefix}-${each.key}-nsg"
-#   resource_group_name = var.resource_group_name
-#   location            = var.location
-#
-#   dynamic "security_rule" {
-#     for_each = each.value.inbound_rules
-#     content {
-#       name                       = security_rule.value.name
-#       priority                   = security_rule.value.priority
-#       direction                  = "Inbound"
-#       access                     = security_rule.value.access
-#       protocol                   = security_rule.value.protocol
-#       source_port_ranges         = security_rule.value.source_port_ranges
-#       destination_port_ranges    = security_rule.value.destination_port_ranges
-#       source_address_prefixes      = data.azurerm_subnet.subnet["${security_rule.value.source_subnet_name}-${security_rule.value.source_subnet_vnet_name}"].address_prefixes
-#       destination_address_prefixes = data.azurerm_subnet.subnet["${security_rule.value.destination_subnet_name}-${security_rule.value.destination_subnet_vnet_name}"].address_prefixes
-#     }
-#   }
-#
-#   dynamic "security_rule" {
-#     for_each = each.value.outbound_rules
-#     content {
-#       name                       = security_rule.value.name
-#       priority                   = security_rule.value.priority
-#       direction                  = "Outbound"
-#       access                     = security_rule.value.access
-#       protocol                   = security_rule.value.protocol
-#       source_port_ranges         = security_rule.value.source_port_ranges
-#       destination_port_ranges    = security_rule.value.destination_port_ranges
-#       source_address_prefixes     = data.azurerm_subnet.subnet["${security_rule.value.source_subnet_name}-${security_rule.value.source_subnet_vnet_name}"].address_prefixes
-#       destination_address_prefixes = data.azurerm_subnet.subnet["${security_rule.value.destination_subnet_name}-${security_rule.value.destination_subnet_vnet_name}"].address_prefixes
-#     }
-#   }
-#
-#
-#   tags                = var.tags
-#
-# }
+  name                = "${var.prefix}-${each.key}-nsg"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+
+  dynamic "security_rule" {
+    for_each = each.value.inbound_rules
+    content {
+      name                       = security_rule.value.name
+      priority                   = security_rule.value.priority
+      direction                  = "Inbound"
+      access                     = security_rule.value.access
+      protocol                   = security_rule.value.protocol
+      source_port_ranges         = security_rule.value.source_port_ranges
+      destination_port_ranges    = security_rule.value.destination_port_ranges
+      source_address_prefixes      = data.azurerm_subnet.subnet["${security_rule.value.source_subnet_name}-${security_rule.value.source_subnet_vnet_name}"].address_prefixes
+      destination_address_prefixes = data.azurerm_subnet.subnet["${security_rule.value.destination_subnet_name}-${security_rule.value.destination_subnet_vnet_name}"].address_prefixes
+    }
+  }
+
+  dynamic "security_rule" {
+    for_each = each.value.outbound_rules
+    content {
+      name                       = security_rule.value.name
+      priority                   = security_rule.value.priority
+      direction                  = "Outbound"
+      access                     = security_rule.value.access
+      protocol                   = security_rule.value.protocol
+      source_port_ranges         = security_rule.value.source_port_ranges
+      destination_port_ranges    = security_rule.value.destination_port_ranges
+      source_address_prefixes     = data.azurerm_subnet.subnet["${security_rule.value.source_subnet_name}-${security_rule.value.source_subnet_vnet_name}"].address_prefixes
+      destination_address_prefixes = data.azurerm_subnet.subnet["${security_rule.value.destination_subnet_name}-${security_rule.value.destination_subnet_vnet_name}"].address_prefixes
+    }
+  }
+
+
+  tags                = var.tags
+
+}
 
 # todo
 # azurerm_subnet_network_security_group_association
