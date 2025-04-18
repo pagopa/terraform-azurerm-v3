@@ -81,8 +81,8 @@ variable "custom_security_group" {
         for nsg in var.custom_security_group : [
           for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
             length(rule.source_address_prefixes) == 0 ||                                                                         # vuoto
-            (length(rule.source_address_prefixes) > 0 && length(rule.source_address_prefixes) == 1 && rule.source_address_prefixes[0] == "*") ||                             # solo "*"
-            (length(rule.source_address_prefixes) > 0 && length(rule.source_address_prefixes) == 1 && length(regexall("[A-Za-z]", rule.source_address_prefixes[0])) > 0) ||  # solo un elemento "servicetag"
+            (length(rule.source_address_prefixes) == 1 && alltrue([for p in rule.source_address_prefixes : (p == "*") ]) ) ||                             # solo "*"
+            (length(rule.source_address_prefixes) == 1 && alltrue([for p in rule.source_address_prefixes : length(regexall("[A-Za-z]", p)) ]) ) ||  # solo un elemento "servicetag"
             alltrue([for prefix in rule.source_address_prefixes : can(regex("^(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?$", prefix))]) # lista di IP/CIDR validi
           )
         ]
@@ -96,8 +96,8 @@ variable "custom_security_group" {
         for nsg in var.custom_security_group : [
           for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
             length(rule.destination_address_prefixes) == 0 ||                                                                             # vuoto
-            (length(rule.destination_address_prefixes) > 0 && length(rule.destination_address_prefixes) == 1 && rule.destination_address_prefixes[0] == "*") ||                            # solo "*"
-            (length(rule.destination_address_prefixes) > 0 && length(rule.destination_address_prefixes) == 1 && length(regexall("[A-Za-z]", rule.destination_address_prefixes[0])) > 0) || # solo un elemento "servicetag"
+            (length(rule.destination_address_prefixes) == 1 && alltrue([for p in rule.destination_address_prefixes : (p == "*") ]) ) ||                            # solo "*"
+            (length(rule.destination_address_prefixes) == 1 && alltrue([for p in rule.destination_address_prefixes : length(regexall("[A-Za-z]", p)) ]) ) || # solo un elemento "servicetag"
             alltrue([for prefix in rule.destination_address_prefixes : can(regex("^(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?$", prefix))])     # lista di IP/CIDR validi
           )
         ]
@@ -111,7 +111,7 @@ variable "custom_security_group" {
         for nsg in var.custom_security_group : [
           for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
             length(rule.source_port_ranges) == 0 ||                                             # vuoto
-            (length(rule.source_port_ranges) == 1 && rule.source_port_ranges[0] == "*") ||      # solo "*"
+            (length(rule.source_port_ranges) == 1 && alltrue([for p in rule.source_port_ranges : (p == "*") ]) ) ||      # solo "*"
             alltrue([for port in rule.source_port_ranges : can(regex("^\\d+(-\\d+)?$", port))]) # lista di porte/range validi
           )
         ]
@@ -125,7 +125,7 @@ variable "custom_security_group" {
         for nsg in var.custom_security_group : [
           for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
             length(rule.destination_port_ranges) == 0 ||                                             # vuoto
-            (length(rule.destination_port_ranges) == 1 && rule.destination_port_ranges[0] == "*") || # solo "*"
+            (length(rule.destination_port_ranges) == 1 && alltrue([for p in rule.destination_port_ranges : (p == "*") ]) ) || # solo "*"
             alltrue([for port in rule.destination_port_ranges : can(regex("^\\d+(-\\d+)?$", port))]) # lista di porte/range validi
           )
         ]
