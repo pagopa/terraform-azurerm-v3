@@ -58,7 +58,7 @@ locals {
           destination_port_range     = rule.destination_port_ranges == null ? rule.destination_port_range : null
           source_address_prefixes     = rule.source_address_prefixes == null ? data.azurerm_subnet.subnet["${nsg.target_subnet_name}-${nsg.target_subnet_vnet_name}"].address_prefixes : rule.source_address_prefixes
           source_address_prefix = null
-          destination_address_prefixes = rule.destination_address_prefix == null ? (rule.destination_address_prefix == null ? data.azurerm_subnet.subnet["${rule.destination_subnet_name}-${rule.destination_subnet_vnet_name}"].address_prefixes : null) : null
+          destination_address_prefixes = rule.destination_address_prefix == null ? (rule.destination_address_prefixes == null ? data.azurerm_subnet.subnet["${rule.destination_subnet_name}-${rule.destination_subnet_vnet_name}"].address_prefixes : rule.destination_address_prefixes) : null
           destination_address_prefix = rule.destination_address_prefix != null ? rule.destination_address_prefix : null
           nsg_name                = key
           direction              = "Outbound"
