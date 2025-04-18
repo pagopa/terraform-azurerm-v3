@@ -21,9 +21,9 @@ locals {
 
   security_rules = flatten(concat(
     [
-      for nsg in var.custom_security_group :
+      for key,nsg in var.custom_security_group :
       [
-        for rule in nsg.value.inbound_rules :
+        for rule in nsg.inbound_rules :
         {
           name                    = rule.name
           priority                = rule.priority
@@ -35,7 +35,7 @@ locals {
           destination_port_ranges = rule.destination_port_ranges != null ? rule.destination_port_ranges : null
           destination_port_range  = rule.destination_port_ranges == null ? rule.destination_port_range : null
           destination_address_prefixes = rule.destination_address_prefixes == null ? data.azurerm_subnet.subnet["${nsg.value.target_subnet_name}-${nsg.value.target_subnet_vnet_name}"].address_prefixes : rule.destination_address_prefixes
-          nsg_name                = nsg.key
+          nsg_name                = key
           direction              = "Inbound"
         }
       ]
@@ -43,7 +43,7 @@ locals {
     [
       for nsg in var.custom_security_group :
       [
-        for rule in nsg.value.outbound_rules :
+        for rule in nsg.outbound_rules :
         {
           name                    = rule.name
           priority                = rule.priority
@@ -55,7 +55,7 @@ locals {
           destination_port_range     = rule.destination_port_ranges == null ? rule.destination_port_range : null
           source_address_prefixes     = rule.source_address_prefixes == null ? data.azurerm_subnet.subnet["${nsg.value.target_subnet_name}-${nsg.value.target_subnet_vnet_name}"].address_prefixes : rule.source_address_prefixes
           destination_address_prefixes = data.azurerm_subnet.subnet["${rule.destination_subnet_name}-${rule.destination_subnet_vnet_name}"].address_prefixes
-          nsg_name                = nsg.key
+          nsg_name                = key
           direction              = "Outbound"
         }
       ]
