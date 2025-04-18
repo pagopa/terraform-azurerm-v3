@@ -93,6 +93,9 @@ data "azurerm_subnet" "subnet" {
   resource_group_name = each.value.rg_name
 }
 
+output "test" {
+  value = data.azurerm_subnet.subnet
+}
 
 resource "azurerm_network_security_group" "custom_nsg" {
   for_each = var.custom_security_group
