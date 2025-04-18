@@ -60,6 +60,7 @@ variable "custom_security_group" {
       description                                = optional(string) // todo validation 140 caratteri
     }))
   }))
+  default = null
 }
 
 
@@ -77,6 +78,7 @@ variable "default_security_group" {
     destination_subnet_name = string
     destination_subnet_vnet_name = string
   }))
+  default = null
 }
 
 

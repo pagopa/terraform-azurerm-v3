@@ -12,12 +12,6 @@ locals {
     }
   }
 
-  vnets = [{
-      name = "my-vnet"
-      rg_name = "my-vnet-rg"
-    }]
-      //lista di data di tutte le vnet della subscription
-
 
   nsg = {
     my-aks-nsg = {
@@ -70,7 +64,7 @@ locals {
 
 
 data "azurerm_virtual_network" "vnet" {
-  for_each = { for vnet in local.vnets : vnet.name => vnet }
+  for_each = { for vnet in var.vnets : vnet.name => vnet }
 
   name                = each.value.name
   resource_group_name = each.value.rg_name
