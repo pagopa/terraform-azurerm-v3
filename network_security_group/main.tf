@@ -111,8 +111,8 @@ resource "azurerm_network_security_group" "custom_nsg" {
       protocol                   = security_rule.value.protocol
       source_port_ranges         = security_rule.value.source_port_ranges
       destination_port_ranges    = security_rule.value.destination_port_ranges
-      source_address_prefix      = data.azurerm_subnet.subnet["${security_rule.value.source_subnet_name}-${security_rule.value.source_subnet_vnet_name}"].address_prefixes
-      destination_address_prefix = data.azurerm_subnet.subnet["${security_rule.value.destination_subnet_name}-${security_rule.value.destination_subnet_vnet_name}"].address_prefixes
+      source_address_prefixes      = data.azurerm_subnet.subnet["${security_rule.value.source_subnet_name}-${security_rule.value.source_subnet_vnet_name}"].address_prefixes
+      destination_address_prefixes = data.azurerm_subnet.subnet["${security_rule.value.destination_subnet_name}-${security_rule.value.destination_subnet_vnet_name}"].address_prefixes
     }
   }
 
@@ -126,8 +126,8 @@ resource "azurerm_network_security_group" "custom_nsg" {
       protocol                   = security_rule.value.protocol
       source_port_ranges         = security_rule.value.source_port_ranges
       destination_port_ranges    = security_rule.value.destination_port_ranges
-      source_address_prefix      = data.azurerm_subnet.subnet["${security_rule.value.source_subnet_name}-${security_rule.value.source_subnet_vnet_name}"].address_prefixes
-      destination_address_prefix = data.azurerm_subnet.subnet["${security_rule.value.destination_subnet_name}-${security_rule.value.destination_subnet_vnet_name}"].address_prefixes
+      source_address_prefixes     = data.azurerm_subnet.subnet["${security_rule.value.source_subnet_name}-${security_rule.value.source_subnet_vnet_name}"].address_prefixes
+      destination_address_prefixes = data.azurerm_subnet.subnet["${security_rule.value.destination_subnet_name}-${security_rule.value.destination_subnet_vnet_name}"].address_prefixes
     }
   }
 
