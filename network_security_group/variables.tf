@@ -36,8 +36,8 @@ variable "custom_security_group" {
       priority                              = number
       access                                = string
       protocol                              = string
-      source_subnet_name                    = string
-      source_subnet_vnet_name               = string
+      source_subnet_name                    = optional(string)
+      source_subnet_vnet_name               = optional(string)
       source_application_security_group_ids = optional(list(string))
       source_port_ranges                    = optional(list(string), ["*"])
       source_address_prefixes               = optional(list(string), [])
@@ -53,8 +53,8 @@ variable "custom_security_group" {
       protocol                                   = string
       source_address_prefixes                    = optional(list(string), [])
       source_port_ranges                         = optional(list(string), ["*"])
-      destination_subnet_name                    = string
-      destination_subnet_vnet_name               = string
+      destination_subnet_name                    = optional(string)
+      destination_subnet_vnet_name               = optional(string)
       destination_application_security_group_ids = optional(list(string))
       destination_port_ranges                    = optional(list(string), ["*"])
       destination_address_prefixes               = optional(list(string), [])
@@ -87,7 +87,7 @@ variable "custom_security_group" {
           )
         ]
     ]))
-    error_message = "source_address_prefixes deve essere: vuoto, o contenere solo '*', o un singolo elemento servicetag, o una lista di IP/CIDR validi."
+    error_message = "source_address_prefixes must be: empty, or contain only '*', or a single servicetag element, or a list of valid IP/CIDR."
   }
 
   validation {
@@ -102,7 +102,7 @@ variable "custom_security_group" {
           )
         ]
     ]))
-    error_message = "destination_address_prefixes deve essere: vuoto, o contenere solo '*', o un singolo elemento servicetag, o una lista di IP/CIDR validi."
+    error_message = "destination_address_prefixes must be: empty, or contain only '*', or a single servicetag element, or a list of valid IP/CIDR."
   }
 
   validation {
@@ -116,7 +116,7 @@ variable "custom_security_group" {
           )
         ]
     ]))
-    error_message = "source_port_ranges deve essere: vuoto, o contenere solo '*', o una lista di porte (es: '80') o port range (es: '1024-2048')."
+    error_message = "source_port_ranges must be: empty, or contain only '*', or a list of ports (e.g., '80') or port ranges (e.g., '1024-2048')."
   }
 
   validation {
@@ -130,8 +130,62 @@ variable "custom_security_group" {
           )
         ]
     ]))
-    error_message = "destination_port_ranges deve essere: vuoto, o contenere solo '*', o una lista di porte (es: '80') o port range (es: '1024-2048')."
+    error_message = "destination_port_ranges must be: empty, or contain only '*', or a list of ports (e.g., '80') or port ranges (e.g., '1024-2048')."
   }
+
+
+  validation {
+      condition = var.custom_security_group == null ? true : alltrue([
+        for nsg in var.custom_security_group : (
+          length(distinct([for rule in nsg.inbound_rules : rule.priority])) == length(nsg.inbound_rules)
+        )
+      ])
+      error_message = "Inbound rules priority must be unique."
+    }
+
+  validation {
+      condition = var.custom_security_group == null ? true : alltrue([
+        for nsg in var.custom_security_group : (
+          length(distinct([for rule in nsg.outbound_rules : rule.priority])) == length(nsg.outbound_rules)
+        )
+      ])
+      error_message = "Inbound rules priority must be unique."
+    }
+
+  validation {
+    condition = var.custom_security_group == null ? true : alltrue(flatten([
+      for nsg in var.custom_security_group : [
+        for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
+          contains(["Allow", "Deny"], rule.access)
+        )
+      ]
+    ]))
+    error_message = "Access must be either 'Allow' or 'Deny'."
+  }
+
+
+  validation {
+    condition = var.custom_security_group == null ? true : alltrue(flatten([
+      for nsg in var.custom_security_group : [
+        for rule in nsg.outbound_rules : (
+          rule.destination_subnet_name != null || length(rule.destination_address_prefixes) > 0
+        )
+      ]
+    ]))
+    error_message = "If destination_subnet_name is not set, destination_address_prefixes must contain at least one element in the outbound_rules."
+  }
+
+  validation {
+    condition = var.custom_security_group == null ? true : alltrue(flatten([
+      for nsg in var.custom_security_group : [
+        for rule in nsg.inbound_rules : (
+          rule.source_subnet_name != null || length(rule.source_address_prefixes) > 0
+        )
+      ]
+    ]))
+    error_message = "If source_subnet_name is not set, destination_address_prefixes must contain at least one element in the inbound_rules."
+  }
+
 }
 
 
