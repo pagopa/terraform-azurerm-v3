@@ -145,7 +145,7 @@ resource "azurerm_network_security_rule" "custom_security_rule" {
 
   resource_group_name         = var.resource_group_name
 
-  network_security_group_name = azurerm_network_security_group.custom_nsg["${var.prefix}-${each.value.nsg_name}-nsg"].name
+  network_security_group_name = azurerm_network_security_group.custom_nsg[each.value.nsg_name].name
 }
 
 
