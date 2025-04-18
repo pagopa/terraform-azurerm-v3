@@ -18,6 +18,50 @@ locals {
       }
     ]
   ])
+
+  security_rules = flatten(concat(
+    [
+      for nsg in var.custom_security_group :
+      [
+        for rule in nsg.value.inbound_rules :
+        {
+          name                    = rule.name
+          priority                = rule.priority
+          access                  = rule.access
+          protocol                = rule.protocol
+          source_port_ranges      = rule.source_port_ranges != null ? rule.source_port_ranges : null
+          source_port_range       = rule.source_port_ranges == null ? rule.source_port_range : null
+          source_address_prefixes = data.azurerm_subnet.subnet["${rule.source_subnet_name}-${rule.source_subnet_vnet_name}"].address_prefixes
+          destination_port_ranges = rule.destination_port_ranges != null ? rule.destination_port_ranges : null
+          destination_port_range  = rule.destination_port_ranges == null ? rule.destination_port_range : null
+          destination_address_prefixes = rule.destination_address_prefixes == null ? data.azurerm_subnet.subnet["${nsg.value.target_subnet_name}-${nsg.value.target_subnet_vnet_name}"].address_prefixes : rule.destination_address_prefixes
+          nsg_name                = nsg.key
+          direction              = "Inbound"
+        }
+      ]
+    ],
+    [
+      for nsg in var.custom_security_group :
+      [
+        for rule in nsg.value.outbound_rules :
+        {
+          name                    = rule.name
+          priority                = rule.priority
+          access                  = rule.access
+          protocol                = rule.protocol
+          source_port_ranges         = rule.source_port_ranges != null ? rule.source_port_ranges : null
+          source_port_range          = rule.source_port_ranges == null ? rule.source_port_range : null
+          destination_port_ranges    = rule.destination_port_ranges != null ? rule.destination_port_ranges : null
+          destination_port_range     = rule.destination_port_ranges == null ? rule.destination_port_range : null
+          source_address_prefixes     = rule.source_address_prefixes == null ? data.azurerm_subnet.subnet["${nsg.value.target_subnet_name}-${nsg.value.target_subnet_vnet_name}"].address_prefixes : rule.source_address_prefixes
+          destination_address_prefixes = data.azurerm_subnet.subnet["${rule.destination_subnet_name}-${rule.destination_subnet_vnet_name}"].address_prefixes
+          nsg_name                = nsg.key
+          direction              = "Outbound"
+        }
+      ]
+    ]
+  )
+  )
 }
 
 data "azurerm_subnet" "subnet" {
@@ -35,48 +79,70 @@ resource "azurerm_network_security_group" "custom_nsg" {
   resource_group_name = var.resource_group_name
   location            = var.location
 
-  dynamic "security_rule" {
-    for_each = each.value.inbound_rules
-    content {
-      name                       = security_rule.value.name
-      priority                   = security_rule.value.priority
-      direction                  = "Inbound"
-      access                     = security_rule.value.access
-      protocol                   = security_rule.value.protocol
-
-      source_port_ranges         = security_rule.value.source_port_ranges != null ? security_rule.value.source_port_ranges : null
-      source_port_range          = security_rule.value.source_port_ranges == null ? security_rule.value.source_port_range : null
-      destination_port_ranges    = security_rule.value.destination_port_ranges != null ? security_rule.value.destination_port_ranges : null
-      destination_port_range     = security_rule.value.destination_port_ranges == null ? security_rule.value.destination_port_range : null
-
-      source_address_prefixes      = data.azurerm_subnet.subnet["${security_rule.value.source_subnet_name}-${security_rule.value.source_subnet_vnet_name}"].address_prefixes
-      destination_address_prefixes = security_rule.value.destination_address_prefixes == null ? data.azurerm_subnet.subnet["${each.value.target_subnet_name}-${each.value.target_subnet_vnet_name}"].address_prefixes : security_rule.value.destination_address_prefixes
-    }
-  }
-
-  dynamic "security_rule" {
-    for_each = each.value.outbound_rules
-    content {
-      name                       = security_rule.value.name
-      priority                   = security_rule.value.priority
-      direction                  = "Outbound"
-      access                     = security_rule.value.access
-      protocol                   = security_rule.value.protocol
-
-      source_port_ranges         = security_rule.value.source_port_ranges != null ? security_rule.value.source_port_ranges : null
-      source_port_range          = security_rule.value.source_port_ranges == null ? security_rule.value.source_port_range : null
-      destination_port_ranges    = security_rule.value.destination_port_ranges != null ? security_rule.value.destination_port_ranges : null
-      destination_port_range     = security_rule.value.destination_port_ranges == null ? security_rule.value.destination_port_range : null
-
-      source_address_prefixes     = security_rule.value.source_address_prefixes == null ? data.azurerm_subnet.subnet["${each.value.target_subnet_name}-${each.value.target_subnet_vnet_name}"].address_prefixes : security_rule.value.source_address_prefixes
-      destination_address_prefixes = data.azurerm_subnet.subnet["${security_rule.value.destination_subnet_name}-${security_rule.value.destination_subnet_vnet_name}"].address_prefixes
-    }
-  }
+  # dynamic "security_rule" {
+  #   for_each = each.value.inbound_rules
+  #   content {
+  #     name                       = security_rule.value.name
+  #     priority                   = security_rule.value.priority
+  #     direction                  = "Inbound"
+  #     access                     = security_rule.value.access
+  #     protocol                   = security_rule.value.protocol
+  #
+  #     source_port_ranges         = security_rule.value.source_port_ranges != null ? security_rule.value.source_port_ranges : null
+  #     source_port_range          = security_rule.value.source_port_ranges == null ? security_rule.value.source_port_range : null
+  #     destination_port_ranges    = security_rule.value.destination_port_ranges != null ? security_rule.value.destination_port_ranges : null
+  #     destination_port_range     = security_rule.value.destination_port_ranges == null ? security_rule.value.destination_port_range : null
+  #
+  #     source_address_prefixes      = data.azurerm_subnet.subnet["${security_rule.value.source_subnet_name}-${security_rule.value.source_subnet_vnet_name}"].address_prefixes
+  #     destination_address_prefixes = security_rule.value.destination_address_prefixes == null ? data.azurerm_subnet.subnet["${each.value.target_subnet_name}-${each.value.target_subnet_vnet_name}"].address_prefixes : security_rule.value.destination_address_prefixes
+  #   }
+  # }
+  #
+  # dynamic "security_rule" {
+  #   for_each = each.value.outbound_rules
+  #   content {
+  #     name                       = security_rule.value.name
+  #     priority                   = security_rule.value.priority
+  #     direction                  = "Outbound"
+  #     access                     = security_rule.value.access
+  #     protocol                   = security_rule.value.protocol
+  #
+  #     source_port_ranges         = security_rule.value.source_port_ranges != null ? security_rule.value.source_port_ranges : null
+  #     source_port_range          = security_rule.value.source_port_ranges == null ? security_rule.value.source_port_range : null
+  #     destination_port_ranges    = security_rule.value.destination_port_ranges != null ? security_rule.value.destination_port_ranges : null
+  #     destination_port_range     = security_rule.value.destination_port_ranges == null ? security_rule.value.destination_port_range : null
+  #
+  #     source_address_prefixes     = security_rule.value.source_address_prefixes == null ? data.azurerm_subnet.subnet["${each.value.target_subnet_name}-${each.value.target_subnet_vnet_name}"].address_prefixes : security_rule.value.source_address_prefixes
+  #     destination_address_prefixes = data.azurerm_subnet.subnet["${security_rule.value.destination_subnet_name}-${security_rule.value.destination_subnet_vnet_name}"].address_prefixes
+  #   }
+  # }
 
 
   tags                = var.tags
 
 }
+
+
+resource "azurerm_network_security_rule" "custom_security_rule" {
+  for_each = { for sr in local.security_rules: sr.name => sr }
+
+  name                        = each.value.name
+  priority                    = each.value.priority
+  direction                   = each.value.direction
+  access                      = each.value.access
+  protocol                    = each.value.protocol
+  source_port_range           = each.value.source_port_range
+  destination_port_range      = each.value.destination_port_range
+  source_address_prefix       = each.value.source_address_prefix
+  source_address_prefixes       = each.value.source_address_prefixes
+  destination_address_prefix  = each.value.destination_address_prefix
+  destination_address_prefixes  = each.value.destination_address_prefixes
+
+  resource_group_name         = var.resource_group_name
+
+  network_security_group_name = azurerm_network_security_group.custom_nsg["${var.prefix}-${each.value.nsg_name}-nsg"].name
+}
+
 
 # todo
 # azurerm_subnet_network_security_group_association
