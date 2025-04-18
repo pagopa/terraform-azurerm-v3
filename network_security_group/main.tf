@@ -75,7 +75,7 @@ locals {
   subnets = flatten([
     for vnet in data.azurerm_virtual_network.vnet :
     [
-      for subnet in vnet.subnet :
+      for subnet in vnet.subnets :
       {
         name = subnet.name
         vnet_name = vnet.name
