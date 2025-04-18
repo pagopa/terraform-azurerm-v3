@@ -41,7 +41,7 @@ variable "custom_security_group" {
       source_application_security_group_ids = optional(list(string))
       source_port_ranges                    = optional(list(string), ["*"])
       source_address_prefixes               = optional(list(string), [])
-      destination_address_prefixes          = optional(list(string))
+      destination_address_prefixes          = optional(list(string), [])
       destination_port_ranges               = optional(list(string), ["*"])
       description                           = optional(string) // todo validation 140 caratteri
     }))
@@ -51,7 +51,7 @@ variable "custom_security_group" {
       priority                                   = number
       access                                     = string
       protocol                                   = string
-      source_address_prefixes                    = optional(list(string))
+      source_address_prefixes                    = optional(list(string), [])
       source_port_ranges                         = optional(list(string), ["*"])
       destination_subnet_name                    = string
       destination_subnet_vnet_name               = string
