@@ -34,7 +34,7 @@ locals {
           #source_address_prefixes      = rule.source_address_prefix == null ? (rule.source_address_prefixes == null ? data.azurerm_subnet.subnet["${rule.source_subnet_name}-${rule.source_subnet_vnet_name}"].address_prefixes : rule.source_address_prefixes) : null
           source_address_prefixes      = length(rule.source_address_prefixes) == 0 ? data.azurerm_subnet.subnet["${rule.source_subnet_name}-${rule.source_subnet_vnet_name}"].address_prefixes : (alltrue([for p in rule.source_address_prefixes : (regex("[A-Za-z\\*]", p) == null) ])  ? rule.source_address_prefixes : null)
           #source_address_prefix        = rule.source_address_prefix != null ? rule.source_address_prefix : null
-          source_address_prefix        = length(rule.source_address_prefixes) == 0 && (anytrue([for p in rule.source_address_prefixes : (regex("[A-Za-z\\*]", p) == null) ])) ? (contains(rule.source_address_prefixes, "*") ? "*": rule.source_address_prefix) : rule.source_address_prefixes[0]
+          source_address_prefix        = length(rule.source_address_prefixes) > 0 && (anytrue([for p in rule.source_address_prefixes : (regex("[A-Za-z\\*]", p) == null) ])) ? (contains(rule.source_address_prefixes, "*") ? "*": rule.source_address_prefix) : rule.source_address_prefixes[0]
           source_application_security_group_ids = rule.source_application_security_group_ids
           destination_port_ranges      = contains(rule.destination_port_ranges, "*") ? null : rule.destination_port_ranges
           destination_port_range       = contains(rule.destination_port_ranges, "*") ? "*" : null
