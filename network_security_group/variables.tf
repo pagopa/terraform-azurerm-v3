@@ -28,6 +28,9 @@ variable "tags" {
 variable "custom_security_group" {
   description = "security groups configuration"
   type = map(object({
+    target_subnet_name                    = string
+    target_subnet_vnet_name               = string
+    target_application_security_group_ids = optional(list(string))
     inbound_rules   = list(object({
       name                                       = string
       priority                                   = number
@@ -36,10 +39,10 @@ variable "custom_security_group" {
       source_subnet_name                         = string
       source_subnet_vnet_name                    = string
       source_application_security_group_ids      = optional(list(string))
+      source_port_range                          = optional(string, "*")
       source_port_ranges                         = optional(list(string))
-      destination_subnet_name                    = string
-      destination_subnet_vnet_name               = string
-      destination_application_security_group_ids = optional(list(string))
+      destination_address_prefixes               = optional(list(string))
+      destination_port_range                     = optional(string, "*")
       destination_port_ranges                    = optional(list(string))
       description                                = optional(string) // todo validation 140 caratteri
     }))
@@ -49,13 +52,13 @@ variable "custom_security_group" {
       priority                                   = number
       access                                     = string
       protocol                                   = string
-      source_subnet_name                         = string
-      source_subnet_vnet_name                    = string
-      source_application_security_group_ids      = optional(list(string))
+      source_address_prefixes                    = optional(list(string))
+      source_port_range                          = optional(string, "*")
       source_port_ranges                         = optional(list(string))
       destination_subnet_name                    = string
       destination_subnet_vnet_name               = string
       destination_application_security_group_ids = optional(list(string))
+      destination_port_range                     = optional(string, "*")
       destination_port_ranges                    = optional(list(string))
       description                                = optional(string) // todo validation 140 caratteri
     }))
