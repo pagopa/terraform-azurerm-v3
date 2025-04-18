@@ -34,14 +34,14 @@ locals {
           source_address_prefixes = data.azurerm_subnet.subnet["${rule.source_subnet_name}-${rule.source_subnet_vnet_name}"].address_prefixes
           destination_port_ranges = rule.destination_port_ranges != null ? rule.destination_port_ranges : null
           destination_port_range  = rule.destination_port_ranges == null ? rule.destination_port_range : null
-          destination_address_prefixes = rule.destination_address_prefixes == null ? data.azurerm_subnet.subnet["${nsg.value.target_subnet_name}-${nsg.value.target_subnet_vnet_name}"].address_prefixes : rule.destination_address_prefixes
+          destination_address_prefixes = rule.destination_address_prefixes == null ? data.azurerm_subnet.subnet["${nsg.target_subnet_name}-${nsg.target_subnet_vnet_name}"].address_prefixes : rule.destination_address_prefixes
           nsg_name                = key
           direction              = "Inbound"
         }
       ]
     ],
     [
-      for nsg in var.custom_security_group :
+      for key,nsg in var.custom_security_group :
       [
         for rule in nsg.outbound_rules :
         {
@@ -53,7 +53,7 @@ locals {
           source_port_range          = rule.source_port_ranges == null ? rule.source_port_range : null
           destination_port_ranges    = rule.destination_port_ranges != null ? rule.destination_port_ranges : null
           destination_port_range     = rule.destination_port_ranges == null ? rule.destination_port_range : null
-          source_address_prefixes     = rule.source_address_prefixes == null ? data.azurerm_subnet.subnet["${nsg.value.target_subnet_name}-${nsg.value.target_subnet_vnet_name}"].address_prefixes : rule.source_address_prefixes
+          source_address_prefixes     = rule.source_address_prefixes == null ? data.azurerm_subnet.subnet["${nsg.target_subnet_name}-${nsg.target_subnet_vnet_name}"].address_prefixes : rule.source_address_prefixes
           destination_address_prefixes = data.azurerm_subnet.subnet["${rule.destination_subnet_name}-${rule.destination_subnet_vnet_name}"].address_prefixes
           nsg_name                = key
           direction              = "Outbound"
