@@ -40,7 +40,6 @@ variable "custom_security_group" {
       source_subnet_vnet_name               = string
       source_application_security_group_ids = optional(list(string))
       source_port_ranges                    = optional(list(string), ["*"])
-      source_address_prefix                 = optional(string)
       source_address_prefixes               = optional(list(string), [])
       destination_address_prefixes          = optional(list(string))
       destination_port_ranges               = optional(list(string), ["*"])
@@ -58,8 +57,7 @@ variable "custom_security_group" {
       destination_subnet_vnet_name               = string
       destination_application_security_group_ids = optional(list(string))
       destination_port_ranges                    = optional(list(string), ["*"])
-      destination_address_prefix                 = optional(string)
-      destination_address_prefixes               = optional(list(string))
+      destination_address_prefixes               = optional(list(string), [])
       description                                = optional(string) // todo validation 140 caratteri
     }))
   }))
