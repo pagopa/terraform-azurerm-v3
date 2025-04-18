@@ -1,5 +1,5 @@
 variable "prefix" {
-  type = string
+  type        = string
   description = "Prefix for all resources"
   validation {
     condition = (
@@ -31,23 +31,23 @@ variable "custom_security_group" {
     target_subnet_name                    = string
     target_subnet_vnet_name               = string
     target_application_security_group_ids = optional(list(string))
-    inbound_rules   = list(object({
-      name                                       = string
-      priority                                   = number
-      access                                     = string
-      protocol                                   = string
-      source_subnet_name                         = string
-      source_subnet_vnet_name                    = string
-      source_application_security_group_ids      = optional(list(string))
-      source_port_ranges                         = optional(list(string), ["*"])
-      source_address_prefix                      = optional(string)
-      source_address_prefixes                   = optional(list(string))
-      destination_address_prefixes               = optional(list(string))
-      destination_port_ranges                    = optional(list(string), ["*"])
-      description                                = optional(string) // todo validation 140 caratteri
+    inbound_rules = list(object({
+      name                                  = string
+      priority                              = number
+      access                                = string
+      protocol                              = string
+      source_subnet_name                    = string
+      source_subnet_vnet_name               = string
+      source_application_security_group_ids = optional(list(string))
+      source_port_ranges                    = optional(list(string), ["*"])
+      source_address_prefix                 = optional(string)
+      source_address_prefixes               = optional(list(string))
+      destination_address_prefixes          = optional(list(string))
+      destination_port_ranges               = optional(list(string), ["*"])
+      description                           = optional(string) // todo validation 140 caratteri
     }))
 
-    outbound_rules   = list(object({
+    outbound_rules = list(object({
       name                                       = string
       priority                                   = number
       access                                     = string
@@ -59,7 +59,7 @@ variable "custom_security_group" {
       destination_application_security_group_ids = optional(list(string))
       destination_port_ranges                    = optional(list(string), ["*"])
       destination_address_prefix                 = optional(string)
-      destination_address_prefixes                 = optional(list(string))
+      destination_address_prefixes               = optional(list(string))
       description                                = optional(string) // todo validation 140 caratteri
     }))
   }))
@@ -75,10 +75,10 @@ variable "default_security_group" {
   type = map(object({
     type = string //todo validate on available types
 
-    source_subnet_name = string
+    source_subnet_name      = string
     source_subnet_vnet_name = string
 
-    destination_subnet_name = string
+    destination_subnet_name      = string
     destination_subnet_vnet_name = string
   }))
   default = null
@@ -88,7 +88,7 @@ variable "default_security_group" {
 variable "vnets" {
   description = ""
   type = list(object({
-    name = string
-    rg_name   = string
+    name    = string
+    rg_name = string
   }))
 }
