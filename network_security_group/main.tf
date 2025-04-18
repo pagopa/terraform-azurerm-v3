@@ -86,7 +86,7 @@ locals {
 }
 
 data "azurerm_subnet" "subnet" {
-  for_each = { for subnet in local.subnet_names : "${snet_name.name}-${snet_name.vnet_name}" => snet_name }
+  for_each = { for subnet in local.subnet_names : "${subnet.name}-${subnet.vnet_name}" => subnet }
 
   name                = each.value.name
   virtual_network_name = each.value.vnet_name
