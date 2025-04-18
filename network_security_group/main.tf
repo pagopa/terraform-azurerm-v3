@@ -72,18 +72,25 @@ data "azurerm_virtual_network" "vnet" {
 
 
 locals {
-  subnets = flatten([
+  subnet_names = flatten([
     for vnet in data.azurerm_virtual_network.vnet :
     [
       for subnet in vnet.subnets :
       {
         name = subnet.name
         vnet_name = vnet.name
-        id   = subnet.id
-        address_prefixes  = subnet.address_prefixes
+        rg_name = vnet.resource_group_name
       }
     ]
   ])
+}
+
+data "azurerm_subnet" "subnet" {
+  for_each = { for subnet in local.subnet_names : "${snet_name.name}-${snet_name.vnet_name}" => snet_name }
+
+  name                = subnet.name
+  virtual_network_name = subnet.vnet_name
+  resource_group_name = subnet.resource_group_name
 }
 
 
@@ -104,8 +111,8 @@ resource "azurerm_network_security_group" "custom_nsg" {
       protocol                   = security_rule.value.protocol
       source_port_ranges         = security_rule.value.source_port_ranges
       destination_port_ranges    = security_rule.value.destination_port_ranges
-      source_address_prefix      = local.subnets[index(local.subnets.*.name, security_rule.value.source_subnet_name)].address_prefixes
-      destination_address_prefix = local.subnets[index(local.subnets.*.name, security_rule.value.destination_subnet_name)].address_prefixes
+      source_address_prefix      = data.azurerm_subnet.subnet["${security_rule.value.source_subnet_name}-${security_rule.value.source_subnet_vnet_name}"].address_prefixes
+      destination_address_prefix = data.azurerm_subnet.subnet["${security_rule.value.destination_subnet_name}-${security_rule.value.destination_subnet_vnet_name}"].address_prefixes
     }
   }
 
@@ -119,8 +126,8 @@ resource "azurerm_network_security_group" "custom_nsg" {
       protocol                   = security_rule.value.protocol
       source_port_ranges         = security_rule.value.source_port_ranges
       destination_port_ranges    = security_rule.value.destination_port_ranges
-      source_address_prefix      = local.subnets[index(local.subnets.*.name, security_rule.value.source_subnet_name)].address_prefixes
-      destination_address_prefix = local.subnets[index(local.subnets.*.name, security_rule.value.destination_subnet_name)].address_prefixes
+      source_address_prefix      = data.azurerm_subnet.subnet["${security_rule.value.source_subnet_name}-${security_rule.value.source_subnet_vnet_name}"].address_prefixes
+      destination_address_prefix = data.azurerm_subnet.subnet["${security_rule.value.destination_subnet_name}-${security_rule.value.destination_subnet_vnet_name}"].address_prefixes
     }
   }
 
