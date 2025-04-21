@@ -251,7 +251,7 @@ validation {
           # rule.target_service != null &&
           #   rule.protocol == null &&
           #   rule.destination_port_ranges == ["*"] # default value
-          rule.destination_port_ranges == ["*"]
+          contains(rule.destination_port_ranges, "*")
          # )
         )
       ]
