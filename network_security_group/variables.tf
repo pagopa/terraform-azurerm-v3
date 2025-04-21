@@ -36,7 +36,7 @@ variable "custom_security_group" {
     inbound_rules = list(object({
       name                                  = string
       priority                              = number
-      target_service                        = optional(string)
+      target_service                        = optional(string, null)
       access                                = optional(string, "Allow")
       protocol                              = optional(string)
       source_subnet_name                    = optional(string)
@@ -76,7 +76,7 @@ variable "custom_security_group" {
         ]
       ]
     ]))
-    error_message = "La lunghezza massima consentita per il campo description è di 140 caratteri."
+    error_message = "description must be shorter than 140 characters."
   }
 
   validation {
@@ -146,7 +146,7 @@ variable "custom_security_group" {
         length(distinct([for rule in nsg.inbound_rules : rule.priority])) == length(nsg.inbound_rules)
       )
     ])
-    error_message = "Inbound rules priority must be unique."
+    error_message = "inbound_rules: priority must be unique."
   }
 
   validation {
@@ -155,19 +155,43 @@ variable "custom_security_group" {
         length(distinct([for rule in nsg.outbound_rules : rule.priority])) == length(nsg.outbound_rules)
       )
     ])
-    error_message = "Outbound rules priority must be unique."
+    error_message = "outbound_rules: priority must be unique."
   }
 
   validation {
     condition = var.custom_security_group == null ? true : alltrue(flatten([
       for nsg in var.custom_security_group : (
         [
-          for rule in nsg.outbound_rules : (rule.priority < 4096)
+          for rule in nsg.outbound_rules : (rule.priority != 4096)
         ]
       )
       ])
     )
-    error_message = "Outbound rules priority 4096 is reserved for deny_everything_else_outbound rule"
+    error_message = "outbound_rules: priority 4096 is reserved for deny_everything_else_outbound rule"
+  }
+
+  validation {
+    condition = var.custom_security_group == null ? true : alltrue(flatten([
+      for nsg in var.custom_security_group : (
+        [
+          for rule in nsg.outbound_rules : ((rule.priority < 4096) && (rule.priority >= 100))
+        ]
+      )
+      ])
+    )
+    error_message = "outbound_rules: priority must be between 100 and 4095"
+  }
+
+  validation {
+    condition = var.custom_security_group == null ? true : alltrue(flatten([
+      for nsg in var.custom_security_group : (
+        [
+          for rule in nsg.inbound_rules : ((rule.priority < 4096) && (rule.priority >= 100))
+        ]
+      )
+      ])
+    )
+    error_message = "inbound_rules: priority must be between 100 and 4095"
   }
 
   validation {
@@ -179,7 +203,7 @@ variable "custom_security_group" {
       )
       ])
     )
-    error_message = "Inbound rules priority 4096 is reserved for deny_everything_else_inbound rule"
+    error_message = "inbound_rules: priority 4096 is reserved for deny_everything_else_inbound rule"
   }
 
   validation {
@@ -251,7 +275,6 @@ validation {
           rule.target_service != null &&
             rule.protocol == null &&
             contains(rule.destination_port_ranges, "*") # default value
-          # contains(rule.destination_port_ranges, "*")
          )
         )
       ]
