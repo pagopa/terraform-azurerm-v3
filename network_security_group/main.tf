@@ -23,6 +23,7 @@ locals {
     [
       for key, nsg in var.custom_security_group :
       concat([
+        # user defined inbound rules
         for rule in nsg.inbound_rules :
         {
           name               = rule.name
@@ -62,7 +63,9 @@ locals {
           nsg_name  = key
           direction = "Inbound"
         }
-      ], nsg.deny_everything_else_inbound ? [{
+        ],
+        # deny everything else inbound rule
+          nsg.deny_everything_else_inbound ? [{
           name                         = "DenyAllInbound"
           priority                     = 4096
           direction                    = "Inbound"
@@ -76,12 +79,13 @@ locals {
           destination_port_ranges      = null
           destination_address_prefix   = "*"
           destination_address_prefixes = null
-        nsg_name  = key
+          nsg_name                     = key
       }] : [])
     ],
     [
       for key, nsg in var.custom_security_group :
       concat([
+        # user defined outbound rules
         for rule in nsg.outbound_rules :
         {
           name                    = rule.name
@@ -117,7 +121,9 @@ locals {
           nsg_name                                   = key
           direction                                  = "Outbound"
         }
-      ], nsg.deny_everything_else_outbound ? [{
+        ],
+        # deny everything else outbound rule
+          nsg.deny_everything_else_outbound ? [{
           name                         = "DenyAllOutbound"
           priority                     = 4096
           direction                    = "Outbound"
@@ -131,7 +137,7 @@ locals {
           destination_port_ranges      = null
           destination_address_prefix   = "*"
           destination_address_prefixes = null
-        nsg_name  = key
+          nsg_name                     = key
       }] : [])
     ]
     )

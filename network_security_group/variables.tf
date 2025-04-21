@@ -31,8 +31,8 @@ variable "custom_security_group" {
     target_subnet_name                    = string
     target_subnet_vnet_name               = string
     target_application_security_group_ids = optional(list(string))
-    deny_everything_else_inbound                  = optional(bool, false)
-    deny_everything_else_outbound                 = optional(bool, false)
+    deny_everything_else_inbound          = optional(bool, false)
+    deny_everything_else_outbound         = optional(bool, false)
     inbound_rules = list(object({
       name                                  = string
       priority                              = number
@@ -82,10 +82,10 @@ variable "custom_security_group" {
       [
         for nsg in var.custom_security_group : [
           for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
-            length(rule.source_address_prefixes) == 0 ||                                                                         # vuoto
-            (length(rule.source_address_prefixes) == 1 && alltrue([for p in rule.source_address_prefixes : (p == "*") ]) ) ||                             # solo "*"
-            (length(rule.source_address_prefixes) == 1 && alltrue([for p in rule.source_address_prefixes : (length(regexall("[A-Za-z]", p)) > 0 ) ]) ) ||  # solo un elemento "servicetag"
-            alltrue([for prefix in rule.source_address_prefixes : can(regex("^(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?$", prefix))]) # lista di IP/CIDR validi
+            length(rule.source_address_prefixes) == 0 ||                                                                                               # vuoto
+            (length(rule.source_address_prefixes) == 1 && alltrue([for p in rule.source_address_prefixes : (p == "*")])) ||                            # solo "*"
+            (length(rule.source_address_prefixes) == 1 && alltrue([for p in rule.source_address_prefixes : (length(regexall("[A-Za-z]", p)) > 0)])) || # solo un elemento "servicetag"
+            alltrue([for prefix in rule.source_address_prefixes : can(regex("^(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?$", prefix))])                       # lista di IP/CIDR validi
           )
         ]
     ]))
@@ -97,10 +97,10 @@ variable "custom_security_group" {
       [
         for nsg in var.custom_security_group : [
           for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
-            length(rule.destination_address_prefixes) == 0 ||                                                                             # vuoto
-            (length(rule.destination_address_prefixes) == 1 && alltrue([for p in rule.destination_address_prefixes : (p == "*") ]) ) ||                            # solo "*"
-            (length(rule.destination_address_prefixes) == 1 && alltrue([for p in rule.destination_address_prefixes : (length(regexall("[A-Za-z]", p)) > 0) ]) ) || # solo un elemento "servicetag"
-            alltrue([for prefix in rule.destination_address_prefixes : can(regex("^(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?$", prefix))])     # lista di IP/CIDR validi
+            length(rule.destination_address_prefixes) == 0 ||                                                                                                    # vuoto
+            (length(rule.destination_address_prefixes) == 1 && alltrue([for p in rule.destination_address_prefixes : (p == "*")])) ||                            # solo "*"
+            (length(rule.destination_address_prefixes) == 1 && alltrue([for p in rule.destination_address_prefixes : (length(regexall("[A-Za-z]", p)) > 0)])) || # solo un elemento "servicetag"
+            alltrue([for prefix in rule.destination_address_prefixes : can(regex("^(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?$", prefix))])                            # lista di IP/CIDR validi
           )
         ]
     ]))
@@ -112,9 +112,9 @@ variable "custom_security_group" {
       [
         for nsg in var.custom_security_group : [
           for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
-            length(rule.source_port_ranges) == 0 ||                                             # vuoto
-            (length(rule.source_port_ranges) == 1 && alltrue([for p in rule.source_port_ranges : (p == "*") ]) ) ||      # solo "*"
-            alltrue([for port in rule.source_port_ranges : can(regex("^\\d+(-\\d+)?$", port))]) # lista di porte/range validi
+            length(rule.source_port_ranges) == 0 ||                                                               # vuoto
+            (length(rule.source_port_ranges) == 1 && alltrue([for p in rule.source_port_ranges : (p == "*")])) || # solo "*"
+            alltrue([for port in rule.source_port_ranges : can(regex("^\\d+(-\\d+)?$", port))])                   # lista di porte/range validi
           )
         ]
     ]))
@@ -126,9 +126,9 @@ variable "custom_security_group" {
       [
         for nsg in var.custom_security_group : [
           for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
-            length(rule.destination_port_ranges) == 0 ||                                             # vuoto
-            (length(rule.destination_port_ranges) == 1 && alltrue([for p in rule.destination_port_ranges : (p == "*") ]) ) || # solo "*"
-            alltrue([for port in rule.destination_port_ranges : can(regex("^\\d+(-\\d+)?$", port))]) # lista di porte/range validi
+            length(rule.destination_port_ranges) == 0 ||                                                                    # vuoto
+            (length(rule.destination_port_ranges) == 1 && alltrue([for p in rule.destination_port_ranges : (p == "*")])) || # solo "*"
+            alltrue([for port in rule.destination_port_ranges : can(regex("^\\d+(-\\d+)?$", port))])                        # lista di porte/range validi
           )
         ]
     ]))
@@ -137,46 +137,46 @@ variable "custom_security_group" {
 
 
   validation {
-      condition = var.custom_security_group == null ? true : alltrue([
-        for nsg in var.custom_security_group : (
-          length(distinct([for rule in nsg.inbound_rules : rule.priority])) == length(nsg.inbound_rules)
-        )
-      ])
-      error_message = "Inbound rules priority must be unique."
-    }
+    condition = var.custom_security_group == null ? true : alltrue([
+      for nsg in var.custom_security_group : (
+        length(distinct([for rule in nsg.inbound_rules : rule.priority])) == length(nsg.inbound_rules)
+      )
+    ])
+    error_message = "Inbound rules priority must be unique."
+  }
 
   validation {
-      condition = var.custom_security_group == null ? true : alltrue([
-        for nsg in var.custom_security_group : (
-          length(distinct([for rule in nsg.outbound_rules : rule.priority])) == length(nsg.outbound_rules)
-        )
-      ])
-      error_message = "Outbound rules priority must be unique."
-    }
+    condition = var.custom_security_group == null ? true : alltrue([
+      for nsg in var.custom_security_group : (
+        length(distinct([for rule in nsg.outbound_rules : rule.priority])) == length(nsg.outbound_rules)
+      )
+    ])
+    error_message = "Outbound rules priority must be unique."
+  }
 
   validation {
-      condition = var.custom_security_group == null ? true : alltrue(flatten([
-        for nsg in var.custom_security_group : (
+    condition = var.custom_security_group == null ? true : alltrue(flatten([
+      for nsg in var.custom_security_group : (
         [
           for rule in nsg.outbound_rules : (rule.priority < 4096)
         ]
-        )
-      ])
       )
-      error_message = "Outbound rules priority 4096 is reserved for deny_everything_else_outbound rule"
-    }
+      ])
+    )
+    error_message = "Outbound rules priority 4096 is reserved for deny_everything_else_outbound rule"
+  }
 
   validation {
-      condition = var.custom_security_group == null ? true : alltrue(flatten([
-        for nsg in var.custom_security_group : (
+    condition = var.custom_security_group == null ? true : alltrue(flatten([
+      for nsg in var.custom_security_group : (
         [
           for rule in nsg.inbound_rules : (rule.priority < 4096)
         ]
-        )
-      ])
       )
-      error_message = "Inbound rules priority 4096 is reserved for deny_everything_else_inbound rule"
-    }
+      ])
+    )
+    error_message = "Inbound rules priority 4096 is reserved for deny_everything_else_inbound rule"
+  }
 
   validation {
     condition = var.custom_security_group == null ? true : alltrue(flatten([
