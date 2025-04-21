@@ -36,8 +36,8 @@ variable "custom_security_group" {
     inbound_rules = list(object({
       name                                  = string
       priority                              = number
-      access                                = string
-      protocol                              = string
+      access                                = optional(string, "Allow")
+      protocol                              = optional(string)
       source_subnet_name                    = optional(string)
       source_subnet_vnet_name               = optional(string)
       source_application_security_group_ids = optional(list(string))
@@ -51,8 +51,8 @@ variable "custom_security_group" {
     outbound_rules = list(object({
       name                                       = string
       priority                                   = number
-      access                                     = string
-      protocol                                   = string
+      access                                     = optional(string, "Allow")
+      protocol                                   = optional(string)
       source_address_prefixes                    = optional(list(string), [])
       source_port_ranges                         = optional(list(string), ["*"])
       destination_subnet_name                    = optional(string)
@@ -136,6 +136,8 @@ variable "custom_security_group" {
   }
 
 
+
+
   validation {
     condition = var.custom_security_group == null ? true : alltrue([
       for nsg in var.custom_security_group : (
@@ -194,7 +196,8 @@ variable "custom_security_group" {
     condition = var.custom_security_group == null ? true : alltrue(flatten([
       for nsg in var.custom_security_group : [
         for rule in nsg.outbound_rules : (
-          rule.destination_subnet_name != null || length(rule.destination_address_prefixes) > 0
+          (rule.destination_subnet_name != null && length(rule.destination_address_prefixes) == 0) ||
+        (rule.destination_subnet_name == null && length(rule.destination_address_prefixes) > 0)
         )
       ]
     ]))
@@ -205,7 +208,8 @@ variable "custom_security_group" {
     condition = var.custom_security_group == null ? true : alltrue(flatten([
       for nsg in var.custom_security_group : [
         for rule in nsg.inbound_rules : (
-          rule.source_subnet_name != null || length(rule.source_address_prefixes) > 0
+        (rule.source_subnet_name != null && length(rule.source_address_prefixes) == 0) ||
+        (rule.source_subnet_name == null && length(rule.source_address_prefixes) > 0)
         )
       ]
     ]))
