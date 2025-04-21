@@ -36,6 +36,7 @@ variable "custom_security_group" {
     inbound_rules = list(object({
       name                                  = string
       priority                              = number
+      target_service                        = optional(string)
       access                                = optional(string, "Allow")
       protocol                              = optional(string)
       source_subnet_name                    = optional(string)
@@ -51,6 +52,7 @@ variable "custom_security_group" {
     outbound_rules = list(object({
       name                                       = string
       priority                                   = number
+      target_service                        = optional(string)
       access                                     = optional(string, "Allow")
       protocol                                   = optional(string)
       source_address_prefixes                    = optional(list(string), [])

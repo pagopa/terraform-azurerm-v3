@@ -24,12 +24,11 @@ locals {
       for key, nsg in var.custom_security_group :
       concat([
         # user defined inbound rules
-        for rule in nsg.inbound_rules :
-        {
+        for rule in nsg.inbound_rules : {
           name               = rule.name
           priority           = rule.priority
           access             = rule.access
-          protocol           = rule.protocol
+          protocol           = rule.target_service != null ? local.target_services[rule.target_service].protocol : rule.protocol
           source_port_ranges = contains(rule.source_port_ranges, "*") ? null : rule.source_port_ranges
           source_port_range  = contains(rule.source_port_ranges, "*") ? "*" : null
 
@@ -45,8 +44,8 @@ locals {
           source_address_prefix   = length(rule.source_address_prefixes) > 0 && (anytrue([for p in rule.source_address_prefixes : (length(regexall("[A-Za-z\\*]", p)) > 0)])) ? (contains(rule.source_address_prefixes, "*") ? "*" : rule.source_address_prefixes[0]) : null
 
           source_application_security_group_ids = rule.source_application_security_group_ids
-          destination_port_ranges               = contains(rule.destination_port_ranges, "*") ? null : rule.destination_port_ranges
-          destination_port_range                = contains(rule.destination_port_ranges, "*") ? "*" : null
+          destination_port_ranges               = rule.target_service != null ? local.target_services[rule.target_service].port_ranges : (contains(rule.destination_port_ranges, "*") ? null : rule.destination_port_ranges)
+          destination_port_range                = rule.target_service != null ? null : (contains(rule.destination_port_ranges, "*") ? "*" : null)
 
           # Defines the destination address prefixes for security rule:
           # - If destination_address_prefixes list is empty:
