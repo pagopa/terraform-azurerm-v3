@@ -201,7 +201,7 @@ variable "custom_security_group" {
         )
       ]
     ]))
-    error_message = "If destination_subnet_name is not set, destination_address_prefixes must contain at least one element in the outbound_rules."
+    error_message = "outbound_rules: destination_subnet_name and destination_address_prefixes are mutually exclusive"
   }
 
   validation {
@@ -213,7 +213,31 @@ variable "custom_security_group" {
         )
       ]
     ]))
-    error_message = "If source_subnet_name is not set, destination_address_prefixes must contain at least one element in the inbound_rules."
+    error_message = "inbound_rules: source_subnet_name and destination_address_prefixes are mutually exclusive"
+  }
+
+  validation {
+    condition = var.custom_security_group == null ? true : alltrue(flatten([
+      for nsg in var.custom_security_group : [
+        for rule in nsg.outbound_rules : (
+          (rule.destination_subnet_name != null && rule.destination_subnet_vnet_name != null) ||
+        (rule.destination_subnet_name == null && rule.destination_subnet_vnet_name  == null)
+        )
+      ]
+    ]))
+    error_message = "outbound_rules: destination_subnet_name and destination_subnet_vnet_name must both be defined or both be null"
+  }
+
+  validation {
+    condition = var.custom_security_group == null ? true : alltrue(flatten([
+      for nsg in var.custom_security_group : [
+        for rule in nsg.inbound_rules : (
+           (rule.source_subnet_name != null && rule.source_subnet_vnet_name != null) ||
+        (rule.source_subnet_name == null && rule.source_subnet_vnet_name  == null)
+        )
+      ]
+    ]))
+    error_message = "inbound_rules: source_subnet_name and source_subnet_vnet_name must both be defined or both be null"
   }
 
 }
