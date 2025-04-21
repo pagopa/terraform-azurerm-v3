@@ -22,7 +22,7 @@ locals {
   security_rules = flatten(concat(
     [
       for key, nsg in var.custom_security_group :
-      [
+      concat([
         for rule in nsg.inbound_rules :
         {
           name               = rule.name
@@ -40,7 +40,6 @@ locals {
           #     - If any prefix contains letters/asterisk:
           #       - Use "*" if present in the list
           #   - Otherwise use the first prefix
-
           source_address_prefixes = length(rule.source_address_prefixes) == 0 ? data.azurerm_subnet.subnet["${rule.source_subnet_name}-${rule.source_subnet_vnet_name}"].address_prefixes : (alltrue([for p in rule.source_address_prefixes : (length(regexall("[A-Za-z\\*]", p)) == 0)]) ? rule.source_address_prefixes : null)
           source_address_prefix   = length(rule.source_address_prefixes) > 0 && (anytrue([for p in rule.source_address_prefixes : (length(regexall("[A-Za-z\\*]", p)) > 0)])) ? (contains(rule.source_address_prefixes, "*") ? "*" : rule.source_address_prefixes[0]) : null
 
@@ -56,7 +55,6 @@ locals {
           #   - If any prefix contains letters/asterisk:
           #     - Use "*" if present in the list
           #     - Otherwise use the first prefix
-
           destination_address_prefixes = length(rule.destination_address_prefixes) == 0 ? data.azurerm_subnet.subnet["${nsg.target_subnet_name}-${nsg.target_subnet_vnet_name}"].address_prefixes : (alltrue([for p in rule.destination_address_prefixes : (length(regexall("[A-Za-z]", p)) == 0)]) ? rule.destination_address_prefixes : null)
           destination_address_prefix   = length(rule.destination_address_prefixes) > 0 && (anytrue([for p in rule.destination_address_prefixes : (length(regexall("[A-Za-z\\*]", p)) > 0)])) ? (contains(rule.destination_address_prefixes, "*") ? "*" : rule.destination_address_prefixes[0]) : null
 
@@ -64,11 +62,26 @@ locals {
           nsg_name  = key
           direction = "Inbound"
         }
-      ]
+      ], nsg.deny_everything_else_inbound ? [{
+          name                         = "DenyAllInbound"
+          priority                     = 4096
+          direction                    = "Inbound"
+          access                       = "Deny"
+          protocol                     = "*"
+          source_port_range            = "*"
+          source_port_ranges           = []
+          source_address_prefix        = "*"
+          source_address_prefixes      = []
+          destination_port_range       = "*"
+          destination_port_ranges      = []
+          destination_address_prefix   = "*"
+          destination_address_prefixes = []
+        nsg_name  = key
+      }] : [])
     ],
     [
       for key, nsg in var.custom_security_group :
-      [
+      concat([
         for rule in nsg.outbound_rules :
         {
           name                    = rule.name
@@ -88,7 +101,6 @@ locals {
           #     - If any prefix contains letters/asterisk:
           #       - Use "*" if present in the list
           #     - Otherwise use the first prefix
-
           source_address_prefixes = length(rule.source_address_prefixes) == 0 ? data.azurerm_subnet.subnet["${nsg.target_subnet_name}-${nsg.target_subnet_vnet_name}"].address_prefixes : (alltrue([for p in rule.destination_address_prefixes : (length(regexall("[A-Za-z]", p)) == 0)]) ? rule.destination_address_prefixes : null)
           source_address_prefix   = length(rule.source_address_prefixes) > 0 && (anytrue([for p in rule.source_address_prefixes : (length(regexall("[A-Za-z\\*]", p)) > 0)])) ? (contains(rule.source_address_prefixes, "*") ? "*" : rule.source_address_prefixes[0]) : null
 
@@ -98,7 +110,6 @@ locals {
           # - Use "*" if present in the list
           # - Otherwise use the first element of the list
           # - If no elements or no letters/asterisks are found, set to null
-
           destination_address_prefixes = length(rule.destination_address_prefixes) == 0 ? data.azurerm_subnet.subnet["${rule.destination_subnet_name}-${rule.destination_subnet_vnet_name}"].address_prefixes : (alltrue([for p in rule.destination_address_prefixes : (regex("[A-Za-z\\*]", p) == null)]) ? rule.destination_address_prefixes : null)
           destination_address_prefix   = length(rule.destination_address_prefixes) > 0 && (anytrue([for p in rule.destination_address_prefixes : (length(regexall("[A-Za-z\\*]", p)) > 0)])) ? (contains(rule.destination_address_prefixes, "*") ? "*" : rule.destination_address_prefixes[0]) : null
 
@@ -106,7 +117,22 @@ locals {
           nsg_name                                   = key
           direction                                  = "Outbound"
         }
-      ]
+      ], nsg.deny_everything_else_outbound ? [{
+          name                         = "DenyAllOutbound"
+          priority                     = 4096
+          direction                    = "Outbound"
+          access                       = "Deny"
+          protocol                     = "*"
+          source_port_range            = "*"
+          source_port_ranges           = []
+          source_address_prefix        = "*"
+          source_address_prefixes      = []
+          destination_port_range       = "*"
+          destination_port_ranges      = []
+          destination_address_prefix   = "*"
+          destination_address_prefixes = []
+        nsg_name  = key
+      }] : [])
     ]
     )
   )

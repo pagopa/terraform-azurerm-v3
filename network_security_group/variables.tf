@@ -31,6 +31,8 @@ variable "custom_security_group" {
     target_subnet_name                    = string
     target_subnet_vnet_name               = string
     target_application_security_group_ids = optional(list(string))
+    deny_everything_else_inbound                  = optional(bool, false)
+    deny_everything_else_outbound                 = optional(bool, false)
     inbound_rules = list(object({
       name                                  = string
       priority                              = number
@@ -149,7 +151,31 @@ variable "custom_security_group" {
           length(distinct([for rule in nsg.outbound_rules : rule.priority])) == length(nsg.outbound_rules)
         )
       ])
-      error_message = "Inbound rules priority must be unique."
+      error_message = "Outbound rules priority must be unique."
+    }
+
+  validation {
+      condition = var.custom_security_group == null ? true : alltrue(flatten([
+        for nsg in var.custom_security_group : (
+        [
+          for rule in nsg.outbound_rules : (rule.priority < 4096)
+        ]
+        )
+      ])
+      )
+      error_message = "Outbound rules priority 4096 is reserved for deny_everything_else_outbound rule"
+    }
+
+  validation {
+      condition = var.custom_security_group == null ? true : alltrue(flatten([
+        for nsg in var.custom_security_group : (
+        [
+          for rule in nsg.inbound_rules : (rule.priority < 4096)
+        ]
+        )
+      ])
+      )
+      error_message = "Inbound rules priority 4096 is reserved for deny_everything_else_inbound rule"
     }
 
   validation {
