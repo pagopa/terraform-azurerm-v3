@@ -248,10 +248,10 @@ validation {
         for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
         # (rule.target_service == null &&
         #     rule.protocol != null ) || (
-          # rule.target_service != null &&
-          #   rule.protocol == null &&
-          #   rule.destination_port_ranges == ["*"] # default value
-          contains(rule.destination_port_ranges, "*")
+          rule.target_service != null &&
+            rule.protocol == null &&
+            rule.destination_port_ranges == ["*"] # default value
+          # contains(rule.destination_port_ranges, "*")
          # )
         )
       ]
