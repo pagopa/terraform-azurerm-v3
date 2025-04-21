@@ -286,13 +286,11 @@ validation {
     condition = var.custom_security_group == null ? true : alltrue(flatten([
       for nsg in var.custom_security_group : [
         for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
-        (rule.target_service == null ) || (
-          rule.target_service != null && contains(keys(local.target_services), lookup(rule, "target_service", ""))
-         )
+          rule.target_service == null ? true : contains(keys(local.target_services), lookup(rule, "target_service", ""))
         )
       ]
     ]))
-    error_message = "inbound and outbound rules: target_service must be one of the items in local.target_services"
+    error_message = "inbound and outbound rules: target_service must be one of the items in 'local.target_services'"
   }
 
 }
