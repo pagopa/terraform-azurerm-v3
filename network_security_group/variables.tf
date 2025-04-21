@@ -249,8 +249,7 @@ validation {
         (rule.target_service == null &&
             rule.protocol != null ) || (
           rule.target_service != null &&
-            rule.protocol == null &&
-            rule.destination_port_ranges == ["*"] # default value
+            rule.protocol == null
           )
         )
       ]
