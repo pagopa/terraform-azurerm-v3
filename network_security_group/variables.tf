@@ -287,7 +287,7 @@ validation {
       for nsg in var.custom_security_group : [
         for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
         (rule.target_service == null ) || (
-          rule.target_service != null && contains(keys(local.target_services), rule.target_service)
+          rule.target_service != null && contains(keys(local.target_services), lookup(rule, "target_service", ""))
          )
         )
       ]
