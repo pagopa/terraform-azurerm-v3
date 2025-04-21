@@ -286,7 +286,7 @@ validation {
     condition = var.custom_security_group == null ? true : alltrue(flatten([
       for nsg in var.custom_security_group : [
         for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
-          rule.target_service == null ? true : contains(keys(local.target_services), lookup(rule, "target_service", ""))
+          rule.target_service == null ? true : contains(keys(local.target_services), rule.target_service)
         )
       ]
     ]))
