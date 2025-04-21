@@ -246,13 +246,13 @@ validation {
     condition = var.custom_security_group == null ? true : alltrue(flatten([
       for nsg in var.custom_security_group : [
         for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
-        (rule.target_service == null &&
-            rule.protocol != null ) || (
+        # (rule.target_service == null &&
+        #     rule.protocol != null ) || (
           # rule.target_service != null &&
           #   rule.protocol == null &&
           #   rule.destination_port_ranges == ["*"] # default value
           rule.destination_port_ranges == ["*"]
-         )
+         # )
         )
       ]
     ]))
