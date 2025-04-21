@@ -52,7 +52,7 @@ variable "custom_security_group" {
     outbound_rules = list(object({
       name                                       = string
       priority                                   = number
-      target_service                        = optional(string)
+      target_service                             = optional(string, null)
       access                                     = optional(string, "Allow")
       protocol                                   = optional(string)
       source_address_prefixes                    = optional(list(string), [])
@@ -280,6 +280,19 @@ validation {
       ]
     ]))
     error_message = "inbound and outbound rules: target_service and the pair <protocol, destination_port_ranges> are mutually exclusive"
+  }
+
+  validation {
+    condition = var.custom_security_group == null ? true : alltrue(flatten([
+      for nsg in var.custom_security_group : [
+        for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
+        (rule.target_service == null ) || (
+          rule.target_service != null && contains(keys(local.target_services), rule.target_service)
+         )
+        )
+      ]
+    ]))
+    error_message = "inbound and outbound rules: target_service must be one of the items in local.target_services"
   }
 
 }
