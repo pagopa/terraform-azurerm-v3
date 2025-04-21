@@ -69,13 +69,9 @@ locals {
           access                       = "Deny"
           protocol                     = "*"
           source_port_range            = "*"
-          source_port_ranges           = []
           source_address_prefix        = "*"
-          source_address_prefixes      = []
           destination_port_range       = "*"
-          destination_port_ranges      = []
           destination_address_prefix   = "*"
-          destination_address_prefixes = []
         nsg_name  = key
       }] : [])
     ],
@@ -124,13 +120,9 @@ locals {
           access                       = "Deny"
           protocol                     = "*"
           source_port_range            = "*"
-          source_port_ranges           = []
           source_address_prefix        = "*"
-          source_address_prefixes      = []
           destination_port_range       = "*"
-          destination_port_ranges      = []
           destination_address_prefix   = "*"
-          destination_address_prefixes = []
         nsg_name  = key
       }] : [])
     ]
