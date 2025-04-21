@@ -242,6 +242,23 @@ variable "custom_security_group" {
     error_message = "inbound_rules: source_subnet_name and source_subnet_vnet_name must both be defined or both be null"
   }
 
+validation {
+    condition = var.custom_security_group == null ? true : alltrue(flatten([
+      for nsg in var.custom_security_group : [
+        for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
+        (rule.target_service == null &&
+            rule.protocol != null ) || (
+          rule.target_service != null &&
+            rule.protocol == null &&
+            rule.destination_port_ranges == ["*"] # default value
+          ) || (
+        )
+        )
+      ]
+    ]))
+    error_message = "inbound and outbound rules: target_service and the pair <protocol, destination_port_ranges> are mutually exclusive"
+  }
+
 }
 
 

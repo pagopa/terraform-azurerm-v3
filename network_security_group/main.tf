@@ -90,11 +90,12 @@ locals {
           name                    = rule.name
           priority                = rule.priority
           access                  = rule.access
-          protocol                = rule.protocol
+          protocol                = rule.target_service != null ? title(local.target_services[rule.target_service].protocol) : rule.protocol
           source_port_ranges      = contains(rule.source_port_ranges, "*") ? null : rule.source_port_ranges
           source_port_range       = contains(rule.source_port_ranges, "*") ? "*" : null
-          destination_port_ranges = contains(rule.destination_port_ranges, "*") ? null : rule.destination_port_ranges
-          destination_port_range  = contains(rule.destination_port_ranges, "*") ? "*" : null
+          destination_port_ranges               = rule.target_service != null ? local.target_services[rule.target_service].port_ranges : (contains(rule.destination_port_ranges, "*") ? null : rule.destination_port_ranges)
+          destination_port_range                = rule.target_service != null ? null : (contains(rule.destination_port_ranges, "*") ? "*" : null)
+
 
           # Defines the source address prefixes for outbound security rule:
           # - If source_address_prefixes list is empty:
