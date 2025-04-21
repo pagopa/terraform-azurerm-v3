@@ -28,7 +28,7 @@ locals {
           name               = rule.name
           priority           = rule.priority
           access             = rule.access
-          protocol           = rule.target_service != null ? local.target_services[rule.target_service].protocol : rule.protocol
+          protocol           = rule.target_service != null ? capitalize(local.target_services[rule.target_service].protocol) : rule.protocol
           source_port_ranges = contains(rule.source_port_ranges, "*") ? null : rule.source_port_ranges
           source_port_range  = contains(rule.source_port_ranges, "*") ? "*" : null
 
