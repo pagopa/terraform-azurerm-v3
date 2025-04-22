@@ -28,36 +28,37 @@ variable "tags" {
 variable "custom_security_group" {
   description = "security groups configuration"
   type = map(object({
-    target_subnet_name                    = string
-    target_subnet_vnet_name               = string
+    target_subnet_name      = string
+    target_subnet_vnet_name = string
+    watcher_enabled         = optional(bool, false)
     inbound_rules = list(object({
-      name                                  = string
-      priority                              = number
-      target_service                        = optional(string, null)
-      access                                = optional(string, "Allow")
-      protocol                              = optional(string)
-      source_subnet_name                    = optional(string)
-      source_subnet_vnet_name               = optional(string)
-      source_port_ranges                    = optional(list(string), ["*"])
-      source_address_prefixes               = optional(list(string), [])
-      destination_address_prefixes          = optional(list(string), [])
-      destination_port_ranges               = optional(list(string), ["*"])
-      description                           = optional(string)
+      name                         = string
+      priority                     = number
+      target_service               = optional(string, null)
+      access                       = optional(string, "Allow")
+      protocol                     = optional(string)
+      source_subnet_name           = optional(string)
+      source_subnet_vnet_name      = optional(string)
+      source_port_ranges           = optional(list(string), ["*"])
+      source_address_prefixes      = optional(list(string), [])
+      destination_address_prefixes = optional(list(string), [])
+      destination_port_ranges      = optional(list(string), ["*"])
+      description                  = optional(string)
     }))
 
     outbound_rules = list(object({
-      name                                       = string
-      priority                                   = number
-      target_service                             = optional(string, null)
-      access                                     = optional(string, "Allow")
-      protocol                                   = optional(string)
-      source_address_prefixes                    = optional(list(string), [])
-      source_port_ranges                         = optional(list(string), ["*"])
-      destination_subnet_name                    = optional(string)
-      destination_subnet_vnet_name               = optional(string)
-      destination_port_ranges                    = optional(list(string), ["*"])
-      destination_address_prefixes               = optional(list(string), [])
-      description                                = optional(string)
+      name                         = string
+      priority                     = number
+      target_service               = optional(string, null)
+      access                       = optional(string, "Allow")
+      protocol                     = optional(string)
+      source_address_prefixes      = optional(list(string), [])
+      source_port_ranges           = optional(list(string), ["*"])
+      destination_subnet_name      = optional(string)
+      destination_subnet_vnet_name = optional(string)
+      destination_port_ranges      = optional(list(string), ["*"])
+      destination_address_prefixes = optional(list(string), [])
+      description                  = optional(string)
     }))
   }))
   default = null
@@ -196,7 +197,7 @@ variable "custom_security_group" {
       for nsg in var.custom_security_group : [
         for rule in nsg.outbound_rules : (
           (rule.destination_subnet_name != null && length(rule.destination_address_prefixes) == 0) ||
-        (rule.destination_subnet_name == null && length(rule.destination_address_prefixes) > 0)
+          (rule.destination_subnet_name == null && length(rule.destination_address_prefixes) > 0)
         )
       ]
     ]))
@@ -207,8 +208,8 @@ variable "custom_security_group" {
     condition = var.custom_security_group == null ? true : alltrue(flatten([
       for nsg in var.custom_security_group : [
         for rule in nsg.inbound_rules : (
-        (rule.source_subnet_name != null && length(rule.source_address_prefixes) == 0) ||
-        (rule.source_subnet_name == null && length(rule.source_address_prefixes) > 0)
+          (rule.source_subnet_name != null && length(rule.source_address_prefixes) == 0) ||
+          (rule.source_subnet_name == null && length(rule.source_address_prefixes) > 0)
         )
       ]
     ]))
@@ -220,7 +221,7 @@ variable "custom_security_group" {
       for nsg in var.custom_security_group : [
         for rule in nsg.outbound_rules : (
           (rule.destination_subnet_name != null && rule.destination_subnet_vnet_name != null) ||
-        (rule.destination_subnet_name == null && rule.destination_subnet_vnet_name  == null)
+          (rule.destination_subnet_name == null && rule.destination_subnet_vnet_name == null)
         )
       ]
     ]))
@@ -231,24 +232,24 @@ variable "custom_security_group" {
     condition = var.custom_security_group == null ? true : alltrue(flatten([
       for nsg in var.custom_security_group : [
         for rule in nsg.inbound_rules : (
-           (rule.source_subnet_name != null && rule.source_subnet_vnet_name != null) ||
-        (rule.source_subnet_name == null && rule.source_subnet_vnet_name  == null)
+          (rule.source_subnet_name != null && rule.source_subnet_vnet_name != null) ||
+          (rule.source_subnet_name == null && rule.source_subnet_vnet_name == null)
         )
       ]
     ]))
     error_message = "inbound_rules: source_subnet_name and source_subnet_vnet_name must both be defined or both be null"
   }
 
-validation {
+  validation {
     condition = var.custom_security_group == null ? true : alltrue(flatten([
       for nsg in var.custom_security_group : [
         for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
-        (rule.target_service == null &&
-            rule.protocol != null ) || (
-          rule.target_service != null &&
+          (rule.target_service == null &&
+            rule.protocol != null) || (
+            rule.target_service != null &&
             rule.protocol == null &&
             contains(rule.destination_port_ranges, "*") # default value
-         )
+          )
         )
       ]
     ]))
@@ -280,15 +281,22 @@ validation {
 }
 
 
-
-
-
-
-
 variable "vnets" {
   description = ""
   type = list(object({
     name    = string
     rg_name = string
   }))
+}
+
+
+variable "network_watcher" {
+  type = object({
+    storage_account_id                     = string
+    retention_days                         = number
+    traffic_analytics_law_name             = string
+    traffic_analytics_law_rg               = string
+    traffic_analytics_law_interval_minutes = optional(number, 10)
+  })
+  description = "Parameters required to configure the network watcher"
 }

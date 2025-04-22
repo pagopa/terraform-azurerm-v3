@@ -43,8 +43,8 @@ locals {
           source_address_prefixes = length(rule.source_address_prefixes) == 0 ? data.azurerm_subnet.subnet["${rule.source_subnet_name}-${rule.source_subnet_vnet_name}"].address_prefixes : (alltrue([for p in rule.source_address_prefixes : (length(regexall("[A-Za-z\\*]", p)) == 0)]) ? rule.source_address_prefixes : null)
           source_address_prefix   = length(rule.source_address_prefixes) > 0 && (anytrue([for p in rule.source_address_prefixes : (length(regexall("[A-Za-z\\*]", p)) > 0)])) ? (contains(rule.source_address_prefixes, "*") ? "*" : rule.source_address_prefixes[0]) : null
 
-          destination_port_ranges               = rule.target_service != null ? local.target_services[rule.target_service].port_ranges : (contains(rule.destination_port_ranges, "*") ? null : rule.destination_port_ranges)
-          destination_port_range                = rule.target_service != null ? null : (contains(rule.destination_port_ranges, "*") ? "*" : null)
+          destination_port_ranges = rule.target_service != null ? local.target_services[rule.target_service].port_ranges : (contains(rule.destination_port_ranges, "*") ? null : rule.destination_port_ranges)
+          destination_port_range  = rule.target_service != null ? null : (contains(rule.destination_port_ranges, "*") ? "*" : null)
 
           # Defines the destination address prefixes for security rule:
           # - If destination_address_prefixes list is empty:
@@ -61,7 +61,7 @@ locals {
           nsg_name  = key
           direction = "Inbound"
         }
-        ])
+      ])
     ],
     [
       for key, nsg in var.custom_security_group :
@@ -75,8 +75,8 @@ locals {
           protocol                = rule.target_service != null ? title(local.target_services[rule.target_service].protocol) : rule.protocol
           source_port_ranges      = contains(rule.source_port_ranges, "*") ? null : rule.source_port_ranges
           source_port_range       = contains(rule.source_port_ranges, "*") ? "*" : null
-          destination_port_ranges               = rule.target_service != null ? local.target_services[rule.target_service].port_ranges : (contains(rule.destination_port_ranges, "*") ? null : rule.destination_port_ranges)
-          destination_port_range                = rule.target_service != null ? null : (contains(rule.destination_port_ranges, "*") ? "*" : null)
+          destination_port_ranges = rule.target_service != null ? local.target_services[rule.target_service].port_ranges : (contains(rule.destination_port_ranges, "*") ? null : rule.destination_port_ranges)
+          destination_port_range  = rule.target_service != null ? null : (contains(rule.destination_port_ranges, "*") ? "*" : null)
 
 
           # Defines the source address prefixes for outbound security rule:
@@ -99,10 +99,10 @@ locals {
           destination_address_prefixes = length(rule.destination_address_prefixes) == 0 ? data.azurerm_subnet.subnet["${rule.destination_subnet_name}-${rule.destination_subnet_vnet_name}"].address_prefixes : (alltrue([for p in rule.destination_address_prefixes : (regex("[A-Za-z\\*]", p) == null)]) ? rule.destination_address_prefixes : null)
           destination_address_prefix   = length(rule.destination_address_prefixes) > 0 && (anytrue([for p in rule.destination_address_prefixes : (length(regexall("[A-Za-z\\*]", p)) > 0)])) ? (contains(rule.destination_address_prefixes, "*") ? "*" : rule.destination_address_prefixes[0]) : null
 
-          nsg_name                                   = key
-          direction                                  = "Outbound"
+          nsg_name  = key
+          direction = "Outbound"
         }
-        ])
+      ])
     ]
     )
   )
@@ -158,25 +158,40 @@ resource "azurerm_subnet_network_security_group_association" "nsg_association" {
   network_security_group_id = azurerm_network_security_group.custom_nsg[each.key].id
 }
 
-# resource "azurerm_network_watcher_flow_log" "test" {
-#   network_watcher_name = azurerm_network_watcher.test.name
-#   resource_group_name  = azurerm_resource_group.example.name
-#   name                 = "example-log"
-#
-#   target_resource_id = azurerm_network_security_group.test.id
-#   storage_account_id = azurerm_storage_account.test.id
-#   enabled            = true
-#
-#   retention_policy {
-#     enabled = true
-#     days    = 7
-#   }
-#
-#   traffic_analytics {
-#     enabled               = true
-#     workspace_id          = azurerm_log_analytics_workspace.test.workspace_id
-#     workspace_region      = azurerm_log_analytics_workspace.test.location
-#     workspace_resource_id = azurerm_log_analytics_workspace.test.id
-#     interval_in_minutes   = 10
-#   }
-# }
+
+resource "azurerm_network_watcher" "network_watcher" {
+  name                = "${var.prefix}-nsg-network-watcher"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+}
+
+data "azurerm_log_analytics_workspace" "analytics_workspace" {
+  name                = var.network_watcher.traffic_analytics_law_name
+  resource_group_name = var.network_watcher.traffic_analytics_law_rg
+}
+
+resource "azurerm_network_watcher_flow_log" "network_watcher_flow_log" {
+  for_each = var.custom_security_group
+
+  network_watcher_name = azurerm_network_watcher.network_watcher.name
+  resource_group_name  = var.resource_group_name
+  name                 = "${var.prefix}-${each.key}-flow-log"
+
+  target_resource_id = azurerm_network_security_group.custom_nsg[each.key].id
+  storage_account_id = var.network_watcher.watcher_storage_account_id
+  enabled            = each.value.watcher_enabled
+
+  retention_policy {
+    enabled = true
+    days    = var.network_watcher.watcher_retention_days
+  }
+
+  traffic_analytics {
+    enabled               = true
+    workspace_id          = data.azurerm_log_analytics_workspace.analytics_workspace.workspace_id
+    workspace_region      = data.azurerm_log_analytics_workspace.analytics_workspace.location
+    workspace_resource_id = data.azurerm_log_analytics_workspace.analytics_workspace.id
+    interval_in_minutes   = var.network_watcher.traffic_analytics_law_interval_minutes
+  }
+
+}
