@@ -154,7 +154,7 @@ resource "azurerm_network_security_rule" "custom_security_rule" {
 resource "azurerm_subnet_network_security_group_association" "nsg_association" {
   for_each = var.custom_security_group
 
-  subnet_id                 = data.azurerm_subnet.subnet["${each.target_subnet_name}-${each.target_subnet_vnet_name}"].id
+  subnet_id                 = data.azurerm_subnet.subnet["${each.value.target_subnet_name}-${each.value.target_subnet_vnet_name}"].id
   network_security_group_id = azurerm_network_security_group.custom_nsg[each.key].id
 }
 
