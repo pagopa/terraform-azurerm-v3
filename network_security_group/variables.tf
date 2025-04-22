@@ -30,9 +30,6 @@ variable "custom_security_group" {
   type = map(object({
     target_subnet_name                    = string
     target_subnet_vnet_name               = string
-    target_application_security_group_ids = optional(list(string))
-    deny_everything_else_inbound          = optional(bool, false)
-    deny_everything_else_outbound         = optional(bool, false)
     inbound_rules = list(object({
       name                                  = string
       priority                              = number
@@ -41,7 +38,6 @@ variable "custom_security_group" {
       protocol                              = optional(string)
       source_subnet_name                    = optional(string)
       source_subnet_vnet_name               = optional(string)
-      source_application_security_group_ids = optional(list(string))
       source_port_ranges                    = optional(list(string), ["*"])
       source_address_prefixes               = optional(list(string), [])
       destination_address_prefixes          = optional(list(string), [])
@@ -59,7 +55,6 @@ variable "custom_security_group" {
       source_port_ranges                         = optional(list(string), ["*"])
       destination_subnet_name                    = optional(string)
       destination_subnet_vnet_name               = optional(string)
-      destination_application_security_group_ids = optional(list(string))
       destination_port_ranges                    = optional(list(string), ["*"])
       destination_address_prefixes               = optional(list(string), [])
       description                                = optional(string)
@@ -158,53 +153,31 @@ variable "custom_security_group" {
     error_message = "outbound_rules: priority must be unique."
   }
 
+
   validation {
     condition = var.custom_security_group == null ? true : alltrue(flatten([
       for nsg in var.custom_security_group : (
         [
-          for rule in nsg.outbound_rules : (rule.priority != 4096)
+          for rule in nsg.outbound_rules : ((rule.priority <= 4096) && (rule.priority >= 100))
         ]
       )
       ])
     )
-    error_message = "outbound_rules: priority 4096 is reserved for deny_everything_else_outbound rule"
+    error_message = "outbound_rules: priority must be between 100 and 4096"
   }
 
   validation {
     condition = var.custom_security_group == null ? true : alltrue(flatten([
       for nsg in var.custom_security_group : (
         [
-          for rule in nsg.outbound_rules : ((rule.priority < 4096) && (rule.priority >= 100))
+          for rule in nsg.inbound_rules : ((rule.priority <= 4096) && (rule.priority >= 100))
         ]
       )
       ])
     )
-    error_message = "outbound_rules: priority must be between 100 and 4095"
+    error_message = "inbound_rules: priority must be between 100 and 4096"
   }
 
-  validation {
-    condition = var.custom_security_group == null ? true : alltrue(flatten([
-      for nsg in var.custom_security_group : (
-        [
-          for rule in nsg.inbound_rules : ((rule.priority < 4096) && (rule.priority >= 100))
-        ]
-      )
-      ])
-    )
-    error_message = "inbound_rules: priority must be between 100 and 4095"
-  }
-
-  validation {
-    condition = var.custom_security_group == null ? true : alltrue(flatten([
-      for nsg in var.custom_security_group : (
-        [
-          for rule in nsg.inbound_rules : (rule.priority < 4096)
-        ]
-      )
-      ])
-    )
-    error_message = "inbound_rules: priority 4096 is reserved for deny_everything_else_inbound rule"
-  }
 
   validation {
     condition = var.custom_security_group == null ? true : alltrue(flatten([
@@ -239,7 +212,7 @@ variable "custom_security_group" {
         )
       ]
     ]))
-    error_message = "inbound_rules: source_subnet_name and destination_address_prefixes are mutually exclusive"
+    error_message = "inbound_rules: source_subnet_name and source_address_prefixes are mutually exclusive"
   }
 
   validation {
@@ -293,25 +266,23 @@ validation {
     error_message = "inbound and outbound rules: target_service must be one of the items in 'local.target_services'"
   }
 
+
+  validation {
+    condition = var.custom_security_group == null ? true : alltrue(flatten([
+      for nsg in var.custom_security_group : [
+        for rule in concat(nsg.inbound_rules, nsg.outbound_rules) : (
+          contains(["Tcp", "Udp", "Icmp", "Esp", "Ah", "*"], title(rule.protocol))
+        )
+      ]
+    ]))
+    error_message = "inbound and outbound rules: protocol must be one of ['Tcp', 'Udp', 'Icmp', 'Esp', 'Ah', '*']"
+  }
 }
 
 
 
 
 
-variable "default_security_group" {
-  description = ""
-  type = map(object({
-    type = string //todo validate on available types
-
-    source_subnet_name      = string
-    source_subnet_vnet_name = string
-
-    destination_subnet_name      = string
-    destination_subnet_vnet_name = string
-  }))
-  default = null
-}
 
 
 variable "vnets" {

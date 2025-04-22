@@ -43,7 +43,6 @@ locals {
           source_address_prefixes = length(rule.source_address_prefixes) == 0 ? data.azurerm_subnet.subnet["${rule.source_subnet_name}-${rule.source_subnet_vnet_name}"].address_prefixes : (alltrue([for p in rule.source_address_prefixes : (length(regexall("[A-Za-z\\*]", p)) == 0)]) ? rule.source_address_prefixes : null)
           source_address_prefix   = length(rule.source_address_prefixes) > 0 && (anytrue([for p in rule.source_address_prefixes : (length(regexall("[A-Za-z\\*]", p)) > 0)])) ? (contains(rule.source_address_prefixes, "*") ? "*" : rule.source_address_prefixes[0]) : null
 
-          source_application_security_group_ids = rule.source_application_security_group_ids
           destination_port_ranges               = rule.target_service != null ? local.target_services[rule.target_service].port_ranges : (contains(rule.destination_port_ranges, "*") ? null : rule.destination_port_ranges)
           destination_port_range                = rule.target_service != null ? null : (contains(rule.destination_port_ranges, "*") ? "*" : null)
 
@@ -62,24 +61,7 @@ locals {
           nsg_name  = key
           direction = "Inbound"
         }
-        ],
-        # deny everything else inbound rule
-          nsg.deny_everything_else_inbound ? [{
-          name                         = "DenyAllInbound"
-          priority                     = 4096
-          direction                    = "Inbound"
-          access                       = "Deny"
-          protocol                     = "*"
-          source_port_range            = "*"
-          source_port_ranges           = null
-          source_address_prefix        = "*"
-          source_address_prefixes      = null
-          destination_port_range       = "*"
-          destination_port_ranges      = null
-          destination_address_prefix   = "*"
-          destination_address_prefixes = null
-          nsg_name                     = key
-      }] : [])
+        ])
     ],
     [
       for key, nsg in var.custom_security_group :
@@ -115,30 +97,12 @@ locals {
           # - Otherwise use the first element of the list
           # - If no elements or no letters/asterisks are found, set to null
           destination_address_prefixes = length(rule.destination_address_prefixes) == 0 ? data.azurerm_subnet.subnet["${rule.destination_subnet_name}-${rule.destination_subnet_vnet_name}"].address_prefixes : (alltrue([for p in rule.destination_address_prefixes : (regex("[A-Za-z\\*]", p) == null)]) ? rule.destination_address_prefixes : null)
-          destination_address_prefix   = length(rule.destination_address_prefixes) > 0 && (anytrue([for p in rule.destination_address_prefixes : (length(regexall("[A-Za-z\\*]", p)) > 0)])) ? (contains(rule.destination_address_prefixes, "*") ? "*" : rule.destination_address_prefixes[0]) : null
+          destination_address_prefix   = local.target_services[rule.target_service].service_tag : (length(rule.destination_address_prefixes) > 0 && (anytrue([for p in rule.destination_address_prefixes : (length(regexall("[A-Za-z\\*]", p)) > 0)])) ? (contains(rule.destination_address_prefixes, "*") ? "*" : rule.destination_address_prefixes[0]) : null
 
-          destination_application_security_group_ids = rule.destination_application_security_group_ids
           nsg_name                                   = key
           direction                                  = "Outbound"
         }
-        ],
-        # deny everything else outbound rule
-          nsg.deny_everything_else_outbound ? [{
-          name                         = "DenyAllOutbound"
-          priority                     = 4096
-          direction                    = "Outbound"
-          access                       = "Deny"
-          protocol                     = "*"
-          source_port_range            = "*"
-          source_port_ranges           = null
-          source_address_prefix        = "*"
-          source_address_prefixes      = null
-          destination_port_range       = "*"
-          destination_port_ranges      = null
-          destination_address_prefix   = "*"
-          destination_address_prefixes = null
-          nsg_name                     = key
-      }] : [])
+        ])
     ]
     )
   )
@@ -187,9 +151,12 @@ resource "azurerm_network_security_rule" "custom_security_rule" {
 }
 
 
-# todo
-# azurerm_subnet_network_security_group_association
+resource "azurerm_subnet_network_security_group_association" "nsg_association" {
+  for_each = var.custom_security_group
 
+  subnet_id                 = data.azurerm_subnet.subnet["${each.target_subnet_name}-${each.target_subnet_vnet_name}"].id
+  network_security_group_id = azurerm_network_security_group.custom_nsg[each.key].id
+}
 
 # resource "azurerm_network_watcher_flow_log" "test" {
 #   network_watcher_name = azurerm_network_watcher.test.name
