@@ -173,7 +173,7 @@ resource "azurerm_network_watcher_flow_log" "network_watcher_flow_log" {
   name                 = "${var.prefix}-${each.key}-flow-log"
 
   target_resource_id = azurerm_network_security_group.custom_nsg[each.key].id
-  storage_account_id = var.flow_logs.watcher_storage_account_id
+  storage_account_id = var.flow_logs.storage_account_id
   enabled            = each.value.watcher_enabled
 
   retention_policy {
