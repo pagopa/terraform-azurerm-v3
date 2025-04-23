@@ -1,12 +1,6 @@
 variable "prefix" {
   type        = string
   description = "Prefix for all resources"
-  validation {
-    condition = (
-      length(var.prefix) <= 6
-    )
-    error_message = "Max length is 6 chars."
-  }
 }
 
 
@@ -290,10 +284,12 @@ variable "vnets" {
 }
 
 
-variable "network_watcher" {
+variable "flow_logs" {
   type = object({
+    network_watcher_name                   = string
+    network_watcher_rg                     = string
     storage_account_id                     = string
-    retention_days                         = number
+    retention_days                         = optional(number, 2)
     traffic_analytics_law_name             = string
     traffic_analytics_law_rg               = string
     traffic_analytics_law_interval_minutes = optional(number, 10)

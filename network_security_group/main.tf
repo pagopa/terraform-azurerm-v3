@@ -159,39 +159,34 @@ resource "azurerm_subnet_network_security_group_association" "nsg_association" {
 }
 
 
-resource "azurerm_network_watcher" "network_watcher" {
-  name                = "${var.prefix}-nsg-network-watcher"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-}
 
 data "azurerm_log_analytics_workspace" "analytics_workspace" {
-  name                = var.network_watcher.traffic_analytics_law_name
-  resource_group_name = var.network_watcher.traffic_analytics_law_rg
+  name                = var.flow_logs.traffic_analytics_law_name
+  resource_group_name = var.flow_logs.traffic_analytics_law_rg
 }
 
 resource "azurerm_network_watcher_flow_log" "network_watcher_flow_log" {
   for_each = var.custom_security_group
 
-  network_watcher_name = azurerm_network_watcher.network_watcher.name
-  resource_group_name  = var.resource_group_name
+  network_watcher_name = var.flow_logs.network_watcher_name
+  resource_group_name  = var.flow_logs.network_watcher_rg
   name                 = "${var.prefix}-${each.key}-flow-log"
 
   target_resource_id = azurerm_network_security_group.custom_nsg[each.key].id
-  storage_account_id = var.network_watcher.watcher_storage_account_id
+  storage_account_id = var.flow_logs.watcher_storage_account_id
   enabled            = each.value.watcher_enabled
 
   retention_policy {
     enabled = true
-    days    = var.network_watcher.watcher_retention_days
+    days    = var.flow_logs.watcher_retention_days
   }
 
   traffic_analytics {
-    enabled               = true
+    enabled               = each.value.watcher_enabled
     workspace_id          = data.azurerm_log_analytics_workspace.analytics_workspace.workspace_id
     workspace_region      = data.azurerm_log_analytics_workspace.analytics_workspace.location
     workspace_resource_id = data.azurerm_log_analytics_workspace.analytics_workspace.id
-    interval_in_minutes   = var.network_watcher.traffic_analytics_law_interval_minutes
+    interval_in_minutes   = var.flow_logs.traffic_analytics_law_interval_minutes
   }
 
 }
