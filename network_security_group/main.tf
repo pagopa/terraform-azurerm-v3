@@ -178,7 +178,7 @@ resource "azurerm_network_watcher_flow_log" "network_watcher_flow_log" {
 
   retention_policy {
     enabled = true
-    days    = var.flow_logs.watcher_retention_days
+    days    = var.flow_logs.retention_days
   }
 
   traffic_analytics {

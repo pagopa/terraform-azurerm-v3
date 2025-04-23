@@ -60,7 +60,7 @@ module "network_security_group" {
     }
   }
 
-  network_watcher = {
+  flow_logs = {
     network_watcher_name       = "my-network-watcher" 
     network_watcher_rg         = "my-network-watcher-rg" 
     storage_account_id         = "storage-id"
