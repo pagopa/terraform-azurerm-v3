@@ -194,7 +194,7 @@ Some examples of inbound rule configurations, these examples are valid also for 
   target_service             = "postgresql"
   source_subnet_name         = module.private_endpoints_snet.name
   source_subnet_vnet_name    = module.vnet.name
-  description                = "Allow HTTP traffic on 80" 
+  description                = "Allow postgresql ports and protocol" 
 }
 ```
 
