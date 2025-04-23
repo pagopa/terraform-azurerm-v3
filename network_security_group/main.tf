@@ -1,7 +1,3 @@
-
-
-
-
 resource "azurerm_network_security_group" "custom_nsg" {
   for_each = var.custom_security_group
 
@@ -12,7 +8,6 @@ resource "azurerm_network_security_group" "custom_nsg" {
   tags = var.tags
 
 }
-
 
 resource "azurerm_network_security_rule" "custom_security_rule" {
   for_each = { for sr in local.security_rules : "${sr.nsg_name}-${sr.name}" => sr }
@@ -36,15 +31,12 @@ resource "azurerm_network_security_rule" "custom_security_rule" {
   network_security_group_name = azurerm_network_security_group.custom_nsg[each.value.nsg_name].name
 }
 
-
 resource "azurerm_subnet_network_security_group_association" "nsg_association" {
   for_each = var.custom_security_group
 
   subnet_id                 = data.azurerm_subnet.subnet["${each.value.target_subnet_name}-${each.value.target_subnet_vnet_name}"].id
   network_security_group_id = azurerm_network_security_group.custom_nsg[each.key].id
 }
-
-
 
 resource "azurerm_network_watcher_flow_log" "network_watcher_flow_log" {
   for_each = var.custom_security_group
@@ -69,5 +61,4 @@ resource "azurerm_network_watcher_flow_log" "network_watcher_flow_log" {
     workspace_resource_id = data.azurerm_log_analytics_workspace.analytics_workspace.id
     interval_in_minutes   = var.flow_logs.traffic_analytics_law_interval_minutes
   }
-
 }
