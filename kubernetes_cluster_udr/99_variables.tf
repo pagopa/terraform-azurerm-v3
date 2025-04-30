@@ -275,11 +275,13 @@ variable "api_server_authorized_ip_ranges" {
 
 variable "network_profile" {
   type = object({
-    network_plugin      = string # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
-    outbound_type       = string # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
+    network_policy      = optional(string, "azure") # e.g. 'azure'. Sets up network policy to be used with Azure CNI. Currently supported values are calico and azure.
+    network_plugin      = string                    # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
+    outbound_type       = string                    # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
     network_plugin_mode = string
   })
   default = {
+    network_policy      = "azure"
     network_plugin      = "azure"
     outbound_type       = "userDefinedRouting"
     network_plugin_mode = "Overlay"

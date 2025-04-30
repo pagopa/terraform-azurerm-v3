@@ -73,6 +73,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     for_each = var.network_profile != null ? [var.network_profile] : []
     iterator = p
     content {
+      network_policy      = p.value.network_policy
       network_plugin      = p.value.network_plugin
       outbound_type       = p.value.outbound_type
       network_plugin_mode = p.value.network_plugin_mode
