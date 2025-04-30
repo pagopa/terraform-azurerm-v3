@@ -60,7 +60,7 @@ resource "azurerm_kubernetes_cluster" "this" {
 
   # node_os_channel_upgrade must be set to NodeImage if automatic_channel_upgrade has been set to node-image
   automatic_channel_upgrade = var.automatic_channel_upgrade
-  node_os_channel_upgrade   = var.node_os_channel_upgrade
+  # node_os_channel_upgrade   = var.node_os_channel_upgrade
 
   api_server_authorized_ip_ranges = var.api_server_authorized_ip_ranges #tfsec:ignore:AZU008
 
