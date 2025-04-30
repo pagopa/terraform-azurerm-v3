@@ -359,3 +359,32 @@ variable "disk_encryption_set_id" {
   default     = null
   description = "ID of the disk EncryptionSet ."
 }
+
+
+# node os maintenance window. if disabled, schedules a maintenance window for a very far away date
+variable "maintenance_windows_node_os" {
+  type = object({
+    enabled      = optional(bool, false)
+    day_of_month = optional(number, 0)
+    day_of_week  = optional(string, "Sunday")
+    duration     = optional(number, 4)
+    frequency    = optional(string, "Weekly")
+    interval     = optional(number, 1)
+    start_date   = optional(string, "2060-03-12T00:00:00Z")
+    start_time   = optional(string, "00:00")
+    utc_offset   = optional(string, "+00:00")
+    week_index   = optional(string, "First")
+  })
+  default = {
+    enabled      = false
+    day_of_month = 0
+    day_of_week  = "Sunday"
+    duration     = 4
+    frequency    = "Weekly"
+    interval     = 1
+    start_date   = "2060-03-12T00:00:00Z"
+    start_time   = "00:00"
+    utc_offset   = "+00:00"
+    week_index   = "First"
+  }
+}

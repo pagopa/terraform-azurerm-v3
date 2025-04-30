@@ -111,6 +111,21 @@ resource "azurerm_kubernetes_cluster" "this" {
     }
   }
 
+  dynamic "maintenance_window_node_os" {
+    for_each = var.maintenance_windows_node_os.enabled ? [1] : []
+    content {
+      day_of_month = var.maintenance_windows_node_os.day_of_month
+      day_of_week  = var.maintenance_windows_node_os.day_of_week
+      duration     = var.maintenance_windows_node_os.duration
+      frequency    = var.maintenance_windows_node_os.frequency
+      interval     = var.maintenance_windows_node_os.interval
+      start_date   = var.maintenance_windows_node_os.start_date
+      start_time   = var.maintenance_windows_node_os.start_time
+      utc_offset   = var.maintenance_windows_node_os.utc_offset
+      week_index   = var.maintenance_windows_node_os.week_index
+    }
+  }
+
   role_based_access_control_enabled = true
   azure_active_directory_role_based_access_control {
     managed                = true
