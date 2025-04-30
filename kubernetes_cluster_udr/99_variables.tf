@@ -261,11 +261,11 @@ variable "automatic_channel_upgrade" {
   default     = null
 }
 
-variable "node_os_channel_upgrade" {
-  type        = string
-  description = "(Optional) The upgrade channel for this Kubernetes Cluster Nodes' OS Image. Possible values are Unmanaged, SecurityPatch, NodeImage and None."
-  default     = "None"
-}
+# variable "node_os_channel_upgrade" {
+#   type        = string
+#   description = "(Optional) The upgrade channel for this Kubernetes Cluster Nodes' OS Image. Possible values are Unmanaged, SecurityPatch, NodeImage and None."
+#   default     = "None"
+# }
 
 variable "api_server_authorized_ip_ranges" {
   type        = list(string)
