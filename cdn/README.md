@@ -167,7 +167,6 @@ During the apply there will be 1 changed and 1 destroy related to storage see [s
 | Name | Description |
 |------|-------------|
 | <a name="output_endpoint_id"></a> [endpoint\_id](#output\_endpoint\_id) | n/a |
-| <a name="output_fqdn"></a> [fqdn](#output\_fqdn) | n/a |
 | <a name="output_hostname"></a> [hostname](#output\_hostname) | n/a |
 | <a name="output_id"></a> [id](#output\_id) | Deprecated, use endpoint\_id instead. |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
