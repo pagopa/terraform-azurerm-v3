@@ -3,7 +3,7 @@ locals {
   alert_name_sha256_limited = substr(sha256(var.alert_name), 0, 5)
   # all this work is mandatory to avoid helm name limit of 53 chars
   helm_chart_name = "${lower(substr(replace("chckr-${var.alert_name}", "/\\W/", "-"), 0, 47))}${local.alert_name_sha256_limited}"
-  chart_version   = var.workload_identity_enabled ? "7.1.0" : "5.9.1"
+  chart_version   = var.workload_identity_enabled ? var.helm_chart_version : "5.9.1"
 }
 
 variable "https_endpoint" {
@@ -63,13 +63,13 @@ variable "helm_chart_present" {
 variable "helm_chart_version" {
   type        = string
   description = "Helm chart version for the tls checker application"
-  default     = "5.9.1"
+  default     = "7.6.0"
 }
 
 variable "helm_chart_image_name" {
   type        = string
   description = "Docker image name"
-  default     = "ghcr.io/pagopa/infra-ssl-check"
+  default     = "ghcr.io/pagopa/infra-ssl-check@sha256:c3d45736706c981493b6216451fc65e99a69d5d64409ccb1c4ca93fef57c921d" #v1.3.4
 }
 
 variable "helm_chart_image_tag" {
