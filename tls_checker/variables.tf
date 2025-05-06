@@ -69,7 +69,7 @@ variable "helm_chart_version" {
 variable "helm_chart_image_name" {
   type        = string
   description = "Docker image name"
-  default     = "ghcr.io/pagopa/infra-ssl-check:v1.3.4@sha256:c3d45736706c981493b6216451fc65e99a69d5d64409ccb1c4ca93fef57c921d" #v1.3.4
+  default     = "ghcr.io/pagopa/infra-ssl-check"
 }
 
 variable "helm_chart_image_tag" {
