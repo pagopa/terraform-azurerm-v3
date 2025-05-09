@@ -548,7 +548,7 @@ resource "null_resource" "apex_custom_hostname" {
 }
 
 resource "null_resource" "custom_hostname" {
-  count = var.dns_zone_name != var.hostname && !var.custom_hostname_kv_enabled ? 1 : 0
+  count = var.dns_zone_name != var.hostname && !var.custom_hostname_kv_enabled && var.enabled_cname_creation ? 1 : 0
 
   depends_on = [
     azurerm_dns_cname_record.hostname[0],
@@ -686,7 +686,7 @@ resource "azurerm_dns_cname_record" "apex_cdnverify" {
 }
 
 resource "azurerm_dns_cname_record" "hostname" {
-  count = var.create_dns_record && var.dns_zone_name != var.hostname ? 1 : 0
+  count = var.create_dns_record && var.dns_zone_name != var.hostname && var.enabled_cname_creation ? 1 : 0
 
   name                = trimsuffix(replace(var.hostname, var.dns_zone_name, ""), ".")
   zone_name           = var.dns_zone_name

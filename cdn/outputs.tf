@@ -19,9 +19,9 @@ output "hostname" {
   value = local.hostname
 }
 
-output "fqdn" {
-  value = var.create_dns_record ? var.dns_zone_name == var.hostname ? trimsuffix(azurerm_dns_a_record.apex_hostname[0].fqdn, ".") : trimsuffix(azurerm_dns_cname_record.hostname[0].fqdn, ".") : null
-}
+# output "fqdn" {
+#   value = var.create_dns_record ? var.dns_zone_name == var.hostname ? trimsuffix(azurerm_dns_a_record.apex_hostname[0].fqdn, ".") : trimsuffix(azurerm_dns_cname_record.hostname[0].fqdn, ".") : null
+# }
 
 output "storage_id" {
   value = module.cdn_storage_account.id
