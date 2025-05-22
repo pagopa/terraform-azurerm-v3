@@ -122,4 +122,9 @@ variable "wsdl_selector" {
   })
   description = "(Optional) A wsdl_selector block, which allows you to limit the import of a WSDL to only a subset of the document. This can only be specified when content_format is wsdl or wsdl-link."
   default     = null
+
+  validation {
+    condition     = var.wsdl_selector != null ? var.content_format == "wsdl" || var.content_format == "wsdl-link" : true
+    error_message = "wsdl_selector can only be specified when content_format is wsdl or wsdl-link."
+  }
 }
