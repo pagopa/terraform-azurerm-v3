@@ -102,6 +102,7 @@ No modules.
 | <a name="input_subscription_key_names"></a> [subscription\_key\_names](#input\_subscription\_key\_names) | Override the default name of the header and query string containing the subscription key header | <pre>object({<br/>    header = string<br/>    query  = string<br/>  })</pre> | `null` | no |
 | <a name="input_subscription_required"></a> [subscription\_required](#input\_subscription\_required) | Should this API require a subscription key? | `bool` | `false` | no |
 | <a name="input_version_set_id"></a> [version\_set\_id](#input\_version\_set\_id) | The ID of the Version Set which this API is associated with. | `string` | `null` | no |
+| <a name="input_wsdl_selector"></a> [wsdl\_selector](#input\_wsdl\_selector) | (Optional) A wsdl\_selector block, which allows you to limit the import of a WSDL to only a subset of the document. This can only be specified when content\_format is wsdl or wsdl-link. | <pre>object({<br/>    endpoint_name = string # (Required) The name of service to import from WSDL.<br/>    service_name  = string # (Required) The name of endpoint (port) to import from WSDL.<br/>  })</pre> | `null` | no |
 | <a name="input_xml_content"></a> [xml\_content](#input\_xml\_content) | The XML Content for this Policy as a string | `string` | `null` | no |
 
 ## Outputs
