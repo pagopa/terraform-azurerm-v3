@@ -316,7 +316,7 @@ resource "azurerm_monitor_metric_alert" "alert" {
 
 
   dynamic "action" {
-    for_each = concat(var.application_insights_action_group_ids, lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "customActionGroupIds", local.default_custom_action_groups))
+    for_each = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "customActionGroupIds", var.application_insights_action_group_ids)
 
     content {
       action_group_id = action.value
