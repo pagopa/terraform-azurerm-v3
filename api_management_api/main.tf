@@ -32,10 +32,6 @@ resource "azurerm_api_management_api" "this" {
         service_name  = var.wsdl_selector.service_name
       }
     }
-    wsdl_selector {
-      endpoint_name = var.wsdl_selector.endpoint_name
-      service_name  = var.wsdl_selector.service_name
-    }
   }
 
   dynamic "subscription_key_parameter_names" {
