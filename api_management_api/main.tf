@@ -25,6 +25,13 @@ resource "azurerm_api_management_api" "this" {
   import {
     content_format = var.content_format
     content_value  = var.content_value
+    dynamic "wsdl_selector" {
+      for_each = contains(["wsdl", "wsdl-link"], var.content_format) ? ["item"] : []
+      content {
+        endpoint_name = var.wsdl_selector.endpoint_name
+        service_name  = var.wsdl_selector.service_name
+      }
+    }
   }
 
   dynamic "subscription_key_parameter_names" {
