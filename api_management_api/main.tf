@@ -70,8 +70,8 @@ data "external" "soap_action" {
 
   query = {
     resource_group     = var.resource_group_name
-    service_name  = var.api_management_name
-    api_id = azurerm_api_management_api.this.id
+    service_name     = var.api_management_name
+    api_id          = azurerm_api_management_api.this.name
   }
 }
 

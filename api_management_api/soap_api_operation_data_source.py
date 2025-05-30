@@ -28,9 +28,9 @@ def main(query):
 if __name__ == "__main__":
   input = sys.stdin.read()
   query = json.loads(input)
-#   query = {
-# "resource_group": "pagopa-d-api-rg",
-# "service_name": "pagopa-d-apim",
-# "api_id": "d-node-for-psp-api-auth-2-v1"
-#   }
+  query = {
+"resource_group": "pagopa-d-api-rg",
+"service_name": "pagopa-d-apim",
+"api_id": "d-node-for-psp-api-auth-2-v1"
+  }
   main(query)
