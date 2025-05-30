@@ -61,13 +61,32 @@ resource "azurerm_api_management_product_api" "this" {
   resource_group_name = var.resource_group_name
 }
 
+data "external" "soap_action" {
+  count = contains(["wsdl", "wsdl-link"], var.content_format) ? 1 : 0
+
+  program = [
+    "python3", "${path.module}/soap_api_operation_data_source.py"
+  ]
+
+  query = {
+    resource_group     = var.resource_group_name
+    service_name  = var.api_management_name
+    api_id = azurerm_api_management_api.this.id
+  }
+}
+
+output "operation_ids" {
+  value = data.external.soap_action.*.result
+}
+
+
 resource "azurerm_api_management_api_operation_policy" "api_operation_policy" {
   for_each = { for p in var.api_operation_policies : format("%s%s", p.operation_id, var.api_version == null ? "" : var.api_version) => p }
 
   api_name            = azurerm_api_management_api.this.name
   api_management_name = var.api_management_name
   resource_group_name = var.resource_group_name
-  operation_id        = each.value.operation_id
+  operation_id        = each.value.operation_id #qui devo capire se è soap, e prendere l'id corretto se content_format = wsdl o wsdl-link
 
   xml_content = each.value.xml_content
 }
