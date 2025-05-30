@@ -88,7 +88,7 @@ resource "azurerm_api_management_api_operation_policy" "api_operation_policy" {
   api_management_name = var.api_management_name
   resource_group_name = var.resource_group_name
   # if soap, the operation id has to be retrieved from the external data source because it is generated and does not match with the soap action
-  operation_id        = local.is_soap ? data.external.soap_action.result[each.value.operation_id] : each.value.operation_id
+  operation_id        = local.is_soap ? data.external.soap_action[0].result[each.value.operation_id] : each.value.operation_id
 
   xml_content = each.value.xml_content
 }
