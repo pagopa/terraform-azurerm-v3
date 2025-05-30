@@ -6,12 +6,15 @@ import subprocess
 def find_operation_ids(api_id: str, service_name: str, resource_group: str) -> str:
   # operations = subprocess.run(f'az apim api operation list --resource-group {resource_group} --service-name {service_name} --api-id {api_id} --query "[].{id:id, name:name, urlTemplate:urlTemplate}" --output json')
   operations = subprocess.run(['az', 'apim', 'api', 'operation', 'list','--resource-group', resource_group, '--service-name', service_name, '--api-id', api_id, '--query', '[].{id:id, name:name, urlTemplate:urlTemplate}', '--output', 'json'], capture_output=True, text=True)
-  operations_j = json.loads(operations)
+  if operations.returncode != 0:
+    print(f"Error fetching operations: {operations.stderr}", file=sys.stderr)
+    sys.exit(1)
+  operations_j = json.loads(operations.stdout)
 
   result = {}
 
   for operation in operations_j:
-    result[operation['name']] = operation['urlTemplate']
+    result[operation['urlTemplate'].replace("/?soapAction=", "")] = operation['name']
   return result
 
 def main(query):
@@ -25,4 +28,9 @@ def main(query):
 if __name__ == "__main__":
   input = sys.stdin.read()
   query = json.loads(input)
+#   query = {
+# "resource_group": "pagopa-d-api-rg",
+# "service_name": "pagopa-d-apim",
+# "api_id": "d-node-for-psp-api-auth-2-v1"
+#   }
   main(query)
