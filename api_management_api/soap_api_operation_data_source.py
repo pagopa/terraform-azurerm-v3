@@ -3,6 +3,11 @@ import sys
 import subprocess
 
 
+"""
+This script retrieves the operation IDs for a given API in Azure API Management.
+to be used as external data source in Terraform.
+returns a map of <soap-actoin> - <operation-id>
+"""
 def find_operation_ids(api_id: str, service_name: str, resource_group: str) -> str:
   operations = subprocess.run(['az', 'apim', 'api', 'operation', 'list','--resource-group', resource_group, '--service-name', service_name, '--api-id', api_id, '--query', '[].{id:id, name:name, urlTemplate:urlTemplate}', '--output', 'json'], capture_output=True, text=True)
   if operations.returncode != 0:

@@ -8,7 +8,7 @@ This module allow the creation of api management product, and associate to a gro
 
 ## How to use it
 
-```ts
+```hcl
 locals {
   apim_devopslab_webapp_python_alpha_api = {
     # params for all api versions
@@ -77,6 +77,7 @@ No modules.
 | [azurerm_api_management_api_operation_policy.api_operation_policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_api_operation_policy) | resource |
 | [azurerm_api_management_api_policy.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_api_policy) | resource |
 | [azurerm_api_management_product_api.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_product_api) | resource |
+| [external_external.soap_action](https://registry.terraform.io/providers/hashicorp/external/latest/docs/data-sources/external) | data source |
 
 ## Inputs
 
@@ -111,4 +112,5 @@ No modules.
 |------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
+| <a name="output_soap_operation_ids"></a> [soap\_operation\_ids](#output\_soap\_operation\_ids) | Map of SOAP action to operation ID, only if the API type is SOAP. |
 <!-- END_TF_DOCS -->
