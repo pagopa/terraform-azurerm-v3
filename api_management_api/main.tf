@@ -61,8 +61,12 @@ resource "azurerm_api_management_product_api" "this" {
   resource_group_name = var.resource_group_name
 }
 
+locals {
+  is_soap = var.api_type == "soap" || var.content_format == "wsdl" || var.content_format == "wsdl-link"
+}
+
 data "external" "soap_action" {
-  count = contains(["wsdl", "wsdl-link"], var.content_format) ? 1 : 0
+  count = local.is_soap ? 1 : 0
 
   program = [
     "python3", "${path.module}/soap_api_operation_data_source.py"
@@ -75,9 +79,6 @@ data "external" "soap_action" {
   }
 }
 
-output "operation_ids" {
-  value = data.external.soap_action.*.result
-}
 
 
 resource "azurerm_api_management_api_operation_policy" "api_operation_policy" {
@@ -86,7 +87,8 @@ resource "azurerm_api_management_api_operation_policy" "api_operation_policy" {
   api_name            = azurerm_api_management_api.this.name
   api_management_name = var.api_management_name
   resource_group_name = var.resource_group_name
-  operation_id        = each.value.operation_id #qui devo capire se è soap, e prendere l'id corretto se content_format = wsdl o wsdl-link
+  # if soap, the operation id has to be retrieved from the external data source because it is generated and does not match with the soap action
+  operation_id        = local.is_soap ? data.external.soap_action.result[each.value.operation_id] : each.value.operation_id
 
   xml_content = each.value.xml_content
 }
