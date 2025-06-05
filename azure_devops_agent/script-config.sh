@@ -78,6 +78,16 @@ wget https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops_${SO
 apt-get -y update
 apt-get -y install jq
 
+# install SDKManager with Java and Maven
+apt-get -y install curl
+curl -s "https://get.sdkman.io" | bash
+
+# reload sdk manager bin
+source "/root/.sdkman/bin/sdkman-init.sh"
+
+sdk install java ${JAVA_VERSION}    # Install java
+sdk install maven ${MAVEN_VERSION}  # Install maven
+
 # prepare machine for k6 large load test
 
 sysctl -w net.ipv4.ip_local_port_range="1024 65535"
