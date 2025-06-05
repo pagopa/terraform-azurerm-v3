@@ -85,6 +85,9 @@ curl -s "https://get.sdkman.io" | bash
 # reload sdk manager bin
 source "/root/.sdkman/bin/sdkman-init.sh"
 
+JAVA_VERSION="21.0.7-tem"
+MAVEN_VERSION="3.9.9"
+
 sdk install java ${JAVA_VERSION}    # Install java
 sdk install maven ${MAVEN_VERSION}  # Install maven
 
