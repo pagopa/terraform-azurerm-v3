@@ -258,6 +258,16 @@ resource "azurerm_application_gateway" "this" {
     }
   }
 
+  dynamic "custom_error_configuration" {
+    for_each = var.custom_error_configurations
+    iterator = err_conf
+
+    content {
+      status_code           = err_conf.value.status_code
+      custom_error_page_url = err_conf.value.custom_error_page_url
+    }
+  }
+
   # see: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#identity
   identity {
     type         = "UserAssigned"
