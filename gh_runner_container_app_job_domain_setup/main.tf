@@ -11,9 +11,9 @@ module "container_app_job" {
   environment_name = var.environment_name
   environment_rg   = var.environment_rg
   job = {
-    name                 = each.value #short_name
-    scale_max_executions = 1
-    scale_min_executions = 1
+    name                 = var.job.name
+    scale_max_executions = var.job.scale_max_executions
+    scale_min_executions = var.job.scale_min_executions
   }
   job_meta = {
     repo                         = each.key #name
