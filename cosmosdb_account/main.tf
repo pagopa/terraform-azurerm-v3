@@ -7,6 +7,7 @@ resource "azurerm_cosmosdb_account" "this" {
   enable_free_tier          = var.enable_free_tier
   enable_automatic_failover = var.enable_automatic_failover
   key_vault_key_id          = var.key_vault_key_id
+  minimal_tls_version       = var.minimal_tls_version
 
   mongo_server_version   = var.mongo_server_version
   burst_capacity_enabled = var.burst_capacity_enabled

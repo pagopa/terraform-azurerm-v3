@@ -58,7 +58,10 @@ resource "azurerm_kubernetes_cluster" "this" {
     tags = merge(var.tags, var.system_node_pool_tags)
   }
 
-  automatic_channel_upgrade       = var.automatic_channel_upgrade
+  # node_os_channel_upgrade must be set to NodeImage if automatic_channel_upgrade has been set to node-image
+  automatic_channel_upgrade = var.automatic_channel_upgrade
+  # node_os_channel_upgrade   = var.node_os_channel_upgrade
+
   api_server_authorized_ip_ranges = var.api_server_authorized_ip_ranges #tfsec:ignore:AZU008
 
   # managed identity type: https://docs.microsoft.com/en-us/azure/aks/use-managed-identity
@@ -70,6 +73,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     for_each = var.network_profile != null ? [var.network_profile] : []
     iterator = p
     content {
+      network_policy      = p.value.network_policy
       network_plugin      = p.value.network_plugin
       outbound_type       = p.value.outbound_type
       network_plugin_mode = p.value.network_plugin_mode
@@ -106,6 +110,21 @@ resource "azurerm_kubernetes_cluster" "this" {
       hours = [23, 0, 1, 2, 3, 4]
     }
   }
+
+  # dynamic "maintenance_window_node_os" {
+  #   for_each = var.maintenance_windows_node_os.enabled ? [1] : []
+  #   content {
+  #     day_of_month = var.maintenance_windows_node_os.day_of_month
+  #     day_of_week  = var.maintenance_windows_node_os.day_of_week
+  #     duration     = var.maintenance_windows_node_os.duration
+  #     frequency    = var.maintenance_windows_node_os.frequency
+  #     interval     = var.maintenance_windows_node_os.interval
+  #     start_date   = var.maintenance_windows_node_os.start_date
+  #     start_time   = var.maintenance_windows_node_os.start_time
+  #     utc_offset   = var.maintenance_windows_node_os.utc_offset
+  #     week_index   = var.maintenance_windows_node_os.week_index
+  #   }
+  # }
 
   role_based_access_control_enabled = true
   azure_active_directory_role_based_access_control {
