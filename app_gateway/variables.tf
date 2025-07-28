@@ -213,6 +213,12 @@ variable "waf_disabled_rule_group" {
   default = []
 }
 
+variable "firewall_policy_id" {
+  type        = string
+  default     = null
+  description = "(Optional) Id of the WAF policy to attach to the gateway"
+}
+
 # Scaling
 
 variable "app_gateway_max_capacity" {

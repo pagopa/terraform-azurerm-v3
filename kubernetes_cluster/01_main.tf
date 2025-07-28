@@ -32,7 +32,8 @@ resource "azurerm_kubernetes_cluster" "this" {
   # System node pool
   #
   default_node_pool {
-    name = var.system_node_pool_name
+    name                        = var.system_node_pool_name
+    temporary_name_for_rotation = substr("temp${var.system_node_pool_name}", 0, 12)
 
     ### vm configuration
     vm_size = var.system_node_pool_vm_size
@@ -67,7 +68,9 @@ resource "azurerm_kubernetes_cluster" "this" {
     tags = merge(var.tags, var.system_node_pool_tags)
   }
 
+  # node_os_channel_upgrade must be set to NodeImage if automatic_channel_upgrade has been set to node-image
   automatic_channel_upgrade = var.automatic_channel_upgrade
+  node_os_channel_upgrade   = var.node_os_channel_upgrade
 
   # managed identity type: https://docs.microsoft.com/en-us/azure/aks/use-managed-identity
   identity {
@@ -124,6 +127,21 @@ resource "azurerm_kubernetes_cluster" "this" {
     allowed {
       day   = "Thursday"
       hours = [23, 0, 1, 2, 3, 4]
+    }
+  }
+
+  dynamic "maintenance_window_node_os" {
+    for_each = var.maintenance_windows_node_os.enabled ? [1] : []
+    content {
+      day_of_month = var.maintenance_windows_node_os.day_of_month
+      day_of_week  = var.maintenance_windows_node_os.day_of_week
+      duration     = var.maintenance_windows_node_os.duration
+      frequency    = var.maintenance_windows_node_os.frequency
+      interval     = var.maintenance_windows_node_os.interval
+      start_date   = var.maintenance_windows_node_os.start_date
+      start_time   = var.maintenance_windows_node_os.start_time
+      utc_offset   = var.maintenance_windows_node_os.utc_offset
+      week_index   = var.maintenance_windows_node_os.week_index
     }
   }
 

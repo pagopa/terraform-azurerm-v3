@@ -114,3 +114,17 @@ variable "subscription_key_names" {
   description = "Override the default name of the header and query string containing the subscription key header"
   default     = null
 }
+
+variable "wsdl_selector" {
+  type = object({
+    endpoint_name = string # (Required) The name of service to import from WSDL.
+    service_name  = string # (Required) The name of endpoint (port) to import from WSDL.
+  })
+  description = "(Optional) A wsdl_selector block, which allows you to limit the import of a WSDL to only a subset of the document. This can only be specified when content_format is wsdl or wsdl-link."
+  default     = null
+
+  validation {
+    condition     = var.wsdl_selector != null ? var.content_format == "wsdl" || var.content_format == "wsdl-link" : true
+    error_message = "wsdl_selector can only be specified when content_format is wsdl or wsdl-link."
+  }
+}
