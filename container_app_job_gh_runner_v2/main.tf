@@ -61,11 +61,6 @@ resource "azurerm_container_app_job" "container_app_job" {
     }
   }
 
-  # Prevent false plan changes on secret part
-  lifecycle {
-    ignore_changes = [secret]
-  }
-
   tags = var.tags
 }
 

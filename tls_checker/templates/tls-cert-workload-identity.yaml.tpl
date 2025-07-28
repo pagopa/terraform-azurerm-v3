@@ -1,5 +1,13 @@
 namespace: '${namespace}'
 
+### Workload Identity
+
+serviceAccount:
+  name: ${SERVICE_ACCOUNT_NAME}
+
+azure:
+  workloadIdentityClientId: ${WORKLOAD_IDENTITY_CLIENT_ID}
+
 image:
   repository: '${image_name}'
   tag: '${image_tag}'
@@ -14,8 +22,8 @@ readinessProbe:
   httpGet:
     path: /
     port: 8080
-  initialDelaySeconds: 30
-  failureThreshold: 7
+  initialDelaySeconds: 60
+  failureThreshold: 10
   periodSeconds: 10
   timeoutSeconds: 1
   successThreshold: 1
@@ -24,8 +32,8 @@ livenessProbe:
   httpGet:
     path: /
     port: 8080
-  initialDelaySeconds: 30
-  failureThreshold: 7
+  initialDelaySeconds: 60
+  failureThreshold: 10
   periodSeconds: 10
   timeoutSeconds: 1
   successThreshold: 1
@@ -35,8 +43,8 @@ startupProbe:
   httpGet:
     path: /
     port: 8080
-  initialDelaySeconds: 30
-  failureThreshold: 7
+  initialDelaySeconds: 60
+  failureThreshold: 10
   periodSeconds: 10
   timeoutSeconds: 10
   successThreshold: 1
@@ -89,12 +97,3 @@ sidecars:
       limits:
         memory: 100Mi
         cpu: 20m
-
-### Workload Identity
-
-serviceAccount:
-  name: ${SERVICE_ACCOUNT_NAME}
-
-azure:
-  workloadIdentityClientId: ${WORKLOAD_IDENTITY_CLIENT_ID}
-

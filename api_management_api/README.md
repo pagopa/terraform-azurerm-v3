@@ -8,7 +8,7 @@ This module allow the creation of api management product, and associate to a gro
 
 ## How to use it
 
-```ts
+```hcl
 locals {
   apim_devopslab_webapp_python_alpha_api = {
     # params for all api versions
@@ -77,6 +77,7 @@ No modules.
 | [azurerm_api_management_api_operation_policy.api_operation_policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_api_operation_policy) | resource |
 | [azurerm_api_management_api_policy.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_api_policy) | resource |
 | [azurerm_api_management_product_api.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_product_api) | resource |
+| [external_external.soap_action](https://registry.terraform.io/providers/hashicorp/external/latest/docs/data-sources/external) | data source |
 
 ## Inputs
 
@@ -102,6 +103,7 @@ No modules.
 | <a name="input_subscription_key_names"></a> [subscription\_key\_names](#input\_subscription\_key\_names) | Override the default name of the header and query string containing the subscription key header | <pre>object({<br/>    header = string<br/>    query  = string<br/>  })</pre> | `null` | no |
 | <a name="input_subscription_required"></a> [subscription\_required](#input\_subscription\_required) | Should this API require a subscription key? | `bool` | `false` | no |
 | <a name="input_version_set_id"></a> [version\_set\_id](#input\_version\_set\_id) | The ID of the Version Set which this API is associated with. | `string` | `null` | no |
+| <a name="input_wsdl_selector"></a> [wsdl\_selector](#input\_wsdl\_selector) | (Optional) A wsdl\_selector block, which allows you to limit the import of a WSDL to only a subset of the document. This can only be specified when content\_format is wsdl or wsdl-link. | <pre>object({<br/>    endpoint_name = string # (Required) The name of service to import from WSDL.<br/>    service_name  = string # (Required) The name of endpoint (port) to import from WSDL.<br/>  })</pre> | `null` | no |
 | <a name="input_xml_content"></a> [xml\_content](#input\_xml\_content) | The XML Content for this Policy as a string | `string` | `null` | no |
 
 ## Outputs
@@ -110,4 +112,5 @@ No modules.
 |------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
+| <a name="output_soap_operation_ids"></a> [soap\_operation\_ids](#output\_soap\_operation\_ids) | Map of SOAP action to operation ID, only if the API type is SOAP. |
 <!-- END_TF_DOCS -->

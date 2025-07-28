@@ -261,6 +261,12 @@ variable "automatic_channel_upgrade" {
   default     = null
 }
 
+# variable "node_os_channel_upgrade" {
+#   type        = string
+#   description = "(Optional) The upgrade channel for this Kubernetes Cluster Nodes' OS Image. Possible values are Unmanaged, SecurityPatch, NodeImage and None."
+#   default     = "None"
+# }
+
 variable "api_server_authorized_ip_ranges" {
   type        = list(string)
   description = "The IP ranges to whitelist for incoming traffic to the masters."
@@ -269,11 +275,13 @@ variable "api_server_authorized_ip_ranges" {
 
 variable "network_profile" {
   type = object({
-    network_plugin      = string # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
-    outbound_type       = string # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
+    network_policy      = optional(string, "azure") # e.g. 'azure'. Sets up network policy to be used with Azure CNI. Currently supported values are calico and azure.
+    network_plugin      = string                    # e.g. 'azure'. Network plugin to use for networking. Currently supported values are azure and kubenet
+    outbound_type       = string                    # e.g. 'loadBalancer'. The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer
     network_plugin_mode = string
   })
   default = {
+    network_policy      = "azure"
     network_plugin      = "azure"
     outbound_type       = "userDefinedRouting"
     network_plugin_mode = "Overlay"
@@ -350,4 +358,33 @@ variable "disk_encryption_set_id" {
   type        = string
   default     = null
   description = "ID of the disk EncryptionSet ."
+}
+
+
+# node os maintenance window. if disabled, schedules a maintenance window for a very far away date
+variable "maintenance_windows_node_os" {
+  type = object({
+    enabled      = optional(bool, false)
+    day_of_month = optional(number, 0)
+    day_of_week  = optional(string, "Sunday")
+    duration     = optional(number, 4)
+    frequency    = optional(string, "Weekly")
+    interval     = optional(number, 1)
+    start_date   = optional(string, "2060-03-12T00:00:00Z")
+    start_time   = optional(string, "00:00")
+    utc_offset   = optional(string, "+00:00")
+    week_index   = optional(string, "First")
+  })
+  default = {
+    enabled      = false
+    day_of_month = 0
+    day_of_week  = "Sunday"
+    duration     = 4
+    frequency    = "Weekly"
+    interval     = 1
+    start_date   = "2060-03-12T00:00:00Z"
+    start_time   = "00:00"
+    utc_offset   = "+00:00"
+    week_index   = "First"
+  }
 }
