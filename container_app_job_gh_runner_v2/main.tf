@@ -33,7 +33,7 @@ resource "azurerm_container_app_job" "container_app_job" {
 
   secret {
     # no versioning
-    key_vault_secret_id = "${data.azurerm_key_vault.key_vault.vault_uri}secrets/${var.key_vault_secret_name}"
+    key_vault_secret_id = data.azurerm_key_vault_secret.github_pat.id
 
     identity = "System"
     name     = "personal-access-token"
@@ -53,12 +53,12 @@ resource "azurerm_container_app_job" "container_app_job" {
           value = env.value["value"]
         }
       }
-    }
-  }
 
-  # Prevent false plan changes on secret part
-  lifecycle {
-    ignore_changes = [secret]
+      env {
+        name        = "GITHUB_PAT"
+        secret_name = "personal-access-token"
+      }
+    }
   }
 
   tags = var.tags

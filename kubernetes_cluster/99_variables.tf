@@ -262,6 +262,12 @@ variable "automatic_channel_upgrade" {
   default     = null
 }
 
+variable "node_os_channel_upgrade" {
+  type        = string
+  description = "(Optional) The upgrade channel for this Kubernetes Cluster Nodes' OS Image. Possible values are Unmanaged, SecurityPatch, NodeImage and None."
+  default     = "None"
+}
+
 variable "network_profile" {
   type = object({
     dns_service_ip      = optional(string, "10.2.0.10")    # e.g. '10.2.0.10'. IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns)
@@ -309,6 +315,27 @@ variable "addon_azure_pod_identity_enabled" {
   type        = bool
   description = "Should the AAD pod-managed identities be enabled for this Node Pool? "
   default     = false
+}
+
+
+variable "monitor_metrics" {
+  type = object({
+    annotations_allowed = optional(string, null)
+    labels_allowed      = optional(string, null)
+  })
+  default = {
+    annotations_allowed = null
+    labels_allowed      = null
+  }
+  description = "(Optional) Specifies a comma-separated list of Kubernetes annotation keys that will be used in the resource's labels metric."
+}
+
+# The sku_tier must be set to Standard or Premium to enable this feature.
+# Enabling this will add Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal.
+variable "cost_analysis_enabled" {
+  type        = bool
+  default     = false
+  description = "(Optional) Should cost analysis be enabled for this Kubernetes Cluster? Defaults to false."
 }
 
 #
@@ -401,4 +428,39 @@ variable "oms_agent_monitoring_metrics_role_assignment_enabled" {
   type        = bool
   description = "Enabled oms agent monitoring metrics roles"
   default     = true
+}
+
+### Prometheus managed
+variable "enable_prometheus_monitor_metrics" {
+  description = "Enable or disable Prometheus managed metrics"
+  type        = bool
+  default     = false
+}
+
+# node os maintenance window. if disabled, schedules a maintenance window for a very far away date
+variable "maintenance_windows_node_os" {
+  type = object({
+    enabled      = optional(bool, false)
+    day_of_month = optional(number, 0)
+    day_of_week  = optional(string, "Sunday")
+    duration     = optional(number, 4)
+    frequency    = optional(string, "Weekly")
+    interval     = optional(number, 1)
+    start_date   = optional(string, "2060-03-12T00:00:00Z")
+    start_time   = optional(string, "00:00")
+    utc_offset   = optional(string, "+00:00")
+    week_index   = optional(string, "First")
+  })
+  default = {
+    enabled      = false
+    day_of_month = 0
+    day_of_week  = "Sunday"
+    duration     = 4
+    frequency    = "Weekly"
+    interval     = 1
+    start_date   = "2060-03-12T00:00:00Z"
+    start_time   = "00:00"
+    utc_offset   = "+00:00"
+    week_index   = "First"
+  }
 }

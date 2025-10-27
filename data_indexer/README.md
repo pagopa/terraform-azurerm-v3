@@ -7,7 +7,7 @@ In terraform output you can get the the app service's name and id.
 Use the example Terraform template, saved in `./tests`, to test this module and get some advices.
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -55,4 +55,4 @@ Use the example Terraform template, saved in `./tests`, to test this module and 
 | Name | Description |
 |------|-------------|
 | <a name="output_subnet_id"></a> [subnet\_id](#output\_subnet\_id) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

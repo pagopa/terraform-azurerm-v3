@@ -1,0 +1,258 @@
+[
+  {
+    "alert": "KubePVUsageHigh",
+    "enabled": true,
+    "expression": "avg by (namespace, controller, container, cluster)(((kubelet_volume_stats_used_bytes{job=\"kubelet\"} / on(namespace,cluster,pod,container) group_left kubelet_volume_stats_capacity_bytes{job=\"kubelet\"}) * on(namespace, pod, cluster) group_left(controller) label_replace(kube_pod_owner, \"controller\", \"$1\", \"owner_name\", \"(.*)\")) > .8)",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "Average PV usage on pod {{ $labels.pod }} is over 80%.",
+      "description": "Average PV usage on pod {{ $labels.pod }} in container {{ $labels.container }}  is greater than 80%. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeDeploymentReplicasMismatch",
+    "enabled": true,
+    "expression": "(  kube_deployment_spec_replicas{job=\"kube-state-metrics\"}    >  kube_deployment_status_replicas_available{job=\"kube-state-metrics\"}) and (  changes(kube_deployment_status_replicas_updated{job=\"kube-state-metrics\"}[10m])    ==  0)",
+    "severity": 1,
+    "severity_label": "error",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "Deployment {{ $labels.namespace }}/{{ $labels.deployment }} in {{ $labels.cluster}} replica mismatch.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT15M"
+    }
+  },
+  {
+    "alert": "KubeStatefulSetReplicasMismatch",
+    "enabled": true,
+    "expression": "(  kube_statefulset_status_replicas_ready{job=\"kube-state-metrics\"}    !=  kube_statefulset_status_replicas{job=\"kube-state-metrics\"}) and (  changes(kube_statefulset_status_replicas_updated{job=\"kube-state-metrics\"}[10m])    ==  0)",
+    "severity": 1,
+    "severity_label": "error",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "StatefulSet {{ $labels.namespace }}/{{ $labels.statefulset }} in {{ $labels.cluster}} replica mismatch.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeHpaReplicasMismatch",
+    "enabled": true,
+    "expression": "(kube_horizontalpodautoscaler_status_desired_replicas{job=\"kube-state-metrics\"}  !=kube_horizontalpodautoscaler_status_current_replicas{job=\"kube-state-metrics\"})  and(kube_horizontalpodautoscaler_status_current_replicas{job=\"kube-state-metrics\"}  >kube_horizontalpodautoscaler_spec_min_replicas{job=\"kube-state-metrics\"})  and(kube_horizontalpodautoscaler_status_current_replicas{job=\"kube-state-metrics\"}  <kube_horizontalpodautoscaler_spec_max_replicas{job=\"kube-state-metrics\"})  and changes(kube_horizontalpodautoscaler_status_current_replicas{job=\"kube-state-metrics\"}[15m]) == 0",
+    "severity": 1,
+    "severity_label": "error",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "Horizontal Pod Autoscaler for {{ $labels.statefulset }} not matched the desired number of replicas.",
+      "description": "Horizontal Pod Autoscaler in {{ $labels.cluster}} has not matched the desired number of replicas for longer than 15 minutes. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT15M"
+    }
+  },
+  {
+    "alert": "KubeHpaMaxedOut",
+    "enabled": true,
+    "expression": "kube_horizontalpodautoscaler_status_current_replicas{job=\"kube-state-metrics\"}  ==kube_horizontalpodautoscaler_spec_max_replicas{job=\"kube-state-metrics\"}",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "Horizontal Pod Autoscaler for {{ $labels.statefulset }} reach the maximum scaling.",
+      "description": "Horizontal Pod Autoscaler in {{ $labels.cluster}} has been running at max replicas for longer than 15 minutes. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT15M"
+    }
+  },
+  {
+    "alert": "KubePodCrashLooping",
+    "enabled": true,
+    "expression": "max_over_time(kube_pod_container_status_waiting_reason{reason=\"CrashLoopBackOff\", job=\"kube-state-metrics\"}[5m]) >= 1",
+    "severity": 1,
+    "severity_label": "error",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "{{ $labels.namespace }}/{{ $labels.pod }} crash looping in {{ printf \"%.2f\" $value }} / second.",
+      "description": "{{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) in {{ $labels.cluster}} is restarting {{ printf \"%.2f\" $value }} / second. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeJobStale",
+    "enabled": true,
+    "expression": "sum by(namespace,cluster)(kube_job_spec_completions{job=\"kube-state-metrics\"}) - sum by(namespace,cluster)(kube_job_status_succeeded{job=\"kube-state-metrics\"})  > 0 ",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT360M",
+    "annotations": {
+      "summary": "Number of stale jobs older than six hours is greater than 0.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT15M"
+    }
+  },
+  {
+    "alert": "KubePodContainerRestart",
+    "enabled": true,
+    "expression": "sum by (namespace, controller, container, cluster)(increase(kube_pod_container_status_restarts_total{job=\"kube-state-metrics\"}[1h])* on(namespace, pod, cluster) group_left(controller) label_replace(kube_pod_owner, \"controller\", \"$1\", \"owner_name\", \"(.*)\")) > 2",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "Pod container restarted more of 2 times in last 1 hour.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubePodReadyStateLow",
+    "enabled": true,
+    "expression": "sum by (cluster,namespace,deployment)(kube_deployment_status_replicas_ready) / sum by (cluster,namespace,deployment)(kube_deployment_spec_replicas) <.5 or sum by (cluster,namespace,deployment)(kube_daemonset_status_number_ready) / sum by (cluster,namespace,deployment)(kube_daemonset_status_desired_number_scheduled) <.5 ",
+    "severity": 1,
+    "severity_label": "error",
+    "for": "PT5M",
+    "annotations": {
+      "summary": "Ready state of pods is less than 80%.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT15M"
+    }
+  },
+  {
+    "alert": "KubePodFailedState",
+    "enabled": true,
+    "expression": "sum by (cluster, namespace, controller) (kube_pod_status_phase{phase=\"failed\"} * on(namespace, pod, cluster) group_left(controller) label_replace(kube_pod_owner, \"controller\", \"$1\", \"owner_name\", \"(.*)\"))  > 0",
+    "severity": 1,
+    "severity_label": "error",
+    "for": "PT5M",
+    "annotations": {
+      "summary": "Number of pods in failed state are greater than 0.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT15M"
+    }
+  },
+  {
+    "alert": "KubePodNotReadyByController",
+    "enabled": true,
+    "expression": "sum by (namespace, controller, cluster) (max by(namespace, pod, cluster) (kube_pod_status_phase{job=\"kube-state-metrics\", phase=~\"Pending|Unknown\"}  ) * on(namespace, pod, cluster) group_left(controller)label_replace(kube_pod_owner,\"controller\",\"$1\",\"owner_name\",\"(.*)\")) > 0",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "{{ $labels.namespace }}/{{ $labels.pod }} in {{ $labels.cluster}} by controller is not ready.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeStatefulSetGenerationMismatch",
+    "enabled": true,
+    "expression": "kube_statefulset_status_observed_generation{job=\"kube-state-metrics\"} != kube_statefulset_metadata_generation{job=\"kube-state-metrics\"}",
+    "severity": 1,
+    "severity_label": "error",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "StatefulSet has failed but has not been rolled back.",
+      "description": "StatefulSet generation for {{ $labels.namespace }}/{{ $labels.statefulset }} does not match, this indicates that the StatefulSet has failed but has not been rolled back. For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeJobFailed",
+    "enabled": true,
+    "expression": "kube_job_failed{job=\"kube-state-metrics\"}  > 0",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT15M",
+    "annotations": {
+      "summary": "Job {{ $labels.namespace }}/{{ $labels.job_name }} in {{ $labels.cluster}} failed to complete.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeContainerAverageCPUHigh",
+    "enabled": true,
+    "expression": "sum (rate(container_cpu_usage_seconds_total{image!=\"\", container!=\"POD\"}[5m])) by (pod,cluster,container,namespace) / sum(container_spec_cpu_quota{image!=\"\", container!=\"POD\"}/container_spec_cpu_period{image!=\"\", container!=\"POD\"}) by (pod,cluster,container,namespace) > .95",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT5M",
+    "annotations": {
+      "summary": "Average CPU usage per container is greater than 95%.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT15M"
+    }
+  },
+  {
+    "alert": "KubeContainerAverageMemoryHigh",
+    "enabled": true,
+    "expression": "avg by (namespace, controller, container, cluster)(((container_memory_working_set_bytes{container!=\"\", image!=\"\", container!=\"POD\"} / on(namespace,cluster,pod,container) group_left kube_pod_container_resource_limits{resource=\"memory\", node!=\"\"})*on(namespace, pod, cluster) group_left(controller) label_replace(kube_pod_owner, \"controller\", \"$1\", \"owner_name\", \"(.*)\")) > .95)",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT10M",
+    "annotations": {
+      "summary": "Average Memory usage per container is greater than 95%.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  },
+  {
+    "alert": "KubeletPodStartUpLatencyHigh",
+    "enabled": true,
+    "expression": "histogram_quantile(0.99, sum(rate(kubelet_pod_worker_duration_seconds_bucket{job=\"kubelet\"}[5m])) by (cluster, instance, le)) * on(cluster, instance) group_left(node) kubelet_node_name{job=\"kubelet\"} > 60",
+    "severity": 2,
+    "severity_label": "warning",
+    "for": "PT10M",
+    "annotations": {
+      "summary": "Kubelet Pod startup latency is too high.",
+      "description": "For more information on this alert, please refer to this [link](https://aka.ms/aks-alerts/pod-level-recommended-alerts)."
+    },
+    "alert_resolution": {
+      "auto_resolved": true,
+      "time_to_resolve": "PT10M"
+    }
+  }
+]

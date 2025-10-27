@@ -12,7 +12,7 @@ data "azurerm_application_insights" "app_insight" {
 }
 
 module "synthetic_monitoring_storage_account" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account?ref=v8.16.0"
+  source = "../storage_account"
 
   name                            = "${local.sa_prefix}synthmon"
   account_kind                    = var.storage_account_settings.kind
@@ -46,29 +46,29 @@ resource "azurerm_storage_table" "table_storage" {
 }
 
 locals {
-  decoded_configuration = jsondecode(var.monitoring_configuration_encoded)
+  decoded_configuration    = jsondecode(var.monitoring_configuration_encoded)
+  monitoring_configuration = { for c in local.decoded_configuration : "${c.appName}-${c.apiName}-${c.type}" => c if lookup(c, "enabled", true) }
 }
 
 resource "azurerm_storage_table_entity" "monitoring_configuration" {
-  count                = length(local.decoded_configuration)
-  storage_account_name = module.synthetic_monitoring_storage_account.name
-  table_name           = azurerm_storage_table.table_storage.name
+  for_each         = local.monitoring_configuration
+  storage_table_id = azurerm_storage_table.table_storage.id
 
-  partition_key = "${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"
-  row_key       = local.decoded_configuration[count.index].type
+
+  partition_key = "${each.value.appName}-${each.value.apiName}"
+  row_key       = each.value.type
   entity = {
-    "url"                 = local.decoded_configuration[count.index].url,
-    "type"                = local.decoded_configuration[count.index].type,
-    "checkCertificate"    = local.decoded_configuration[count.index].checkCertificate,
-    "method"              = local.decoded_configuration[count.index].method,
-    "expectedCodes"       = jsonencode(local.decoded_configuration[count.index].expectedCodes),
-    "durationLimit"       = lookup(local.decoded_configuration[count.index], "durationLimit", null) != null ? local.decoded_configuration[count.index].durationLimit : var.job_settings.default_duration_limit,
-    "headers"             = lookup(local.decoded_configuration[count.index], "headers", null) != null ? jsonencode(local.decoded_configuration[count.index].headers) : null,
-    "body"                = lookup(local.decoded_configuration[count.index], "body", null) != null ? jsonencode(local.decoded_configuration[count.index].body) : null
-    "tags"                = lookup(local.decoded_configuration[count.index], "tags", null) != null ? jsonencode(local.decoded_configuration[count.index].tags) : null
-    "bodyCompareStrategy" = lookup(local.decoded_configuration[count.index], "bodyCompareStrategy", null) != null ? local.decoded_configuration[count.index].bodyCompareStrategy : null
-    "expectedBody"        = lookup(local.decoded_configuration[count.index], "expectedBody", null) != null ? jsonencode(local.decoded_configuration[count.index].expectedBody) : null
-
+    "url"                 = each.value.url,
+    "type"                = each.value.type,
+    "checkCertificate"    = each.value.checkCertificate,
+    "method"              = each.value.method,
+    "expectedCodes"       = jsonencode(each.value.expectedCodes),
+    "durationLimit"       = lookup(each.value, "durationLimit", null) != null ? each.value.durationLimit : var.job_settings.default_duration_limit,
+    "headers"             = lookup(each.value, "headers", null) != null ? jsonencode(each.value.headers) : null,
+    "body"                = lookup(each.value, "body", null) != null ? jsonencode(each.value.body) : null
+    "tags"                = lookup(each.value, "tags", null) != null ? jsonencode(each.value.tags) : null
+    "bodyCompareStrategy" = lookup(each.value, "bodyCompareStrategy", null) != null ? each.value.bodyCompareStrategy : null
+    "expectedBody"        = lookup(each.value, "expectedBody", null) != null ? jsonencode(each.value.expectedBody) : null
   }
 }
 
@@ -81,8 +81,10 @@ resource "azurerm_private_endpoint" "synthetic_monitoring_storage_private_endpoi
   subnet_id           = var.private_endpoint_subnet_id
 
   private_dns_zone_group {
-    name                 = "${var.prefix}-synthetic-monitoring-private-dns-zone-group"
-    private_dns_zone_ids = [var.storage_account_settings.table_private_dns_zone_id]
+    name = "${var.prefix}-synthetic-monitoring-private-dns-zone-group"
+    private_dns_zone_ids = [
+      var.storage_account_settings.table_private_dns_zone_id
+    ]
   }
 
   private_service_connection {
@@ -95,8 +97,9 @@ resource "azurerm_private_endpoint" "synthetic_monitoring_storage_private_endpoi
   tags = var.tags
 }
 
-
 resource "azapi_resource" "monitoring_app_job" {
+  count = var.legacy == true ? 1 : 0
+
   type      = "Microsoft.App/jobs@2022-11-01-preview"
   name      = "${var.prefix}-monitoring-app-job"
   location  = var.location
@@ -178,14 +181,97 @@ resource "azapi_resource" "monitoring_app_job" {
   })
 }
 
+resource "azurerm_container_app_job" "monitoring_terraform_app_job" {
+  count = var.legacy == false ? 1 : 0
+
+  name                         = "${var.prefix}-monitoring-app-job"
+  resource_group_name          = var.resource_group_name
+  location                     = var.location
+  container_app_environment_id = var.job_settings.container_app_environment_id
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  schedule_trigger_config {
+    cron_expression          = var.job_settings.cron_scheduling
+    parallelism              = 1
+    replica_completion_count = 1
+  }
+
+
+  template {
+    container {
+      cpu    = var.job_settings.cpu_requirement
+      memory = var.job_settings.memory_requirement
+      name   = "synthetic-monitoring"
+      image  = "${var.docker_settings.registry_url}/${var.docker_settings.image_name}:${var.docker_settings.image_tag}"
+
+      env {
+        name  = "APP_INSIGHT_CONNECTION_STRING"
+        value = data.azurerm_application_insights.app_insight.connection_string
+      }
+      env {
+        name  = "STORAGE_ACCOUNT_NAME"
+        value = module.synthetic_monitoring_storage_account.name
+      }
+      env {
+        name  = "STORAGE_ACCOUNT_KEY"
+        value = module.synthetic_monitoring_storage_account.primary_access_key
+      }
+      env {
+        name  = "STORAGE_ACCOUNT_TABLE_NAME"
+        value = azurerm_storage_table.table_storage.name
+      }
+      env {
+        name  = "AVAILABILITY_PREFIX"
+        value = var.job_settings.availability_prefix
+      }
+      env {
+        name  = "HTTP_CLIENT_TIMEOUT"
+        value = tostring(var.job_settings.http_client_timeout)
+      }
+      env {
+        name  = "LOCATION"
+        value = var.location
+      }
+      env {
+        name  = "CERT_VALIDITY_RANGE_DAYS"
+        value = tostring(var.job_settings.cert_validity_range_days)
+      }
+    }
+  }
+
+  replica_retry_limit        = 1
+  replica_timeout_in_seconds = var.job_settings.execution_timeout_seconds
+
+  tags = var.tags
+
+  # Prevents non-sequential destruction of the legacy resource azapi_resource.monitoring_app_job.
+  # This configuration forces resources to be destroyed and created sequentially by
+  # avoiding the duplicate resource error and enabling a switch to a new or old version
+  # (in case rollback is needed).
+  lifecycle {
+    precondition {
+      condition     = length(azapi_resource.monitoring_app_job) == 0
+      error_message = "Warning: You cannot create the new resource. Perform legacy import before proceeding with changes."
+    }
+  }
+}
+
 locals {
   default_alert_configuration = {
-    enabled     = true,
-    severity    = 0,
-    frequency   = "PT1M"
-    threshold   = 100
-    operator    = "LessThan"
-    aggregation = "Average"
+    enabled       = true,
+    severity      = 0,
+    frequency     = "PT1M"
+    auto_mitigate = var.alert_set_auto_mitigate
+    threshold     = 100
+    operator      = "LessThan"
+    aggregation   = "Average"
+    sensitivity   = "Medium"
+    window_size   = "PT5M"
+    total_count   = 3
+    failure_count = 2
   }
 
   default_custom_action_groups = []
@@ -193,38 +279,44 @@ locals {
 
 
 resource "azurerm_monitor_metric_alert" "alert" {
-  count = length(local.decoded_configuration)
+  for_each = local.monitoring_configuration
 
-  name                = "availability-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}-${local.decoded_configuration[count.index].type}"
+  name                = "availability-${each.value.appName}-${each.value.apiName}-${each.value.type}"
   resource_group_name = var.resource_group_name
   scopes              = [data.azurerm_application_insights.app_insight.id]
-  description         = "Monitors the availability of ${local.decoded_configuration[count.index].appName} ${local.decoded_configuration[count.index].apiName} from ${local.decoded_configuration[count.index].type}"
-  severity            = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "severity", local.default_alert_configuration.severity)
-  frequency           = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "frequency", local.default_alert_configuration.frequency)
-  auto_mitigate       = true
-  enabled             = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "enabled", local.default_alert_configuration.enabled)
+  description         = "Availability of ${each.value.appName} ${each.value.apiName} from ${each.value.type} degraded"
+  severity            = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "severity", local.default_alert_configuration.severity)
+  frequency           = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "frequency", local.default_alert_configuration.frequency)
+  auto_mitigate       = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "auto_mitigate", local.default_alert_configuration.auto_mitigate)
+  enabled             = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "enabled", local.default_alert_configuration.enabled)
+  window_size         = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "window_size", local.default_alert_configuration.window_size)
 
-  criteria {
-    aggregation      = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "aggregation", local.default_alert_configuration.aggregation)
-    metric_name      = "availabilityResults/availabilityPercentage"
-    metric_namespace = "microsoft.insights/components"
-    operator         = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "operator", local.default_alert_configuration.operator)
-    threshold        = lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "threshold", local.default_alert_configuration.threshold)
+  dynamic_criteria {
+    metric_namespace  = "microsoft.insights/components"
+    metric_name       = "availabilityResults/availabilityPercentage"
+    aggregation       = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "aggregation", local.default_alert_configuration.aggregation)
+    operator          = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "operator", local.default_alert_configuration.operator)
+    alert_sensitivity = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "sensitivity", local.default_alert_configuration.sensitivity)
     dimension {
       name     = "availabilityResult/name"
       operator = "Include"
-      values   = ["${var.job_settings.availability_prefix}-${local.decoded_configuration[count.index].appName}-${local.decoded_configuration[count.index].apiName}"]
+      values = [
+        "${var.job_settings.availability_prefix}-${each.value.appName}-${each.value.apiName}"
+      ]
     }
     dimension {
       name     = "availabilityResult/location"
       operator = "Include"
-      values   = [local.decoded_configuration[count.index].type]
+      values   = [each.value.type]
     }
+
+    evaluation_total_count   = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "total_count", local.default_alert_configuration.total_count)
+    evaluation_failure_count = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "failure_count", local.default_alert_configuration.failure_count)
   }
 
 
   dynamic "action" {
-    for_each = concat(var.application_insights_action_group_ids, lookup(lookup(local.decoded_configuration[count.index], "alertConfiguration", local.default_alert_configuration), "customActionGroupIds", local.default_custom_action_groups))
+    for_each = lookup(lookup(each.value, "alertConfiguration", local.default_alert_configuration), "customActionGroupIds", var.application_insights_action_group_ids)
 
     content {
       action_group_id = action.value
@@ -232,7 +324,6 @@ resource "azurerm_monitor_metric_alert" "alert" {
   }
 
 }
-
 
 
 resource "azurerm_monitor_metric_alert" "self_alert" {

@@ -7,89 +7,63 @@ resource "null_resource" "trigger_helm_release" {
   }
 }
 
+#
+# CRDS
+#
+resource "helm_release" "prometheus_crds" {
+
+  count = var.prometheus_crds_enabled ? 1 : 0
+
+  name       = "prometheus-crds"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "prometheus-operator-crds"
+  version    = var.prometheus_crds_release_version
+  namespace  = var.prometheus_namespace
+
+  timeout      = 300
+  force_update = true
+  wait         = true
+
+  depends_on = [
+    null_resource.trigger_helm_release
+  ]
+}
 
 resource "helm_release" "prometheus" {
-
-
   name       = "prometheus"
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "prometheus"
   version    = var.prometheus_helm.chart_version
   namespace  = var.prometheus_namespace
 
-  set {
-    name  = "server.global.scrape_interval"
-    value = "30s"
-  }
-  set {
-    name  = "alertmanager.image.repository"
-    value = var.prometheus_helm.alertmanager.image_name
-  }
-  set {
-    name  = "alertmanager.image.tag"
-    value = var.prometheus_helm.alertmanager.image_tag
-  }
-  set {
-    name  = "alertmanager.configmapReload.prometheus.image.repository"
-    value = var.prometheus_helm.configmap_reload_prometheus.image_name
-  }
-  set {
-    name  = "alertmanager.configmapReload.prometheus.image.tag"
-    value = var.prometheus_helm.configmap_reload_prometheus.image_tag
-  }
-  set {
-    name  = "alertmanager.configmapReload.alertmanager.image.repository"
-    value = var.prometheus_helm.configmap_reload_alertmanager.image_name
-  }
-  set {
-    name  = "alertmanager.configmapReload.alertmanager.image.tag"
-    value = var.prometheus_helm.configmap_reload_alertmanager.image_tag
-  }
-  set {
-    name  = "alertmanager.nodeExporter.image.repository"
-    value = var.prometheus_helm.node_exporter.image_name
-  }
-  set {
-    name  = "alertmanager.nodeExporter.image.tag"
-    value = var.prometheus_helm.node_exporter.image_tag
-  }
-  set {
-    name  = "alertmanager.nodeExporter.image.repository"
-    value = var.prometheus_helm.node_exporter.image_name
-  }
-  set {
-    name  = "alertmanager.nodeExporter.image.tag"
-    value = var.prometheus_helm.node_exporter.image_tag
-  }
-  set {
-    name  = "alertmanager.server.image.repository"
-    value = var.prometheus_helm.server.image_name
-  }
-  set {
-    name  = "alertmanager.server.image.tag"
-    value = var.prometheus_helm.server.image_tag
-  }
-  set {
-    name  = "alertmanager.pushgateway.image.repository"
-    value = var.prometheus_helm.pushgateway.image_name
-  }
-  set {
-    name  = "alertmanager.pushgateway.image.tag"
-    value = var.prometheus_helm.pushgateway.image_tag
-  }
-  set {
-    name  = "alertmanager.persistentVolume.storageClass"
-    value = var.storage_class_name
-  }
-  set {
-    name  = "server.persistentVolume.storageClass"
-    value = var.storage_class_name
-  }
+  values = [
+    templatefile("${path.module}/helm/values.yaml", {
+      storage_class_name        = var.storage_class_name
+      server_storage_size       = var.prometheus_helm.server_storage_size
+      alertmanager_storage_size = var.prometheus_helm.alertmanager_storage_size
 
+      server_replicas             = var.prometheus_helm.replicas
+      alertmanager_replicas       = var.prometheus_helm.replicas
+      pushgateway_replicas        = var.prometheus_helm.replicas
+      kube_state_metrics_replicas = var.prometheus_helm.replicas
+
+      node_selector             = jsonencode(var.prometheus_node_selector)
+      tolerations               = jsonencode(var.prometheus_tolerations)
+      node_exporter_tolerations = jsonencode(var.prometheus_tolerations)
+
+      node_selector = jsonencode(var.prometheus_node_selector)
+      tolerations   = jsonencode(var.prometheus_tolerations)
+      affinity      = jsonencode(var.prometheus_affinity != null ? var.prometheus_affinity : local.default_affinity)
+    })
+  ]
 
   lifecycle {
     replace_triggered_by = [
       null_resource.trigger_helm_release
     ]
   }
+
+  depends_on = [
+    helm_release.prometheus_crds
+  ]
 }

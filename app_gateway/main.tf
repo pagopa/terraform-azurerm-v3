@@ -9,6 +9,7 @@ resource "azurerm_application_gateway" "this" {
   resource_group_name = var.resource_group_name
   location            = var.location
   zones               = var.zones
+  firewall_policy_id  = var.firewall_policy_id
 
   sku {
     name = var.sku_name
@@ -258,6 +259,16 @@ resource "azurerm_application_gateway" "this" {
     }
   }
 
+  dynamic "custom_error_configuration" {
+    for_each = var.custom_error_configurations
+    iterator = err_conf
+
+    content {
+      status_code           = err_conf.value.status_code
+      custom_error_page_url = err_conf.value.custom_error_page_url
+    }
+  }
+
   # see: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#identity
   identity {
     type         = "UserAssigned"
@@ -280,7 +291,7 @@ resource "azurerm_application_gateway" "this" {
       enabled                  = true
       firewall_mode            = "Detection"
       rule_set_type            = "OWASP"
-      rule_set_version         = "3.1"
+      rule_set_version         = "3.2"
       request_body_check       = true
       file_upload_limit_mb     = 100
       max_request_body_size_kb = 128

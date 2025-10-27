@@ -158,7 +158,7 @@ terraform state rm module.postgres.azurerm_postgresql_server.this
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -246,4 +246,4 @@ No modules.
 | <a name="output_replica_fqdn"></a> [replica\_fqdn](#output\_replica\_fqdn) | n/a |
 | <a name="output_replica_name"></a> [replica\_name](#output\_replica\_name) | n/a |
 | <a name="output_replica_principal_id"></a> [replica\_principal\_id](#output\_replica\_principal\_id) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

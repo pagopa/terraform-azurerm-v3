@@ -1,6 +1,6 @@
 # kubernetes prometheus installation
 
-This installs Prometheus into your AKS cluster, using the given namespace.
+This installs Prometheus and relatives CRDs into your AKS cluster, using the given namespace.
 
 ## 📌 For production use
 
@@ -10,15 +10,15 @@ Change the `storage_class_name` varaible in order to use a Zone Redundant storag
 
 ```hcl
 module "aks_prometheus_install" {
-  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_prometheus_install?ref=v8.8.0"
-  
-  prometheus_namespace = "monitoring"
-  storage_class_name = "default-zrs" #example of ZRS storage class created by kubernetes_storage_class
+  source = "git::https://github.com/pagopa/terraform-azurerm-v3.git//kubernetes_prometheus_install?ref=<your version>"
+
+  prometheus_namespace = kubernetes_namespace.monitoring.metadata[0].name
+  storage_class_name   = "default-zrs"
 }
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -36,17 +36,23 @@ No modules.
 | Name | Type |
 |------|------|
 | [helm_release.prometheus](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.prometheus_crds](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [null_resource.trigger_helm_release](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_prometheus_helm"></a> [prometheus\_helm](#input\_prometheus\_helm) | Prometheus helm chart configuration | <pre>object({<br/>    chart_version = optional(string, "25.24.1")<br/>    server = object({<br/>      image_name = optional(string, "quay.io/prometheus/prometheus"),<br/>      image_tag  = optional(string, "v2.53.1"),<br/>    }),<br/>    alertmanager = object({<br/>      image_name = optional(string, "quay.io/prometheus/alertmanager"),<br/>      image_tag  = optional(string, "v0.27.0"),<br/>    }),<br/>    node_exporter = object({<br/>      image_name = optional(string, "quay.io/prometheus/node-exporter"),<br/>      image_tag  = optional(string, "v1.8.2"),<br/>    }),<br/>    configmap_reload_prometheus = object({<br/>      image_name = optional(string, "jimmidyson/configmap-reload"),<br/>      image_tag  = optional(string, "v0.13.1"),<br/>    }),<br/>    configmap_reload_alertmanager = object({<br/>      image_name = optional(string, "jimmidyson/configmap-reload"),<br/>      image_tag  = optional(string, "v0.13.1"),<br/>    }),<br/>    pushgateway = object({<br/>      image_name = optional(string, "prom/pushgateway"),<br/>      image_tag  = optional(string, "v1.9.0"),<br/>    }),<br/>  })</pre> | <pre>{<br/>  "alertmanager": {<br/>    "image_name": "quay.io/prometheus/alertmanager",<br/>    "image_tag": "v0.27.0"<br/>  },<br/>  "chart_version": "25.24.1",<br/>  "configmap_reload_alertmanager": {<br/>    "image_name": "jimmidyson/configmap-reload",<br/>    "image_tag": "v0.13.1"<br/>  },<br/>  "configmap_reload_prometheus": {<br/>    "image_name": "jimmidyson/configmap-reload",<br/>    "image_tag": "v0.13.1"<br/>  },<br/>  "node_exporter": {<br/>    "image_name": "quay.io/prometheus/node-exporter",<br/>    "image_tag": "v1.8.2"<br/>  },<br/>  "pushgateway": {<br/>    "image_name": "prom/pushgateway",<br/>    "image_tag": "v1.9.0"<br/>  },<br/>  "server": {<br/>    "image_name": "quay.io/prometheus/prometheus",<br/>    "image_tag": "v2.53.1"<br/>  }<br/>}</pre> | no |
+| <a name="input_prometheus_affinity"></a> [prometheus\_affinity](#input\_prometheus\_affinity) | Global affinity rules for all Prometheus components | <pre>object({<br/>    nodeAffinity = object({<br/>      requiredDuringSchedulingIgnoredDuringExecution = object({<br/>        nodeSelectorTerms = list(object({<br/>          matchExpressions = list(object({<br/>            key      = string<br/>            operator = string<br/>            values   = list(string)<br/>          }))<br/>        }))<br/>      })<br/>    })<br/>  })</pre> | `null` | no |
+| <a name="input_prometheus_crds_enabled"></a> [prometheus\_crds\_enabled](#input\_prometheus\_crds\_enabled) | Setup CRDS for prometheus | `bool` | `true` | no |
+| <a name="input_prometheus_crds_release_version"></a> [prometheus\_crds\_release\_version](#input\_prometheus\_crds\_release\_version) | Prometheus CRDS helm release version. https://github.com/prometheus-community/helm-charts/pkgs/container/charts%2Fprometheus-operator-crds | `string` | `"17.0.2"` | no |
+| <a name="input_prometheus_helm"></a> [prometheus\_helm](#input\_prometheus\_helm) | Prometheus helm chart configuration | <pre>object({<br/>    chart_version             = optional(string, "27.1.0")<br/>    server_storage_size       = optional(string, "128Gi")<br/>    alertmanager_storage_size = optional(string, "32Gi")<br/>    replicas                  = optional(number, 1)<br/>  })</pre> | <pre>{<br/>  "alertmanager_storage_size": "32Gi",<br/>  "chart_version": "27.1.0",<br/>  "replicas": 1,<br/>  "server_storage_size": "128Gi"<br/>}</pre> | no |
 | <a name="input_prometheus_namespace"></a> [prometheus\_namespace](#input\_prometheus\_namespace) | (Required) Name of the monitoring namespace, used to install prometheus resources | `string` | n/a | yes |
+| <a name="input_prometheus_node_selector"></a> [prometheus\_node\_selector](#input\_prometheus\_node\_selector) | Global node selector for all Prometheus components | `map(string)` | `{}` | no |
+| <a name="input_prometheus_tolerations"></a> [prometheus\_tolerations](#input\_prometheus\_tolerations) | Global tolerations for all Prometheus components | <pre>list(object({<br/>    key      = string<br/>    operator = string<br/>    value    = string<br/>    effect   = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_storage_class_name"></a> [storage\_class\_name](#input\_storage\_class\_name) | (Optional) Storage class name used for prometheus server and alertmanager | `string` | `"default"` | no |
 
 ## Outputs
 
 No outputs.
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

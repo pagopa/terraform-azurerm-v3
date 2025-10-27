@@ -1,0 +1,11 @@
+{
+  "index_patterns": [
+    "logs-generic-*"
+  ],
+  "data_stream": {},
+  "composed_of": [ "logs-generic-mappings", "logs-generic-settings" ],
+  "priority": 500,
+  "_meta": {
+    "description": "Index template for generic"
+  }
+}

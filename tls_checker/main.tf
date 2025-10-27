@@ -7,7 +7,7 @@ resource "helm_release" "helm_this" {
   chart        = "microservice-chart"
   repository   = "https://pagopa.github.io/aks-microservice-chart-blueprint"
   version      = local.chart_version
-  timeout      = 120
+  timeout      = 180
   force_update = true
 
   values = [

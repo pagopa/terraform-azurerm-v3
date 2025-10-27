@@ -83,8 +83,19 @@ variable "vpn_client_configuration" {
 
 variable "local_networks" {
   description = "List of local virtual network connections to connect to gateway."
-  type        = list(object({ name = string, gateway_address = string, address_space = list(string), shared_key = string, ipsec_policy = any }))
-  default     = []
+  type = list(object({
+    name                               = string
+    gateway_address                    = string
+    address_space                      = list(string)
+    shared_key                         = string
+    ipsec_policy                       = any
+    use_policy_based_traffic_selectors = optional(bool, false)
+    traffic_selector_policies = optional(list(object({
+      local_address_cidrs  = list(string)
+      remote_address_cidrs = list(string)
+    })), [])
+  }))
+  default = []
 }
 
 variable "log_analytics_workspace_id" {

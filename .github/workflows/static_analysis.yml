@@ -2,6 +2,9 @@ name: Static Analysis
 
 on:
   push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   static_analysis:
@@ -17,10 +20,10 @@ jobs:
 
       - name: show_version
         run: |
-          TAG="v1.89.0@sha256:4d8faca2c8797fc9787fb3927084b403812a96e46536d9cf52103685a75b9d38"
+          TAG="v1.96.2@sha256:01f870b7689b5a09c1a370914fcddcac42c4b6478c9d369e1d2590dd0a66ffd0"
           docker run --rm --entrypoint cat ghcr.io/antonbabenko/pre-commit-terraform:$TAG /usr/bin/tools_versions_info
 
       - name: run_test
         run: |
-          TAG="v1.89.0@sha256:4d8faca2c8797fc9787fb3927084b403812a96e46536d9cf52103685a75b9d38"
+          TAG="v1.96.2@sha256:01f870b7689b5a09c1a370914fcddcac42c4b6478c9d369e1d2590dd0a66ffd0"
           docker run -v $(pwd):/lint -w /lint ghcr.io/antonbabenko/pre-commit-terraform:$TAG run -a

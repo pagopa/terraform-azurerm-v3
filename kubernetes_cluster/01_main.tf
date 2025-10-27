@@ -32,7 +32,8 @@ resource "azurerm_kubernetes_cluster" "this" {
   # System node pool
   #
   default_node_pool {
-    name = var.system_node_pool_name
+    name                        = var.system_node_pool_name
+    temporary_name_for_rotation = substr("temp${var.system_node_pool_name}", 0, 12)
 
     ### vm configuration
     vm_size = var.system_node_pool_vm_size
@@ -67,7 +68,9 @@ resource "azurerm_kubernetes_cluster" "this" {
     tags = merge(var.tags, var.system_node_pool_tags)
   }
 
+  # node_os_channel_upgrade must be set to NodeImage if automatic_channel_upgrade has been set to node-image
   automatic_channel_upgrade = var.automatic_channel_upgrade
+  node_os_channel_upgrade   = var.node_os_channel_upgrade
 
   # managed identity type: https://docs.microsoft.com/en-us/azure/aks/use-managed-identity
   identity {
@@ -76,6 +79,7 @@ resource "azurerm_kubernetes_cluster" "this" {
 
   workload_identity_enabled = var.workload_identity_enabled
   oidc_issuer_enabled       = local.oidc_issuer_enabled
+  cost_analysis_enabled     = var.cost_analysis_enabled
 
   dynamic "network_profile" {
     for_each = var.network_profile != null ? [var.network_profile] : []
@@ -126,6 +130,21 @@ resource "azurerm_kubernetes_cluster" "this" {
     }
   }
 
+  dynamic "maintenance_window_node_os" {
+    for_each = var.maintenance_windows_node_os.enabled ? [1] : []
+    content {
+      day_of_month = var.maintenance_windows_node_os.day_of_month
+      day_of_week  = var.maintenance_windows_node_os.day_of_week
+      duration     = var.maintenance_windows_node_os.duration
+      frequency    = var.maintenance_windows_node_os.frequency
+      interval     = var.maintenance_windows_node_os.interval
+      start_date   = var.maintenance_windows_node_os.start_date
+      start_time   = var.maintenance_windows_node_os.start_time
+      utc_offset   = var.maintenance_windows_node_os.utc_offset
+      week_index   = var.maintenance_windows_node_os.week_index
+    }
+  }
+
   role_based_access_control_enabled = true
   azure_active_directory_role_based_access_control {
     managed                = true
@@ -152,6 +171,16 @@ resource "azurerm_kubernetes_cluster" "this" {
       msi_auth_for_monitoring_enabled = var.oms_agent_msi_auth_for_monitoring_enabled
     }
   }
+
+  ### Prometheus managed metrics
+  dynamic "monitor_metrics" {
+    for_each = var.enable_prometheus_monitor_metrics ? [1] : []
+    content {
+      annotations_allowed = var.monitor_metrics.annotations_allowed
+      labels_allowed      = var.monitor_metrics.labels_allowed
+    }
+  }
+
 
   storage_profile {
     file_driver_enabled         = var.storage_profile_file_driver_enabled

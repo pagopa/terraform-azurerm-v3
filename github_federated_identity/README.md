@@ -57,7 +57,7 @@ You can customize identities' IAM roles both at subscription and resource group 
 This granularity is useful in such scenario where is needed a writing-role on the Storage Account which contains Terraform state files but at the same time reading-only permissions on the others Storage Accounts.
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -92,6 +92,7 @@ No modules.
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | Short environment prefix | `string` | n/a | yes |
 | <a name="input_github_federations"></a> [github\_federations](#input\_github\_federations) | GitHub Organization, repository name and scope permissions | <pre>list(object({<br/>    org               = optional(string, "pagopa")<br/>    repository        = string<br/>    audience          = optional(set(string), ["api://AzureADTokenExchange"])<br/>    issuer            = optional(string, "https://token.actions.githubusercontent.com")<br/>    credentials_scope = optional(string, "environment")<br/>    subject           = string<br/>  }))</pre> | n/a | yes |
 | <a name="input_identity_role"></a> [identity\_role](#input\_identity\_role) | Identity role should be either ci or cd | `string` | n/a | yes |
+| <a name="input_location"></a> [location](#input\_location) | Azure region for the Managed Identity | `string` | `null` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Project prefix | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Identity tags | `map(any)` | n/a | yes |
 
@@ -103,4 +104,4 @@ No modules.
 | <a name="output_identity_client_id"></a> [identity\_client\_id](#output\_identity\_client\_id) | User Managed Identity client id |
 | <a name="output_identity_principal_id"></a> [identity\_principal\_id](#output\_identity\_principal\_id) | User Managed Identity principal id |
 | <a name="output_identity_resource_group"></a> [identity\_resource\_group](#output\_identity\_resource\_group) | User Managed Identity resource group |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

@@ -21,7 +21,7 @@ module "my_jwt" {
 Nothing to change
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -73,4 +73,4 @@ No modules.
 | <a name="output_jwt_kid"></a> [jwt\_kid](#output\_jwt\_kid) | n/a |
 | <a name="output_jwt_private_key_pem"></a> [jwt\_private\_key\_pem](#output\_jwt\_private\_key\_pem) | n/a |
 | <a name="output_jwt_public_key_pem"></a> [jwt\_public\_key\_pem](#output\_jwt\_public\_key\_pem) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

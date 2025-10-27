@@ -109,6 +109,12 @@ variable "key_vault_id" {
   description = "(Required) Specifies the id of the Key Vault resource. Changing this forces a new resource to be created."
 }
 
+variable "namespace_name" {
+  type        = string
+  description = "(Optional) The namespace name where to deploy the velero resources. It should already exist"
+  default     = "velero"
+}
+
 variable "tags" {
   type = map(any)
 }

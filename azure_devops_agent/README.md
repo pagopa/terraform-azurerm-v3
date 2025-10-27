@@ -70,7 +70,7 @@ module "module "azdoa_vmss_li" {" {
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -120,4 +120,4 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_scale_set_id"></a> [scale\_set\_id](#output\_scale\_set\_id) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

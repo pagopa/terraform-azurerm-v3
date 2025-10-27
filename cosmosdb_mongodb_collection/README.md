@@ -38,7 +38,7 @@ module "mongdb_collection_name" {
 ```
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -83,4 +83,4 @@ No modules.
 |------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | The id of the collection |
 | <a name="output_lock_id"></a> [lock\_id](#output\_lock\_id) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

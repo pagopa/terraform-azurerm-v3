@@ -56,6 +56,12 @@ variable "mongo_server_version" {
   default     = null
 }
 
+variable "minimal_tls_version" {
+  type        = string
+  description = "(Optional) Specifies the minimal TLS version for the CosmosDB account. Possible values are: Tls, Tls11, and Tls12. Defaults to Tls12."
+  default     = "Tls12"
+}
+
 variable "main_geo_location_location" {
   type        = string
   description = "(Required) The name of the Azure region to host replicated data."
@@ -252,4 +258,11 @@ variable "action" {
     }
   ))
   default = []
+}
+
+
+variable "burst_capacity_enabled" {
+  type        = bool
+  description = "(Optional) Enable burst capacity for this Cosmos DB account. Defaults to false."
+  default     = false
 }

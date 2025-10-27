@@ -11,6 +11,13 @@ This is the minimum configuration required to use the monitoring function
 Field `monitoring_configuration_encoded` is required to be passed as a string, using  `jsonencode(<json content>)` function or `file(<json_file_path>)` function
 details on its content can be found [here](https://github.com/pagopa/azure-synthetic-monitoring)
 
+In addition to the fields required by the monitoring function, you can specify the followings:
+
+| Field Name | Description                                                                    | Default value |
+|------------|--------------------------------------------------------------------------------|---------------|
+| enabled    | enables the monitoring of that specific `appName`-`apiName`-`type` combination | true          |
+
+
 ### Alert configuration
 
 In addition to the properties defined above, `alertConfiguration` can be specified to customize the alert associated to the monitored api
@@ -21,10 +28,14 @@ That's an example of the properties that can be specified, containing the defaul
     "enabled" : true, # (Optional) enables the alert
     "severity" : 0,   # (Optional) The severity of this Metric Alert. Possible values are 0, 1, 2, 3 and 4
     "frequency" : "PT1M", # (Optional) The evaluation frequency of this Metric Alert, represented in ISO 8601 duration format. Possible values are PT1M, PT5M, PT15M, PT30M and PT1H
-    "threshold" : 100, # (Optional) The criteria threshold value that activates the alert
+    "auto_mitigate" : true, # (Optional) Should the alerts in this Metric Alert be auto resolved? Defaults to true
     "operator" : "LessThan" # (Optional) The criteria operator. Possible values are Equals, GreaterThan, GreaterThanOrEqual, LessThan and LessThanOrEqual
     "aggregation": "Average" # (Required) The statistic that runs over the metric values. Possible values are Average, Count, Minimum, Maximum and Total.
-    "customActionGroupIds": [] # (OPtional) List of additional action group ids associated to this specific alert
+    "customActionGroupIds": [] # (Optional) List of custom action group ids associated to this specific alert, used insteaf of 'application_insights_action_group_ids'
+    "window_size": "PT15M" # (Optional) The period of time that is used to monitor alert activity, represented in ISO 8601 duration format. This value must be greater than frequency. Possible values are PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H and P1D. Defaults to PT15M
+    "total_count": 3 # (Optional) The number of aggregated lookback points. The lookback time window is calculated based on the aggregation granularity (window_size) and the selected number of aggregated points. Defaults to 3
+    "failure_count": 2 # (Optional) The number of violations to trigger an alert. Should be smaller or equal to evaluation_total_count. Defaults to 2
+    "sensitivity": "Medium" # (Optional) The extent of deviation required to trigger an alert. Possible values are Low, Medium and High. Defaults to Medium
 }
 ```
 
@@ -162,7 +173,7 @@ module "monitoring_function" {
 
 
 <!-- markdownlint-disable -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -176,13 +187,14 @@ module "monitoring_function" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_synthetic_monitoring_storage_account"></a> [synthetic\_monitoring\_storage\_account](#module\_synthetic\_monitoring\_storage\_account) | git::https://github.com/pagopa/terraform-azurerm-v3.git//storage_account | v8.16.0 |
+| <a name="module_synthetic_monitoring_storage_account"></a> [synthetic\_monitoring\_storage\_account](#module\_synthetic\_monitoring\_storage\_account) | ../storage_account | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [azapi_resource.monitoring_app_job](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) | resource |
+| [azurerm_container_app_job.monitoring_terraform_app_job](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_job) | resource |
 | [azurerm_monitor_metric_alert.alert](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_monitor_metric_alert.self_alert](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_private_endpoint.synthetic_monitoring_storage_private_endpoint](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
@@ -195,11 +207,13 @@ module "monitoring_function" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_alert_set_auto_mitigate"></a> [alert\_set\_auto\_mitigate](#input\_alert\_set\_auto\_mitigate) | (Optional) Should the alerts in this Metric Alert be auto resolved? Defaults to true. | `bool` | `true` | no |
 | <a name="input_application_insight_name"></a> [application\_insight\_name](#input\_application\_insight\_name) | (Required) name of the application insight instance where to publish metrics | `string` | n/a | yes |
 | <a name="input_application_insight_rg_name"></a> [application\_insight\_rg\_name](#input\_application\_insight\_rg\_name) | (Required) name of the application insight instance resource group where to publish metrics | `string` | n/a | yes |
 | <a name="input_application_insights_action_group_ids"></a> [application\_insights\_action\_group\_ids](#input\_application\_insights\_action\_group\_ids) | (Required) Application insights action group ids | `list(string)` | n/a | yes |
 | <a name="input_docker_settings"></a> [docker\_settings](#input\_docker\_settings) | n/a | <pre>object({<br/>    registry_url = optional(string, "ghcr.io")                           #(Optional) Docker container registry url where to find the monitoring image<br/>    image_tag    = string                                                #(Optional) Docker image tag<br/>    image_name   = optional(string, "pagopa/azure-synthetic-monitoring") #(Optional) Docker image name<br/>  })</pre> | <pre>{<br/>  "image_name": "pagopa/azure-synthetic-monitoring",<br/>  "image_tag": "1.0.0",<br/>  "registry_url": "ghcr.io"<br/>}</pre> | no |
 | <a name="input_job_settings"></a> [job\_settings](#input\_job\_settings) | n/a | <pre>object({<br/>    execution_timeout_seconds    = optional(number, 300)         #(Optional) Job execution timeout, in seconds<br/>    cron_scheduling              = optional(string, "* * * * *") #(Optional) Cron expression defining the execution scheduling of the monitoring function<br/>    cpu_requirement              = optional(number, 0.25)        #(Optional) Decimal; cpu requirement<br/>    memory_requirement           = optional(string, "0.5Gi")     #(Optional) Memory requirement<br/>    http_client_timeout          = optional(number, 30000)       #(Optional) Default http client response timeout, in milliseconds<br/>    default_duration_limit       = optional(number, 10000)       #(Optional) Duration limit applied if none is given in the monitoring configuration. in milliseconds<br/>    availability_prefix          = optional(string, "synthetic") #(Optional) Prefix used for prefixing availability test names<br/>    container_app_environment_id = string                        #(Required) If defined, the id of the container app environment tu be used to run the monitoring job. If provided, skips the creation of a dedicated subnet<br/>    cert_validity_range_days     = optional(number, 7)           #(Optional) Number of days before the expiration date of a certificate over which the check is considered success<br/>  })</pre> | <pre>{<br/>  "availability_prefix": "synthetic",<br/>  "cert_validity_range_days": 7,<br/>  "container_app_environment_id": null,<br/>  "cpu_requirement": 0.25,<br/>  "cron_scheduling": "* * * * *",<br/>  "default_duration_limit": 10000,<br/>  "execution_timeout_seconds": 300,<br/>  "http_client_timeout": 30000,<br/>  "memory_requirement": "0.5Gi"<br/>}</pre> | no |
+| <a name="input_legacy"></a> [legacy](#input\_legacy) | (Optional) Enable new terraform resource features for container app job. | `bool` | `true` | no |
 | <a name="input_location"></a> [location](#input\_location) | (Required) Resource location | `string` | n/a | yes |
 | <a name="input_monitoring_configuration_encoded"></a> [monitoring\_configuration\_encoded](#input\_monitoring\_configuration\_encoded) | (Required) monitoring configuration provided in JSON string format (use jsonencode) | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | (Required) Prefix used in the Velero dedicated resource names | `string` | n/a | yes |
@@ -212,4 +226,4 @@ module "monitoring_function" {
 ## Outputs
 
 No outputs.
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
