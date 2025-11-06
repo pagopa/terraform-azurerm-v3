@@ -73,7 +73,6 @@ variable "container" {
 
 variable "job" {
   type = object({
-    name                 = string
     scale_max_executions = optional(number, 5)
     scale_min_executions = optional(number, 0)
   })
