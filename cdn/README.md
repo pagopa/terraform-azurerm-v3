@@ -67,7 +67,7 @@ module "devopslab_cdn" {
       {
         action = "Append"
         name   = "Content-Security-Policy-Report-Only"
-        value  = "img-src 'self' https://assets.cdn.io.italia.it data:; "
+        value  = "img-src 'self' https://assets.io.pagopa.it data:; "
       }
     ]
   }
