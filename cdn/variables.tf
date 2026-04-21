@@ -384,3 +384,8 @@ variable "log_analytics_workspace_id" {
   type        = string
   description = "Log Analytics Workspace id to send logs to"
 }
+
+variable "enabled_cname_creation" {
+  type    = bool
+  default = false
+}
