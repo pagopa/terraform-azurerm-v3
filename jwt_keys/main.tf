@@ -42,6 +42,15 @@ resource "azurerm_key_vault_secret" "jwt_private_key" {
 }
 
 #tfsec:ignore:azure-keyvault-ensure-secret-expiry
+resource "azurerm_key_vault_secret" "jwt_private_key_pkcs8" {
+  name         = format("%s-private-key-pkcs8", var.jwt_name)
+  value        = tls_private_key.jwt.private_key_pem_pkcs8
+  content_type = "text/plain"
+
+  key_vault_id = var.key_vault_id
+}
+
+#tfsec:ignore:azure-keyvault-ensure-secret-expiry
 resource "azurerm_key_vault_secret" "jwt_public_key" {
   name         = format("%s-public-key", var.jwt_name)
   value        = tls_private_key.jwt.public_key_pem
