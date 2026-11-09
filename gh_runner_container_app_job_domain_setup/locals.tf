@@ -4,8 +4,10 @@ locals {
 
   federations = [
     for repo in var.gh_repositories : {
-      repository = repo.name
-      subject    = var.gh_env
+      org_id        = repo.org_id
+      repository    = repo.name
+      repository_id = repo.repository_id
+      subject       = var.gh_env
     }
   ]
 
