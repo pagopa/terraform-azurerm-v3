@@ -60,7 +60,9 @@ variable "identity_role" {
 variable "github_federations" {
   type = list(object({
     org               = optional(string, "pagopa")
+    org_id            = optional(string, null)
     repository        = string
+    repository_id     = optional(string, null)
     audience          = optional(set(string), ["api://AzureADTokenExchange"])
     issuer            = optional(string, "https://token.actions.githubusercontent.com")
     credentials_scope = optional(string, "environment")

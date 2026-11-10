@@ -145,8 +145,10 @@ variable "runner_labels" {
 
 variable "gh_repositories" {
   type = list(object({
-    name       = string
-    short_name = string
+    org_id        = optional(string, null)
+    name          = string
+    repository_id = optional(string, null)
+    short_name    = string
   }))
   description = "(Required) List of gh repository names and short names on which the managed identity will have permission. Max 20 repos. All repos must belong to the same organization, check `job_meta` variable"
   validation {
